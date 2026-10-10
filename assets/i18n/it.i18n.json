@@ -205,7 +205,7 @@
       "poi": {
         "water": "Sorgente o fontana segnalata. Una sorgente può essere secca d'estate: non contarci.",
         "shelter": "Rifugio o ricovero. Tocca il segnaposto: quota, servizi, contatto.",
-        "accommodation": "Pensione, camera o hotel. Prenoti presso la struttura.",
+        "accommodation": "Pensione, camera o hotel. Prenota presso la struttura.",
         "campsite": "Campeggio o bivacco. Le regole cambiano secondo il territorio: informati prima di piantare la tenda.",
         "shop": "Negozio per rifornirsi. Orari non garantiti fuori stagione.",
         "restaurant": "Ristorante o tavola ospite sul percorso o nelle vicinanze.",
@@ -250,7 +250,7 @@
     "waterSources": {
       "title": "Punti d'acqua",
       "count": "{n} sorgente/i",
-      "none": "Nessun punto d'acqua segnalato su questa tappa. Portate almeno 3 L a persona."
+      "none": "Nessun punto d'acqua segnalato su questa tappa. Porta almeno 3 L a persona."
     },
     "accommodation": {
       "title": "Alloggi",
@@ -258,11 +258,11 @@
     },
     "advice": {
       "title": "Consigli",
-      "waterScarce": "Pochi punti d'acqua: partite con almeno 2,5 L.",
-      "waterAmple": "Riempite le borracce a ogni punto d'acqua incontrato.",
-      "hardStage": "Tappa tecnica: partite presto per evitare il caldo e i temporali del pomeriggio.",
+      "waterScarce": "Pochi punti d'acqua: parti con almeno 2,5 L.",
+      "waterAmple": "Riempi le borracce a ogni punto d'acqua incontrato.",
+      "hardStage": "Tappa tecnica: parti presto per evitare il caldo e i temporali del pomeriggio.",
       "earlyStart": "Partenza consigliata prima delle 8 per approfittare del fresco mattutino.",
-      "bigClimb": "Forte dislivello positivo: dosate lo sforzo e fate pause regolari."
+      "bigClimb": "Forte dislivello positivo: dosa lo sforzo e fai pause regolari."
     }
   },
   "trail": {
@@ -694,7 +694,7 @@
     "wind": "Vento",
     "uv": "Indice UV",
     "fireRisk": "Rischio incendio",
-    "fireRiskDesc": "Rischio incendio elevato. Consultare le istruzioni di sicurezza.",
+    "fireRiskDesc": "Rischio incendio elevato. Consulta le istruzioni di sicurezza.",
     "fireSafetyTips": "Istruzioni antincendio",
     "alertCount": "allerta",
     "alertCountPlural": "allerte",
@@ -932,10 +932,10 @@
     },
     "formula": {
       "title": "Fattibilità per questo trek",
-      "answerTitle": "È alla sua portata?",
-      "answerGreen": "Sì. Questo sentiero è alla sua portata in ${days} giorni.",
+      "answerTitle": "È alla tua portata?",
+      "answerGreen": "Sì. Questo sentiero è alla tua portata in ${days} giorni.",
       "answerOrange": "Sì, in ${days} giorni. Ma una giornata sarà dura.",
-      "answerRed": "Non ancora. Una giornata di questo sentiero chiede più di quanto lei regga oggi. Migliori la forma, o parta fuori dall'estate.",
+      "answerRed": "Non ancora. Una giornata di questo sentiero chiede più di quanto reggi oggi. Migliora la forma, o parti fuori dall'estate.",
       "answerDaysNote": "Il sentiero si cammina in ${walking} giorni. Consigliati ${rest} giorno/i di riposo.",
       "answerNoRest": "Il sentiero si cammina in ${walking} giorni.",
       "explainToggle": "Come viene calcolato questo risultato",
@@ -1589,10 +1589,10 @@
       "doctor": "Es. Dr. Rossi +39 06 xxxx xxxx",
       "insurance": "Es. tessera europea",
       "fullName": "Es. Christophe Mosconi",
-      "birthDate": "Toccare per scegliere",
+      "birthDate": "Tocca per scegliere",
       "address": "Es. via dei Lillà 12, 20000 Ajaccio",
       "conditions": "Es. diabete di tipo 1, epilessia, anticoagulante",
-      "organDonor": "Fate la vostra scelta"
+      "organDonor": "Fai la tua scelta"
     },
     "error": {
       "bloodType": "Gruppo sanguigno non valido (A+, A-, B+, B-, AB+, AB-, O+, O-)"
@@ -1630,17 +1630,17 @@
       "ackDone": "Consigli letti"
     },
     "section": {
-      "identity": "Chi siete",
+      "identity": "Chi sei",
       "identityWhy": "È la prima cosa che legge un soccorritore: senza nome cura uno sconosciuto e non può avvisare nessuno.",
       "contacts": "Chi avvisare",
-      "contactsWhy": "Ciò che i soccorsi cercano subito dopo avervi identificato. Tre persone al massimo: oltre, nessuna viene chiamata.",
-      "vital": "Ciò che vi cura",
-      "vitalWhy": "Nell'ordine in cui interroga un medico d'urgenza: prima ciò che può uccidervi durante le cure, poi ciò che serve in ospedale.",
+      "contactsWhy": "Ciò che i soccorsi cercano subito dopo averti identificato. Tre persone al massimo: oltre, nessuna viene chiamata.",
+      "vital": "Ciò che ti cura",
+      "vitalWhy": "Nell'ordine in cui interroga un medico d'urgenza: prima ciò che può ucciderti durante le cure, poi ciò che serve in ospedale.",
       "admin": "Amministrativo",
       "adminWhy": "Ciò che si ricopia all'accettazione dell'ospedale, non ciò che si legge sotto la pioggia."
     },
     "bloodTypeUnknown": "Non lo so",
-    "bloodTypeLegacy": "La voce precedente « $valeur » non è un gruppo sanguigno riconosciuto. Scegliete nell'elenco.",
+    "bloodTypeLegacy": "La voce precedente « $valeur » non è un gruppo sanguigno riconosciuto. Scegli nell'elenco.",
     "organDonor": {
       "yes": "Donatore",
       "no": "Contrario alla donazione",
@@ -1653,8 +1653,8 @@
       "phone": "Telefono",
       "phoneHint": "Es. +39 333 123 4567",
       "remove": "Togliere questa persona",
-      "errorName": "Indicate un nome, altrimenti i soccorsi non sanno chi stanno chiamando.",
-      "errorPhone": "Indicate un numero, altrimenti questo nome non serve a nulla."
+      "errorName": "Indica un nome, altrimenti i soccorsi non sanno chi stanno chiamando.",
+      "errorPhone": "Indica un numero, altrimenti questo nome non serve a nulla."
     },
     "cards": {
       "vitale": "Foto della tessera sanitaria",
@@ -1663,14 +1663,14 @@
       "retake": "Rifare la foto",
       "pick": "Scegliere un'immagine",
       "remove": "Togliere la foto",
-      "stored": "Foto registrata su questo telefono. Non viene inviata da nessuna parte e sparisce con la scheda quando la cancellate.",
+      "stored": "Foto registrata su questo telefono. Non viene inviata da nessuna parte e sparisce con la scheda quando la cancelli.",
       "explain": "La foto resta su questo telefono, nella stessa cartella protetta del resto della scheda.",
       "permissionRefused": "Accesso alla fotocamera rifiutato. La scheda funziona benissimo anche senza.",
       "failed": "Non è stato possibile registrare la foto."
     },
     "phoneCard": {
-      "title": "Ricopiate la vostra scheda in quella del telefono",
-      "why": "È l'unica schermata che un soccorritore raggiunge senza il vostro codice, su iPhone come su Android. Impostazioni del telefono, sezione Emergenza o Salute: nome, gruppo sanguigno, allergie, terapie e persone da avvisare.",
+      "title": "Ricopia la tua scheda in quella del telefono",
+      "why": "È l'unica schermata che un soccorritore raggiunge senza il tuo codice, su iPhone come su Android. Impostazioni del telefono, sezione Emergenza o Salute: nome, gruppo sanguigno, allergie, terapie e persone da avvisare.",
       "done": "Fatto, la mia scheda è anche nel telefono"
     },
     "localOnlyPriceTitle": "Cambiare telefono vuol dire riscriverla",
@@ -1690,63 +1690,63 @@
     }
   },
   "consent": {
-    "onboardingTitle": "La tua privacy, la tua scelta",
-    "onboardingIntro": "Nulla è attivato per impostazione predefinita. Scegli, finalità per finalità, ciò che autorizzi. Potrai modificare tutto in qualsiasi momento nelle impostazioni.",
+    "onboardingTitle": "La Sua privacy, la Sua scelta",
+    "onboardingIntro": "Nulla è attivato per impostazione predefinita. Scelga, finalità per finalità, ciò che autorizza. Potrà modificare tutto in qualsiasi momento nelle impostazioni.",
     "settingsTitle": "Privacy e consenso",
-    "settingsIntro": "Gestisci qui ogni autorizzazione. Puoi revocare un consenso in qualsiasi momento, senza conseguenze sul resto.",
+    "settingsIntro": "Gestisca qui ogni autorizzazione. Può revocare un consenso in qualsiasi momento, senza conseguenze sul resto.",
     "settingsEntry": "Privacy e consenso",
     "settingsEntryDesc": "Gestire le mie autorizzazioni (posizione, condivisione, pubblicità, salute)",
     "purposes": {
       "locationNavigation": "Navigazione personale",
-      "locationNavigationDesc": "Usare la tua posizione per la mappa e il monitoraggio della tappa. Resta sul tuo dispositivo.",
+      "locationNavigationDesc": "Usare la Sua posizione per la mappa e il monitoraggio della tappa. Resta sul Suo dispositivo.",
       "socialSharing": "Condivisione social",
       "socialSharingDesc": "Apparire nelle classifiche e nel feed della community, sotto pseudonimo.",
       "publicReporting": "Segnalazioni pubbliche",
       "publicReportingDesc": "Pubblicare segnalazioni (acqua, pericolo, condizioni) visibili agli altri escursionisti.",
       "advertising": "Pubblicità personalizzata",
-      "advertisingDesc": "Adattare gli annunci ai tuoi interessi. Senza questa autorizzazione l'app gratuita mostra comunque annunci, ma non sono profilati e nessun dato di profilazione lascia il tuo dispositivo.",
+      "advertisingDesc": "Adattare gli annunci ai Suoi interessi. Senza questa autorizzazione l'app gratuita mostra comunque annunci, ma non sono profilati e nessun dato di profilazione lascia il Suo dispositivo.",
       "healthData": "Dati sulla salute",
-      "healthDataDesc": "Leggere la tua frequenza cardiaca (fascia o app salute) per arricchire il monitoraggio dello sforzo."
+      "healthDataDesc": "Leggere la Sua frequenza cardiaca (fascia o app salute) per arricchire il monitoraggio dello sforzo."
     },
     "healthBadge": "Dato sensibile",
-    "healthWarning": "La frequenza cardiaca è un dato sulla salute (articolo 9 del GDPR). Questo consenso è richiesto separatamente e non viene mai raggruppato con gli altri. I tuoi dati sulla salute non vengono inviati ai nostri server.",
+    "healthWarning": "La frequenza cardiaca è un dato sulla salute (articolo 9 del GDPR). Questo consenso è richiesto separatamente e non viene mai raggruppato con gli altri. I Suoi dati sulla salute non vengono inviati ai nostri server.",
     "granted": "Autorizzato",
     "denied": "Non autorizzato",
     "grant": "Autorizza",
     "revoke": "Revoca",
     "decidedOn": "Scelto il $date",
-    "notDecided": "In attesa della tua scelta",
+    "notDecided": "In attesa della Sua scelta",
     "acceptSelected": "Conferma le mie scelte",
     "declineAll": "Rifiuta tutto",
-    "declineAllNote": "Rifiuta tutto revoca le tue cinque autorizzazioni in una volta ed elimina i dati corporei (età, altezza, peso) salvati su questo dispositivo. Puoi riconcederne una in qualsiasi momento.",
+    "declineAllNote": "Rifiuta tutto revoca le Sue cinque autorizzazioni in una volta ed elimina i dati corporei (età, altezza, peso) salvati su questo dispositivo. Può riconcederne una in qualsiasi momento.",
     "declineAllCancel": "Annulla",
     "continueLabel": "Continua",
     "privacyPolicyLink": "Leggi l'informativa sulla privacy",
     "adsPrivacyOptions": "Opzioni di privacy pubblicitaria",
-    "reviewNeeded": "La nostra politica è cambiata: rivedi le tue scelte.",
+    "reviewNeeded": "La nostra politica è cambiata: riveda le Sue scelte.",
     "a11y": {
       "purposeToggle": "$purpose, attualmente $state",
       "healthSection": "Sezione dati sulla salute, consenso rafforzato",
       "policyButton": "Apri l'informativa sulla privacy"
     },
-    "healthDataMorphoNote": "Include i tuoi dati corporei (età, altezza, peso) per la fattibilità del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo.",
-    "healthBackupNote": "Questo permesso non riguarda la tua scheda medica : quella non viene mai salvata, né da noi né altrove, con o senza permesso. Se cambi telefono la riscriverai. È il prezzo per tenerla solo per te."
+    "healthDataMorphoNote": "Include i Suoi dati corporei (età, altezza, peso) per la fattibilità del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo.",
+    "healthBackupNote": "Questo permesso non riguarda la Sua scheda medica : quella non viene mai salvata, né da noi né altrove, con o senza permesso. Se cambia telefono la riscriverà. È il prezzo per tenerla solo per Lei."
   },
   "erasure": {
     "section": "I miei dati",
     "entry": "Cancella i miei dati",
-    "entryDesc": "Eliminare definitivamente ciò che l'app conserva su di te",
+    "entryDesc": "Eliminare definitivamente ciò che l'app conserva su di Lei",
     "dialogTitle": "Cancellare i miei dati?",
     "goesTitle": "Cosa viene cancellato",
-    "goes": "La tua scheda escursionista (età, altezza, peso, test del cammino), la tua scheda di informazioni mediche, le tue escursioni passate e il tuo diario, le tappe percorse, i tuoi pernottamenti, le tue tracce GPS, i tuoi consensi e il tuo codice di recupero. E tutto il tuo lavoro di preparazione: il tuo Programma e la suddivisione delle tappe che hai scelto, la tua data di partenza, i tuoi progressi di preparazione fisica, ciò che hai già completato in Preparare, le tue impostazioni di condivisione e visibilità, e i punti tappa che hai spuntato.",
+    "goes": "La Sua scheda escursionista (età, altezza, peso, test del cammino), la Sua scheda di informazioni mediche, le Sue escursioni passate e il Suo diario, le tappe percorse, i Suoi pernottamenti, le Sue tracce GPS, i Suoi consensi e il Suo codice di recupero. E tutto il Suo lavoro di preparazione: il Suo Programma e la suddivisione delle tappe che ha scelto, la Sua data di partenza, i Suoi progressi di preparazione fisica, ciò che ha già completato in Preparare, le Sue impostazioni di condivisione e visibilità, e i punti tappa che ha spuntato.",
     "staysTitle": "Cosa resta",
-    "stays": "I tuoi acquisti: tappe pagate, sentieri sbloccati, periodo senza pubblicità — non ti riprendiamo ciò che hai pagato. E le tue impostazioni di visualizzazione (lingua, tema, unità), che non dicono nulla di te.",
-    "finalWarning": "È definitivo: né tu né noi potremo recuperare questi dati.",
+    "stays": "I Suoi acquisti: tappe pagate, sentieri sbloccati, periodo senza pubblicità — non Le riprendiamo ciò che ha pagato. E le Sue impostazioni di visualizzazione (lingua, tema, unità), che non dicono nulla di Lei.",
+    "finalWarning": "È definitivo: né Lei né noi potremo recuperare questi dati.",
     "confirmCheckbox": "Ho letto e voglio cancellare i miei dati",
     "confirm": "Cancella definitivamente",
     "cancel": "Annulla",
-    "done": "I tuoi dati sono stati cancellati.",
-    "error": "La cancellazione non è stata completata. Riprova — ciò che è già stato cancellato non torna.",
+    "done": "I Suoi dati sono stati cancellati.",
+    "error": "La cancellazione non è stata completata. Riprovi — ciò che è già stato cancellato non torna.",
     "a11y": {
       "entry": "Cancella i miei dati, apre una richiesta di conferma"
     }
@@ -2278,7 +2278,7 @@
     "hintWeight": "In chilogrammi",
     "errorWeight": "Peso non valido (25 a 200 kg)",
     "errorCountry": "Codice paese non valido (es. FR)",
-    "errorEmpty": "Scheda vuota: inserisca almeno l'età, l'altezza o il peso.",
+    "errorEmpty": "Scheda vuota: inserisci almeno l'età, l'altezza o il peso.",
     "errorSaveFailed": "Non è stato possibile salvare la scheda. Nulla è stato modificato: riprova.",
     "errorConsentRequired": "Senza il tuo consenso non viene salvato nulla: età, altezza e peso sono dati sanitari. Quanto era salvato è appena stato cancellato da questo dispositivo. Spunta l'autorizzazione qui sopra e salva di nuovo.",
     "fieldSex": "Sesso (opzionale)",

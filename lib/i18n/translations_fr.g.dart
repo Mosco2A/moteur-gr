@@ -137,8 +137,8 @@ class Translations$a11y$fr {
 	/// fr: 'Carte du sentier'
 	String get mapRegion => 'Carte du sentier';
 
-	/// fr: 'Votre position'
-	String get userPosition => 'Votre position';
+	/// fr: 'Ta position'
+	String get userPosition => 'Ta position';
 
 	/// fr: 'Étape $number'
 	String stageMarker({required Object number}) => 'Étape ${number}';
@@ -260,8 +260,8 @@ class Translations$navPilote$fr {
 	/// fr: '$phase — réservé aux treks achetés'
 	String demoLockedTitle({required Object phase}) => '${phase} — réservé aux treks achetés';
 
-	/// fr: 'En mode démo, seule la préparation est accessible. Débloquez ce trek pour randonner et revivre votre aventure.'
-	String get demoLockedBody => 'En mode démo, seule la préparation est accessible. Débloquez ce trek pour randonner et revivre votre aventure.';
+	/// fr: 'En mode démo, seule la préparation est accessible. Débloque ce trek pour randonner et revivre ton aventure.'
+	String get demoLockedBody => 'En mode démo, seule la préparation est accessible. Débloque ce trek pour randonner et revivre ton aventure.';
 
 	/// fr: 'Simuler mode trek (démo)'
 	String get demoTrekMode => 'Simuler mode trek (démo)';
@@ -269,8 +269,8 @@ class Translations$navPilote$fr {
 	/// fr: 'Quitter l'application ?'
 	String get exitTitle => 'Quitter l\'application ?';
 
-	/// fr: 'Vous êtes à l'accueil. Voulez-vous fermer l'application ?'
-	String get exitMessage => 'Vous êtes à l\'accueil. Voulez-vous fermer l\'application ?';
+	/// fr: 'Tu es à l'accueil. Veux-tu fermer l'application ?'
+	String get exitMessage => 'Tu es à l\'accueil. Veux-tu fermer l\'application ?';
 
 	/// fr: 'Quitter'
 	String get exitConfirm => 'Quitter';
@@ -287,8 +287,8 @@ class Translations$navPilote$fr {
 	/// fr: 'Revoir la préparation'
 	String get reviewPrep => 'Revoir la préparation';
 
-	/// fr: 'Terminez Itinéraire, Date et Programme pour démarrer'
-	String get startGateSubtitle => 'Terminez Itinéraire, Date et Programme pour démarrer';
+	/// fr: 'Termine Itinéraire, Date et Programme pour démarrer'
+	String get startGateSubtitle => 'Termine Itinéraire, Date et Programme pour démarrer';
 
 	/// fr: 'Démarrer le trek'
 	String get startAwayTitle => 'Démarrer le trek';
@@ -305,17 +305,17 @@ class Translations$navPilote$fr {
 	/// fr: 'Annuler'
 	String get startCancel => 'Annuler';
 
-	/// fr: 'Organisez votre trek avant le départ'
-	String get phasePrepareSub => 'Organisez votre trek avant le départ';
+	/// fr: 'Organise ton trek avant le départ'
+	String get phasePrepareSub => 'Organise ton trek avant le départ';
 
-	/// fr: 'Votre trek est en cours'
-	String get phaseHikeSub => 'Votre trek est en cours';
+	/// fr: 'Ton trek est en cours'
+	String get phaseHikeSub => 'Ton trek est en cours';
 
 	/// fr: '$trek en cours'
 	String phaseHikeInProgress({required Object trek}) => '${trek} en cours';
 
-	/// fr: 'Revivez votre aventure'
-	String get phaseAfterSub => 'Revivez votre aventure';
+	/// fr: 'Revis ton aventure'
+	String get phaseAfterSub => 'Revis ton aventure';
 
 	/// fr: 'Phase en cours'
 	String get phaseBanner => 'Phase en cours';
@@ -326,8 +326,8 @@ class Translations$navPilote$fr {
 	/// fr: 'Main dominante'
 	String get dominantHand => 'Main dominante';
 
-	/// fr: 'Place le SOS et les commandes clés du côté de votre main'
-	String get dominantHandDesc => 'Place le SOS et les commandes clés du côté de votre main';
+	/// fr: 'Place le SOS et les commandes clés du côté de ta main'
+	String get dominantHandDesc => 'Place le SOS et les commandes clés du côté de ta main';
 
 	/// fr: 'Droitier'
 	String get dominantHandRight => 'Droitier';
@@ -353,11 +353,11 @@ class Translations$branding$fr {
 
 	// Translations
 
-	/// fr: 'Votre compagnon de randonnée'
-	String get tagline => 'Votre compagnon de randonnée';
+	/// fr: 'Ton compagnon de randonnée'
+	String get tagline => 'Ton compagnon de randonnée';
 
-	/// fr: 'Préparez, marchez, partagez'
-	String get subline => 'Préparez, marchez, partagez';
+	/// fr: 'Prépare, marche, partage'
+	String get subline => 'Prépare, marche, partage';
 }
 
 // Path: hub
@@ -380,8 +380,8 @@ class Translations$hub$fr {
 	/// fr: 'Mon profil'
 	String get profileTooltip => 'Mon profil';
 
-	/// fr: 'Préparez votre itinéraire, puis votre sac. Partez ensuite en navigation GPS. Tout part de cet écran.'
-	String get infoSheetBody => 'Préparez votre itinéraire, puis votre sac. Partez ensuite en navigation GPS. Tout part de cet écran.';
+	/// fr: 'Prépare ton itinéraire, puis ton sac. Pars ensuite en navigation GPS. Tout part de cet écran.'
+	String get infoSheetBody => 'Prépare ton itinéraire, puis ton sac. Pars ensuite en navigation GPS. Tout part de cet écran.';
 
 	late final Translations$hub$trekCard$fr trekCard = Translations$hub$trekCard$fr.internal(_root);
 	late final Translations$hub$weather$fr weather = Translations$hub$weather$fr.internal(_root);
@@ -430,8 +430,8 @@ class Translations$map$fr {
 	/// fr: 'Calques de la carte'
 	String get layersTitle => 'Calques de la carte';
 
-	/// fr: 'Choisissez les points affichés sur la carte'
-	String get layersSubtitle => 'Choisissez les points affichés sur la carte';
+	/// fr: 'Choisis les points affichés sur la carte'
+	String get layersSubtitle => 'Choisis les points affichés sur la carte';
 
 	/// fr: '$km km restants'
 	String stageRemaining({required Object km}) => '${km} km restants';
@@ -499,8 +499,8 @@ class Translations$stage$fr {
 	/// fr: '{distance} km restants'
 	String get remaining => '{distance} km restants';
 
-	/// fr: 'Vous êtes arrivé !'
-	String get arrived => 'Vous êtes arrivé !';
+	/// fr: 'Tu es arrivé !'
+	String get arrived => 'Tu es arrivé !';
 
 	/// fr: 'Profil altimétrique'
 	String get altitudeProfile => 'Profil altimétrique';
@@ -642,14 +642,14 @@ class Translations$navAlert$fr {
 
 	// Translations
 
-	/// fr: 'Vous vous éloignez du sentier — $meters m. Vérifiez votre position.'
-	String offTrackBanner({required Object meters}) => 'Vous vous éloignez du sentier — ${meters} m. Vérifiez votre position.';
+	/// fr: 'Tu t'éloignes du sentier — $meters m. Vérifie ta position.'
+	String offTrackBanner({required Object meters}) => 'Tu t\'éloignes du sentier — ${meters} m. Vérifie ta position.';
 
-	/// fr: 'Vous quittez le sentier'
-	String get offTrackNotifTitle => 'Vous quittez le sentier';
+	/// fr: 'Tu quittes le sentier'
+	String get offTrackNotifTitle => 'Tu quittes le sentier';
 
-	/// fr: 'Vous vous éloignez du sentier ($meters m). Vérifiez votre position.'
-	String offTrackNotifBody({required Object meters}) => 'Vous vous éloignez du sentier (${meters} m). Vérifiez votre position.';
+	/// fr: 'Tu t'éloignes du sentier ($meters m). Vérifie ta position.'
+	String offTrackNotifBody({required Object meters}) => 'Tu t\'éloignes du sentier (${meters} m). Vérifie ta position.';
 }
 
 // Path: planning
@@ -702,8 +702,8 @@ class Translations$itinerary$fr {
 	/// fr: 'Itinéraire'
 	String get title => 'Itinéraire';
 
-	/// fr: 'Le déroulé de vos étapes'
-	String get subtitle => 'Le déroulé de vos étapes';
+	/// fr: 'Le déroulé de tes étapes'
+	String get subtitle => 'Le déroulé de tes étapes';
 
 	late final Translations$itinerary$direction$fr direction = Translations$itinerary$direction$fr.internal(_root);
 
@@ -842,8 +842,8 @@ class Translations$checklist$fr {
 	/// fr: 'Matériel & Sac'
 	String get title => 'Matériel & Sac';
 
-	/// fr: 'Préparez votre sac à dos'
-	String get subtitle => 'Préparez votre sac à dos';
+	/// fr: 'Prépare ton sac à dos'
+	String get subtitle => 'Prépare ton sac à dos';
 
 	/// fr: '{checked}/{total} préparés'
 	String get progress => '{checked}/{total} préparés';
@@ -875,8 +875,8 @@ class Translations$checklist$fr {
 	late final Translations$checklist$weight$fr weight = Translations$checklist$weight$fr.internal(_root);
 	late final Translations$checklist$ui$fr ui = Translations$checklist$ui$fr.internal(_root);
 
-	/// fr: 'Sac adapté à la saison ($season) et à votre sentier.'
-	String seasonalBanner({required Object season}) => 'Sac adapté à la saison (${season}) et à votre sentier.';
+	/// fr: 'Sac adapté à la saison ($season) et à ton sentier.'
+	String seasonalBanner({required Object season}) => 'Sac adapté à la saison (${season}) et à ton sentier.';
 
 	late final Translations$checklist$seasons$fr seasons = Translations$checklist$seasons$fr.internal(_root);
 
@@ -895,8 +895,8 @@ class Translations$checklist$fr {
 	/// fr: 'Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s'ouvre avec la randonnée.'
 	String get demoBridledBody => 'Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s\'ouvre avec la randonnée.';
 
-	/// fr: 'Achetez la randonnée pour cette catégorie'
-	String get demoLockedCategory => 'Achetez la randonnée pour cette catégorie';
+	/// fr: 'Achète la randonnée pour cette catégorie'
+	String get demoLockedCategory => 'Achète la randonnée pour cette catégorie';
 
 	/// fr: 'Acheter la randonnée'
 	String get demoUnlockCta => 'Acheter la randonnée';
@@ -913,11 +913,11 @@ class Translations$journal$fr {
 	/// fr: 'Journal de randonnée'
 	String get title => 'Journal de randonnée';
 
-	/// fr: 'Votre journal est vide'
-	String get empty => 'Votre journal est vide';
+	/// fr: 'Ton journal est vide'
+	String get empty => 'Ton journal est vide';
 
-	/// fr: 'Notez vos impressions et souvenirs de randonnée'
-	String get emptySubtitle => 'Notez vos impressions et souvenirs de randonnée';
+	/// fr: 'Note tes impressions et souvenirs de randonnée'
+	String get emptySubtitle => 'Note tes impressions et souvenirs de randonnée';
 
 	/// fr: 'Nouvelle note'
 	String get addNote => 'Nouvelle note';
@@ -925,11 +925,11 @@ class Translations$journal$fr {
 	/// fr: 'Étape'
 	String get stage => 'Étape';
 
-	/// fr: 'Votre note'
-	String get yourNote => 'Votre note';
+	/// fr: 'Ta note'
+	String get yourNote => 'Ta note';
 
-	/// fr: 'Décrivez votre journée de randonnée...'
-	String get placeholder => 'Décrivez votre journée de randonnée...';
+	/// fr: 'Décris ta journée de randonnée...'
+	String get placeholder => 'Décris ta journée de randonnée...';
 
 	/// fr: 'Enregistrer'
 	String get save => 'Enregistrer';
@@ -1024,8 +1024,8 @@ class Translations$journal$fr {
 	/// fr: 'Le journal fait partie du pack'
 	String get lockedTitle => 'Le journal fait partie du pack';
 
-	/// fr: 'Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.'
-	String get lockedBody => 'Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.';
+	/// fr: 'Note tes impressions, ajoute tes photos et relis chaque journée de marche. Le journal se débloque avec le sentier.'
+	String get lockedBody => 'Note tes impressions, ajoute tes photos et relis chaque journée de marche. Le journal se débloque avec le sentier.';
 
 	/// fr: 'Acheter'
 	String get lockedUnlock => 'Acheter';
@@ -1075,8 +1075,8 @@ class Translations$weather$fr {
 	/// fr: 'Risque incendie'
 	String get fireRisk => 'Risque incendie';
 
-	/// fr: 'Risque incendie élevé. Consultez les consignes de sécurité.'
-	String get fireRiskDesc => 'Risque incendie élevé. Consultez les consignes de sécurité.';
+	/// fr: 'Risque incendie élevé. Consulte les consignes de sécurité.'
+	String get fireRiskDesc => 'Risque incendie élevé. Consulte les consignes de sécurité.';
 
 	/// fr: 'Consignes incendie'
 	String get fireSafetyTips => 'Consignes incendie';
@@ -1193,11 +1193,11 @@ class Translations$diploma$fr {
 	/// fr: 'Diplôme de randonnée'
 	String get title => 'Diplôme de randonnée';
 
-	/// fr: 'Votre nom'
-	String get yourName => 'Votre nom';
+	/// fr: 'Ton nom'
+	String get yourName => 'Ton nom';
 
-	/// fr: 'Entrez votre nom...'
-	String get namePlaceholder => 'Entrez votre nom...';
+	/// fr: 'Entre ton nom...'
+	String get namePlaceholder => 'Entre ton nom...';
 
 	/// fr: 'Générer le PDF'
 	String get generatePdf => 'Générer le PDF';
@@ -1235,8 +1235,8 @@ class Translations$diploma$fr {
 	/// fr: 'Délivré le {date}'
 	String get pdfIssuedOn => 'Délivré le {date}';
 
-	/// fr: 'Votre aventure'
-	String get recapTitle => 'Votre aventure';
+	/// fr: 'Ton aventure'
+	String get recapTitle => 'Ton aventure';
 
 	/// fr: 'Photos du journal'
 	String get recapJournalPhotos => 'Photos du journal';
@@ -1274,8 +1274,8 @@ class Translations$diploma$fr {
 	/// fr: 'Diplôme verrouillé'
 	String get lockedTitle => 'Diplôme verrouillé';
 
-	/// fr: 'Terminez l'intégralité de votre parcours pour débloquer votre diplôme de finisher.'
-	String get lockedMessage => 'Terminez l\'intégralité de votre parcours pour débloquer votre diplôme de finisher.';
+	/// fr: 'Termine l'intégralité de ton parcours pour débloquer ton diplôme de finisher.'
+	String get lockedMessage => 'Termine l\'intégralité de ton parcours pour débloquer ton diplôme de finisher.';
 
 	/// fr: 'Parcours intégral'
 	String get labelIntegral => 'Parcours intégral';
@@ -1319,23 +1319,23 @@ class Translations$notifications$fr {
 	/// fr: 'Notification 2 jours avant le départ'
 	String get countdownDesc => 'Notification 2 jours avant le départ';
 
-	/// fr: 'Votre randonnée approche !'
-	String get schedulerCountdownTitle => 'Votre randonnée approche !';
+	/// fr: 'Ta randonnée approche !'
+	String get schedulerCountdownTitle => 'Ta randonnée approche !';
 
-	/// fr: 'Départ dans 2 jours. Vérifiez votre checklist et la météo.'
-	String get schedulerCountdownBody => 'Départ dans 2 jours. Vérifiez votre checklist et la météo.';
+	/// fr: 'Départ dans 2 jours. Vérifie ta checklist et la météo.'
+	String get schedulerCountdownBody => 'Départ dans 2 jours. Vérifie ta checklist et la météo.';
 
 	/// fr: 'Bonne journée de randonnée !'
 	String get schedulerDailyTitle => 'Bonne journée de randonnée !';
 
-	/// fr: 'Consultez la météo et préparez votre étape du jour.'
-	String get schedulerDailyBody => 'Consultez la météo et préparez votre étape du jour.';
+	/// fr: 'Consulte la météo et prépare ton étape du jour.'
+	String get schedulerDailyBody => 'Consulte la météo et prépare ton étape du jour.';
 
 	/// fr: 'Notifications bloquées'
 	String get permissionBlockedTitle => 'Notifications bloquées';
 
-	/// fr: 'Votre téléphone bloque les notifications de l'application : aucun rappel, aucune alerte ne vous parviendra.'
-	String get permissionBlockedBody => 'Votre téléphone bloque les notifications de l\'application : aucun rappel, aucune alerte ne vous parviendra.';
+	/// fr: 'Ton téléphone bloque les notifications de l'application : aucun rappel, aucune alerte ne te parviendra.'
+	String get permissionBlockedBody => 'Ton téléphone bloque les notifications de l\'application : aucun rappel, aucune alerte ne te parviendra.';
 
 	/// fr: 'Autoriser les notifications'
 	String get permissionAsk => 'Autoriser les notifications';
@@ -1409,8 +1409,8 @@ class Translations$settings$fr {
 	/// fr: 'Alerte hors-trace'
 	String get offTrackAlerts => 'Alerte hors-trace';
 
-	/// fr: 'Notification + vibration si vous quittez le sentier'
-	String get offTrackAlertsDesc => 'Notification + vibration si vous quittez le sentier';
+	/// fr: 'Notification + vibration si tu quittes le sentier'
+	String get offTrackAlertsDesc => 'Notification + vibration si tu quittes le sentier';
 
 	/// fr: 'Version'
 	String get version => 'Version';
@@ -1454,11 +1454,11 @@ class Translations$feedback$fr {
 	/// fr: 'Autre'
 	String get other => 'Autre';
 
-	/// fr: 'Votre message'
-	String get message => 'Votre message';
+	/// fr: 'Ton message'
+	String get message => 'Ton message';
 
-	/// fr: 'Décrivez votre retour...'
-	String get messagePlaceholder => 'Décrivez votre retour...';
+	/// fr: 'Décris ton retour...'
+	String get messagePlaceholder => 'Décris ton retour...';
 
 	/// fr: 'Satisfaction'
 	String get satisfaction => 'Satisfaction';
@@ -1469,26 +1469,26 @@ class Translations$feedback$fr {
 	/// fr: 'Envoi...'
 	String get sending => 'Envoi...';
 
-	/// fr: 'Merci pour votre retour !'
-	String get thanks => 'Merci pour votre retour !';
+	/// fr: 'Merci pour ton retour !'
+	String get thanks => 'Merci pour ton retour !';
 
 	/// fr: 'en attente'
 	String get pending => 'en attente';
 
-	/// fr: 'Écrivez votre message avant de l'envoyer.'
-	String get emptyMessage => 'Écrivez votre message avant de l\'envoyer.';
+	/// fr: 'Écris ton message avant de l'envoyer.'
+	String get emptyMessage => 'Écris ton message avant de l\'envoyer.';
 
-	/// fr: 'Votre message n'a pas pu être enregistré.'
-	String get sendFailed => 'Votre message n\'a pas pu être enregistré.';
+	/// fr: 'Ton message n'a pas pu être enregistré.'
+	String get sendFailed => 'Ton message n\'a pas pu être enregistré.';
 
-	/// fr: 'Enregistré sur ce téléphone. Votre retour partira dès que l'envoi sera possible.'
-	String get keptLocally => 'Enregistré sur ce téléphone. Votre retour partira dès que l\'envoi sera possible.';
+	/// fr: 'Enregistré sur ce téléphone. Ton retour partira dès que l'envoi sera possible.'
+	String get keptLocally => 'Enregistré sur ce téléphone. Ton retour partira dès que l\'envoi sera possible.';
 
-	/// fr: 'L'envoi des retours n'est pas encore ouvert : vos messages sont gardés sur ce téléphone.'
-	String get keptLocallyNotice => 'L\'envoi des retours n\'est pas encore ouvert : vos messages sont gardés sur ce téléphone.';
+	/// fr: 'L'envoi des retours n'est pas encore ouvert : tes messages sont gardés sur ce téléphone.'
+	String get keptLocallyNotice => 'L\'envoi des retours n\'est pas encore ouvert : tes messages sont gardés sur ce téléphone.';
 
-	/// fr: 'Merci, votre retour est parti.'
-	String get sentThanks => 'Merci, votre retour est parti.';
+	/// fr: 'Merci, ton retour est parti.'
+	String get sentThanks => 'Merci, ton retour est parti.';
 }
 
 // Path: auth
@@ -1511,8 +1511,8 @@ class Translations$auth$fr {
 	/// fr: 'Se connecter avec Google'
 	String get signInGoogle => 'Se connecter avec Google';
 
-	/// fr: 'Pour sauvegarder votre progression'
-	String get signInGoogleDesc => 'Pour sauvegarder votre progression';
+	/// fr: 'Pour sauvegarder ta progression'
+	String get signInGoogleDesc => 'Pour sauvegarder ta progression';
 
 	/// fr: 'Se déconnecter'
 	String get signOut => 'Se déconnecter';
@@ -1523,20 +1523,20 @@ class Translations$auth$fr {
 	/// fr: 'Se déconnecter ?'
 	String get signOutConfirm => 'Se déconnecter ?';
 
-	/// fr: 'Vous reviendrez au mode sans compte. Vos données locales sont conservées.'
-	String get signOutMessage => 'Vous reviendrez au mode sans compte. Vos données locales sont conservées.';
+	/// fr: 'Tu reviendras au mode sans compte. Tes données locales sont conservées.'
+	String get signOutMessage => 'Tu reviendras au mode sans compte. Tes données locales sont conservées.';
 
 	/// fr: 'Supprimer mon compte'
 	String get deleteAccount => 'Supprimer mon compte';
 
-	/// fr: 'Toutes vos données seront effacées'
-	String get deleteAccountDesc => 'Toutes vos données seront effacées';
+	/// fr: 'Toutes tes données seront effacées'
+	String get deleteAccountDesc => 'Toutes tes données seront effacées';
 
-	/// fr: 'Supprimer votre compte ?'
-	String get deleteConfirm => 'Supprimer votre compte ?';
+	/// fr: 'Supprimer ton compte ?'
+	String get deleteConfirm => 'Supprimer ton compte ?';
 
-	/// fr: 'Cette action est irréversible. Toutes vos données, notes et progression seront effacées.'
-	String get deleteMessage => 'Cette action est irréversible. Toutes vos données, notes et progression seront effacées.';
+	/// fr: 'Cette action est irréversible. Toutes tes données, notes et progression seront effacées.'
+	String get deleteMessage => 'Cette action est irréversible. Toutes tes données, notes et progression seront effacées.';
 
 	/// fr: 'Annuler'
 	String get cancel => 'Annuler';
@@ -1544,8 +1544,8 @@ class Translations$auth$fr {
 	/// fr: 'Pseudonyme'
 	String get pseudonym => 'Pseudonyme';
 
-	/// fr: 'Votre nom de randonneur'
-	String get pseudonymHint => 'Votre nom de randonneur';
+	/// fr: 'Ton nom de randonneur'
+	String get pseudonymHint => 'Ton nom de randonneur';
 
 	/// fr: 'Enregistrer'
 	String get save => 'Enregistrer';
@@ -1562,8 +1562,8 @@ class Translations$auth$fr {
 	/// fr: 'StepWays v$version (build $build)'
 	String appVersion({required Object version, required Object build}) => 'StepWays v${version} (build ${build})';
 
-	/// fr: 'Le compte n'a pas répondu. Vérifiez votre connexion, puis réessayez.'
-	String get errorTimeout => 'Le compte n\'a pas répondu. Vérifiez votre connexion, puis réessayez.';
+	/// fr: 'Le compte n'a pas répondu. Vérifie ta connexion, puis réessaie.'
+	String get errorTimeout => 'Le compte n\'a pas répondu. Vérifie ta connexion, puis réessaie.';
 }
 
 // Path: feasibility
@@ -1580,8 +1580,8 @@ class Translations$feasibility$fr {
 	/// fr: 'Faisabilité pour ce trek'
 	String get objectiveTitle => 'Faisabilité pour ce trek';
 
-	/// fr: 'Ce verdict croise votre profil réel et les exigences du trek.'
-	String get objectiveIntro => 'Ce verdict croise votre profil réel et les exigences du trek.';
+	/// fr: 'Ce verdict croise ton profil réel et les exigences du trek.'
+	String get objectiveIntro => 'Ce verdict croise ton profil réel et les exigences du trek.';
 
 	/// fr: 'Ma fiche d'info'
 	String get openProfile => 'Ma fiche d\'info';
@@ -1592,11 +1592,11 @@ class Translations$feasibility$fr {
 	/// fr: 'Mes 5 dernières randos'
 	String get openPastHikes => 'Mes 5 dernières randos';
 
-	/// fr: 'Basé sur votre profil objectif'
-	String get sourceObjective => 'Basé sur votre profil objectif';
+	/// fr: 'Basé sur ton profil objectif'
+	String get sourceObjective => 'Basé sur ton profil objectif';
 
-	/// fr: 'Basé sur le questionnaire (en attendant votre profil)'
-	String get sourceFallback => 'Basé sur le questionnaire (en attendant votre profil)';
+	/// fr: 'Basé sur le questionnaire (en attendant ton profil)'
+	String get sourceFallback => 'Basé sur le questionnaire (en attendant ton profil)';
 
 	/// fr: 'Écart trop important'
 	String get gapTooHigh => 'Écart trop important';
@@ -1620,8 +1620,8 @@ class Translations$tips$fr {
 	/// fr: 'Toutes'
 	String get allCategories => 'Toutes';
 
-	/// fr: 'Glissez pour voir plus'
-	String get swipeHint => 'Glissez pour voir plus';
+	/// fr: 'Glisse pour voir plus'
+	String get swipeHint => 'Glisse pour voir plus';
 
 	/// fr: 'Détail du conseil'
 	String get detailTitle => 'Détail du conseil';
@@ -1676,8 +1676,8 @@ class Translations$tips$fr {
 	/// fr: 'Préparation, matériel, sécurité, santé.'
 	String get screenIntro => 'Préparation, matériel, sécurité, santé.';
 
-	/// fr: 'Suivez-nous :'
-	String get followUs => 'Suivez-nous :';
+	/// fr: 'Suis-nous :'
+	String get followUs => 'Suis-nous :';
 
 	/// fr: 'Voir sur Facebook'
 	String get viewOnFacebook => 'Voir sur Facebook';
@@ -1720,11 +1720,11 @@ class Translations$noData$fr {
 	/// fr: 'Aucun sentier téléchargé'
 	String get title => 'Aucun sentier téléchargé';
 
-	/// fr: 'Téléchargez un sentier pour commencer'
-	String get subtitle => 'Téléchargez un sentier pour commencer';
+	/// fr: 'Télécharge un sentier pour commencer'
+	String get subtitle => 'Télécharge un sentier pour commencer';
 
-	/// fr: 'Les données seront disponibles hors ligne pour votre randonnée.'
-	String get offlineHint => 'Les données seront disponibles hors ligne pour votre randonnée.';
+	/// fr: 'Les données seront disponibles hors ligne pour ta randonnée.'
+	String get offlineHint => 'Les données seront disponibles hors ligne pour ta randonnée.';
 
 	/// fr: 'Parcourir les sentiers'
 	String get browseCta => 'Parcourir les sentiers';
@@ -1744,8 +1744,8 @@ class Translations$catalog$fr {
 	/// fr: 'Préparer'
 	String get prepare => 'Préparer';
 
-	/// fr: 'Téléchargez ce sentier pour l'explorer.'
-	String get mustDownload => 'Téléchargez ce sentier pour l\'explorer.';
+	/// fr: 'Télécharge ce sentier pour l'explorer.'
+	String get mustDownload => 'Télécharge ce sentier pour l\'explorer.';
 
 	/// fr: 'Aucun sentier disponible'
 	String get emptyTitle => 'Aucun sentier disponible';
@@ -1767,14 +1767,14 @@ class Translations$catalog$fr {
 	/// fr: 'Liste des sentiers indisponible'
 	String get loadFailedTitle => 'Liste des sentiers indisponible';
 
-	/// fr: 'Impossible de récupérer la liste des sentiers pour le moment. Vos sentiers déjà téléchargés restent accessibles hors ligne.'
-	String get loadFailedSubtitle => 'Impossible de récupérer la liste des sentiers pour le moment. Vos sentiers déjà téléchargés restent accessibles hors ligne.';
+	/// fr: 'Impossible de récupérer la liste des sentiers pour le moment. Tes sentiers déjà téléchargés restent accessibles hors ligne.'
+	String get loadFailedSubtitle => 'Impossible de récupérer la liste des sentiers pour le moment. Tes sentiers déjà téléchargés restent accessibles hors ligne.';
 
 	/// fr: 'Réessayer'
 	String get loadFailedRetry => 'Réessayer';
 
-	/// fr: 'Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.'
-	String get staleNoticeOffline => 'Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.';
+	/// fr: 'Hors ligne : voici tes sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.'
+	String get staleNoticeOffline => 'Hors ligne : voici tes sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.';
 }
 
 // Path: demo
@@ -1797,8 +1797,8 @@ class Translations$demo$fr {
 	/// fr: 'Toute l'application. Rien n'est enregistré.'
 	String get boutonSous => 'Toute l\'application. Rien n\'est enregistré.';
 
-	/// fr: 'Vous êtes en démo : rien n'est enregistré. Ni étapes, ni diplôme, ni achat.'
-	String get rienNeCompte => 'Vous êtes en démo : rien n\'est enregistré. Ni étapes, ni diplôme, ni achat.';
+	/// fr: 'Tu es en démo : rien n'est enregistré. Ni étapes, ni diplôme, ni achat.'
+	String get rienNeCompte => 'Tu es en démo : rien n\'est enregistré. Ni étapes, ni diplôme, ni achat.';
 
 	/// fr: 'Simuler l'étape suivante'
 	String get simulerEtape => 'Simuler l\'étape suivante';
@@ -1812,14 +1812,14 @@ class Translations$demo$fr {
 	/// fr: 'Marche simulée — temps accéléré ×$facteur'
 	String marcheSimulee({required Object facteur}) => 'Marche simulée — temps accéléré ×${facteur}';
 
-	/// fr: 'Bravo, vous êtes arrivé !'
-	String get arriveeTitre => 'Bravo, vous êtes arrivé !';
+	/// fr: 'Bravo, tu es arrivé !'
+	String get arriveeTitre => 'Bravo, tu es arrivé !';
 
-	/// fr: 'Vous avez terminé le sentier en démo. Rien n'a été enregistré.'
-	String get arriveeTexte => 'Vous avez terminé le sentier en démo. Rien n\'a été enregistré.';
+	/// fr: 'Tu as terminé le sentier en démo. Rien n'a été enregistré.'
+	String get arriveeTexte => 'Tu as terminé le sentier en démo. Rien n\'a été enregistré.';
 
-	/// fr: 'Votre démonstration'
-	String get arriveeChiffres => 'Votre démonstration';
+	/// fr: 'Ta démonstration'
+	String get arriveeChiffres => 'Ta démonstration';
 
 	/// fr: 'Fermer'
 	String get arriveeFermer => 'Fermer';
@@ -1869,14 +1869,14 @@ class Translations$demo$fr {
 	/// fr: 'Les informations utilisées pour calculer la faisabilité.'
 	String get collecteIntro => 'Les informations utilisées pour calculer la faisabilité.';
 
-	/// fr: 'Votre profil'
-	String get collecteProfil => 'Votre profil';
+	/// fr: 'Ton profil'
+	String get collecteProfil => 'Ton profil';
 
-	/// fr: 'Votre forme'
-	String get collecteForme => 'Votre forme';
+	/// fr: 'Ta forme'
+	String get collecteForme => 'Ta forme';
 
-	/// fr: 'Votre expérience'
-	String get collecteExperience => 'Votre expérience';
+	/// fr: 'Ton expérience'
+	String get collecteExperience => 'Ton expérience';
 
 	/// fr: 'Saison du départ'
 	String get collecteSaison => 'Saison du départ';
@@ -1890,8 +1890,8 @@ class Translations$demo$fr {
 	/// fr: 'Non renseigné'
 	String get collecteAbsent => 'Non renseigné';
 
-	/// fr: 'Vous avez quitté la démo.'
-	String get sortieFaite => 'Vous avez quitté la démo.';
+	/// fr: 'Tu as quitté la démo.'
+	String get sortieFaite => 'Tu as quitté la démo.';
 }
 
 // Path: updates
@@ -1950,8 +1950,8 @@ class Translations$cloud$fr {
 	/// fr: 'Mode local'
 	String get localModeTitle => 'Mode local';
 
-	/// fr: 'Cette installation n'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Vos données restent sur l'appareil.'
-	String get localModeBody => 'Cette installation n\'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Vos données restent sur l\'appareil.';
+	/// fr: 'Cette installation n'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Tes données restent sur l'appareil.'
+	String get localModeBody => 'Cette installation n\'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Tes données restent sur l\'appareil.';
 
 	/// fr: 'Cloud'
 	String get statusSection => 'Cloud';
@@ -1989,26 +1989,26 @@ class Translations$onboarding$fr {
 	/// fr: 'Bienvenue sur $appName'
 	String welcomeTitle({required Object appName}) => 'Bienvenue sur ${appName}';
 
-	/// fr: 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.'
-	String get welcomeSubtitle => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.';
+	/// fr: 'Ton compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.'
+	String get welcomeSubtitle => 'Ton compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.';
 
-	/// fr: 'Choisissez votre langue'
-	String get languageTitle => 'Choisissez votre langue';
+	/// fr: 'Choisis ta langue'
+	String get languageTitle => 'Choisis ta langue';
 
-	/// fr: 'Vous pourrez la modifier à tout moment dans les paramètres.'
-	String get languageSubtitle => 'Vous pourrez la modifier à tout moment dans les paramètres.';
+	/// fr: 'Tu pourras la modifier à tout moment dans les paramètres.'
+	String get languageSubtitle => 'Tu pourras la modifier à tout moment dans les paramètres.';
 
-	/// fr: 'Téléchargez votre premier sentier'
-	String get downloadTitle => 'Téléchargez votre premier sentier';
+	/// fr: 'Télécharge ton premier sentier'
+	String get downloadTitle => 'Télécharge ton premier sentier';
 
-	/// fr: 'Parcourez le catalogue et téléchargez un sentier pour l'utiliser entièrement hors ligne.'
-	String get downloadSubtitle => 'Parcourez le catalogue et téléchargez un sentier pour l\'utiliser entièrement hors ligne.';
+	/// fr: 'Parcours le catalogue et télécharge un sentier pour l'utiliser entièrement hors ligne.'
+	String get downloadSubtitle => 'Parcours le catalogue et télécharge un sentier pour l\'utiliser entièrement hors ligne.';
 
 	/// fr: 'Parcourir le catalogue'
 	String get browseCatalog => 'Parcourir le catalogue';
 
-	/// fr: 'Pensez à noter votre code de reconnexion (dans les réglages) : il ouvre vos données sur un autre téléphone.'
-	String get recoveryNudge => 'Pensez à noter votre code de reconnexion (dans les réglages) : il ouvre vos données sur un autre téléphone.';
+	/// fr: 'Pense à noter ton code de reconnexion (dans les réglages) : il ouvre tes données sur un autre téléphone.'
+	String get recoveryNudge => 'Pense à noter ton code de reconnexion (dans les réglages) : il ouvre tes données sur un autre téléphone.';
 }
 
 // Path: monetization
@@ -2019,14 +2019,14 @@ class Translations$monetization$fr {
 
 	// Translations
 
-	/// fr: 'Mode démo — touchez pour débloquer'
-	String get demoBanner => 'Mode démo — touchez pour débloquer';
+	/// fr: 'Mode démo — touche pour débloquer'
+	String get demoBanner => 'Mode démo — touche pour débloquer';
 
-	/// fr: 'Débloquez cette randonnée'
-	String get paywallTitle => 'Débloquez cette randonnée';
+	/// fr: 'Débloque cette randonnée'
+	String get paywallTitle => 'Débloque cette randonnée';
 
-	/// fr: 'Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.'
-	String get paywallBody => 'Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.';
+	/// fr: 'Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.'
+	String get paywallBody => 'Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.';
 
 	/// fr: 'Carte hors ligne + GPS + suivi en direct'
 	String get featureMap => 'Carte hors ligne + GPS + suivi en direct';
@@ -2061,8 +2061,8 @@ class Translations$monetization$fr {
 	/// fr: 'Compte-étapes'
 	String get walletTitle => 'Compte-étapes';
 
-	/// fr: 'Vos étapes servent à débloquer les randonnées'
-	String get walletSubtitle => 'Vos étapes servent à débloquer les randonnées';
+	/// fr: 'Tes étapes servent à débloquer les randonnées'
+	String get walletSubtitle => 'Tes étapes servent à débloquer les randonnées';
 
 	/// fr: 'étapes'
 	String get walletUnit => 'étapes';
@@ -2073,14 +2073,14 @@ class Translations$monetization$fr {
 	/// fr: 'Restauration impossible : le paiement n'est pas disponible pour le moment.'
 	String get restoreUnavailable => 'Restauration impossible : le paiement n\'est pas disponible pour le moment.';
 
-	/// fr: 'Restauration demandée. Vos achats réapparaîtront dans un instant.'
-	String get restoreRequested => 'Restauration demandée. Vos achats réapparaîtront dans un instant.';
+	/// fr: 'Restauration demandée. Tes achats réapparaîtront dans un instant.'
+	String get restoreRequested => 'Restauration demandée. Tes achats réapparaîtront dans un instant.';
 
 	/// fr: 'Restaurer mes achats'
 	String get restoreCta => 'Restaurer mes achats';
 
-	/// fr: 'La restauration ramène votre abonnement et vos recharges. Les randonnées débloquées avec vos étapes sont enregistrées sur cet appareil.'
-	String get restoreWhatItCovers => 'La restauration ramène votre abonnement et vos recharges. Les randonnées débloquées avec vos étapes sont enregistrées sur cet appareil.';
+	/// fr: 'La restauration ramène ton abonnement et tes recharges. Les randonnées débloquées avec tes étapes sont enregistrées sur cet appareil.'
+	String get restoreWhatItCovers => 'La restauration ramène ton abonnement et tes recharges. Les randonnées débloquées avec tes étapes sont enregistrées sur cet appareil.';
 
 	/// fr: 'Recharger mon compte-étapes'
 	String get rechargeTitle => 'Recharger mon compte-étapes';
@@ -2151,23 +2151,23 @@ class Translations$monetization$fr {
 	/// fr: 'Ce sentier n'est pas en vente pour le moment. Rien n'a été débité.'
 	String get buyOutcomeUnknownPrice => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.';
 
-	/// fr: 'Vous êtes en démo : aucun achat n'est possible, et rien n'a été débité.'
-	String get buyOutcomeDemo => 'Vous êtes en démo : aucun achat n\'est possible, et rien n\'a été débité.';
+	/// fr: 'Tu es en démo : aucun achat n'est possible, et rien n'a été débité.'
+	String get buyOutcomeDemo => 'Tu es en démo : aucun achat n\'est possible, et rien n\'a été débité.';
 
 	/// fr: '$price par mois'
 	String subscriptionPrice({required Object price}) => '${price} par mois';
 
-	/// fr: 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.'
-	String get subscriptionAllowanceForLife => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.';
+	/// fr: 'Les étapes créditées restent acquises à vie, même si tu arrêtes l’abonnement.'
+	String get subscriptionAllowanceForLife => 'Les étapes créditées restent acquises à vie, même si tu arrêtes l’abonnement.';
 
 	/// fr: 'Arrêter mon abonnement'
 	String get cancelCta => 'Arrêter mon abonnement';
 
-	/// fr: 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.'
-	String get cancelExplains => 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.';
+	/// fr: 'L’arrêt se fait dans la boutique qui te facture (Google Play ou l’App Store). Ce bouton t’y conduit directement. Ton accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées te restent.'
+	String get cancelExplains => 'L’arrêt se fait dans la boutique qui te facture (Google Play ou l’App Store). Ce bouton t’y conduit directement. Ton accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées te restent.';
 
-	/// fr: 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.'
-	String get cancelStoreUnavailable => 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.';
+	/// fr: 'Impossible d’ouvrir la boutique. Ouvre-la toi-même, puis Abonnements.'
+	String get cancelStoreUnavailable => 'Impossible d’ouvrir la boutique. Ouvre-la toi-même, puis Abonnements.';
 
 	/// fr: 'Avec publicité'
 	String get adsBadgePub => 'Avec publicité';
@@ -2220,8 +2220,8 @@ class Translations$signalement$fr {
 	/// fr: 'Signaler'
 	String get title => 'Signaler';
 
-	/// fr: 'Que voulez-vous signaler ?'
-	String get chooseType => 'Que voulez-vous signaler ?';
+	/// fr: 'Que veux-tu signaler ?'
+	String get chooseType => 'Que veux-tu signaler ?';
 
 	late final Translations$signalement$types$fr types = Translations$signalement$types$fr.internal(_root);
 
@@ -2231,8 +2231,8 @@ class Translations$signalement$fr {
 	/// fr: 'Confirmer le signalement'
 	String get confirm => 'Confirmer le signalement';
 
-	/// fr: 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.'
-	String get noLocation => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.';
+	/// fr: 'Position GPS indisponible pour le moment. Réessaie sous le ciel ouvert.'
+	String get noLocation => 'Position GPS indisponible pour le moment. Réessaie sous le ciel ouvert.';
 
 	/// fr: 'Signalement enregistré'
 	String get savedTitle => 'Signalement enregistré';
@@ -2260,8 +2260,8 @@ class Translations$hebergement$fr {
 	/// fr: 'Hébergements à proximité'
 	String get title => 'Hébergements à proximité';
 
-	/// fr: 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l'application.'
-	String get facilitatorNote => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.';
+	/// fr: 'StepWays t'oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l'application.'
+	String get facilitatorNote => 'StepWays t\'oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.';
 
 	/// fr: 'Détour aller-retour : $km km'
 	String detourAR({required Object km}) => 'Détour aller-retour : ${km} km';
@@ -2289,8 +2289,8 @@ class Translations$training$fr {
 	/// fr: 'Préparation physique'
 	String get title => 'Préparation physique';
 
-	/// fr: 'Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.'
-	String get localNotice => 'Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.';
+	/// fr: 'Ton programme est calculé et conservé sur ton téléphone. Les rappels sont des notifications locales, sans suivi.'
+	String get localNotice => 'Ton programme est calculé et conservé sur ton téléphone. Les rappels sont des notifications locales, sans suivi.';
 
 	/// fr: 'Séance d'entraînement aujourd'hui'
 	String get reminderTitle => 'Séance d\'entraînement aujourd\'hui';
@@ -2319,8 +2319,8 @@ class Translations$training$fr {
 	/// fr: 'Inclus dans le pack « $trail ».'
 	String paywallIncludedIn({required Object trail}) => 'Inclus dans le pack « ${trail} ».';
 
-	/// fr: 'Plan adapté à votre profil et à votre date de départ.'
-	String get paywallSubtitle => 'Plan adapté à votre profil et à votre date de départ.';
+	/// fr: 'Plan adapté à ton profil et à ta date de départ.'
+	String get paywallSubtitle => 'Plan adapté à ton profil et à ta date de départ.';
 
 	/// fr: 'Acheter'
 	String get unlock => 'Acheter';
@@ -2340,14 +2340,14 @@ class Translations$training$fr {
 	/// fr: 'Objectif clé'
 	String get objectiveTitle => 'Objectif clé';
 
-	/// fr: 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.'
-	String get inviteSetDate => 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.';
+	/// fr: 'Pose ta date de départ dans le Calendrier pour caler le compte à rebours.'
+	String get inviteSetDate => 'Pose ta date de départ dans le Calendrier pour caler le compte à rebours.';
 
-	/// fr: 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.'
-	String get inviteFillProfile => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.';
+	/// fr: 'Remplis ta fiche de renseignement pour adapter le plan à ton profil.'
+	String get inviteFillProfile => 'Remplis ta fiche de renseignement pour adapter le plan à ton profil.';
 
-	/// fr: 'Votre faisabilité invite à la prudence : respectez la progression et n'écourtez pas la préparation.'
-	String get cautionVerdictNotice => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.';
+	/// fr: 'Ta faisabilité invite à la prudence : respecte la progression et n'écourte pas la préparation.'
+	String get cautionVerdictNotice => 'Ta faisabilité invite à la prudence : respecte la progression et n\'écourte pas la préparation.';
 
 	/// fr: '$n× par semaine'
 	String freqPerWeek({required Object n}) => '${n}× par semaine';
@@ -2361,14 +2361,14 @@ class Translations$training$fr {
 	/// fr: 'Les fréquences ne sont pas des chiffres maison : 3 séances d'endurance et 2 de renforcement par semaine, 2 jours de repos, d'après REI (Conditioning for Backpacking), Terres d'Aventure et les recommandations 2020 de l'OMS.'
 	String get freqSourceNotice => 'Les fréquences ne sont pas des chiffres maison : 3 séances d\'endurance et 2 de renforcement par semaine, 2 jours de repos, d\'après REI (Conditioning for Backpacking), Terres d\'Aventure et les recommandations 2020 de l\'OMS.';
 
-	/// fr: 'Sans date de départ, ce plan n'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s'affiche.'
-	String get noDateWhy => 'Sans date de départ, ce plan n\'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s\'affiche.';
+	/// fr: 'Sans date de départ, ce plan n'a pas de fin : impossible de dire dans quelle semaine tu es, ni quand affûter. Pose ta date dans le Calendrier et le plan s'affiche.'
+	String get noDateWhy => 'Sans date de départ, ce plan n\'a pas de fin : impossible de dire dans quelle semaine tu es, ni quand affûter. Pose ta date dans le Calendrier et le plan s\'affiche.';
 
 	/// fr: 'Aucune préparation proposée'
 	String get tooShortTitle => 'Aucune préparation proposée';
 
-	/// fr: 'Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne vous est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marchez régulièrement et n'allez pas chercher la surcharge.'
-	String tooShortWhy({required Object days, required Object weeks}) => 'Il reste ${days} jours avant le départ, soit moins de ${weeks} semaines. Aucune préparation physique ne vous est proposée : en dessous de ${weeks} semaines il n\'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de ${weeks} semaines est celui des opérateurs de trek — Terres d\'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D\'ici là, marchez régulièrement et n\'allez pas chercher la surcharge.';
+	/// fr: 'Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne t'est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marche régulièrement et ne va pas chercher la surcharge.'
+	String tooShortWhy({required Object days, required Object weeks}) => 'Il reste ${days} jours avant le départ, soit moins de ${weeks} semaines. Aucune préparation physique ne t\'est proposée : en dessous de ${weeks} semaines il n\'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de ${weeks} semaines est celui des opérateurs de trek — Terres d\'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D\'ici là, marche régulièrement et ne va pas chercher la surcharge.';
 
 	/// fr: 'Version d'essai'
 	String get demoBridledTitle => 'Version d\'essai';
@@ -2376,8 +2376,8 @@ class Translations$training$fr {
 	/// fr: 'La première phase est jouable pour de faux : rien n'est conservé. Les phases suivantes s'ouvrent avec la randonnée.'
 	String get demoBridledBody => 'La première phase est jouable pour de faux : rien n\'est conservé. Les phases suivantes s\'ouvrent avec la randonnée.';
 
-	/// fr: 'Débloquez la randonnée pour voir les séances'
-	String get demoLockedPhase => 'Débloquez la randonnée pour voir les séances';
+	/// fr: 'Débloque la randonnée pour voir les séances'
+	String get demoLockedPhase => 'Débloque la randonnée pour voir les séances';
 }
 
 // Path: eta
@@ -2648,8 +2648,8 @@ class Translations$cartesHorsLigne$fr {
 	/// fr: 'Supprimer les cartes ?'
 	String get supprimerTitre => 'Supprimer les cartes ?';
 
-	/// fr: 'Les cartes seront retirées du téléphone pour libérer de l'espace. Vous pourrez les retélécharger.'
-	String get supprimerCorps => 'Les cartes seront retirées du téléphone pour libérer de l\'espace. Vous pourrez les retélécharger.';
+	/// fr: 'Les cartes seront retirées du téléphone pour libérer de l'espace. Tu pourras les retélécharger.'
+	String get supprimerCorps => 'Les cartes seront retirées du téléphone pour libérer de l\'espace. Tu pourras les retélécharger.';
 
 	/// fr: 'Annuler'
 	String get supprimerAnnuler => 'Annuler';
@@ -2657,11 +2657,11 @@ class Translations$cartesHorsLigne$fr {
 	/// fr: 'Supprimer'
 	String get supprimerConfirmer => 'Supprimer';
 
-	/// fr: '$mo Mo sur votre forfait ?'
-	String horsWifiTitre({required Object mo}) => '${mo} Mo sur votre forfait ?';
+	/// fr: '$mo Mo sur ton forfait ?'
+	String horsWifiTitre({required Object mo}) => '${mo} Mo sur ton forfait ?';
 
-	/// fr: 'Vous n'êtes pas en Wi-Fi. Les cartes d'un circuit peuvent peser lourd sur un forfait mobile.'
-	String get horsWifiCorps => 'Vous n\'êtes pas en Wi-Fi. Les cartes d\'un circuit peuvent peser lourd sur un forfait mobile.';
+	/// fr: 'Tu n'es pas en Wi-Fi. Les cartes d'un circuit peuvent peser lourd sur un forfait mobile.'
+	String get horsWifiCorps => 'Tu n\'es pas en Wi-Fi. Les cartes d\'un circuit peuvent peser lourd sur un forfait mobile.';
 
 	/// fr: 'Attendre le Wi-Fi'
 	String get horsWifiAttendre => 'Attendre le Wi-Fi';
@@ -2701,8 +2701,8 @@ class Translations$guides$fr {
 	/// fr: 'Aucune information dans cette section pour le moment.'
 	String get noItems => 'Aucune information dans cette section pour le moment.';
 
-	/// fr: 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l'application.'
-	String get facilitatorNote => 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.';
+	/// fr: 'StepWays t'oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l'application.'
+	String get facilitatorNote => 'StepWays t\'oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.';
 
 	/// fr: 'Voir le site'
 	String get openSite => 'Voir le site';
@@ -2726,8 +2726,8 @@ class Translations$health$fr {
 	/// fr: 'Informations santé'
 	String get title => 'Informations santé';
 
-	/// fr: 'Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.'
-	String get privacyBanner => 'Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.';
+	/// fr: 'Ces données restent sur ton téléphone. Elles ne sont jamais envoyées sur internet.'
+	String get privacyBanner => 'Ces données restent sur ton téléphone. Elles ne sont jamais envoyées sur internet.';
 
 	late final Translations$health$field$fr field = Translations$health$field$fr.internal(_root);
 	late final Translations$health$hint$fr hint = Translations$health$hint$fr.internal(_root);
@@ -2742,8 +2742,8 @@ class Translations$health$fr {
 	/// fr: 'Informations sauvegardées'
 	String get saved => 'Informations sauvegardées';
 
-	/// fr: 'En cas d'urgence, montrez cet écran aux secours.'
-	String get emergencyHint => 'En cas d\'urgence, montrez cet écran aux secours.';
+	/// fr: 'En cas d'urgence, montre cet écran aux secours.'
+	String get emergencyHint => 'En cas d\'urgence, montre cet écran aux secours.';
 
 	/// fr: 'Mes infos santé'
 	String get entryTitle => 'Mes infos santé';
@@ -2760,8 +2760,8 @@ class Translations$health$fr {
 	/// fr: 'Je ne sais pas'
 	String get bloodTypeUnknown => 'Je ne sais pas';
 
-	/// fr: 'Votre ancienne saisie « $valeur » n'est pas un groupe sanguin reconnu. Choisissez dans la liste.'
-	String bloodTypeLegacy({required Object valeur}) => 'Votre ancienne saisie « ${valeur} » n\'est pas un groupe sanguin reconnu. Choisissez dans la liste.';
+	/// fr: 'Ton ancienne saisie « $valeur » n'est pas un groupe sanguin reconnu. Choisis dans la liste.'
+	String bloodTypeLegacy({required Object valeur}) => 'Ton ancienne saisie « ${valeur} » n\'est pas un groupe sanguin reconnu. Choisis dans la liste.';
 
 	late final Translations$health$organDonor$fr organDonor = Translations$health$organDonor$fr.internal(_root);
 	late final Translations$health$contacts$fr contacts = Translations$health$contacts$fr.internal(_root);
@@ -2953,25 +2953,25 @@ class Translations$moderation$fr {
 	/// fr: 'Signaler ce contenu'
 	String get reportTitle => 'Signaler ce contenu';
 
-	/// fr: 'Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.'
-	String get reportIntro => 'Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.';
+	/// fr: 'Aide-nous à garder la communauté saine. Indique pourquoi ce contenu te semble illicite. Ton signalement sera examiné par un modérateur.'
+	String get reportIntro => 'Aide-nous à garder la communauté saine. Indique pourquoi ce contenu te semble illicite. Ton signalement sera examiné par un modérateur.';
 
 	/// fr: 'Motif du signalement'
 	String get reasonLabel => 'Motif du signalement';
 
 	late final Translations$moderation$reasons$fr reasons = Translations$moderation$reasons$fr.internal(_root);
 
-	/// fr: 'Précisez (facultatif)'
-	String get detailsLabel => 'Précisez (facultatif)';
+	/// fr: 'Précise (facultatif)'
+	String get detailsLabel => 'Précise (facultatif)';
 
-	/// fr: 'Ajoutez un commentaire pour aider le modérateur.'
-	String get detailsHint => 'Ajoutez un commentaire pour aider le modérateur.';
+	/// fr: 'Ajoute un commentaire pour aider le modérateur.'
+	String get detailsHint => 'Ajoute un commentaire pour aider le modérateur.';
 
-	/// fr: 'Votre adresse e-mail'
-	String get contactLabel => 'Votre adresse e-mail';
+	/// fr: 'Ton adresse e-mail'
+	String get contactLabel => 'Ton adresse e-mail';
 
-	/// fr: 'Pour vous tenir informé du traitement (article 16).'
-	String get contactHint => 'Pour vous tenir informé du traitement (article 16).';
+	/// fr: 'Pour te tenir informé du traitement (article 16).'
+	String get contactHint => 'Pour te tenir informé du traitement (article 16).';
 
 	/// fr: 'Je déclare de bonne foi que ces informations sont exactes.'
 	String get goodFaithLabel => 'Je déclare de bonne foi que ces informations sont exactes.';
@@ -2985,11 +2985,11 @@ class Translations$moderation$fr {
 	/// fr: 'Signalement envoyé. Merci, un modérateur va l'examiner.'
 	String get sent => 'Signalement envoyé. Merci, un modérateur va l\'examiner.';
 
-	/// fr: 'Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.'
-	String get errorRequired => 'Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.';
+	/// fr: 'Complète le motif, ton e-mail et la déclaration de bonne foi.'
+	String get errorRequired => 'Complète le motif, ton e-mail et la déclaration de bonne foi.';
 
-	/// fr: 'Le signalement n'a pas pu être envoyé. Réessayez.'
-	String get errorGeneric => 'Le signalement n\'a pas pu être envoyé. Réessayez.';
+	/// fr: 'Le signalement n'a pas pu être envoyé. Réessaie.'
+	String get errorGeneric => 'Le signalement n\'a pas pu être envoyé. Réessaie.';
 
 	/// fr: 'Annuler'
 	String get cancel => 'Annuler';
@@ -2997,16 +2997,16 @@ class Translations$moderation$fr {
 	/// fr: 'Pourquoi ce contenu a-t-il été restreint ?'
 	String get reasonsTitle => 'Pourquoi ce contenu a-t-il été restreint ?';
 
-	/// fr: 'Conformément à l'article 17, voici la raison de la décision de modération concernant votre contenu.'
-	String get reasonsIntro => 'Conformément à l\'article 17, voici la raison de la décision de modération concernant votre contenu.';
+	/// fr: 'Conformément à l'article 17, voici la raison de la décision de modération concernant ton contenu.'
+	String get reasonsIntro => 'Conformément à l\'article 17, voici la raison de la décision de modération concernant ton contenu.';
 
 	/// fr: 'Décision'
 	String get decisionLabel => 'Décision';
 
 	late final Translations$moderation$decisions$fr decisions = Translations$moderation$decisions$fr.internal(_root);
 
-	/// fr: 'Aucune restriction n'a été appliquée à vos contenus.'
-	String get noStatement => 'Aucune restriction n\'a été appliquée à vos contenus.';
+	/// fr: 'Aucune restriction n'a été appliquée à tes contenus.'
+	String get noStatement => 'Aucune restriction n\'a été appliquée à tes contenus.';
 
 	/// fr: 'Contester cette décision'
 	String get complaintAction => 'Contester cette décision';
@@ -3014,14 +3014,14 @@ class Translations$moderation$fr {
 	/// fr: 'Contester une décision'
 	String get complaintTitle => 'Contester une décision';
 
-	/// fr: 'Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).'
-	String get complaintIntro => 'Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).';
+	/// fr: 'Tu peux contester une décision de modération. Explique pourquoi tu estimes la décision injustifiée (article 20).'
+	String get complaintIntro => 'Tu peux contester une décision de modération. Explique pourquoi tu estimes la décision injustifiée (article 20).';
 
-	/// fr: 'Votre contestation'
-	String get complaintExposeLabel => 'Votre contestation';
+	/// fr: 'Ta contestation'
+	String get complaintExposeLabel => 'Ta contestation';
 
-	/// fr: 'Décrivez les raisons de votre contestation.'
-	String get complaintExposeHint => 'Décrivez les raisons de votre contestation.';
+	/// fr: 'Décris les raisons de ta contestation.'
+	String get complaintExposeHint => 'Décris les raisons de ta contestation.';
 
 	/// fr: 'Envoyer la contestation'
 	String get complaintSubmit => 'Envoyer la contestation';
@@ -3029,8 +3029,8 @@ class Translations$moderation$fr {
 	/// fr: 'Contestation enregistrée. Elle sera examinée.'
 	String get complaintSent => 'Contestation enregistrée. Elle sera examinée.';
 
-	/// fr: 'Veuillez expliquer votre contestation.'
-	String get complaintEmpty => 'Veuillez expliquer votre contestation.';
+	/// fr: 'Explique ta contestation.'
+	String get complaintEmpty => 'Explique ta contestation.';
 
 	late final Translations$moderation$a11y$fr a11y = Translations$moderation$a11y$fr.internal(_root);
 }
@@ -3043,8 +3043,8 @@ class Translations$bootstrap$fr {
 
 	// Translations
 
-	/// fr: 'Préparation de votre randonnée…'
-	String get loading => 'Préparation de votre randonnée…';
+	/// fr: 'Préparation de ta randonnée…'
+	String get loading => 'Préparation de ta randonnée…';
 }
 
 // Path: recap
@@ -3061,26 +3061,26 @@ class Translations$recap$fr {
 	/// fr: 'Disponible à la fin du trek'
 	String get lockedTitle => 'Disponible à la fin du trek';
 
-	/// fr: 'Terminez ou abandonnez votre parcours pour retrouver le récapitulatif de votre aventure.'
-	String get lockedMessage => 'Terminez ou abandonnez votre parcours pour retrouver le récapitulatif de votre aventure.';
+	/// fr: 'Termine ou abandonne ton parcours pour retrouver le récapitulatif de ton aventure.'
+	String get lockedMessage => 'Termine ou abandonne ton parcours pour retrouver le récapitulatif de ton aventure.';
 
 	/// fr: 'Félicitations !'
 	String get finisherTitle => 'Félicitations !';
 
-	/// fr: 'Vous avez terminé votre parcours'
-	String get finisherSubtitle => 'Vous avez terminé votre parcours';
+	/// fr: 'Tu as terminé ton parcours'
+	String get finisherSubtitle => 'Tu as terminé ton parcours';
 
-	/// fr: 'Votre parcours partiel'
-	String get partialTitle => 'Votre parcours partiel';
+	/// fr: 'Ton parcours partiel'
+	String get partialTitle => 'Ton parcours partiel';
 
-	/// fr: 'Votre aventure reste enregistrée'
-	String get partialSubtitle => 'Votre aventure reste enregistrée';
+	/// fr: 'Ton aventure reste enregistrée'
+	String get partialSubtitle => 'Ton aventure reste enregistrée';
 
 	/// fr: 'Statistiques'
 	String get statsSection => 'Statistiques';
 
-	/// fr: 'Votre trace'
-	String get traceSection => 'Votre trace';
+	/// fr: 'Ta trace'
+	String get traceSection => 'Ta trace';
 
 	/// fr: 'Aucune trace GPS disponible'
 	String get noTrace => 'Aucune trace GPS disponible';
@@ -3277,8 +3277,8 @@ class Translations$nuitees$fr {
 	/// fr: 'Guide des nuitées'
 	String get guideTooltip => 'Guide des nuitées';
 
-	/// fr: 'Réservez chaque nuit à l'avance en haute saison'
-	String get infoBar => 'Réservez chaque nuit à l\'avance en haute saison';
+	/// fr: 'Réserve chaque nuit à l'avance en haute saison'
+	String get infoBar => 'Réserve chaque nuit à l\'avance en haute saison';
 
 	late final Translations$nuitees$types$fr types = Translations$nuitees$types$fr.internal(_root);
 	late final Translations$nuitees$guide$fr guide = Translations$nuitees$guide$fr.internal(_root);
@@ -3436,8 +3436,8 @@ class Translations$shop$fr {
 	/// fr: 'Dernier ravitaillement avant $n étapes sans commerce'
 	String gapShort({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce';
 
-	/// fr: 'Dernier ravitaillement avant $n étapes sans commerce. Prévoyez vos réserves !'
-	String gapLong({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce. Prévoyez vos réserves !';
+	/// fr: 'Dernier ravitaillement avant $n étapes sans commerce. Prévois tes réserves !'
+	String gapLong({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce. Prévois tes réserves !';
 
 	/// fr: 'Informations'
 	String get sectionInfo => 'Informations';
@@ -3541,8 +3541,8 @@ class Translations$import$fr {
 	/// fr: 'Importer un fichier GPX'
 	String get headerTitle => 'Importer un fichier GPX';
 
-	/// fr: 'Importez une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer votre récapitulatif.'
-	String get headerBody => 'Importez une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer votre récapitulatif.';
+	/// fr: 'Importe une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer ton récapitulatif.'
+	String get headerBody => 'Importe une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer ton récapitulatif.';
 
 	/// fr: 'CHOISIR UN FICHIER GPX'
 	String get pickButton => 'CHOISIR UN FICHIER GPX';
@@ -3613,8 +3613,8 @@ class Translations$import$fr {
 	/// fr: 'Valider l'import ?'
 	String get confirmTitle => 'Valider l\'import ?';
 
-	/// fr: 'Cette trace sera importée comme votre parcours : - {points} points GPS - {km} km - {stages} étapes détectées - Direction : {direction}'
-	String get confirmBody => 'Cette trace sera importée comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes détectées\n- Direction : {direction}';
+	/// fr: 'Cette trace sera importée comme ton parcours : - {points} points GPS - {km} km - {stages} étapes détectées - Direction : {direction}'
+	String get confirmBody => 'Cette trace sera importée comme ton parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes détectées\n- Direction : {direction}';
 
 	/// fr: 'Annuler'
 	String get cancel => 'Annuler';
@@ -3649,14 +3649,14 @@ class Translations$myTreks$fr {
 	/// fr: 'Aucun trek pour le moment'
 	String get emptyTitle => 'Aucun trek pour le moment';
 
-	/// fr: 'Aucun trek pour le moment. Découvrez un sentier pour commencer.'
-	String get empty => 'Aucun trek pour le moment. Découvrez un sentier pour commencer.';
+	/// fr: 'Aucun trek pour le moment. Découvre un sentier pour commencer.'
+	String get empty => 'Aucun trek pour le moment. Découvre un sentier pour commencer.';
 
 	/// fr: 'Découvrir des sentiers'
 	String get discoverTitle => 'Découvrir des sentiers';
 
-	/// fr: 'Parcourez le catalogue'
-	String get discoverSubtitle => 'Parcourez le catalogue';
+	/// fr: 'Parcours le catalogue'
+	String get discoverSubtitle => 'Parcours le catalogue';
 
 	/// fr: 'Mon compte'
 	String get accountTitle => 'Mon compte';
@@ -3674,11 +3674,11 @@ class Translations$myTreks$fr {
 	/// fr: 'Langue, unités, thème'
 	String get settingsSubtitle => 'Langue, unités, thème';
 
-	/// fr: 'Vous n'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.'
-	String get emptyCatalogueOuDemo => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.';
+	/// fr: 'Tu n'as pas encore de sentier. Ouvre le catalogue pour en choisir un, ou essaie la démo en tête de la liste.'
+	String get emptyCatalogueOuDemo => 'Tu n\'as pas encore de sentier. Ouvre le catalogue pour en choisir un, ou essaie la démo en tête de la liste.';
 
-	/// fr: 'Vous n'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un.'
-	String get emptyCatalogueSeul => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un.';
+	/// fr: 'Tu n'as pas encore de sentier. Ouvre le catalogue pour en choisir un.'
+	String get emptyCatalogueSeul => 'Tu n\'as pas encore de sentier. Ouvre le catalogue pour en choisir un.';
 }
 
 // Path: trekState
@@ -3703,8 +3703,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Fiche d'info'
 	String get title => 'Fiche d\'info';
 
-	/// fr: 'Votre morphologie est une donnée sensible. Elle reste sur votre appareil (et une sauvegarde chiffrée, sans votre nom) pour calculer votre faisabilité.'
-	String get privacyBanner => 'Votre morphologie est une donnée sensible. Elle reste sur votre appareil (et une sauvegarde chiffrée, sans votre nom) pour calculer votre faisabilité.';
+	/// fr: 'Ta morphologie est une donnée sensible. Elle reste sur ton appareil (et une sauvegarde chiffrée, sans ton nom) pour calculer ta faisabilité.'
+	String get privacyBanner => 'Ta morphologie est une donnée sensible. Elle reste sur ton appareil (et une sauvegarde chiffrée, sans ton nom) pour calculer ta faisabilité.';
 
 	/// fr: 'Âge'
 	String get fieldAge => 'Âge';
@@ -3715,8 +3715,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Âge invalide (18 à 120 ans)'
 	String get errorAge => 'Âge invalide (18 à 120 ans)';
 
-	/// fr: 'À quoi sert votre âge : il fixe la distance de référence de votre test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d'autre, et rien n'en sort de votre téléphone.'
-	String get ageUsage => 'À quoi sert votre âge : il fixe la distance de référence de votre test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d\'autre, et rien n\'en sort de votre téléphone.';
+	/// fr: 'À quoi sert ton âge : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d'autre, et rien n'en sort de ton téléphone.'
+	String get ageUsage => 'À quoi sert ton âge : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d\'autre, et rien n\'en sort de ton téléphone.';
 
 	/// fr: 'Taille'
 	String get fieldHeight => 'Taille';
@@ -3739,14 +3739,14 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Code pays invalide (ex. FR)'
 	String get errorCountry => 'Code pays invalide (ex. FR)';
 
-	/// fr: 'Fiche vide : renseignez au moins l'âge, la taille ou le poids.'
-	String get errorEmpty => 'Fiche vide : renseignez au moins l\'âge, la taille ou le poids.';
+	/// fr: 'Fiche vide : renseigne au moins l'âge, la taille ou le poids.'
+	String get errorEmpty => 'Fiche vide : renseigne au moins l\'âge, la taille ou le poids.';
 
-	/// fr: 'La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessayez.'
-	String get errorSaveFailed => 'La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessayez.';
+	/// fr: 'La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessaie.'
+	String get errorSaveFailed => 'La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessaie.';
 
-	/// fr: 'Sans votre accord, rien n'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d'être effacé de cet appareil. Cochez l'autorisation ci-dessus, puis enregistrez.'
-	String get errorConsentRequired => 'Sans votre accord, rien n\'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d\'être effacé de cet appareil. Cochez l\'autorisation ci-dessus, puis enregistrez.';
+	/// fr: 'Sans ton accord, rien n'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d'être effacé de cet appareil. Coche l'autorisation ci-dessus, puis enregistre.'
+	String get errorConsentRequired => 'Sans ton accord, rien n\'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d\'être effacé de cet appareil. Coche l\'autorisation ci-dessus, puis enregistre.';
 
 	/// fr: 'Sexe (optionnel)'
 	String get fieldSex => 'Sexe (optionnel)';
@@ -3781,8 +3781,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Données de morphologie (article 9 RGPD)'
 	String get consentTitle => 'Données de morphologie (article 9 RGPD)';
 
-	/// fr: 'Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.'
-	String get consentBody => 'Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.';
+	/// fr: 'Âge, taille et poids sont des données de santé. Elles restent sur ton appareil et une sauvegarde sans ton nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.'
+	String get consentBody => 'Âge, taille et poids sont des données de santé. Elles restent sur ton appareil et une sauvegarde sans ton nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.';
 
 	/// fr: 'J'autorise l'usage de ma morphologie pour la faisabilité'
 	String get consentToggle => 'J\'autorise l\'usage de ma morphologie pour la faisabilité';
@@ -3793,8 +3793,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Fiche enregistrée'
 	String get saved => 'Fiche enregistrée';
 
-	/// fr: 'Rien n'est pré-rempli : renseignez vos vraies données, c'est pour votre sécurité.'
-	String get morphoNotPrefilledHint => 'Rien n\'est pré-rempli : renseignez vos vraies données, c\'est pour votre sécurité.';
+	/// fr: 'Rien n'est pré-rempli : renseigne tes vraies données, c'est pour ta sécurité.'
+	String get morphoNotPrefilledHint => 'Rien n\'est pré-rempli : renseigne tes vraies données, c\'est pour ta sécurité.';
 
 	/// fr: 'À partir de 65 ans, une consultation médicale est conseillée avant un trek exigeant.'
 	String get seniorReminder => 'À partir de 65 ans, une consultation médicale est conseillée avant un trek exigeant.';
@@ -3811,11 +3811,11 @@ class Translations$walkTest$fr {
 	/// fr: 'Test de marche 6 minutes'
 	String get title => 'Test de marche 6 minutes';
 
-	/// fr: 'Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre âge et sexe.'
-	String get intro => 'Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre âge et sexe.';
+	/// fr: 'Marche le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de ton âge et sexe.'
+	String get intro => 'Marche le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de ton âge et sexe.';
 
-	/// fr: 'Effort à éviter en cas de souci cardiaque non vérifié. Arrêtez-vous en cas de gêne.'
-	String get safetyWarning => 'Effort à éviter en cas de souci cardiaque non vérifié. Arrêtez-vous en cas de gêne.';
+	/// fr: 'Effort à éviter en cas de souci cardiaque non vérifié. Arrête-toi en cas de gêne.'
+	String get safetyWarning => 'Effort à éviter en cas de souci cardiaque non vérifié. Arrête-toi en cas de gêne.';
 
 	/// fr: 'Démarrer le test'
 	String get start => 'Démarrer le test';
@@ -3826,8 +3826,8 @@ class Translations$walkTest$fr {
 	/// fr: 'Annuler'
 	String get cancel => 'Annuler';
 
-	/// fr: 'Préparez-vous...'
-	String get countdown => 'Préparez-vous...';
+	/// fr: 'Prépare-toi...'
+	String get countdown => 'Prépare-toi...';
 
 	/// fr: 'En cours'
 	String get running => 'En cours';
@@ -3859,20 +3859,20 @@ class Translations$walkTest$fr {
 	/// fr: 'Le GPS est nécessaire pour mesurer la distance.'
 	String get gpsNeeded => 'Le GPS est nécessaire pour mesurer la distance.';
 
-	/// fr: 'Autorisez la localisation pour lancer le test.'
-	String get gpsDenied => 'Autorisez la localisation pour lancer le test.';
+	/// fr: 'Autorise la localisation pour lancer le test.'
+	String get gpsDenied => 'Autorise la localisation pour lancer le test.';
 
 	/// fr: 'Rappel mensuel activé'
 	String get monthlyReminderOn => 'Rappel mensuel activé';
 
-	/// fr: 'Un rappel de test vous sera proposé chaque mois pour suivre votre forme.'
-	String get monthlyReminderBody => 'Un rappel de test vous sera proposé chaque mois pour suivre votre forme.';
+	/// fr: 'Un rappel de test te sera proposé chaque mois pour suivre ta forme.'
+	String get monthlyReminderBody => 'Un rappel de test te sera proposé chaque mois pour suivre ta forme.';
 
 	/// fr: 'Test non réalisé'
 	String get notDoneYet => 'Test non réalisé';
 
-	/// fr: 'En attendant le test, votre niveau est estimé à partir de votre questionnaire.'
-	String get fallbackNotice => 'En attendant le test, votre niveau est estimé à partir de votre questionnaire.';
+	/// fr: 'En attendant le test, ton niveau est estimé à partir de ton questionnaire.'
+	String get fallbackNotice => 'En attendant le test, ton niveau est estimé à partir de ton questionnaire.';
 
 	late final Translations$walkTest$levels$fr levels = Translations$walkTest$levels$fr.internal(_root);
 
@@ -3894,11 +3894,11 @@ class Translations$pastHikes$fr {
 
 	// Translations
 
-	/// fr: 'Vos 5 dernières randos'
-	String get title => 'Vos 5 dernières randos';
+	/// fr: 'Tes 5 dernières randos'
+	String get title => 'Tes 5 dernières randos';
 
-	/// fr: 'Ajoutez jusqu'à 5 randos notables. On en déduit votre niveau réel (rythme, endurance, habitude du dénivelé) plutôt qu'une étiquette.'
-	String get intro => 'Ajoutez jusqu\'à 5 randos notables. On en déduit votre niveau réel (rythme, endurance, habitude du dénivelé) plutôt qu\'une étiquette.';
+	/// fr: 'Ajoute jusqu'à 5 randos notables. On en déduit ton niveau réel (rythme, endurance, habitude du dénivelé) plutôt qu'une étiquette.'
+	String get intro => 'Ajoute jusqu\'à 5 randos notables. On en déduit ton niveau réel (rythme, endurance, habitude du dénivelé) plutôt qu\'une étiquette.';
 
 	/// fr: 'Ajouter une rando'
 	String get addHike => 'Ajouter une rando';
@@ -3933,8 +3933,8 @@ class Translations$pastHikes$fr {
 	/// fr: 'Distance invalide (0 à 100 km)'
 	String get errorDistance => 'Distance invalide (0 à 100 km)';
 
-	/// fr: 'Renseignez au moins le dénivelé ou la distance'
-	String get errorEffort => 'Renseignez au moins le dénivelé ou la distance';
+	/// fr: 'Renseigne au moins le dénivelé ou la distance'
+	String get errorEffort => 'Renseigne au moins le dénivelé ou la distance';
 
 	/// fr: 'par jour'
 	String get perDay => 'par jour';
@@ -4007,11 +4007,11 @@ class Translations$sos$fr {
 	/// fr: 'Appeler les secours ?'
 	String get title => 'Appeler les secours ?';
 
-	/// fr: 'Vous êtes sur le point d'appeler le 112 (urgences européennes).'
-	String get body => 'Vous êtes sur le point d\'appeler le 112 (urgences européennes).';
+	/// fr: 'Tu es sur le point d'appeler le 112 (urgences européennes).'
+	String get body => 'Tu es sur le point d\'appeler le 112 (urgences européennes).';
 
-	/// fr: 'Votre position actuelle'
-	String get positionTitle => 'Votre position actuelle';
+	/// fr: 'Ta position actuelle'
+	String get positionTitle => 'Ta position actuelle';
 
 	/// fr: 'Position GPS indisponible'
 	String get positionUnavailable => 'Position GPS indisponible';
@@ -4028,14 +4028,14 @@ class Translations$sos$fr {
 	/// fr: 'Position il y a $hours h $minutes'
 	String ageHours({required Object hours, required Object minutes}) => 'Position il y a ${hours} h ${minutes}';
 
-	/// fr: 'Estimée sur le tracé d'après vos pas'
-	String get estimated => 'Estimée sur le tracé d\'après vos pas';
+	/// fr: 'Estimée sur le tracé d'après tes pas'
+	String get estimated => 'Estimée sur le tracé d\'après tes pas';
 
 	/// fr: 'Pas de position plus récente en $seconds s : la dernière connue reste affichée.'
 	String freshFailed({required Object seconds}) => 'Pas de position plus récente en ${seconds} s : la dernière connue reste affichée.';
 
-	/// fr: 'Appelez quand même le 112 : donnez le dernier lieu passé (refuge, col, balisage) et restez où vous êtes si vous le pouvez.'
-	String get unavailableHelp => 'Appelez quand même le 112 : donnez le dernier lieu passé (refuge, col, balisage) et restez où vous êtes si vous le pouvez.';
+	/// fr: 'Appelle quand même le 112 : donne le dernier lieu passé (refuge, col, balisage) et reste où tu es si tu le peux.'
+	String get unavailableHelp => 'Appelle quand même le 112 : donne le dernier lieu passé (refuge, col, balisage) et reste où tu es si tu le peux.';
 
 	/// fr: 'Position : $lat, $lng - Alt. $alt m'
 	String positionLine({required Object lat, required Object lng, required Object alt}) => 'Position : ${lat}, ${lng}  -  Alt. ${alt} m';
@@ -4049,8 +4049,8 @@ class Translations$sos$fr {
 	/// fr: 'Altitude : indisponible'
 	String get altitudeUnavailable => 'Altitude : indisponible';
 
-	/// fr: 'Communiquez ces coordonnées aux secours.'
-	String get communicate => 'Communiquez ces coordonnées aux secours.';
+	/// fr: 'Communique ces coordonnées aux secours.'
+	String get communicate => 'Communique ces coordonnées aux secours.';
 
 	/// fr: 'Annuler'
 	String get cancel => 'Annuler';
@@ -4060,8 +4060,8 @@ class Translations$sos$fr {
 
 	late final Translations$sos$medicalId$fr medicalId = Translations$sos$medicalId$fr.internal(_root);
 
-	/// fr: 'Impossible de lancer l'appel depuis cet appareil. Composez le $number.'
-	String cannotCall({required Object number}) => 'Impossible de lancer l\'appel depuis cet appareil. Composez le ${number}.';
+	/// fr: 'Impossible de lancer l'appel depuis cet appareil. Compose le $number.'
+	String cannotCall({required Object number}) => 'Impossible de lancer l\'appel depuis cet appareil. Compose le ${number}.';
 }
 
 // Path: recovery
@@ -4081,11 +4081,11 @@ class Translations$recovery$fr {
 	/// fr: 'Mon code de reconnexion'
 	String get title => 'Mon code de reconnexion';
 
-	/// fr: 'Ce code ouvre votre coffre (pseudonyme, avatar et solde d'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe. Votre fiche médicale, elle, n'y est PAS : elle ne quitte jamais ce téléphone.'
-	String get intro => 'Ce code ouvre votre coffre (pseudonyme, avatar et solde d\'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe. Votre fiche médicale, elle, n\'y est PAS : elle ne quitte jamais ce téléphone.';
+	/// fr: 'Ce code ouvre ton coffre (pseudonyme, avatar et solde d'étapes) sur un autre téléphone. Note-le et garde-le en lieu sûr : il fonctionne comme un mot de passe. Ta fiche médicale, elle, n'y est PAS : elle ne quitte jamais ce téléphone.'
+	String get intro => 'Ce code ouvre ton coffre (pseudonyme, avatar et solde d\'étapes) sur un autre téléphone. Note-le et garde-le en lieu sûr : il fonctionne comme un mot de passe. Ta fiche médicale, elle, n\'y est PAS : elle ne quitte jamais ce téléphone.';
 
-	/// fr: 'Votre code'
-	String get codeLabel => 'Votre code';
+	/// fr: 'Ton code'
+	String get codeLabel => 'Ton code';
 
 	/// fr: 'Copier le code'
 	String get copy => 'Copier le code';
@@ -4093,8 +4093,8 @@ class Translations$recovery$fr {
 	/// fr: 'Code copié'
 	String get copied => 'Code copié';
 
-	/// fr: 'Personne d'autre ne peut lire votre coffre, pas même nous. Si vous perdez ce code, vos données seront définitivement irrécupérables.'
-	String get warning => 'Personne d\'autre ne peut lire votre coffre, pas même nous. Si vous perdez ce code, vos données seront définitivement irrécupérables.';
+	/// fr: 'Personne d'autre ne peut lire ton coffre, pas même nous. Si tu perds ce code, tes données seront définitivement irrécupérables.'
+	String get warning => 'Personne d\'autre ne peut lire ton coffre, pas même nous. Si tu perds ce code, tes données seront définitivement irrécupérables.';
 
 	/// fr: 'Impossible de générer le code pour le moment.'
 	String get error => 'Impossible de générer le code pour le moment.';
@@ -4102,8 +4102,8 @@ class Translations$recovery$fr {
 	/// fr: 'Pas encore de coffre à rouvrir'
 	String get noVaultTitle => 'Pas encore de coffre à rouvrir';
 
-	/// fr: 'La sauvegarde en ligne n'est pas activée sur cette installation : vos données restent sur ce téléphone. Il n'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l'instant.'
-	String get noVaultBody => 'La sauvegarde en ligne n\'est pas activée sur cette installation : vos données restent sur ce téléphone. Il n\'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l\'instant.';
+	/// fr: 'La sauvegarde en ligne n'est pas activée sur cette installation : tes données restent sur ce téléphone. Il n'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l'instant.'
+	String get noVaultBody => 'La sauvegarde en ligne n\'est pas activée sur cette installation : tes données restent sur ce téléphone. Il n\'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l\'instant.';
 }
 
 // Path: common
@@ -4272,8 +4272,8 @@ class Translations$hub$trekCard$fr {
 	/// fr: 'Prêt à partir ?'
 	String get noTrekTitle => 'Prêt à partir ?';
 
-	/// fr: 'Planifiez votre itinéraire, puis lancez votre randonnée.'
-	String get noTrekBody => 'Planifiez votre itinéraire, puis lancez votre randonnée.';
+	/// fr: 'Planifie ton itinéraire, puis lance ta randonnée.'
+	String get noTrekBody => 'Planifie ton itinéraire, puis lance ta randonnée.';
 
 	/// fr: 'Planifier ma randonnée'
 	String get plan => 'Planifier ma randonnée';
@@ -4332,20 +4332,20 @@ class Translations$hub$cards$fr {
 	/// fr: 'Faisabilité'
 	String get feasibility => 'Faisabilité';
 
-	/// fr: 'À votre portée ?'
-	String get feasibilitySub => 'À votre portée ?';
+	/// fr: 'À ta portée ?'
+	String get feasibilitySub => 'À ta portée ?';
 
 	/// fr: 'Itinéraire'
 	String get itinerary => 'Itinéraire';
 
-	/// fr: 'Le déroulé de vos étapes'
-	String get itinerarySub => 'Le déroulé de vos étapes';
+	/// fr: 'Le déroulé de tes étapes'
+	String get itinerarySub => 'Le déroulé de tes étapes';
 
 	/// fr: 'Programme'
 	String get programme => 'Programme';
 
-	/// fr: 'Répartissez vos étapes'
-	String get programmeSub => 'Répartissez vos étapes';
+	/// fr: 'Répartis tes étapes'
+	String get programmeSub => 'Répartis tes étapes';
 
 	/// fr: 'Calendrier'
 	String get calendar => 'Calendrier';
@@ -4362,20 +4362,20 @@ class Translations$hub$cards$fr {
 	/// fr: 'Nuitées'
 	String get nuitees => 'Nuitées';
 
-	/// fr: 'Réserver vos nuits'
-	String get nuiteesSub => 'Réserver vos nuits';
+	/// fr: 'Réserver tes nuits'
+	String get nuiteesSub => 'Réserver tes nuits';
 
 	/// fr: 'Matériel & Sac'
 	String get checklist => 'Matériel & Sac';
 
-	/// fr: 'Préparez votre sac à dos'
-	String get checklistSub => 'Préparez votre sac à dos';
+	/// fr: 'Prépare ton sac à dos'
+	String get checklistSub => 'Prépare ton sac à dos';
 
 	/// fr: 'Préparation physique'
 	String get training => 'Préparation physique';
 
-	/// fr: 'Votre programme d'entraînement'
-	String get trainingSub => 'Votre programme d\'entraînement';
+	/// fr: 'Ton programme d'entraînement'
+	String get trainingSub => 'Ton programme d\'entraînement';
 
 	/// fr: 'Fiche médicale'
 	String get health => 'Fiche médicale';
@@ -4392,14 +4392,14 @@ class Translations$hub$cards$fr {
 	/// fr: 'Découvrir des sentiers'
 	String get offline => 'Découvrir des sentiers';
 
-	/// fr: 'Parcourez le catalogue'
-	String get offlineSub => 'Parcourez le catalogue';
+	/// fr: 'Parcours le catalogue'
+	String get offlineSub => 'Parcours le catalogue';
 
 	/// fr: 'Mon groupe'
 	String get group => 'Mon groupe';
 
-	/// fr: 'Suivi de vos compagnons'
-	String get groupSub => 'Suivi de vos compagnons';
+	/// fr: 'Suivi de tes compagnons'
+	String get groupSub => 'Suivi de tes compagnons';
 
 	/// fr: 'Navigation'
 	String get navigation => 'Navigation';
@@ -4422,8 +4422,8 @@ class Translations$hub$cards$fr {
 	/// fr: 'Journal'
 	String get journal => 'Journal';
 
-	/// fr: 'Vos notes et souvenirs'
-	String get journalSub => 'Vos notes et souvenirs';
+	/// fr: 'Tes notes et souvenirs'
+	String get journalSub => 'Tes notes et souvenirs';
 
 	/// fr: 'Hébergements'
 	String get accommodations => 'Hébergements';
@@ -4446,8 +4446,8 @@ class Translations$hub$cards$fr {
 	/// fr: 'Récapitulatif'
 	String get recap => 'Récapitulatif';
 
-	/// fr: 'Votre aventure en résumé'
-	String get recapSub => 'Votre aventure en résumé';
+	/// fr: 'Ton aventure en résumé'
+	String get recapSub => 'Ton aventure en résumé';
 
 	/// fr: 'Import GPX'
 	String get importGpx => 'Import GPX';
@@ -4458,8 +4458,8 @@ class Translations$hub$cards$fr {
 	/// fr: 'Diplôme'
 	String get diploma => 'Diplôme';
 
-	/// fr: 'Votre certificat de fin'
-	String get diplomaSub => 'Votre certificat de fin';
+	/// fr: 'Ton certificat de fin'
+	String get diplomaSub => 'Ton certificat de fin';
 
 	/// fr: 'Résumé'
 	String get resume => 'Résumé';
@@ -4488,8 +4488,8 @@ class Translations$hub$cards$fr {
 	/// fr: 'Adapter l'itinéraire'
 	String get adjust => 'Adapter l\'itinéraire';
 
-	/// fr: 'Modifier vos jours à venir'
-	String get adjustSub => 'Modifier vos jours à venir';
+	/// fr: 'Modifier tes jours à venir'
+	String get adjustSub => 'Modifier tes jours à venir';
 }
 
 // Path: hub.fab
@@ -4542,20 +4542,20 @@ class Translations$map$guide$fr {
 	/// fr: 'Boutons'
 	String get buttonsTitle => 'Boutons';
 
-	/// fr: 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez l'autorisation de localisation.'
-	String get position => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez l\'autorisation de localisation.';
+	/// fr: 'Ta position GPS, mise à jour en marchant. Si le point disparaît, vérifie l'autorisation de localisation.'
+	String get position => 'Ta position GPS, mise à jour en marchant. Si le point disparaît, vérifie l\'autorisation de localisation.';
 
 	/// fr: 'Le tracé du sentier. L'alerte hors trace s'y réfère.'
 	String get track => 'Le tracé du sentier. L\'alerte hors trace s\'y réfère.';
 
-	/// fr: 'Ramène la carte sur votre position.'
-	String get centerOnMe => 'Ramène la carte sur votre position.';
+	/// fr: 'Ramène la carte sur ta position.'
+	String get centerOnMe => 'Ramène la carte sur ta position.';
 
 	/// fr: 'Prend une photo pour le journal du jour.'
 	String get photo => 'Prend une photo pour le journal du jour.';
 
-	/// fr: 'Ouvre l'appel d'urgence avec vos coordonnées GPS. À n'utiliser qu'en cas de réelle urgence.'
-	String get sos => 'Ouvre l\'appel d\'urgence avec vos coordonnées GPS. À n\'utiliser qu\'en cas de réelle urgence.';
+	/// fr: 'Ouvre l'appel d'urgence avec tes coordonnées GPS. À n'utiliser qu'en cas de réelle urgence.'
+	String get sos => 'Ouvre l\'appel d\'urgence avec tes coordonnées GPS. À n\'utiliser qu\'en cas de réelle urgence.';
 
 	/// fr: 'Visible seulement une fois la randonnée démarrée.'
 	String get onlyInTrek => 'Visible seulement une fois la randonnée démarrée.';
@@ -4563,8 +4563,8 @@ class Translations$map$guide$fr {
 	/// fr: 'Ce qu'il reste à marcher sur l'étape en cours. Un tiret : la randonnée n'a pas démarré.'
 	String get currentStage => 'Ce qu\'il reste à marcher sur l\'étape en cours. Un tiret : la randonnée n\'a pas démarré.';
 
-	/// fr: 'S'allume quand vous vous éloignez du tracé. Revenez dessus pour l'éteindre.'
-	String get offTrack => 'S\'allume quand vous vous éloignez du tracé. Revenez dessus pour l\'éteindre.';
+	/// fr: 'S'allume quand tu t'éloignes du tracé. Reviens dessus pour l'éteindre.'
+	String get offTrack => 'S\'allume quand tu t\'éloignes du tracé. Reviens dessus pour l\'éteindre.';
 
 	late final Translations$map$guide$poi$fr poi = Translations$map$guide$poi$fr.internal(_root);
 }
@@ -4619,8 +4619,8 @@ class Translations$stage$waterSources$fr {
 	/// fr: '{n} source(s)'
 	String get count => '{n} source(s)';
 
-	/// fr: 'Pas de point d'eau référencé sur cette étape. Prévoyez au moins 3 L par personne.'
-	String get none => 'Pas de point d\'eau référencé sur cette étape. Prévoyez au moins 3 L par personne.';
+	/// fr: 'Pas de point d'eau référencé sur cette étape. Prévois au moins 3 L par personne.'
+	String get none => 'Pas de point d\'eau référencé sur cette étape. Prévois au moins 3 L par personne.';
 }
 
 // Path: stage.accommodation
@@ -4649,20 +4649,20 @@ class Translations$stage$advice$fr {
 	/// fr: 'Conseils'
 	String get title => 'Conseils';
 
-	/// fr: 'Peu de points d'eau : partez avec au moins 2,5 L.'
-	String get waterScarce => 'Peu de points d\'eau : partez avec au moins 2,5 L.';
+	/// fr: 'Peu de points d'eau : pars avec au moins 2,5 L.'
+	String get waterScarce => 'Peu de points d\'eau : pars avec au moins 2,5 L.';
 
-	/// fr: 'Remplissez vos gourdes à chaque point d'eau rencontré.'
-	String get waterAmple => 'Remplissez vos gourdes à chaque point d\'eau rencontré.';
+	/// fr: 'Remplis tes gourdes à chaque point d'eau rencontré.'
+	String get waterAmple => 'Remplis tes gourdes à chaque point d\'eau rencontré.';
 
-	/// fr: 'Étape technique : partez tôt le matin pour éviter la chaleur et les orages d'après-midi.'
-	String get hardStage => 'Étape technique : partez tôt le matin pour éviter la chaleur et les orages d\'après-midi.';
+	/// fr: 'Étape technique : pars tôt le matin pour éviter la chaleur et les orages d'après-midi.'
+	String get hardStage => 'Étape technique : pars tôt le matin pour éviter la chaleur et les orages d\'après-midi.';
 
 	/// fr: 'Départ recommandé avant 8 h pour profiter de la fraîcheur matinale.'
 	String get earlyStart => 'Départ recommandé avant 8 h pour profiter de la fraîcheur matinale.';
 
-	/// fr: 'Fort dénivelé positif : gérez votre effort, faites des pauses régulières.'
-	String get bigClimb => 'Fort dénivelé positif : gérez votre effort, faites des pauses régulières.';
+	/// fr: 'Fort dénivelé positif : gère ton effort, fais des pauses régulières.'
+	String get bigClimb => 'Fort dénivelé positif : gère ton effort, fais des pauses régulières.';
 }
 
 // Path: accommodation.types
@@ -5162,14 +5162,14 @@ class Translations$checklist$weight$fr {
 	/// fr: 'Sac bien équilibré'
 	String get adviceOk => 'Sac bien équilibré';
 
-	/// fr: 'Correct mais lourd — envisagez d'alléger'
-	String get adviceHeavy => 'Correct mais lourd — envisagez d\'alléger';
+	/// fr: 'Correct mais lourd — envisage d'alléger'
+	String get adviceHeavy => 'Correct mais lourd — envisage d\'alléger';
 
-	/// fr: 'Attention genoux ! Allégez le sac'
-	String get adviceTooHeavy => 'Attention genoux ! Allégez le sac';
+	/// fr: 'Attention genoux ! Allège le sac'
+	String get adviceTooHeavy => 'Attention genoux ! Allège le sac';
 
-	/// fr: 'Danger blessure — allégez absolument !'
-	String get adviceDanger => 'Danger blessure — allégez absolument !';
+	/// fr: 'Danger blessure — allège absolument !'
+	String get adviceDanger => 'Danger blessure — allège absolument !';
 
 	/// fr: 'Poids de l'article'
 	String get itemWeight => 'Poids de l\'article';
@@ -5285,8 +5285,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Équipement obligatoire'
 	String get requiredWarnTitle => 'Équipement obligatoire';
 
-	/// fr: 'Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Voulez-vous vraiment le retirer ?'
-	String get requiredWarnBody => 'Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Voulez-vous vraiment le retirer ?';
+	/// fr: 'Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Veux-tu vraiment le retirer ?'
+	String get requiredWarnBody => 'Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Veux-tu vraiment le retirer ?';
 
 	/// fr: 'Garder'
 	String get keep => 'Garder';
@@ -5312,8 +5312,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Liste de courses'
 	String get shoppingListTitle => 'Liste de courses';
 
-	/// fr: 'Votre liste de courses est vide. Ajoutez des items avec le bouton panier.'
-	String get shoppingListEmpty => 'Votre liste de courses est vide. Ajoutez des items avec le bouton panier.';
+	/// fr: 'Ta liste de courses est vide. Ajoute des items avec le bouton panier.'
+	String get shoppingListEmpty => 'Ta liste de courses est vide. Ajoute des items avec le bouton panier.';
 
 	/// fr: 'À acheter'
 	String get shoppingToBuy => 'À acheter';
@@ -5330,8 +5330,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Cocher les items'
 	String get infoCheckTitle => 'Cocher les items';
 
-	/// fr: 'Cochez ce que vous emportez — le poids se recalcule en haut.'
-	String get infoCheckBody => 'Cochez ce que vous emportez — le poids se recalcule en haut.';
+	/// fr: 'Coche ce que tu emportes — le poids se recalcule en haut.'
+	String get infoCheckBody => 'Coche ce que tu emportes — le poids se recalcule en haut.';
 
 	/// fr: 'Obligatoires'
 	String get infoRequiredTitle => 'Obligatoires';
@@ -5342,17 +5342,17 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Jauge poids'
 	String get infoGaugeTitle => 'Jauge poids';
 
-	/// fr: 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.'
-	String get infoGaugeBody => 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.';
+	/// fr: 'Objectif : sac < 15% de ton poids. Vert = OK, Orange = attention, Rouge = trop lourd.'
+	String get infoGaugeBody => 'Objectif : sac < 15% de ton poids. Vert = OK, Orange = attention, Rouge = trop lourd.';
 
 	/// fr: 'Ajouter'
 	String get infoAddTitle => 'Ajouter';
 
-	/// fr: 'Bouton + en bas de chaque catégorie pour vos propres items.'
-	String get infoAddBody => 'Bouton + en bas de chaque catégorie pour vos propres items.';
+	/// fr: 'Bouton + en bas de chaque catégorie pour tes propres items.'
+	String get infoAddBody => 'Bouton + en bas de chaque catégorie pour tes propres items.';
 
-	/// fr: 'Validez quand votre sac est prêt — un check apparaîtra sur l'accueil.'
-	String get infoValidateBody => 'Validez quand votre sac est prêt — un check apparaîtra sur l\'accueil.';
+	/// fr: 'Valide quand ton sac est prêt — un check apparaîtra sur l'accueil.'
+	String get infoValidateBody => 'Valide quand ton sac est prêt — un check apparaîtra sur l\'accueil.';
 
 	/// fr: 'Compris !'
 	String get infoUnderstood => 'Compris !';
@@ -5378,8 +5378,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Charger téléphone + batterie externe'
 	String get preDep2 => 'Charger téléphone + batterie externe';
 
-	/// fr: 'Prévenir un proche de votre itinéraire'
-	String get preDep3 => 'Prévenir un proche de votre itinéraire';
+	/// fr: 'Prévenir un proche de ton itinéraire'
+	String get preDep3 => 'Prévenir un proche de ton itinéraire';
 
 	/// fr: 'Vérifier que le sac est bien fermé et étanche'
 	String get preDep4 => 'Vérifier que le sac est bien fermé et étanche';
@@ -5417,8 +5417,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Sac valide'
 	String get bagValidTitle => 'Sac valide';
 
-	/// fr: 'Tous les {total} équipements obligatoires sont dans votre sac. Poids total : {weight} kg ({pct}% du poids de référence) Êtes-vous certain que votre sac est prêt ?'
-	String get bagValidBody => 'Tous les {total} équipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids de référence)\n\nÊtes-vous certain que votre sac est prêt ?';
+	/// fr: 'Tous les {total} équipements obligatoires sont dans ton sac. Poids total : {weight} kg ({pct}% du poids de référence) Es-tu certain que ton sac est prêt ?'
+	String get bagValidBody => 'Tous les {total} équipements obligatoires sont dans ton sac.\n\nPoids total : {weight} kg ({pct}% du poids de référence)\n\nEs-tu certain que ton sac est prêt ?';
 
 	/// fr: 'Vérifier encore'
 	String get checkAgain => 'Vérifier encore';
@@ -5429,8 +5429,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Sac valide !'
 	String get bagValidatedSnack => 'Sac valide !';
 
-	/// fr: 'Validation du sac annulée — vous pouvez modifier votre matériel.'
-	String get validationCancelledSnack => 'Validation du sac annulée — vous pouvez modifier votre matériel.';
+	/// fr: 'Validation du sac annulée — tu peux modifier ton matériel.'
+	String get validationCancelledSnack => 'Validation du sac annulée — tu peux modifier ton matériel.';
 
 	/// fr: 'Équipement manquant'
 	String get missingTitle => 'Équipement manquant';
@@ -5450,8 +5450,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Sac valide (avec items manquants) !'
 	String get bagValidatedMissingSnack => 'Sac valide (avec items manquants) !';
 
-	/// fr: 'Rejoignez un groupe pour partager votre checklist.'
-	String get shareGroupHint => 'Rejoignez un groupe pour partager votre checklist.';
+	/// fr: 'Rejoins un groupe pour partager ta checklist.'
+	String get shareGroupHint => 'Rejoins un groupe pour partager ta checklist.';
 
 	/// fr: 'Le partage n'a pas pu s'ouvrir sur cet appareil.'
 	String get shareFailed => 'Le partage n\'a pas pu s\'ouvrir sur cet appareil.';
@@ -5621,17 +5621,17 @@ class Translations$feasibility$gaps$fr {
 
 	// Translations
 
-	/// fr: 'Dénivelé par jour trop élevé vs votre habitude'
-	String get elevationPerDay => 'Dénivelé par jour trop élevé vs votre habitude';
+	/// fr: 'Dénivelé par jour trop élevé vs ton habitude'
+	String get elevationPerDay => 'Dénivelé par jour trop élevé vs ton habitude';
 
-	/// fr: 'Distance par jour supérieure à votre expérience'
-	String get distancePerDay => 'Distance par jour supérieure à votre expérience';
+	/// fr: 'Distance par jour supérieure à ton expérience'
+	String get distancePerDay => 'Distance par jour supérieure à ton expérience';
 
 	/// fr: 'Nombre de jours consécutifs jamais atteint'
 	String get consecutiveDays => 'Nombre de jours consécutifs jamais atteint';
 
-	/// fr: 'Technicité du terrain au-dessus de votre niveau'
-	String get technicity => 'Technicité du terrain au-dessus de votre niveau';
+	/// fr: 'Technicité du terrain au-dessus de ton niveau'
+	String get technicity => 'Technicité du terrain au-dessus de ton niveau';
 
 	/// fr: 'Niveau de risque élevé pour ce trek'
 	String get risk => 'Niveau de risque élevé pour ce trek';
@@ -5639,8 +5639,8 @@ class Translations$feasibility$gaps$fr {
 	/// fr: 'Forme insuffisante au test 6 minutes'
 	String get fitness => 'Forme insuffisante au test 6 minutes';
 
-	/// fr: 'Effort global (IBP) supérieur à votre expérience'
-	String get effort => 'Effort global (IBP) supérieur à votre expérience';
+	/// fr: 'Effort global (IBP) supérieur à ton expérience'
+	String get effort => 'Effort global (IBP) supérieur à ton expérience';
 }
 
 // Path: feasibility.formula
@@ -5654,17 +5654,17 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Faisabilité pour ce trek'
 	String get title => 'Faisabilité pour ce trek';
 
-	/// fr: 'Est-ce faisable pour vous ?'
-	String get answerTitle => 'Est-ce faisable pour vous ?';
+	/// fr: 'Est-ce faisable pour toi ?'
+	String get answerTitle => 'Est-ce faisable pour toi ?';
 
-	/// fr: 'Oui. Ce sentier est à votre portée en ${days} jours.'
-	String answerGreen({required Object days}) => 'Oui. Ce sentier est à votre portée en ${days} jours.';
+	/// fr: 'Oui. Ce sentier est à ta portée en ${days} jours.'
+	String answerGreen({required Object days}) => 'Oui. Ce sentier est à ta portée en ${days} jours.';
 
 	/// fr: 'Oui, en ${days} jours. Mais une journée sera dure.'
 	String answerOrange({required Object days}) => 'Oui, en ${days} jours. Mais une journée sera dure.';
 
-	/// fr: 'Pas encore. Une journée de ce sentier demande plus que ce que vous tenez aujourd'hui. Gagnez en forme, ou partez hors été.'
-	String get answerRed => 'Pas encore. Une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme, ou partez hors été.';
+	/// fr: 'Pas encore. Une journée de ce sentier demande plus que ce que tu tiens aujourd'hui. Gagne en forme, ou pars hors été.'
+	String get answerRed => 'Pas encore. Une journée de ce sentier demande plus que ce que tu tiens aujourd\'hui. Gagne en forme, ou pars hors été.';
 
 	/// fr: 'Le sentier se marche en ${walking} jours. ${rest} jour(s) de repos conseillés.'
 	String answerDaysNote({required Object walking, required Object rest}) => 'Le sentier se marche en ${walking} jours. ${rest} jour(s) de repos conseillés.';
@@ -6243,11 +6243,11 @@ class Translations$waypoints$contribution$fr {
 	/// fr: 'Titre du point'
 	String get titleField => 'Titre du point';
 
-	/// fr: 'Décrivez la condition observée'
-	String get conditionPrompt => 'Décrivez la condition observée';
+	/// fr: 'Décris la condition observée'
+	String get conditionPrompt => 'Décris la condition observée';
 
-	/// fr: 'Votre observation'
-	String get commentField => 'Votre observation';
+	/// fr: 'Ton observation'
+	String get commentField => 'Ton observation';
 
 	/// fr: 'État (optionnel)'
 	String get conditionField => 'État (optionnel)';
@@ -6273,14 +6273,14 @@ class Translations$waypoints$contribution$fr {
 	/// fr: 'Fermer'
 	String get close => 'Fermer';
 
-	/// fr: 'Indiquez un titre pour le point.'
-	String get emptyTitle => 'Indiquez un titre pour le point.';
+	/// fr: 'Indique un titre pour le point.'
+	String get emptyTitle => 'Indique un titre pour le point.';
 
-	/// fr: 'Saisissez votre observation.'
-	String get emptyComment => 'Saisissez votre observation.';
+	/// fr: 'Saisis ton observation.'
+	String get emptyComment => 'Saisis ton observation.';
 
-	/// fr: 'Position GPS indisponible. Réessayez sous le ciel ouvert.'
-	String get noLocation => 'Position GPS indisponible. Réessayez sous le ciel ouvert.';
+	/// fr: 'Position GPS indisponible. Réessaie sous le ciel ouvert.'
+	String get noLocation => 'Position GPS indisponible. Réessaie sous le ciel ouvert.';
 
 	/// fr: 'Enregistrement impossible pour le moment.'
 	String get error => 'Enregistrement impossible pour le moment.';
@@ -6294,11 +6294,11 @@ class Translations$cartesHorsLigne$refus$fr {
 
 	// Translations
 
-	/// fr: 'Les cartes descendent au moment où vous préparez le circuit pour le marcher.'
-	String get niveauInsuffisant => 'Les cartes descendent au moment où vous préparez le circuit pour le marcher.';
+	/// fr: 'Les cartes descendent au moment où tu prépares le circuit pour le marcher.'
+	String get niveauInsuffisant => 'Les cartes descendent au moment où tu prépares le circuit pour le marcher.';
 
-	/// fr: 'Ce circuit n'est pas encore sur votre téléphone. Téléchargez-le depuis la liste des sentiers.'
-	String get sentierInconnu => 'Ce circuit n\'est pas encore sur votre téléphone. Téléchargez-le depuis la liste des sentiers.';
+	/// fr: 'Ce circuit n'est pas encore sur ton téléphone. Télécharge-le depuis la liste des sentiers.'
+	String get sentierInconnu => 'Ce circuit n\'est pas encore sur ton téléphone. Télécharge-le depuis la liste des sentiers.';
 
 	/// fr: 'Aucune carte hors ligne n'est publiée pour ce circuit pour le moment. Le tracé, lui, reste disponible.'
 	String get aucuneCartePubliee => 'Aucune carte hors ligne n\'est publiée pour ce circuit pour le moment. Le tracé, lui, reste disponible.';
@@ -6306,11 +6306,11 @@ class Translations$cartesHorsLigne$refus$fr {
 	/// fr: 'Les cartes hors ligne font partie du circuit acheté.'
 	String get droitDeRealiserManquant => 'Les cartes hors ligne font partie du circuit acheté.';
 
-	/// fr: 'Sans réseau, une carte ne peut pas être téléchargée. Reconnectez-vous puis réessayez.'
-	String get horsLigne => 'Sans réseau, une carte ne peut pas être téléchargée. Reconnectez-vous puis réessayez.';
+	/// fr: 'Sans réseau, une carte ne peut pas être téléchargée. Reconnecte-toi puis réessaie.'
+	String get horsLigne => 'Sans réseau, une carte ne peut pas être téléchargée. Reconnecte-toi puis réessaie.';
 
-	/// fr: 'Le téléphone n'a pas répondu. Réessayez ; s'il insiste, redémarrez-le.'
-	String get stockageIndisponible => 'Le téléphone n\'a pas répondu. Réessayez ; s\'il insiste, redémarrez-le.';
+	/// fr: 'Le téléphone n'a pas répondu. Réessaie ; s'il insiste, redémarre-le.'
+	String get stockageIndisponible => 'Le téléphone n\'a pas répondu. Réessaie ; s\'il insiste, redémarre-le.';
 }
 
 // Path: cartesHorsLigne.echec
@@ -6321,23 +6321,23 @@ class Translations$cartesHorsLigne$echec$fr {
 
 	// Translations
 
-	/// fr: 'La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprenez quand vous voulez.'
-	String get reseau => 'La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprenez quand vous voulez.';
+	/// fr: 'La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprends quand tu veux.'
+	String get reseau => 'La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprends quand tu veux.';
 
-	/// fr: 'La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessayez.'
-	String get empreinteInvalide => 'La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessayez.';
+	/// fr: 'La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessaie.'
+	String get empreinteInvalide => 'La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessaie.';
 
-	/// fr: 'La carte reçue est incomplète : elle a été écartée. Réessayez.'
-	String get tailleInattendue => 'La carte reçue est incomplète : elle a été écartée. Réessayez.';
+	/// fr: 'La carte reçue est incomplète : elle a été écartée. Réessaie.'
+	String get tailleInattendue => 'La carte reçue est incomplète : elle a été écartée. Réessaie.';
 
-	/// fr: 'Il n'y a plus de place sur le téléphone. Libérez de l'espace, puis reprenez.'
-	String get plusDePlace => 'Il n\'y a plus de place sur le téléphone. Libérez de l\'espace, puis reprenez.';
+	/// fr: 'Il n'y a plus de place sur le téléphone. Libère de l'espace, puis reprends.'
+	String get plusDePlace => 'Il n\'y a plus de place sur le téléphone. Libère de l\'espace, puis reprends.';
 
-	/// fr: 'L'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprenez.'
-	String get ecritureImpossible => 'L\'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprenez.';
+	/// fr: 'L'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprends.'
+	String get ecritureImpossible => 'L\'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprends.';
 
-	/// fr: 'Le téléphone n'a pas rendu son espace de stockage. Réessayez ; s'il insiste, redémarrez-le.'
-	String get stockageIndisponible => 'Le téléphone n\'a pas rendu son espace de stockage. Réessayez ; s\'il insiste, redémarrez-le.';
+	/// fr: 'Le téléphone n'a pas rendu son espace de stockage. Réessaie ; s'il insiste, redémarre-le.'
+	String get stockageIndisponible => 'Le téléphone n\'a pas rendu son espace de stockage. Réessaie ; s\'il insiste, redémarre-le.';
 
 	/// fr: 'Téléchargement annulé. Ce qui est déjà téléchargé est gardé.'
 	String get annulee => 'Téléchargement annulé. Ce qui est déjà téléchargé est gardé.';
@@ -6498,8 +6498,8 @@ class Translations$health$hint$fr {
 	/// fr: 'Ex : Christophe Mosconi'
 	String get fullName => 'Ex : Christophe Mosconi';
 
-	/// fr: 'Appuyez pour choisir'
-	String get birthDate => 'Appuyez pour choisir';
+	/// fr: 'Appuie pour choisir'
+	String get birthDate => 'Appuie pour choisir';
 
 	/// fr: 'Ex : 12 rue des Lilas, 20000 Ajaccio'
 	String get address => 'Ex : 12 rue des Lilas, 20000 Ajaccio';
@@ -6507,8 +6507,8 @@ class Translations$health$hint$fr {
 	/// fr: 'Ex : diabète type 1, épilepsie, anticoagulant'
 	String get conditions => 'Ex : diabète type 1, épilepsie, anticoagulant';
 
-	/// fr: 'Faites votre choix'
-	String get organDonor => 'Faites votre choix';
+	/// fr: 'Fais ton choix'
+	String get organDonor => 'Fais ton choix';
 }
 
 // Path: health.error
@@ -6621,8 +6621,8 @@ class Translations$health$section$fr {
 
 	// Translations
 
-	/// fr: 'Qui vous êtes'
-	String get identity => 'Qui vous êtes';
+	/// fr: 'Qui tu es'
+	String get identity => 'Qui tu es';
 
 	/// fr: 'C'est la première chose que lit un secouriste : sans nom, il soigne un inconnu et ne peut prévenir personne.'
 	String get identityWhy => 'C\'est la première chose que lit un secouriste : sans nom, il soigne un inconnu et ne peut prévenir personne.';
@@ -6630,14 +6630,14 @@ class Translations$health$section$fr {
 	/// fr: 'Qui prévenir'
 	String get contacts => 'Qui prévenir';
 
-	/// fr: 'Ce que les secours cherchent juste après vous avoir identifié. Trois personnes au maximum : au-delà, on n'en appelle aucune.'
-	String get contactsWhy => 'Ce que les secours cherchent juste après vous avoir identifié. Trois personnes au maximum : au-delà, on n\'en appelle aucune.';
+	/// fr: 'Ce que les secours cherchent juste après t'avoir identifié. Trois personnes au maximum : au-delà, on n'en appelle aucune.'
+	String get contactsWhy => 'Ce que les secours cherchent juste après t\'avoir identifié. Trois personnes au maximum : au-delà, on n\'en appelle aucune.';
 
-	/// fr: 'Ce qui vous soigne'
-	String get vital => 'Ce qui vous soigne';
+	/// fr: 'Ce qui te soigne'
+	String get vital => 'Ce qui te soigne';
 
-	/// fr: 'Dans l'ordre où un médecin d'urgence interroge : d'abord ce qui peut vous tuer pendant le soin, ensuite ce qui sert à l'hôpital.'
-	String get vitalWhy => 'Dans l\'ordre où un médecin d\'urgence interroge : d\'abord ce qui peut vous tuer pendant le soin, ensuite ce qui sert à l\'hôpital.';
+	/// fr: 'Dans l'ordre où un médecin d'urgence interroge : d'abord ce qui peut te tuer pendant le soin, ensuite ce qui sert à l'hôpital.'
+	String get vitalWhy => 'Dans l\'ordre où un médecin d\'urgence interroge : d\'abord ce qui peut te tuer pendant le soin, ensuite ce qui sert à l\'hôpital.';
 
 	/// fr: 'Administratif'
 	String get admin => 'Administratif';
@@ -6690,11 +6690,11 @@ class Translations$health$contacts$fr {
 	/// fr: 'Retirer cette personne'
 	String get remove => 'Retirer cette personne';
 
-	/// fr: 'Donnez un nom, sinon les secours ne savent pas qui ils appellent.'
-	String get errorName => 'Donnez un nom, sinon les secours ne savent pas qui ils appellent.';
+	/// fr: 'Donne un nom, sinon les secours ne savent pas qui ils appellent.'
+	String get errorName => 'Donne un nom, sinon les secours ne savent pas qui ils appellent.';
 
-	/// fr: 'Donnez un numéro, sinon ce nom ne sert à rien.'
-	String get errorPhone => 'Donnez un numéro, sinon ce nom ne sert à rien.';
+	/// fr: 'Donne un numéro, sinon ce nom ne sert à rien.'
+	String get errorPhone => 'Donne un numéro, sinon ce nom ne sert à rien.';
 }
 
 // Path: health.cards
@@ -6723,8 +6723,8 @@ class Translations$health$cards$fr {
 	/// fr: 'Retirer la photo'
 	String get remove => 'Retirer la photo';
 
-	/// fr: 'Photo enregistrée sur ce téléphone. Elle n'est envoyée nulle part et part avec la fiche quand vous l'effacez.'
-	String get stored => 'Photo enregistrée sur ce téléphone. Elle n\'est envoyée nulle part et part avec la fiche quand vous l\'effacez.';
+	/// fr: 'Photo enregistrée sur ce téléphone. Elle n'est envoyée nulle part et part avec la fiche quand tu l'effaces.'
+	String get stored => 'Photo enregistrée sur ce téléphone. Elle n\'est envoyée nulle part et part avec la fiche quand tu l\'effaces.';
 
 	/// fr: 'La photo reste sur ce téléphone, dans le même dossier protégé que le reste de la fiche.'
 	String get explain => 'La photo reste sur ce téléphone, dans le même dossier protégé que le reste de la fiche.';
@@ -6744,11 +6744,11 @@ class Translations$health$phoneCard$fr {
 
 	// Translations
 
-	/// fr: 'Recopiez votre fiche dans celle du téléphone'
-	String get title => 'Recopiez votre fiche dans celle du téléphone';
+	/// fr: 'Recopie ta fiche dans celle du téléphone'
+	String get title => 'Recopie ta fiche dans celle du téléphone';
 
-	/// fr: 'C'est le seul écran qu'un secouriste atteint sans votre code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.'
-	String get why => 'C\'est le seul écran qu\'un secouriste atteint sans votre code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.';
+	/// fr: 'C'est le seul écran qu'un secouriste atteint sans ton code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.'
+	String get why => 'C\'est le seul écran qu\'un secouriste atteint sans ton code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.';
 
 	/// fr: 'C'est fait, ma fiche est aussi dans le téléphone'
 	String get done => 'C\'est fait, ma fiche est aussi dans le téléphone';
@@ -7032,8 +7032,8 @@ class Translations$programme$replanDialog$fr {
 	/// fr: 'Replanifier'
 	String get title => 'Replanifier';
 
-	/// fr: 'La replanification va réinitialiser votre programme. Vos jours de repos seront préservés aux mêmes positions.'
-	String get message => 'La replanification va réinitialiser votre programme.\nVos jours de repos seront préservés aux mêmes positions.';
+	/// fr: 'La replanification va réinitialiser ton programme. Tes jours de repos seront préservés aux mêmes positions.'
+	String get message => 'La replanification va réinitialiser ton programme.\nTes jours de repos seront préservés aux mêmes positions.';
 
 	/// fr: 'Annuler'
 	String get cancel => 'Annuler';
@@ -7050,11 +7050,11 @@ class Translations$programme$empty$fr {
 
 	// Translations
 
-	/// fr: 'Configurez d'abord votre itinéraire'
-	String get title => 'Configurez d\'abord votre itinéraire';
+	/// fr: 'Configure d'abord ton itinéraire'
+	String get title => 'Configure d\'abord ton itinéraire';
 
-	/// fr: 'Choisissez votre parcours et la durée pour générer votre programme.'
-	String get message => 'Choisissez votre parcours et la durée pour générer votre programme.';
+	/// fr: 'Choisis ton parcours et la durée pour générer ton programme.'
+	String get message => 'Choisis ton parcours et la durée pour générer ton programme.';
 
 	/// fr: 'CONFIGURER L'ITINÉRAIRE'
 	String get action => 'CONFIGURER L\'ITINÉRAIRE';
@@ -7110,8 +7110,8 @@ class Translations$programme$inTrek$fr {
 	/// fr: 'Adapter l'itinéraire'
 	String get title => 'Adapter l\'itinéraire';
 
-	/// fr: 'Réorganisez la suite de votre rando. Ce que vous avez déjà marché est figé, et l'ordre des étapes ne change pas.'
-	String get intro => 'Réorganisez la suite de votre rando. Ce que vous avez déjà marché est figé, et l\'ordre des étapes ne change pas.';
+	/// fr: 'Réorganise la suite de ta rando. Ce que tu as déjà marché est figé, et l'ordre des étapes ne change pas.'
+	String get intro => 'Réorganise la suite de ta rando. Ce que tu as déjà marché est figé, et l\'ordre des étapes ne change pas.';
 
 	/// fr: 'Déjà marché'
 	String get doneSection => 'Déjà marché';
@@ -7125,11 +7125,11 @@ class Translations$programme$inTrek$fr {
 	/// fr: 'Jour déjà marché, non modifiable'
 	String get lockedDay => 'Jour déjà marché, non modifiable';
 
-	/// fr: 'Vous avez marché tous vos jours : il n'y a plus rien à adapter.'
-	String get allDone => 'Vous avez marché tous vos jours : il n\'y a plus rien à adapter.';
+	/// fr: 'Tu as marché tous tes jours : il n'y a plus rien à adapter.'
+	String get allDone => 'Tu as marché tous tes jours : il n\'y a plus rien à adapter.';
 
-	/// fr: 'Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.'
-	String get notStarted => 'Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.';
+	/// fr: 'Cet écran sert pendant la rando : démarre ton trek pour adapter la suite.'
+	String get notStarted => 'Cet écran sert pendant la rando : démarre ton trek pour adapter la suite.';
 
 	/// fr: 'Valider mes changements'
 	String get validate => 'Valider mes changements';
@@ -7218,11 +7218,11 @@ class Translations$calendar$noDate$fr {
 
 	// Translations
 
-	/// fr: 'Choisissez une date de départ'
-	String get title => 'Choisissez une date de départ';
+	/// fr: 'Choisis une date de départ'
+	String get title => 'Choisis une date de départ';
 
-	/// fr: 'Le calendrier de votre trek s'affichera automatiquement avec les jours de marche et de repos.'
-	String get message => 'Le calendrier de votre trek s\'affichera automatiquement avec les jours de marche et de repos.';
+	/// fr: 'Le calendrier de ton trek s'affichera automatiquement avec les jours de marche et de repos.'
+	String get message => 'Le calendrier de ton trek s\'affichera automatiquement avec les jours de marche et de repos.';
 }
 
 // Path: calendar.empty
@@ -7233,11 +7233,11 @@ class Translations$calendar$empty$fr {
 
 	// Translations
 
-	/// fr: 'Configurez d'abord votre itinéraire'
-	String get title => 'Configurez d\'abord votre itinéraire';
+	/// fr: 'Configure d'abord ton itinéraire'
+	String get title => 'Configure d\'abord ton itinéraire';
 
-	/// fr: 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.'
-	String get message => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.';
+	/// fr: 'Choisis ton parcours et la durée pour pouvoir configurer tes dates.'
+	String get message => 'Choisis ton parcours et la durée pour pouvoir configurer tes dates.';
 
 	/// fr: 'CONFIGURER L'ITINÉRAIRE'
 	String get action => 'CONFIGURER L\'ITINÉRAIRE';
@@ -7311,8 +7311,8 @@ class Translations$nuitees$card$fr {
 	/// fr: 'Appeler {phone}'
 	String get call => 'Appeler {phone}';
 
-	/// fr: 'Décochez la nuit pour changer le type'
-	String get lockedHint => 'Décochez la nuit pour changer le type';
+	/// fr: 'Décoche la nuit pour changer le type'
+	String get lockedHint => 'Décoche la nuit pour changer le type';
 
 	/// fr: 'J-1'
 	String get eveBadge => 'J-1';
@@ -7347,11 +7347,11 @@ class Translations$nuitees$empty$fr {
 
 	// Translations
 
-	/// fr: 'Configurez d'abord votre itinéraire'
-	String get title => 'Configurez d\'abord votre itinéraire';
+	/// fr: 'Configure d'abord ton itinéraire'
+	String get title => 'Configure d\'abord ton itinéraire';
 
-	/// fr: 'Choisissez votre parcours et la durée pour préparer vos nuits.'
-	String get message => 'Choisissez votre parcours et la durée pour préparer vos nuits.';
+	/// fr: 'Choisis ton parcours et la durée pour préparer tes nuits.'
+	String get message => 'Choisis ton parcours et la durée pour préparer tes nuits.';
 
 	/// fr: 'CONFIGURER L'ITINÉRAIRE'
 	String get action => 'CONFIGURER L\'ITINÉRAIRE';
@@ -7503,8 +7503,8 @@ class Translations$fireRisk$empty$fr {
 	/// fr: 'Risque incendie indisponible'
 	String get title => 'Risque incendie indisponible';
 
-	/// fr: 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessayez une fois connecté.'
-	String get message => 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessayez une fois connecté.';
+	/// fr: 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessaie une fois connecté.'
+	String get message => 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessaie une fois connecté.';
 }
 
 // Path: fireRisk.a11y
@@ -7638,11 +7638,11 @@ class Translations$summary$empty$fr {
 
 	// Translations
 
-	/// fr: 'Configurez d'abord votre itinéraire'
-	String get title => 'Configurez d\'abord votre itinéraire';
+	/// fr: 'Configure d'abord ton itinéraire'
+	String get title => 'Configure d\'abord ton itinéraire';
 
-	/// fr: 'Choisissez votre parcours et la durée pour voir le résumé de votre plan.'
-	String get message => 'Choisissez votre parcours et la durée pour voir le résumé de votre plan.';
+	/// fr: 'Choisis ton parcours et la durée pour voir le résumé de ton plan.'
+	String get message => 'Choisis ton parcours et la durée pour voir le résumé de ton plan.';
 
 	/// fr: 'CONFIGURER L'ITINÉRAIRE'
 	String get action => 'CONFIGURER L\'ITINÉRAIRE';
@@ -7713,8 +7713,8 @@ class Translations$trekState$abandonDialog$fr {
 	/// fr: 'Un trek est déjà en cours'
 	String get title => 'Un trek est déjà en cours';
 
-	/// fr: 'Vous avez une randonnée en cours. Terminez-la ou abandonnez-la avant d'en démarrer une autre.'
-	String get message => 'Vous avez une randonnée en cours. Terminez-la ou abandonnez-la avant d\'en démarrer une autre.';
+	/// fr: 'Tu as une randonnée en cours. Termine-la ou abandonne-la avant d'en démarrer une autre.'
+	String get message => 'Tu as une randonnée en cours. Termine-la ou abandonne-la avant d\'en démarrer une autre.';
 
 	/// fr: 'Terminer'
 	String get finish => 'Terminer';
@@ -7734,11 +7734,11 @@ class Translations$trekState$resumeOrphanDialog$fr {
 
 	// Translations
 
-	/// fr: 'Reprendre votre randonnée ?'
-	String get title => 'Reprendre votre randonnée ?';
+	/// fr: 'Reprendre ta randonnée ?'
+	String get title => 'Reprendre ta randonnée ?';
 
-	/// fr: 'Une randonnée était en cours lors de la dernière fermeture de l'application. Voulez-vous la reprendre ou l'abandonner ?'
-	String get message => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Voulez-vous la reprendre ou l\'abandonner ?';
+	/// fr: 'Une randonnée était en cours lors de la dernière fermeture de l'application. Veux-tu la reprendre ou l'abandonner ?'
+	String get message => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Veux-tu la reprendre ou l\'abandonner ?';
 
 	/// fr: 'Reprendre'
 	String get resume => 'Reprendre';
@@ -7803,11 +7803,11 @@ class Translations$sos$medicalId$fr {
 	/// fr: 'Fiche médicale du téléphone'
 	String get action => 'Fiche médicale du téléphone';
 
-	/// fr: 'Affichez vos infos vitales aux secours, même écran verrouillé.'
-	String get hint => 'Affichez vos infos vitales aux secours, même écran verrouillé.';
+	/// fr: 'Affiche tes infos vitales aux secours, même écran verrouillé.'
+	String get hint => 'Affiche tes infos vitales aux secours, même écran verrouillé.';
 
-	/// fr: 'Ouvrez la fiche médicale dans les réglages Santé de votre téléphone.'
-	String get unavailable => 'Ouvrez la fiche médicale dans les réglages Santé de votre téléphone.';
+	/// fr: 'Ouvre la fiche médicale dans les réglages Santé de ton téléphone.'
+	String get unavailable => 'Ouvre la fiche médicale dans les réglages Santé de ton téléphone.';
 }
 
 // Path: lieu.a11y
@@ -7836,20 +7836,20 @@ class Translations$map$guide$poi$fr {
 
 	// Translations
 
-	/// fr: 'Source ou fontaine signalée. Une source peut être à sec en été : ne comptez pas dessus.'
-	String get water => 'Source ou fontaine signalée. Une source peut être à sec en été : ne comptez pas dessus.';
+	/// fr: 'Source ou fontaine signalée. Une source peut être à sec en été : ne compte pas dessus.'
+	String get water => 'Source ou fontaine signalée. Une source peut être à sec en été : ne compte pas dessus.';
 
-	/// fr: 'Refuge ou abri. Touchez le repère : altitude, services, contact.'
-	String get shelter => 'Refuge ou abri. Touchez le repère : altitude, services, contact.';
+	/// fr: 'Refuge ou abri. Touche le repère : altitude, services, contact.'
+	String get shelter => 'Refuge ou abri. Touche le repère : altitude, services, contact.';
 
-	/// fr: 'Gîte, chambre ou hôtel. Vous réservez auprès de l'établissement.'
-	String get accommodation => 'Gîte, chambre ou hôtel. Vous réservez auprès de l\'établissement.';
+	/// fr: 'Gîte, chambre ou hôtel. Tu réserves auprès de l'établissement.'
+	String get accommodation => 'Gîte, chambre ou hôtel. Tu réserves auprès de l\'établissement.';
 
-	/// fr: 'Camping ou bivouac. Les règles changent selon le territoire : renseignez-vous avant de planter la tente.'
-	String get campsite => 'Camping ou bivouac. Les règles changent selon le territoire : renseignez-vous avant de planter la tente.';
+	/// fr: 'Camping ou bivouac. Les règles changent selon le territoire : renseigne-toi avant de planter la tente.'
+	String get campsite => 'Camping ou bivouac. Les règles changent selon le territoire : renseigne-toi avant de planter la tente.';
 
-	/// fr: 'Commerce où vous ravitailler. Horaires non garantis hors saison.'
-	String get shop => 'Commerce où vous ravitailler. Horaires non garantis hors saison.';
+	/// fr: 'Commerce où te ravitailler. Horaires non garantis hors saison.'
+	String get shop => 'Commerce où te ravitailler. Horaires non garantis hors saison.';
 
 	/// fr: 'Restaurant ou table d'hôtes sur le parcours ou tout près.'
 	String get restaurant => 'Restaurant ou table d\'hôtes sur le parcours ou tout près.';
@@ -7857,8 +7857,8 @@ class Translations$map$guide$poi$fr {
 	/// fr: 'Point de vue remarquable. Bon pour la halte.'
 	String get viewpoint => 'Point de vue remarquable. Bon pour la halte.';
 
-	/// fr: 'Passage délicat. Ralentissez et regardez le terrain avant de vous engager.'
-	String get danger => 'Passage délicat. Ralentissez et regardez le terrain avant de vous engager.';
+	/// fr: 'Passage délicat. Ralentis et regarde le terrain avant de t'engager.'
+	String get danger => 'Passage délicat. Ralentis et regarde le terrain avant de t\'engager.';
 
 	/// fr: 'Point de secours : poste, héliport ou borne d'appel d'urgence.'
 	String get emergency => 'Point de secours : poste, héliport ou borne d\'appel d\'urgence.';
@@ -7878,8 +7878,8 @@ class Translations$weather$alert$storm$fr {
 	/// fr: 'Orage prévu'
 	String get title => 'Orage prévu';
 
-	/// fr: '$condition. Évitez les crêtes et les zones exposées.'
-	String desc({required Object condition}) => '${condition}. Évitez les crêtes et les zones exposées.';
+	/// fr: '$condition. Évite les crêtes et les zones exposées.'
+	String desc({required Object condition}) => '${condition}. Évite les crêtes et les zones exposées.';
 }
 
 // Path: weather.alert.wind
@@ -8187,8 +8187,8 @@ class Translations$programme$info$days$fr {
 	/// fr: 'Jours de trek'
 	String get title => 'Jours de trek';
 
-	/// fr: 'Chaque ligne = un jour. Appuyez pour voir le détail complet.'
-	String get body => 'Chaque ligne = un jour. Appuyez pour voir le détail complet.';
+	/// fr: 'Chaque ligne = un jour. Appuie pour voir le détail complet.'
+	String get body => 'Chaque ligne = un jour. Appuie pour voir le détail complet.';
 }
 
 // Path: programme.info.reorder
@@ -8202,8 +8202,8 @@ class Translations$programme$info$reorder$fr {
 	/// fr: 'Réorganiser'
 	String get title => 'Réorganiser';
 
-	/// fr: 'Glissez la poignée à droite pour changer l'ordre des jours.'
-	String get body => 'Glissez la poignée à droite pour changer l\'ordre des jours.';
+	/// fr: 'Glisse la poignée à droite pour changer l'ordre des jours.'
+	String get body => 'Glisse la poignée à droite pour changer l\'ordre des jours.';
 }
 
 // Path: programme.info.rest
@@ -8217,8 +8217,8 @@ class Translations$programme$info$rest$fr {
 	/// fr: 'Jour de repos'
 	String get title => 'Jour de repos';
 
-	/// fr: 'Insérez un jour de récupération entre deux étapes.'
-	String get body => 'Insérez un jour de récupération entre deux étapes.';
+	/// fr: 'Insère un jour de récupération entre deux étapes.'
+	String get body => 'Insère un jour de récupération entre deux étapes.';
 }
 
 // Path: programme.info.mergeSplit
@@ -8281,8 +8281,8 @@ class Translations$programme$inTrek$empty$fr {
 	/// fr: 'Aucun programme à adapter'
 	String get title => 'Aucun programme à adapter';
 
-	/// fr: 'Construisez d'abord votre programme depuis la préparation.'
-	String get message => 'Construisez d\'abord votre programme depuis la préparation.';
+	/// fr: 'Construis d'abord ton programme depuis la préparation.'
+	String get message => 'Construis d\'abord ton programme depuis la préparation.';
 }
 
 // Path: programme.inTrek.info.done
@@ -8311,8 +8311,8 @@ class Translations$programme$inTrek$info$upcoming$fr {
 	/// fr: 'Jours à venir'
 	String get title => 'Jours à venir';
 
-	/// fr: 'Regroupez, dégroupez ou ajoutez un jour de repos sur la suite de votre parcours.'
-	String get body => 'Regroupez, dégroupez ou ajoutez un jour de repos sur la suite de votre parcours.';
+	/// fr: 'Regroupe, dégroupe ou ajoute un jour de repos sur la suite de ton parcours.'
+	String get body => 'Regroupe, dégroupe ou ajoute un jour de repos sur la suite de ton parcours.';
 }
 
 // Path: programme.inTrek.info.order
@@ -8343,7 +8343,7 @@ extension on Translations {
 			'a11y.zoomOut' => 'Dézoomer',
 			'a11y.centerOnMe' => 'Centrer sur ma position',
 			'a11y.mapRegion' => 'Carte du sentier',
-			'a11y.userPosition' => 'Votre position',
+			'a11y.userPosition' => 'Ta position',
 			'a11y.stageMarker' => ({required Object number}) => 'Étape ${number}',
 			'a11y.poiMarker' => ({required Object name}) => 'Point d\'intérêt : ${name}',
 			'a11y.markerCluster' => ({required Object count}) => '${count} points groupés',
@@ -8378,41 +8378,41 @@ extension on Translations {
 			'navPilote.after' => 'Après',
 			'navPilote.sos' => 'SOS',
 			'navPilote.demoLockedTitle' => ({required Object phase}) => '${phase} — réservé aux treks achetés',
-			'navPilote.demoLockedBody' => 'En mode démo, seule la préparation est accessible. Débloquez ce trek pour randonner et revivre votre aventure.',
+			'navPilote.demoLockedBody' => 'En mode démo, seule la préparation est accessible. Débloque ce trek pour randonner et revivre ton aventure.',
 			'navPilote.demoTrekMode' => 'Simuler mode trek (démo)',
 			'navPilote.exitTitle' => 'Quitter l\'application ?',
-			'navPilote.exitMessage' => 'Vous êtes à l\'accueil. Voulez-vous fermer l\'application ?',
+			'navPilote.exitMessage' => 'Tu es à l\'accueil. Veux-tu fermer l\'application ?',
 			'navPilote.exitConfirm' => 'Quitter',
 			'navPilote.exitCancel' => 'Rester',
 			'navPilote.startTrek' => 'Démarrer le trek',
 			'navPilote.finishTrek' => 'Terminer le trek',
 			'navPilote.reviewPrep' => 'Revoir la préparation',
-			'navPilote.startGateSubtitle' => 'Terminez Itinéraire, Date et Programme pour démarrer',
+			'navPilote.startGateSubtitle' => 'Termine Itinéraire, Date et Programme pour démarrer',
 			'navPilote.startAwayTitle' => 'Démarrer le trek',
 			'navPilote.startAwayBody' => ({required Object distance}) => 'Tu ne sembles pas au point de départ (à ${distance} m). Démarrer quand même ?',
 			'navPilote.startNoGpsBody' => 'Position indisponible. Démarrer quand même ?',
 			'navPilote.startConfirm' => 'Démarrer quand même',
 			'navPilote.startCancel' => 'Annuler',
-			'navPilote.phasePrepareSub' => 'Organisez votre trek avant le départ',
-			'navPilote.phaseHikeSub' => 'Votre trek est en cours',
+			'navPilote.phasePrepareSub' => 'Organise ton trek avant le départ',
+			'navPilote.phaseHikeSub' => 'Ton trek est en cours',
 			'navPilote.phaseHikeInProgress' => ({required Object trek}) => '${trek} en cours',
-			'navPilote.phaseAfterSub' => 'Revivez votre aventure',
+			'navPilote.phaseAfterSub' => 'Revis ton aventure',
 			'navPilote.phaseBanner' => 'Phase en cours',
 			'navPilote.demoPreview' => 'Aperçu des phases (démo) : Préparer, Randonner, Après',
 			'navPilote.dominantHand' => 'Main dominante',
-			'navPilote.dominantHandDesc' => 'Place le SOS et les commandes clés du côté de votre main',
+			'navPilote.dominantHandDesc' => 'Place le SOS et les commandes clés du côté de ta main',
 			'navPilote.dominantHandRight' => 'Droitier',
 			'navPilote.dominantHandLeft' => 'Gaucher',
 			'navPilote.weatherBannerTitle' => 'Ici et maintenant',
 			'navPilote.weatherBannerStages' => 'Météo des étapes',
 			'navPilote.weatherBannerUnavailable' => 'Météo localisée indisponible',
-			'branding.tagline' => 'Votre compagnon de randonnée',
-			'branding.subline' => 'Préparez, marchez, partagez',
+			'branding.tagline' => 'Ton compagnon de randonnée',
+			'branding.subline' => 'Prépare, marche, partage',
 			'hub.greeting' => ({required Object name}) => 'Bonjour, ${name} !',
 			'hub.greetingFallback' => 'Randonneur',
 			'hub.infoTooltip' => 'À propos de ce sentier',
 			'hub.profileTooltip' => 'Mon profil',
-			'hub.infoSheetBody' => 'Préparez votre itinéraire, puis votre sac. Partez ensuite en navigation GPS. Tout part de cet écran.',
+			'hub.infoSheetBody' => 'Prépare ton itinéraire, puis ton sac. Pars ensuite en navigation GPS. Tout part de cet écran.',
 			'hub.trekCard.activeTitle' => 'Randonnée en cours',
 			'hub.trekCard.distanceCovered' => 'Distance parcourue',
 			'hub.trekCard.elevationGain' => 'Dénivelé du jour',
@@ -8420,7 +8420,7 @@ extension on Translations {
 			'hub.trekCard.progressLabel' => ({required Object percent}) => '${percent} % du sentier',
 			'hub.trekCard.resume' => 'Reprendre la navigation',
 			'hub.trekCard.noTrekTitle' => 'Prêt à partir ?',
-			'hub.trekCard.noTrekBody' => 'Planifiez votre itinéraire, puis lancez votre randonnée.',
+			'hub.trekCard.noTrekBody' => 'Planifie ton itinéraire, puis lance ta randonnée.',
 			'hub.trekCard.plan' => 'Planifier ma randonnée',
 			'hub.trekCard.completedTitle' => 'Trek terminé',
 			'hub.weather.title' => 'Météo du jour',
@@ -8435,29 +8435,29 @@ extension on Translations {
 			'hub.sections.info' => 'Informations',
 			'hub.sections.after' => 'Après la randonnée',
 			'hub.cards.feasibility' => 'Faisabilité',
-			'hub.cards.feasibilitySub' => 'À votre portée ?',
+			'hub.cards.feasibilitySub' => 'À ta portée ?',
 			'hub.cards.itinerary' => 'Itinéraire',
-			'hub.cards.itinerarySub' => 'Le déroulé de vos étapes',
+			'hub.cards.itinerarySub' => 'Le déroulé de tes étapes',
 			'hub.cards.programme' => 'Programme',
-			'hub.cards.programmeSub' => 'Répartissez vos étapes',
+			'hub.cards.programmeSub' => 'Répartis tes étapes',
 			'hub.cards.calendar' => 'Calendrier',
 			'hub.cards.calendarSub' => 'Choisir les dates',
 			'hub.cards.transport' => 'Transport',
 			'hub.cards.transportSub' => 'Aller & retour',
 			'hub.cards.nuitees' => 'Nuitées',
-			'hub.cards.nuiteesSub' => 'Réserver vos nuits',
+			'hub.cards.nuiteesSub' => 'Réserver tes nuits',
 			'hub.cards.checklist' => 'Matériel & Sac',
-			'hub.cards.checklistSub' => 'Préparez votre sac à dos',
+			'hub.cards.checklistSub' => 'Prépare ton sac à dos',
 			'hub.cards.training' => 'Préparation physique',
-			'hub.cards.trainingSub' => 'Votre programme d\'entraînement',
+			'hub.cards.trainingSub' => 'Ton programme d\'entraînement',
 			'hub.cards.health' => 'Fiche médicale',
 			'hub.cards.healthSub' => 'À remplir avant de partir',
 			'hub.cards.cartes' => 'Cartes hors ligne',
 			'hub.cards.cartesSub' => 'Télécharger les cartes du circuit',
 			'hub.cards.offline' => 'Découvrir des sentiers',
-			'hub.cards.offlineSub' => 'Parcourez le catalogue',
+			'hub.cards.offlineSub' => 'Parcours le catalogue',
 			'hub.cards.group' => 'Mon groupe',
-			'hub.cards.groupSub' => 'Suivi de vos compagnons',
+			'hub.cards.groupSub' => 'Suivi de tes compagnons',
 			'hub.cards.navigation' => 'Navigation',
 			'hub.cards.navigationSub' => 'Carte et suivi GPS',
 			'hub.cards.emergency' => 'Urgence',
@@ -8465,7 +8465,7 @@ extension on Translations {
 			'hub.cards.signalement' => 'Signaler',
 			'hub.cards.signalementSub' => 'Obstacle, point d\'eau, danger',
 			'hub.cards.journal' => 'Journal',
-			'hub.cards.journalSub' => 'Vos notes et souvenirs',
+			'hub.cards.journalSub' => 'Tes notes et souvenirs',
 			'hub.cards.accommodations' => 'Hébergements',
 			'hub.cards.accommodationsSub' => 'Où dormir à proximité',
 			'hub.cards.tips' => 'Fiches conseils',
@@ -8473,11 +8473,11 @@ extension on Translations {
 			'hub.cards.townGuides' => 'Guides des villes',
 			'hub.cards.townGuidesSub' => 'Infos pratiques des étapes',
 			'hub.cards.recap' => 'Récapitulatif',
-			'hub.cards.recapSub' => 'Votre aventure en résumé',
+			'hub.cards.recapSub' => 'Ton aventure en résumé',
 			'hub.cards.importGpx' => 'Import GPX',
 			'hub.cards.importGpxSub' => 'Importer une trace GPS',
 			'hub.cards.diploma' => 'Diplôme',
-			'hub.cards.diplomaSub' => 'Votre certificat de fin',
+			'hub.cards.diplomaSub' => 'Ton certificat de fin',
 			'hub.cards.resume' => 'Résumé',
 			'hub.cards.resumeSub' => 'Synthèse du plan',
 			'hub.cards.shop' => 'Ravitaillement',
@@ -8487,7 +8487,7 @@ extension on Translations {
 			'hub.cards.fire' => 'Incendie',
 			'hub.cards.fireSub' => 'Risques & alertes',
 			'hub.cards.adjust' => 'Adapter l\'itinéraire',
-			'hub.cards.adjustSub' => 'Modifier vos jours à venir',
+			'hub.cards.adjustSub' => 'Modifier tes jours à venir',
 			'hub.fab.feedback' => 'Donner mon avis',
 			'hub.fab.sos' => 'SOS',
 			'hub.finishTrek.action' => 'Terminer le trek',
@@ -8501,7 +8501,7 @@ extension on Translations {
 			'map.viewMap' => 'Voir la carte',
 			'map.layers' => 'Calques',
 			'map.layersTitle' => 'Calques de la carte',
-			'map.layersSubtitle' => 'Choisissez les points affichés sur la carte',
+			'map.layersSubtitle' => 'Choisis les points affichés sur la carte',
 			'map.stageRemaining' => ({required Object km}) => '${km} km restants',
 			'map.offTrackChip' => 'Hors trace',
 			'map.perimetreEtape' => 'Étape',
@@ -8509,22 +8509,22 @@ extension on Translations {
 			'map.basculerVersSentier' => 'Voir le sentier entier',
 			'map.basculerVersEtape' => 'Voir l\'étape',
 			'map.guide.buttonsTitle' => 'Boutons',
-			'map.guide.position' => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez l\'autorisation de localisation.',
+			'map.guide.position' => 'Ta position GPS, mise à jour en marchant. Si le point disparaît, vérifie l\'autorisation de localisation.',
 			'map.guide.track' => 'Le tracé du sentier. L\'alerte hors trace s\'y réfère.',
-			'map.guide.centerOnMe' => 'Ramène la carte sur votre position.',
+			'map.guide.centerOnMe' => 'Ramène la carte sur ta position.',
 			'map.guide.photo' => 'Prend une photo pour le journal du jour.',
-			'map.guide.sos' => 'Ouvre l\'appel d\'urgence avec vos coordonnées GPS. À n\'utiliser qu\'en cas de réelle urgence.',
+			'map.guide.sos' => 'Ouvre l\'appel d\'urgence avec tes coordonnées GPS. À n\'utiliser qu\'en cas de réelle urgence.',
 			'map.guide.onlyInTrek' => 'Visible seulement une fois la randonnée démarrée.',
 			'map.guide.currentStage' => 'Ce qu\'il reste à marcher sur l\'étape en cours. Un tiret : la randonnée n\'a pas démarré.',
-			'map.guide.offTrack' => 'S\'allume quand vous vous éloignez du tracé. Revenez dessus pour l\'éteindre.',
-			'map.guide.poi.water' => 'Source ou fontaine signalée. Une source peut être à sec en été : ne comptez pas dessus.',
-			'map.guide.poi.shelter' => 'Refuge ou abri. Touchez le repère : altitude, services, contact.',
-			'map.guide.poi.accommodation' => 'Gîte, chambre ou hôtel. Vous réservez auprès de l\'établissement.',
-			'map.guide.poi.campsite' => 'Camping ou bivouac. Les règles changent selon le territoire : renseignez-vous avant de planter la tente.',
-			'map.guide.poi.shop' => 'Commerce où vous ravitailler. Horaires non garantis hors saison.',
+			'map.guide.offTrack' => 'S\'allume quand tu t\'éloignes du tracé. Reviens dessus pour l\'éteindre.',
+			'map.guide.poi.water' => 'Source ou fontaine signalée. Une source peut être à sec en été : ne compte pas dessus.',
+			'map.guide.poi.shelter' => 'Refuge ou abri. Touche le repère : altitude, services, contact.',
+			'map.guide.poi.accommodation' => 'Gîte, chambre ou hôtel. Tu réserves auprès de l\'établissement.',
+			'map.guide.poi.campsite' => 'Camping ou bivouac. Les règles changent selon le territoire : renseigne-toi avant de planter la tente.',
+			'map.guide.poi.shop' => 'Commerce où te ravitailler. Horaires non garantis hors saison.',
 			'map.guide.poi.restaurant' => 'Restaurant ou table d\'hôtes sur le parcours ou tout près.',
 			'map.guide.poi.viewpoint' => 'Point de vue remarquable. Bon pour la halte.',
-			'map.guide.poi.danger' => 'Passage délicat. Ralentissez et regardez le terrain avant de vous engager.',
+			'map.guide.poi.danger' => 'Passage délicat. Ralentis et regarde le terrain avant de t\'engager.',
 			'map.guide.poi.emergency' => 'Point de secours : poste, héliport ou borne d\'appel d\'urgence.',
 			'map.guide.poi.info' => 'Panneau ou point d\'information du sentier.',
 			'map.supplyDismiss' => 'Masquer l\'alerte',
@@ -8544,7 +8544,7 @@ extension on Translations {
 			'stage.difficulty.expert' => 'Expert',
 			'stage.difficulty.extreme' => 'Extrême',
 			'stage.remaining' => '{distance} km restants',
-			'stage.arrived' => 'Vous êtes arrivé !',
+			'stage.arrived' => 'Tu es arrivé !',
 			'stage.altitudeProfile' => 'Profil altimétrique',
 			'stage.statistics' => 'Statistiques',
 			'stage.departureArrival' => 'De {from} à {to}',
@@ -8555,15 +8555,15 @@ extension on Translations {
 			'stage.difficultyLabel' => 'Difficulté',
 			'stage.waterSources.title' => 'Points d\'eau',
 			'stage.waterSources.count' => '{n} source(s)',
-			'stage.waterSources.none' => 'Pas de point d\'eau référencé sur cette étape. Prévoyez au moins 3 L par personne.',
+			'stage.waterSources.none' => 'Pas de point d\'eau référencé sur cette étape. Prévois au moins 3 L par personne.',
 			'stage.accommodation.title' => 'Hébergements',
 			'stage.accommodation.none' => 'Aucun hébergement référencé sur cette étape.',
 			'stage.advice.title' => 'Conseils',
-			'stage.advice.waterScarce' => 'Peu de points d\'eau : partez avec au moins 2,5 L.',
-			'stage.advice.waterAmple' => 'Remplissez vos gourdes à chaque point d\'eau rencontré.',
-			'stage.advice.hardStage' => 'Étape technique : partez tôt le matin pour éviter la chaleur et les orages d\'après-midi.',
+			'stage.advice.waterScarce' => 'Peu de points d\'eau : pars avec au moins 2,5 L.',
+			'stage.advice.waterAmple' => 'Remplis tes gourdes à chaque point d\'eau rencontré.',
+			'stage.advice.hardStage' => 'Étape technique : pars tôt le matin pour éviter la chaleur et les orages d\'après-midi.',
 			'stage.advice.earlyStart' => 'Départ recommandé avant 8 h pour profiter de la fraîcheur matinale.',
-			'stage.advice.bigClimb' => 'Fort dénivelé positif : gérez votre effort, faites des pauses régulières.',
+			'stage.advice.bigClimb' => 'Fort dénivelé positif : gère ton effort, fais des pauses régulières.',
 			'trail.stages' => 'Étapes',
 			'trail.totalDistance' => 'Distance totale',
 			'trail.totalElevation' => 'Dénivelé total',
@@ -8592,9 +8592,9 @@ extension on Translations {
 			'gps.offTrack' => 'Hors trace',
 			'gps.centerOnMe' => 'Centrer sur ma position',
 			'gps.centeredOnTrack' => 'Position introuvable — carte recentrée sur le tracé',
-			'navAlert.offTrackBanner' => ({required Object meters}) => 'Vous vous éloignez du sentier — ${meters} m. Vérifiez votre position.',
-			'navAlert.offTrackNotifTitle' => 'Vous quittez le sentier',
-			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Vous vous éloignez du sentier (${meters} m). Vérifiez votre position.',
+			'navAlert.offTrackBanner' => ({required Object meters}) => 'Tu t\'éloignes du sentier — ${meters} m. Vérifie ta position.',
+			'navAlert.offTrackNotifTitle' => 'Tu quittes le sentier',
+			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Tu t\'éloignes du sentier (${meters} m). Vérifie ta position.',
 			'planning.title' => 'Planning',
 			'planning.duration' => 'Durée',
 			'planning.days' => 'jours',
@@ -8606,7 +8606,7 @@ extension on Translations {
 			'planning.stages' => 'Étapes',
 			'planning.plan' => 'Planifier',
 			'itinerary.title' => 'Itinéraire',
-			'itinerary.subtitle' => 'Le déroulé de vos étapes',
+			'itinerary.subtitle' => 'Le déroulé de tes étapes',
 			'itinerary.direction.title' => 'Sens de la rando',
 			'itinerary.direction.from' => 'Départ',
 			'itinerary.direction.to' => 'Arrivée',
@@ -8666,7 +8666,7 @@ extension on Translations {
 			'tracking.stepCounting.stateUnavailable' => 'Ton téléphone ne compte pas les pas : StepWays suit ta progression au GPS seul.',
 			'tracking.stepCounting.stateStreamError' => 'Le compte des pas s\'est interrompu : StepWays suit ta progression au GPS seul.',
 			'checklist.title' => 'Matériel & Sac',
-			'checklist.subtitle' => 'Préparez votre sac à dos',
+			'checklist.subtitle' => 'Prépare ton sac à dos',
 			'checklist.progress' => '{checked}/{total} préparés',
 			'checklist.complete' => 'Checklist complète !',
 			'checklist.reset' => 'Réinitialiser',
@@ -8792,9 +8792,9 @@ extension on Translations {
 			'checklist.weight.kilograms' => 'kg',
 			'checklist.weight.adviceUltraLight' => 'Sac ultra-léger — idéal pour le trek',
 			'checklist.weight.adviceOk' => 'Sac bien équilibré',
-			'checklist.weight.adviceHeavy' => 'Correct mais lourd — envisagez d\'alléger',
-			'checklist.weight.adviceTooHeavy' => 'Attention genoux ! Allégez le sac',
-			'checklist.weight.adviceDanger' => 'Danger blessure — allégez absolument !',
+			'checklist.weight.adviceHeavy' => 'Correct mais lourd — envisage d\'alléger',
+			'checklist.weight.adviceTooHeavy' => 'Attention genoux ! Allège le sac',
+			'checklist.weight.adviceDanger' => 'Danger blessure — allège absolument !',
 			'checklist.weight.itemWeight' => 'Poids de l\'article',
 			'checklist.weight.cancel' => 'Annuler',
 			'checklist.weight.save' => 'Enregistrer',
@@ -8830,7 +8830,7 @@ extension on Translations {
 			'checklist.ui.deleteItemTitle' => 'Supprimer cet article ?',
 			'checklist.ui.deleteItemBody' => 'L\'article "{name}" sera définitivement supprimé.',
 			'checklist.ui.requiredWarnTitle' => 'Équipement obligatoire',
-			'checklist.ui.requiredWarnBody' => 'Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Voulez-vous vraiment le retirer ?',
+			'checklist.ui.requiredWarnBody' => 'Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Veux-tu vraiment le retirer ?',
 			'checklist.ui.keep' => 'Garder',
 			'checklist.ui.removeAnyway' => 'Retirer quand même',
 			'checklist.ui.reduceQuantity' => 'Réduire quantité',
@@ -8839,22 +8839,22 @@ extension on Translations {
 			'checklist.ui.removeFromShoppingList' => 'Retirer de la liste',
 			'checklist.ui.help' => 'Aide',
 			'checklist.ui.shoppingListTitle' => 'Liste de courses',
-			'checklist.ui.shoppingListEmpty' => 'Votre liste de courses est vide. Ajoutez des items avec le bouton panier.',
+			'checklist.ui.shoppingListEmpty' => 'Ta liste de courses est vide. Ajoute des items avec le bouton panier.',
 			'checklist.ui.shoppingToBuy' => 'À acheter',
 			'checklist.ui.shoppingPurchased' => 'Déjà acheté',
 			'checklist.ui.share' => 'PARTAGER',
 			'checklist.ui.infoTitle' => 'Matériel & Sac',
 			'checklist.ui.infoCheckTitle' => 'Cocher les items',
-			'checklist.ui.infoCheckBody' => 'Cochez ce que vous emportez — le poids se recalcule en haut.',
+			'checklist.ui.infoCheckBody' => 'Coche ce que tu emportes — le poids se recalcule en haut.',
 			'checklist.ui.infoRequiredTitle' => 'Obligatoires',
 			'checklist.ui.infoRequiredBody' => 'Items avec cadenas = réglementation (sifflet, lampe, couverture survie).',
 			'checklist.ui.infoGaugeTitle' => 'Jauge poids',
-			'checklist.ui.infoGaugeBody' => 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.',
+			'checklist.ui.infoGaugeBody' => 'Objectif : sac < 15% de ton poids. Vert = OK, Orange = attention, Rouge = trop lourd.',
 			_ => null,
 		} ?? switch (path) {
 			'checklist.ui.infoAddTitle' => 'Ajouter',
-			'checklist.ui.infoAddBody' => 'Bouton + en bas de chaque catégorie pour vos propres items.',
-			'checklist.ui.infoValidateBody' => 'Validez quand votre sac est prêt — un check apparaîtra sur l\'accueil.',
+			'checklist.ui.infoAddBody' => 'Bouton + en bas de chaque catégorie pour tes propres items.',
+			'checklist.ui.infoValidateBody' => 'Valide quand ton sac est prêt — un check apparaîtra sur l\'accueil.',
 			'checklist.ui.infoUnderstood' => 'Compris !',
 			'checklist.ui.prepTitle' => 'Préparation du sac',
 			'checklist.ui.prepCounter' => '{prepared} / {total} items préparés',
@@ -8863,7 +8863,7 @@ extension on Translations {
 			'checklist.ui.preDepartureCounter' => '{checked}/{total} vérifiés',
 			'checklist.ui.preDep1' => 'Vérifier la météo des prochains jours',
 			'checklist.ui.preDep2' => 'Charger téléphone + batterie externe',
-			'checklist.ui.preDep3' => 'Prévenir un proche de votre itinéraire',
+			'checklist.ui.preDep3' => 'Prévenir un proche de ton itinéraire',
 			'checklist.ui.preDep4' => 'Vérifier que le sac est bien fermé et étanche',
 			'checklist.ui.preDep5' => 'Remplir les gourdes (minimum 2L)',
 			'checklist.ui.preDep6' => 'Appliquer crème solaire et anti-frottements',
@@ -8876,20 +8876,20 @@ extension on Translations {
 			'checklist.ui.shareGroup' => 'PARTAGER AVEC LE GROUPE',
 			'checklist.ui.exportList' => 'EXPORTER LA LISTE',
 			'checklist.ui.bagValidTitle' => 'Sac valide',
-			'checklist.ui.bagValidBody' => 'Tous les {total} équipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids de référence)\n\nÊtes-vous certain que votre sac est prêt ?',
+			'checklist.ui.bagValidBody' => 'Tous les {total} équipements obligatoires sont dans ton sac.\n\nPoids total : {weight} kg ({pct}% du poids de référence)\n\nEs-tu certain que ton sac est prêt ?',
 			'checklist.ui.checkAgain' => 'Vérifier encore',
 			'checklist.ui.yesBagOk' => 'Oui, sac OK',
 			'checklist.ui.bagValidatedSnack' => 'Sac valide !',
-			'checklist.ui.validationCancelledSnack' => 'Validation du sac annulée — vous pouvez modifier votre matériel.',
+			'checklist.ui.validationCancelledSnack' => 'Validation du sac annulée — tu peux modifier ton matériel.',
 			'checklist.ui.missingTitle' => 'Équipement manquant',
 			'checklist.ui.missingBody' => '{checked}/{total} équipements obligatoires cochés.',
 			'checklist.ui.missingList' => 'Il manque :',
 			'checklist.ui.understood' => 'Compris',
 			'checklist.ui.validateAnyway' => 'Valider quand même',
 			'checklist.ui.bagValidatedMissingSnack' => 'Sac valide (avec items manquants) !',
-			'checklist.ui.shareGroupHint' => 'Rejoignez un groupe pour partager votre checklist.',
+			'checklist.ui.shareGroupHint' => 'Rejoins un groupe pour partager ta checklist.',
 			'checklist.ui.shareFailed' => 'Le partage n\'a pas pu s\'ouvrir sur cet appareil.',
-			'checklist.seasonalBanner' => ({required Object season}) => 'Sac adapté à la saison (${season}) et à votre sentier.',
+			'checklist.seasonalBanner' => ({required Object season}) => 'Sac adapté à la saison (${season}) et à ton sentier.',
 			'checklist.seasons.winter' => 'hiver',
 			'checklist.seasons.spring' => 'printemps',
 			'checklist.seasons.summer' => 'été',
@@ -8899,15 +8899,15 @@ extension on Translations {
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
 			'checklist.demoBridledTitle' => 'Version d\'essai',
 			'checklist.demoBridledBody' => 'Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s\'ouvre avec la randonnée.',
-			'checklist.demoLockedCategory' => 'Achetez la randonnée pour cette catégorie',
+			'checklist.demoLockedCategory' => 'Achète la randonnée pour cette catégorie',
 			'checklist.demoUnlockCta' => 'Acheter la randonnée',
 			'journal.title' => 'Journal de randonnée',
-			'journal.empty' => 'Votre journal est vide',
-			'journal.emptySubtitle' => 'Notez vos impressions et souvenirs de randonnée',
+			'journal.empty' => 'Ton journal est vide',
+			'journal.emptySubtitle' => 'Note tes impressions et souvenirs de randonnée',
 			'journal.addNote' => 'Nouvelle note',
 			'journal.stage' => 'Étape',
-			'journal.yourNote' => 'Votre note',
-			'journal.placeholder' => 'Décrivez votre journée de randonnée...',
+			'journal.yourNote' => 'Ta note',
+			'journal.placeholder' => 'Décris ta journée de randonnée...',
 			'journal.save' => 'Enregistrer',
 			'journal.cancel' => 'Annuler',
 			'journal.delete' => 'Supprimer',
@@ -8939,7 +8939,7 @@ extension on Translations {
 			'journal.shareSubject' => 'Mon carnet de randonnée',
 			'journal.shareError' => 'Partage impossible',
 			'journal.lockedTitle' => 'Le journal fait partie du pack',
-			'journal.lockedBody' => 'Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.',
+			'journal.lockedBody' => 'Note tes impressions, ajoute tes photos et relis chaque journée de marche. Le journal se débloque avec le sentier.',
 			'journal.lockedUnlock' => 'Acheter',
 			'weather.title' => 'Météo',
 			'weather.loading' => 'Chargement de la météo...',
@@ -8953,7 +8953,7 @@ extension on Translations {
 			'weather.wind' => 'Vent',
 			'weather.uv' => 'Indice UV',
 			'weather.fireRisk' => 'Risque incendie',
-			'weather.fireRiskDesc' => 'Risque incendie élevé. Consultez les consignes de sécurité.',
+			'weather.fireRiskDesc' => 'Risque incendie élevé. Consulte les consignes de sécurité.',
 			'weather.fireSafetyTips' => 'Consignes incendie',
 			'weather.alertCount' => 'alerte',
 			'weather.alertCountPlural' => 'alertes',
@@ -8977,7 +8977,7 @@ extension on Translations {
 			'weather.recommendation.watch' => 'Vigilance recommandée',
 			'weather.recommendation.danger' => 'Conditions défavorables',
 			'weather.alert.storm.title' => 'Orage prévu',
-			'weather.alert.storm.desc' => ({required Object condition}) => '${condition}. Évitez les crêtes et les zones exposées.',
+			'weather.alert.storm.desc' => ({required Object condition}) => '${condition}. Évite les crêtes et les zones exposées.',
 			'weather.alert.wind.title' => 'Vent fort',
 			'weather.alert.wind.desc' => ({required Object value}) => 'Rafales jusqu\'à ${value} km/h. Prudence sur les passages exposés.',
 			'weather.alert.rain.title' => 'Fortes précipitations',
@@ -9021,8 +9021,8 @@ extension on Translations {
 			'share.templateJourney' => 'Parcours',
 			'share.templateStage' => 'Étape',
 			'diploma.title' => 'Diplôme de randonnée',
-			'diploma.yourName' => 'Votre nom',
-			'diploma.namePlaceholder' => 'Entrez votre nom...',
+			'diploma.yourName' => 'Ton nom',
+			'diploma.namePlaceholder' => 'Entre ton nom...',
 			'diploma.generatePdf' => 'Générer le PDF',
 			'diploma.certifies' => 'Certifie que',
 			'diploma.completed' => 'a parcouru le',
@@ -9035,7 +9035,7 @@ extension on Translations {
 			'diploma.pdfFrom' => 'Du',
 			'diploma.pdfTo' => 'au',
 			'diploma.pdfIssuedOn' => 'Délivré le {date}',
-			'diploma.recapTitle' => 'Votre aventure',
+			'diploma.recapTitle' => 'Ton aventure',
 			'diploma.recapJournalPhotos' => 'Photos du journal',
 			'diploma.recapNoPhotos' => 'Aucune photo dans le journal',
 			'diploma.recapStats' => 'Statistiques',
@@ -9048,7 +9048,7 @@ extension on Translations {
 			'diploma.recapJournalEntries' => '{count} notes de journal',
 			'diploma.downloadPdf' => 'Télécharger le diplôme PDF',
 			'diploma.lockedTitle' => 'Diplôme verrouillé',
-			'diploma.lockedMessage' => 'Terminez l\'intégralité de votre parcours pour débloquer votre diplôme de finisher.',
+			'diploma.lockedMessage' => 'Termine l\'intégralité de ton parcours pour débloquer ton diplôme de finisher.',
 			'diploma.labelIntegral' => 'Parcours intégral',
 			'diploma.labelPartial' => 'Parcours partiel',
 			'diploma.pdfSaved' => ({required Object file}) => 'Diplôme enregistré : ${file}',
@@ -9060,12 +9060,12 @@ extension on Translations {
 			'notifications.weatherAlerts' => 'Alertes météo',
 			'notifications.countdown' => 'Rappel J-2',
 			'notifications.countdownDesc' => 'Notification 2 jours avant le départ',
-			'notifications.schedulerCountdownTitle' => 'Votre randonnée approche !',
-			'notifications.schedulerCountdownBody' => 'Départ dans 2 jours. Vérifiez votre checklist et la météo.',
+			'notifications.schedulerCountdownTitle' => 'Ta randonnée approche !',
+			'notifications.schedulerCountdownBody' => 'Départ dans 2 jours. Vérifie ta checklist et la météo.',
 			'notifications.schedulerDailyTitle' => 'Bonne journée de randonnée !',
-			'notifications.schedulerDailyBody' => 'Consultez la météo et préparez votre étape du jour.',
+			'notifications.schedulerDailyBody' => 'Consulte la météo et prépare ton étape du jour.',
 			'notifications.permissionBlockedTitle' => 'Notifications bloquées',
-			'notifications.permissionBlockedBody' => 'Votre téléphone bloque les notifications de l\'application : aucun rappel, aucune alerte ne vous parviendra.',
+			'notifications.permissionBlockedBody' => 'Ton téléphone bloque les notifications de l\'application : aucun rappel, aucune alerte ne te parviendra.',
 			'notifications.permissionAsk' => 'Autoriser les notifications',
 			'settings.title' => 'Paramètres',
 			'settings.language' => 'Langue',
@@ -9087,7 +9087,7 @@ extension on Translations {
 			'settings.countdownReminder' => 'Rappel J-2',
 			'settings.countdownDesc' => 'Notification 2 jours avant le départ',
 			'settings.offTrackAlerts' => 'Alerte hors-trace',
-			'settings.offTrackAlertsDesc' => 'Notification + vibration si vous quittez le sentier',
+			'settings.offTrackAlertsDesc' => 'Notification + vibration si tu quittes le sentier',
 			'settings.version' => 'Version',
 			'settings.versionLabel' => 'Version de l\'application',
 			'settings.noDateChosen' => 'Aucune date choisie',
@@ -9099,61 +9099,61 @@ extension on Translations {
 			'feedback.compliment' => 'Compliment',
 			'feedback.question' => 'Question',
 			'feedback.other' => 'Autre',
-			'feedback.message' => 'Votre message',
-			'feedback.messagePlaceholder' => 'Décrivez votre retour...',
+			'feedback.message' => 'Ton message',
+			'feedback.messagePlaceholder' => 'Décris ton retour...',
 			'feedback.satisfaction' => 'Satisfaction',
 			'feedback.send' => 'Envoyer',
 			'feedback.sending' => 'Envoi...',
-			'feedback.thanks' => 'Merci pour votre retour !',
+			'feedback.thanks' => 'Merci pour ton retour !',
 			'feedback.pending' => 'en attente',
-			'feedback.emptyMessage' => 'Écrivez votre message avant de l\'envoyer.',
-			'feedback.sendFailed' => 'Votre message n\'a pas pu être enregistré.',
-			'feedback.keptLocally' => 'Enregistré sur ce téléphone. Votre retour partira dès que l\'envoi sera possible.',
-			'feedback.keptLocallyNotice' => 'L\'envoi des retours n\'est pas encore ouvert : vos messages sont gardés sur ce téléphone.',
-			'feedback.sentThanks' => 'Merci, votre retour est parti.',
+			'feedback.emptyMessage' => 'Écris ton message avant de l\'envoyer.',
+			'feedback.sendFailed' => 'Ton message n\'a pas pu être enregistré.',
+			'feedback.keptLocally' => 'Enregistré sur ce téléphone. Ton retour partira dès que l\'envoi sera possible.',
+			'feedback.keptLocallyNotice' => 'L\'envoi des retours n\'est pas encore ouvert : tes messages sont gardés sur ce téléphone.',
+			'feedback.sentThanks' => 'Merci, ton retour est parti.',
 			'auth.profile' => 'Profil',
 			'auth.anonymous' => 'Randonneur sans compte',
 			'auth.connectedVia' => 'Connecté via',
 			'auth.signInGoogle' => 'Se connecter avec Google',
-			'auth.signInGoogleDesc' => 'Pour sauvegarder votre progression',
+			'auth.signInGoogleDesc' => 'Pour sauvegarder ta progression',
 			'auth.signOut' => 'Se déconnecter',
 			'auth.signOutDesc' => 'Revenir au mode sans compte',
 			'auth.signOutConfirm' => 'Se déconnecter ?',
-			'auth.signOutMessage' => 'Vous reviendrez au mode sans compte. Vos données locales sont conservées.',
+			'auth.signOutMessage' => 'Tu reviendras au mode sans compte. Tes données locales sont conservées.',
 			'auth.deleteAccount' => 'Supprimer mon compte',
-			'auth.deleteAccountDesc' => 'Toutes vos données seront effacées',
-			'auth.deleteConfirm' => 'Supprimer votre compte ?',
-			'auth.deleteMessage' => 'Cette action est irréversible. Toutes vos données, notes et progression seront effacées.',
+			'auth.deleteAccountDesc' => 'Toutes tes données seront effacées',
+			'auth.deleteConfirm' => 'Supprimer ton compte ?',
+			'auth.deleteMessage' => 'Cette action est irréversible. Toutes tes données, notes et progression seront effacées.',
 			'auth.cancel' => 'Annuler',
 			'auth.pseudonym' => 'Pseudonyme',
-			'auth.pseudonymHint' => 'Votre nom de randonneur',
+			'auth.pseudonymHint' => 'Ton nom de randonneur',
 			'auth.save' => 'Enregistrer',
 			'auth.changeAvatar' => 'Changer l\'avatar',
 			'auth.chooseAvatar' => 'Choisir un avatar',
 			'auth.errorLoading' => 'Erreur de chargement',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
-			'auth.errorTimeout' => 'Le compte n\'a pas répondu. Vérifiez votre connexion, puis réessayez.',
+			'auth.errorTimeout' => 'Le compte n\'a pas répondu. Vérifie ta connexion, puis réessaie.',
 			'feasibility.restart' => 'Recommencer',
 			'feasibility.objectiveTitle' => 'Faisabilité pour ce trek',
-			'feasibility.objectiveIntro' => 'Ce verdict croise votre profil réel et les exigences du trek.',
+			'feasibility.objectiveIntro' => 'Ce verdict croise ton profil réel et les exigences du trek.',
 			'feasibility.openProfile' => 'Ma fiche d\'info',
 			'feasibility.openWalkTest' => 'Test 6 minutes',
 			'feasibility.openPastHikes' => 'Mes 5 dernières randos',
-			'feasibility.sourceObjective' => 'Basé sur votre profil objectif',
-			'feasibility.sourceFallback' => 'Basé sur le questionnaire (en attendant votre profil)',
+			'feasibility.sourceObjective' => 'Basé sur ton profil objectif',
+			'feasibility.sourceFallback' => 'Basé sur le questionnaire (en attendant ton profil)',
 			'feasibility.gapTooHigh' => 'Écart trop important',
-			'feasibility.gaps.elevationPerDay' => 'Dénivelé par jour trop élevé vs votre habitude',
-			'feasibility.gaps.distancePerDay' => 'Distance par jour supérieure à votre expérience',
+			'feasibility.gaps.elevationPerDay' => 'Dénivelé par jour trop élevé vs ton habitude',
+			'feasibility.gaps.distancePerDay' => 'Distance par jour supérieure à ton expérience',
 			'feasibility.gaps.consecutiveDays' => 'Nombre de jours consécutifs jamais atteint',
-			'feasibility.gaps.technicity' => 'Technicité du terrain au-dessus de votre niveau',
+			'feasibility.gaps.technicity' => 'Technicité du terrain au-dessus de ton niveau',
 			'feasibility.gaps.risk' => 'Niveau de risque élevé pour ce trek',
 			'feasibility.gaps.fitness' => 'Forme insuffisante au test 6 minutes',
-			'feasibility.gaps.effort' => 'Effort global (IBP) supérieur à votre expérience',
+			'feasibility.gaps.effort' => 'Effort global (IBP) supérieur à ton expérience',
 			'feasibility.formula.title' => 'Faisabilité pour ce trek',
-			'feasibility.formula.answerTitle' => 'Est-ce faisable pour vous ?',
-			'feasibility.formula.answerGreen' => ({required Object days}) => 'Oui. Ce sentier est à votre portée en ${days} jours.',
+			'feasibility.formula.answerTitle' => 'Est-ce faisable pour toi ?',
+			'feasibility.formula.answerGreen' => ({required Object days}) => 'Oui. Ce sentier est à ta portée en ${days} jours.',
 			'feasibility.formula.answerOrange' => ({required Object days}) => 'Oui, en ${days} jours. Mais une journée sera dure.',
-			'feasibility.formula.answerRed' => 'Pas encore. Une journée de ce sentier demande plus que ce que vous tenez aujourd\'hui. Gagnez en forme, ou partez hors été.',
+			'feasibility.formula.answerRed' => 'Pas encore. Une journée de ce sentier demande plus que ce que tu tiens aujourd\'hui. Gagne en forme, ou pars hors été.',
 			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'Le sentier se marche en ${walking} jours. ${rest} jour(s) de repos conseillés.',
 			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'Le sentier se marche en ${walking} jours.',
 			'feasibility.formula.explainToggle' => 'Comment ce résultat est calculé',
@@ -9255,7 +9255,7 @@ extension on Translations {
 			'feasibility.flow.hintReady' => 'Tout y est : tu peux voir ton résultat.',
 			'tips.carouselTitle' => 'Conseils randonnée',
 			'tips.allCategories' => 'Toutes',
-			'tips.swipeHint' => 'Glissez pour voir plus',
+			'tips.swipeHint' => 'Glisse pour voir plus',
 			'tips.detailTitle' => 'Détail du conseil',
 			'tips.readMore' => 'Lire la suite',
 			'tips.noTips' => 'Aucun conseil disponible',
@@ -9278,7 +9278,7 @@ extension on Translations {
 			'tips.altitude' => 'Altitude min.',
 			'tips.screenTitle' => 'Fiches conseils',
 			'tips.screenIntro' => 'Préparation, matériel, sécurité, santé.',
-			'tips.followUs' => 'Suivez-nous :',
+			'tips.followUs' => 'Suis-nous :',
 			'tips.viewOnFacebook' => 'Voir sur Facebook',
 			'tips.viewOnInstagram' => 'Instagram',
 			'tips.linkOffline' => 'Lien indisponible hors-ligne',
@@ -9293,12 +9293,12 @@ extension on Translations {
 			'tips.themes.other' => 'Divers',
 			'goodies.title' => 'Boutique Goodies',
 			'noData.title' => 'Aucun sentier téléchargé',
-			'noData.subtitle' => 'Téléchargez un sentier pour commencer',
-			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour votre randonnée.',
+			'noData.subtitle' => 'Télécharge un sentier pour commencer',
+			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour ta randonnée.',
 			'noData.browseCta' => 'Parcourir les sentiers',
 			'catalog.title' => 'Catalogue des sentiers',
 			'catalog.prepare' => 'Préparer',
-			'catalog.mustDownload' => 'Téléchargez ce sentier pour l\'explorer.',
+			'catalog.mustDownload' => 'Télécharge ce sentier pour l\'explorer.',
 			'catalog.emptyTitle' => 'Aucun sentier disponible',
 			'catalog.emptySubtitle' => 'Aucun sentier n\'est encore proposé au catalogue.',
 			'catalog.a11y.prepareButton' => ({required Object nom}) => 'Préparer le sentier ${nom}',
@@ -9308,21 +9308,21 @@ extension on Translations {
 			'catalog.freeBadge' => 'Gratuit',
 			'catalog.freeTrailTagline' => ({required Object etapes}) => 'Les ${etapes} premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée.',
 			'catalog.loadFailedTitle' => 'Liste des sentiers indisponible',
-			'catalog.loadFailedSubtitle' => 'Impossible de récupérer la liste des sentiers pour le moment. Vos sentiers déjà téléchargés restent accessibles hors ligne.',
+			'catalog.loadFailedSubtitle' => 'Impossible de récupérer la liste des sentiers pour le moment. Tes sentiers déjà téléchargés restent accessibles hors ligne.',
 			'catalog.loadFailedRetry' => 'Réessayer',
-			'catalog.staleNoticeOffline' => 'Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.',
+			'catalog.staleNoticeOffline' => 'Hors ligne : voici tes sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.',
 			'demo.bandeau' => 'MODE DÉMO',
 			'demo.quitter' => 'Quitter',
 			'demo.boutonTitre' => 'Essayer la démo',
 			'demo.boutonSous' => 'Toute l\'application. Rien n\'est enregistré.',
-			'demo.rienNeCompte' => 'Vous êtes en démo : rien n\'est enregistré. Ni étapes, ni diplôme, ni achat.',
+			'demo.rienNeCompte' => 'Tu es en démo : rien n\'est enregistré. Ni étapes, ni diplôme, ni achat.',
 			'demo.simulerEtape' => 'Simuler l\'étape suivante',
 			'demo.simulerFin' => 'Simuler l\'arrivée',
 			'demo.simulerRelancer' => 'Recommencer la démo',
 			'demo.marcheSimulee' => ({required Object facteur}) => 'Marche simulée — temps accéléré ×${facteur}',
-			'demo.arriveeTitre' => 'Bravo, vous êtes arrivé !',
-			'demo.arriveeTexte' => 'Vous avez terminé le sentier en démo. Rien n\'a été enregistré.',
-			'demo.arriveeChiffres' => 'Votre démonstration',
+			'demo.arriveeTitre' => 'Bravo, tu es arrivé !',
+			'demo.arriveeTexte' => 'Tu as terminé le sentier en démo. Rien n\'a été enregistré.',
+			'demo.arriveeChiffres' => 'Ta démonstration',
 			'demo.arriveeFermer' => 'Fermer',
 			'demo.sortieTitre' => 'Fin de la démo',
 			'demo.sortieEnTeteCatalogue' => 'La démo reste en haut de la liste des sentiers.',
@@ -9339,14 +9339,14 @@ extension on Translations {
 			'demo.compteReafficherSous' => 'Le bouton revient en haut de la liste des sentiers',
 			'demo.collecteTitre' => 'Ce qui a servi au calcul',
 			'demo.collecteIntro' => 'Les informations utilisées pour calculer la faisabilité.',
-			'demo.collecteProfil' => 'Votre profil',
-			'demo.collecteForme' => 'Votre forme',
-			'demo.collecteExperience' => 'Votre expérience',
+			'demo.collecteProfil' => 'Ton profil',
+			'demo.collecteForme' => 'Ta forme',
+			'demo.collecteExperience' => 'Ton expérience',
 			'demo.collecteSaison' => 'Saison du départ',
 			'demo.collecteSentier' => 'Le sentier',
 			'demo.collecteJours' => 'Nombre de jours',
 			'demo.collecteAbsent' => 'Non renseigné',
-			'demo.sortieFaite' => 'Vous avez quitté la démo.',
+			'demo.sortieFaite' => 'Tu as quitté la démo.',
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
@@ -9357,7 +9357,7 @@ extension on Translations {
 			'follow.invalidLink' => 'Lien invalide',
 			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
 			'cloud.localModeTitle' => 'Mode local',
-			'cloud.localModeBody' => 'Cette installation n\'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Vos données restent sur l\'appareil.',
+			'cloud.localModeBody' => 'Cette installation n\'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Tes données restent sur l\'appareil.',
 			'cloud.statusSection' => 'Cloud',
 			'cloud.statusActive' => 'Services en ligne actifs',
 			'cloud.statusActiveDesc' => 'Sauvegarde et suivi en temps réel disponibles.',
@@ -9369,16 +9369,16 @@ extension on Translations {
 			'onboarding.next' => 'Suivant',
 			'onboarding.getStarted' => 'Commencer',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenue sur ${appName}',
-			'onboarding.welcomeSubtitle' => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.',
-			'onboarding.languageTitle' => 'Choisissez votre langue',
-			'onboarding.languageSubtitle' => 'Vous pourrez la modifier à tout moment dans les paramètres.',
-			'onboarding.downloadTitle' => 'Téléchargez votre premier sentier',
-			'onboarding.downloadSubtitle' => 'Parcourez le catalogue et téléchargez un sentier pour l\'utiliser entièrement hors ligne.',
+			'onboarding.welcomeSubtitle' => 'Ton compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.',
+			'onboarding.languageTitle' => 'Choisis ta langue',
+			'onboarding.languageSubtitle' => 'Tu pourras la modifier à tout moment dans les paramètres.',
+			'onboarding.downloadTitle' => 'Télécharge ton premier sentier',
+			'onboarding.downloadSubtitle' => 'Parcours le catalogue et télécharge un sentier pour l\'utiliser entièrement hors ligne.',
 			'onboarding.browseCatalog' => 'Parcourir le catalogue',
-			'onboarding.recoveryNudge' => 'Pensez à noter votre code de reconnexion (dans les réglages) : il ouvre vos données sur un autre téléphone.',
-			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
-			'monetization.paywallTitle' => 'Débloquez cette randonnée',
-			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.',
+			'onboarding.recoveryNudge' => 'Pense à noter ton code de reconnexion (dans les réglages) : il ouvre tes données sur un autre téléphone.',
+			'monetization.demoBanner' => 'Mode démo — touche pour débloquer',
+			'monetization.paywallTitle' => 'Débloque cette randonnée',
+			'monetization.paywallBody' => 'Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.',
 			'monetization.featureMap' => 'Carte hors ligne + GPS + suivi en direct',
 			'monetization.featureJournal' => 'Journal de bord complet',
 			'monetization.featureDiploma' => 'Diplôme de fin de randonnée',
@@ -9390,13 +9390,13 @@ extension on Translations {
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
 			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
 			'monetization.walletTitle' => 'Compte-étapes',
-			'monetization.walletSubtitle' => 'Vos étapes servent à débloquer les randonnées',
+			'monetization.walletSubtitle' => 'Tes étapes servent à débloquer les randonnées',
 			'monetization.walletUnit' => 'étapes',
 			'monetization.storeUnavailable' => 'Le paiement n\'est pas disponible pour le moment.',
 			'monetization.restoreUnavailable' => 'Restauration impossible : le paiement n\'est pas disponible pour le moment.',
-			'monetization.restoreRequested' => 'Restauration demandée. Vos achats réapparaîtront dans un instant.',
+			'monetization.restoreRequested' => 'Restauration demandée. Tes achats réapparaîtront dans un instant.',
 			'monetization.restoreCta' => 'Restaurer mes achats',
-			'monetization.restoreWhatItCovers' => 'La restauration ramène votre abonnement et vos recharges. Les randonnées débloquées avec vos étapes sont enregistrées sur cet appareil.',
+			'monetization.restoreWhatItCovers' => 'La restauration ramène ton abonnement et tes recharges. Les randonnées débloquées avec tes étapes sont enregistrées sur cet appareil.',
 			'monetization.rechargeTitle' => 'Recharger mon compte-étapes',
 			'monetization.rechargeSubtitle' => 'Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.',
 			'monetization.rechargeBalance' => 'Solde actuel',
@@ -9420,12 +9420,12 @@ extension on Translations {
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.',
 			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
 			'monetization.buyOutcomeUnknownPrice' => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.',
-			'monetization.buyOutcomeDemo' => 'Vous êtes en démo : aucun achat n\'est possible, et rien n\'a été débité.',
+			'monetization.buyOutcomeDemo' => 'Tu es en démo : aucun achat n\'est possible, et rien n\'a été débité.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} par mois',
-			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.',
+			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si tu arrêtes l’abonnement.',
 			'monetization.cancelCta' => 'Arrêter mon abonnement',
-			'monetization.cancelExplains' => 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.',
-			'monetization.cancelStoreUnavailable' => 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.',
+			'monetization.cancelExplains' => 'L’arrêt se fait dans la boutique qui te facture (Google Play ou l’App Store). Ce bouton t’y conduit directement. Ton accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées te restent.',
+			'monetization.cancelStoreUnavailable' => 'Impossible d’ouvrir la boutique. Ouvre-la toi-même, puis Abonnements.',
 			'monetization.adsBadgePub' => 'Avec publicité',
 			'monetization.adsBadgeAbonne' => 'Abonné — sans publicité',
 			'monetization.adsBadgeAchete' => 'Acheté — sans publicité',
@@ -9440,13 +9440,13 @@ extension on Translations {
 			'monetization.removeAdsWatch' => 'Voir une vidéo',
 			'monetization.removeAdsWatchBody' => 'Sans publicité pendant 24 h. Rien d\'autre : ni étapes, ni randonnée débloquée.',
 			'signalement.title' => 'Signaler',
-			'signalement.chooseType' => 'Que voulez-vous signaler ?',
+			'signalement.chooseType' => 'Que veux-tu signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
 			'signalement.types.eauASec' => 'Point d\'eau à sec',
 			'signalement.types.danger' => 'Danger',
 			'signalement.latencyBanner' => 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.',
 			'signalement.confirm' => 'Confirmer le signalement',
-			'signalement.noLocation' => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.',
+			'signalement.noLocation' => 'Position GPS indisponible pour le moment. Réessaie sous le ciel ouvert.',
 			'signalement.savedTitle' => 'Signalement enregistré',
 			'signalement.savedPendingSync' => 'Il sera partagé dès le retour du réseau.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
@@ -9461,7 +9461,7 @@ extension on Translations {
 			'signalement.water.states.dry' => 'À sec',
 			'signalement.water.states.unknown' => 'État inconnu',
 			'hebergement.title' => 'Hébergements à proximité',
-			'hebergement.facilitatorNote' => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.',
+			'hebergement.facilitatorNote' => 'StepWays t\'oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.',
 			'hebergement.detourAR' => ({required Object km}) => 'Détour aller-retour : ${km} km',
 			'hebergement.openSite' => 'Voir le site',
 			'hebergement.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
@@ -9472,7 +9472,7 @@ extension on Translations {
 			'hebergement.types.camping' => 'Camping',
 			'hebergement.types.chambreHote' => 'Chambre d\'hôte',
 			'training.title' => 'Préparation physique',
-			'training.localNotice' => 'Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.',
+			'training.localNotice' => 'Ton programme est calculé et conservé sur ton téléphone. Les rappels sont des notifications locales, sans suivi.',
 			'training.reminderTitle' => 'Séance d\'entraînement aujourd\'hui',
 			'training.scheduleReminders' => 'Programmer les rappels',
 			'training.remindersScheduled' => ({required Object n}) => '${n} rappel(s) programmé(s)',
@@ -9487,26 +9487,26 @@ extension on Translations {
 			'training.intensity.elevee' => 'Élevée',
 			'training.paywallTitle' => 'Programme d\'entraînement personnalisé',
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Inclus dans le pack « ${trail} ».',
-			'training.paywallSubtitle' => 'Plan adapté à votre profil et à votre date de départ.',
+			'training.paywallSubtitle' => 'Plan adapté à ton profil et à ta date de départ.',
 			'training.unlock' => 'Acheter',
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un plan progressif sur ${weeks} semaines pour aborder les ${km} km et environ ${elevation} m de dénivelé.',
 			'training.countdown' => ({required Object days}) => 'Départ dans ${days} jours',
 			'training.planOverWeeks' => ({required Object n}) => 'Plan sur ${n} semaines',
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Semaines ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Objectif clé',
-			'training.inviteSetDate' => 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.',
-			'training.inviteFillProfile' => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.',
-			'training.cautionVerdictNotice' => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.',
+			'training.inviteSetDate' => 'Pose ta date de départ dans le Calendrier pour caler le compte à rebours.',
+			'training.inviteFillProfile' => 'Remplis ta fiche de renseignement pour adapter le plan à ton profil.',
+			'training.cautionVerdictNotice' => 'Ta faisabilité invite à la prudence : respecte la progression et n\'écourte pas la préparation.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× par semaine',
 			'training.freqOncePerPhase' => 'une fois dans la phase',
 			'training.freqFinalWeek' => 'la dernière semaine seulement',
 			'training.freqSourceNotice' => 'Les fréquences ne sont pas des chiffres maison : 3 séances d\'endurance et 2 de renforcement par semaine, 2 jours de repos, d\'après REI (Conditioning for Backpacking), Terres d\'Aventure et les recommandations 2020 de l\'OMS.',
-			'training.noDateWhy' => 'Sans date de départ, ce plan n\'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s\'affiche.',
+			'training.noDateWhy' => 'Sans date de départ, ce plan n\'a pas de fin : impossible de dire dans quelle semaine tu es, ni quand affûter. Pose ta date dans le Calendrier et le plan s\'affiche.',
 			'training.tooShortTitle' => 'Aucune préparation proposée',
-			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'Il reste ${days} jours avant le départ, soit moins de ${weeks} semaines. Aucune préparation physique ne vous est proposée : en dessous de ${weeks} semaines il n\'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de ${weeks} semaines est celui des opérateurs de trek — Terres d\'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D\'ici là, marchez régulièrement et n\'allez pas chercher la surcharge.',
+			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'Il reste ${days} jours avant le départ, soit moins de ${weeks} semaines. Aucune préparation physique ne t\'est proposée : en dessous de ${weeks} semaines il n\'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de ${weeks} semaines est celui des opérateurs de trek — Terres d\'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D\'ici là, marche régulièrement et ne va pas chercher la surcharge.',
 			'training.demoBridledTitle' => 'Version d\'essai',
 			'training.demoBridledBody' => 'La première phase est jouable pour de faux : rien n\'est conservé. Les phases suivantes s\'ouvrent avec la randonnée.',
-			'training.demoLockedPhase' => 'Débloquez la randonnée pour voir les séances',
+			'training.demoLockedPhase' => 'Débloque la randonnée pour voir les séances',
 			'eta.title' => 'Temps estimé',
 			'eta.toNextWaypoint' => 'Prochain point',
 			'eta.toStageEnd' => 'Fin d\'étape',
@@ -9599,8 +9599,8 @@ extension on Translations {
 			'waypoints.contribution.titleComment' => 'Signaler une condition',
 			'waypoints.contribution.chooseType' => 'Type de point',
 			'waypoints.contribution.titleField' => 'Titre du point',
-			'waypoints.contribution.conditionPrompt' => 'Décrivez la condition observée',
-			'waypoints.contribution.commentField' => 'Votre observation',
+			'waypoints.contribution.conditionPrompt' => 'Décris la condition observée',
+			'waypoints.contribution.commentField' => 'Ton observation',
 			'waypoints.contribution.conditionField' => 'État (optionnel)',
 			'waypoints.contribution.conditionHelper' => 'ex : eau à sec, eau coule bien, passage glissant',
 			'waypoints.contribution.latencyBanner' => 'Sera publié à la prochaine synchronisation réseau.',
@@ -9609,9 +9609,9 @@ extension on Translations {
 			'waypoints.contribution.savedPendingSync' => 'Elle sera publiée dès le retour du réseau.',
 			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
 			'waypoints.contribution.close' => 'Fermer',
-			'waypoints.contribution.emptyTitle' => 'Indiquez un titre pour le point.',
-			'waypoints.contribution.emptyComment' => 'Saisissez votre observation.',
-			'waypoints.contribution.noLocation' => 'Position GPS indisponible. Réessayez sous le ciel ouvert.',
+			'waypoints.contribution.emptyTitle' => 'Indique un titre pour le point.',
+			'waypoints.contribution.emptyComment' => 'Saisis ton observation.',
+			'waypoints.contribution.noLocation' => 'Position GPS indisponible. Réessaie sous le ciel ouvert.',
 			'waypoints.contribution.error' => 'Enregistrement impossible pour le moment.',
 			'cartesHorsLigne.title' => 'Cartes hors ligne',
 			'cartesHorsLigne.intro' => 'Un seul téléchargement : les cartes de tout le circuit, pour marcher sans réseau.',
@@ -9630,25 +9630,25 @@ extension on Translations {
 			'cartesHorsLigne.pretesPoids' => ({required Object mo}) => '${mo} Mo sur le téléphone',
 			'cartesHorsLigne.libere' => 'Cartes supprimées, espace libéré.',
 			'cartesHorsLigne.supprimerTitre' => 'Supprimer les cartes ?',
-			'cartesHorsLigne.supprimerCorps' => 'Les cartes seront retirées du téléphone pour libérer de l\'espace. Vous pourrez les retélécharger.',
+			'cartesHorsLigne.supprimerCorps' => 'Les cartes seront retirées du téléphone pour libérer de l\'espace. Tu pourras les retélécharger.',
 			'cartesHorsLigne.supprimerAnnuler' => 'Annuler',
 			'cartesHorsLigne.supprimerConfirmer' => 'Supprimer',
-			'cartesHorsLigne.horsWifiTitre' => ({required Object mo}) => '${mo} Mo sur votre forfait ?',
-			'cartesHorsLigne.horsWifiCorps' => 'Vous n\'êtes pas en Wi-Fi. Les cartes d\'un circuit peuvent peser lourd sur un forfait mobile.',
+			'cartesHorsLigne.horsWifiTitre' => ({required Object mo}) => '${mo} Mo sur ton forfait ?',
+			'cartesHorsLigne.horsWifiCorps' => 'Tu n\'es pas en Wi-Fi. Les cartes d\'un circuit peuvent peser lourd sur un forfait mobile.',
 			'cartesHorsLigne.horsWifiAttendre' => 'Attendre le Wi-Fi',
 			'cartesHorsLigne.horsWifiContinuer' => 'Télécharger quand même',
-			'cartesHorsLigne.refus.niveauInsuffisant' => 'Les cartes descendent au moment où vous préparez le circuit pour le marcher.',
-			'cartesHorsLigne.refus.sentierInconnu' => 'Ce circuit n\'est pas encore sur votre téléphone. Téléchargez-le depuis la liste des sentiers.',
+			'cartesHorsLigne.refus.niveauInsuffisant' => 'Les cartes descendent au moment où tu prépares le circuit pour le marcher.',
+			'cartesHorsLigne.refus.sentierInconnu' => 'Ce circuit n\'est pas encore sur ton téléphone. Télécharge-le depuis la liste des sentiers.',
 			'cartesHorsLigne.refus.aucuneCartePubliee' => 'Aucune carte hors ligne n\'est publiée pour ce circuit pour le moment. Le tracé, lui, reste disponible.',
 			'cartesHorsLigne.refus.droitDeRealiserManquant' => 'Les cartes hors ligne font partie du circuit acheté.',
-			'cartesHorsLigne.refus.horsLigne' => 'Sans réseau, une carte ne peut pas être téléchargée. Reconnectez-vous puis réessayez.',
-			'cartesHorsLigne.refus.stockageIndisponible' => 'Le téléphone n\'a pas répondu. Réessayez ; s\'il insiste, redémarrez-le.',
-			'cartesHorsLigne.echec.reseau' => 'La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprenez quand vous voulez.',
-			'cartesHorsLigne.echec.empreinteInvalide' => 'La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessayez.',
-			'cartesHorsLigne.echec.tailleInattendue' => 'La carte reçue est incomplète : elle a été écartée. Réessayez.',
-			'cartesHorsLigne.echec.plusDePlace' => 'Il n\'y a plus de place sur le téléphone. Libérez de l\'espace, puis reprenez.',
-			'cartesHorsLigne.echec.ecritureImpossible' => 'L\'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprenez.',
-			'cartesHorsLigne.echec.stockageIndisponible' => 'Le téléphone n\'a pas rendu son espace de stockage. Réessayez ; s\'il insiste, redémarrez-le.',
+			'cartesHorsLigne.refus.horsLigne' => 'Sans réseau, une carte ne peut pas être téléchargée. Reconnecte-toi puis réessaie.',
+			'cartesHorsLigne.refus.stockageIndisponible' => 'Le téléphone n\'a pas répondu. Réessaie ; s\'il insiste, redémarre-le.',
+			'cartesHorsLigne.echec.reseau' => 'La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprends quand tu veux.',
+			'cartesHorsLigne.echec.empreinteInvalide' => 'La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessaie.',
+			'cartesHorsLigne.echec.tailleInattendue' => 'La carte reçue est incomplète : elle a été écartée. Réessaie.',
+			'cartesHorsLigne.echec.plusDePlace' => 'Il n\'y a plus de place sur le téléphone. Libère de l\'espace, puis reprends.',
+			'cartesHorsLigne.echec.ecritureImpossible' => 'L\'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprends.',
+			'cartesHorsLigne.echec.stockageIndisponible' => 'Le téléphone n\'a pas rendu son espace de stockage. Réessaie ; s\'il insiste, redémarre-le.',
 			'cartesHorsLigne.echec.annulee' => 'Téléchargement annulé. Ce qui est déjà téléchargé est gardé.',
 			'cartesHorsLigne.demoIndisponible' => 'Le téléchargement des cartes n\'est pas disponible pendant la démonstration.',
 			'cartesHorsLigne.a11y.bouton' => 'Télécharger les cartes de tout le circuit',
@@ -9658,7 +9658,7 @@ extension on Translations {
 			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
 			'guides.empty' => 'Aucun guide disponible pour ce sentier.',
 			'guides.noItems' => 'Aucune information dans cette section pour le moment.',
-			'guides.facilitatorNote' => 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.',
+			'guides.facilitatorNote' => 'StepWays t\'oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.',
 			'guides.openSite' => 'Voir le site',
 			'guides.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
 			'guides.categories.ravitaillement' => 'Ravitaillement',
@@ -9677,7 +9677,7 @@ extension on Translations {
 			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Ouvrir le site de ${nom}',
 			'health.title' => 'Informations santé',
-			'health.privacyBanner' => 'Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.',
+			'health.privacyBanner' => 'Ces données restent sur ton téléphone. Elles ne sont jamais envoyées sur internet.',
 			'health.field.bloodType' => 'Groupe sanguin',
 			'health.field.allergies' => 'Allergies',
 			'health.field.treatments' => 'Traitements en cours',
@@ -9695,15 +9695,15 @@ extension on Translations {
 			'health.hint.doctor' => 'Ex : Dr Dupont 04 95 xx xx xx',
 			'health.hint.insurance' => 'Ex : carte européenne',
 			'health.hint.fullName' => 'Ex : Christophe Mosconi',
-			'health.hint.birthDate' => 'Appuyez pour choisir',
+			'health.hint.birthDate' => 'Appuie pour choisir',
 			'health.hint.address' => 'Ex : 12 rue des Lilas, 20000 Ajaccio',
 			'health.hint.conditions' => 'Ex : diabète type 1, épilepsie, anticoagulant',
-			'health.hint.organDonor' => 'Faites votre choix',
+			'health.hint.organDonor' => 'Fais ton choix',
 			'health.error.bloodType' => 'Groupe sanguin invalide (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Sauvegarder',
 			'health.saving' => 'Sauvegarde…',
 			'health.saved' => 'Informations sauvegardées',
-			'health.emergencyHint' => 'En cas d\'urgence, montrez cet écran aux secours.',
+			'health.emergencyHint' => 'En cas d\'urgence, montre cet écran aux secours.',
 			'health.entryTitle' => 'Mes infos santé',
 			'health.entrySubtitle' => 'À montrer aux secours (restées sur le téléphone)',
 			'health.a11y.form' => 'Formulaire d\'informations de santé',
@@ -9724,16 +9724,16 @@ extension on Translations {
 			'health.advice.paper' => 'Garde une copie papier dans une poche de ton sac : un papier ne tombe jamais en panne de batterie, ne casse pas dans une chute et se lit sous la pluie.',
 			'health.advice.ackButton' => 'J\'ai lu ces conseils',
 			'health.advice.ackDone' => 'Conseils lus',
-			'health.section.identity' => 'Qui vous êtes',
+			'health.section.identity' => 'Qui tu es',
 			'health.section.identityWhy' => 'C\'est la première chose que lit un secouriste : sans nom, il soigne un inconnu et ne peut prévenir personne.',
 			'health.section.contacts' => 'Qui prévenir',
-			'health.section.contactsWhy' => 'Ce que les secours cherchent juste après vous avoir identifié. Trois personnes au maximum : au-delà, on n\'en appelle aucune.',
-			'health.section.vital' => 'Ce qui vous soigne',
-			'health.section.vitalWhy' => 'Dans l\'ordre où un médecin d\'urgence interroge : d\'abord ce qui peut vous tuer pendant le soin, ensuite ce qui sert à l\'hôpital.',
+			'health.section.contactsWhy' => 'Ce que les secours cherchent juste après t\'avoir identifié. Trois personnes au maximum : au-delà, on n\'en appelle aucune.',
+			'health.section.vital' => 'Ce qui te soigne',
+			'health.section.vitalWhy' => 'Dans l\'ordre où un médecin d\'urgence interroge : d\'abord ce qui peut te tuer pendant le soin, ensuite ce qui sert à l\'hôpital.',
 			'health.section.admin' => 'Administratif',
 			'health.section.adminWhy' => 'Ce qu\'on recopie à l\'accueil de l\'hôpital, pas ce qu\'on lit sous la pluie.',
 			'health.bloodTypeUnknown' => 'Je ne sais pas',
-			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Votre ancienne saisie « ${valeur} » n\'est pas un groupe sanguin reconnu. Choisissez dans la liste.',
+			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Ton ancienne saisie « ${valeur} » n\'est pas un groupe sanguin reconnu. Choisis dans la liste.',
 			'health.organDonor.yes' => 'Donneur',
 			'health.organDonor.no' => 'Opposé au don',
 			'health.organDonor.unknown' => 'Je n\'ai pas choisi',
@@ -9743,20 +9743,20 @@ extension on Translations {
 			'health.contacts.phone' => 'Téléphone',
 			'health.contacts.phoneHint' => 'Ex : 06 12 34 56 78',
 			'health.contacts.remove' => 'Retirer cette personne',
-			'health.contacts.errorName' => 'Donnez un nom, sinon les secours ne savent pas qui ils appellent.',
-			'health.contacts.errorPhone' => 'Donnez un numéro, sinon ce nom ne sert à rien.',
+			'health.contacts.errorName' => 'Donne un nom, sinon les secours ne savent pas qui ils appellent.',
+			'health.contacts.errorPhone' => 'Donne un numéro, sinon ce nom ne sert à rien.',
 			'health.cards.vitale' => 'Photo de la carte Vitale',
 			'health.cards.mutuelle' => 'Photo de la carte de mutuelle',
 			'health.cards.take' => 'Prendre en photo',
 			'health.cards.retake' => 'Reprendre la photo',
 			'health.cards.pick' => 'Choisir une image',
 			'health.cards.remove' => 'Retirer la photo',
-			'health.cards.stored' => 'Photo enregistrée sur ce téléphone. Elle n\'est envoyée nulle part et part avec la fiche quand vous l\'effacez.',
+			'health.cards.stored' => 'Photo enregistrée sur ce téléphone. Elle n\'est envoyée nulle part et part avec la fiche quand tu l\'effaces.',
 			'health.cards.explain' => 'La photo reste sur ce téléphone, dans le même dossier protégé que le reste de la fiche.',
 			'health.cards.permissionRefused' => 'Accès à l\'appareil photo refusé. La fiche fonctionne très bien sans.',
 			'health.cards.failed' => 'La photo n\'a pas pu être enregistrée.',
-			'health.phoneCard.title' => 'Recopiez votre fiche dans celle du téléphone',
-			'health.phoneCard.why' => 'C\'est le seul écran qu\'un secouriste atteint sans votre code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.',
+			'health.phoneCard.title' => 'Recopie ta fiche dans celle du téléphone',
+			'health.phoneCard.why' => 'C\'est le seul écran qu\'un secouriste atteint sans ton code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.',
 			'health.phoneCard.done' => 'C\'est fait, ma fiche est aussi dans le téléphone',
 			'health.localOnlyPriceTitle' => 'Changer de téléphone veut dire la ressaisir',
 			'health.localOnlyPrice' => 'Si tu changes de téléphone, cette fiche ne suit pas : tu devras ressaisir ton groupe sanguin, tes allergies et tes traitements. C\'est le prix de la promesse, et c\'est pour cela que personne, nous compris, ne peut la lire ailleurs qu\'ici.',
@@ -9822,55 +9822,55 @@ extension on Translations {
 			'erasure.error' => 'L\'effacement ne s\'est pas terminé. Réessayez — ce qui est déjà parti ne revient pas.',
 			'erasure.a11y.entry' => 'Effacer mes données, ouvre une demande de confirmation',
 			'moderation.reportTitle' => 'Signaler ce contenu',
-			'moderation.reportIntro' => 'Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.',
+			'moderation.reportIntro' => 'Aide-nous à garder la communauté saine. Indique pourquoi ce contenu te semble illicite. Ton signalement sera examiné par un modérateur.',
 			'moderation.reasonLabel' => 'Motif du signalement',
 			'moderation.reasons.illegal' => 'Contenu illégal',
 			'moderation.reasons.harassment' => 'Harcèlement ou haine',
 			'moderation.reasons.spam' => 'Spam ou publicité',
 			'moderation.reasons.dangerous' => 'Information dangereuse ou trompeuse',
 			'moderation.reasons.other' => 'Autre',
-			'moderation.detailsLabel' => 'Précisez (facultatif)',
-			'moderation.detailsHint' => 'Ajoutez un commentaire pour aider le modérateur.',
-			'moderation.contactLabel' => 'Votre adresse e-mail',
-			'moderation.contactHint' => 'Pour vous tenir informé du traitement (article 16).',
+			'moderation.detailsLabel' => 'Précise (facultatif)',
+			'moderation.detailsHint' => 'Ajoute un commentaire pour aider le modérateur.',
+			'moderation.contactLabel' => 'Ton adresse e-mail',
+			'moderation.contactHint' => 'Pour te tenir informé du traitement (article 16).',
 			'moderation.goodFaithLabel' => 'Je déclare de bonne foi que ces informations sont exactes.',
 			'moderation.submit' => 'Envoyer le signalement',
 			'moderation.submitting' => 'Envoi en cours…',
 			'moderation.sent' => 'Signalement envoyé. Merci, un modérateur va l\'examiner.',
-			'moderation.errorRequired' => 'Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.',
-			'moderation.errorGeneric' => 'Le signalement n\'a pas pu être envoyé. Réessayez.',
+			'moderation.errorRequired' => 'Complète le motif, ton e-mail et la déclaration de bonne foi.',
+			'moderation.errorGeneric' => 'Le signalement n\'a pas pu être envoyé. Réessaie.',
 			'moderation.cancel' => 'Annuler',
 			'moderation.reasonsTitle' => 'Pourquoi ce contenu a-t-il été restreint ?',
-			'moderation.reasonsIntro' => 'Conformément à l\'article 17, voici la raison de la décision de modération concernant votre contenu.',
+			'moderation.reasonsIntro' => 'Conformément à l\'article 17, voici la raison de la décision de modération concernant ton contenu.',
 			'moderation.decisionLabel' => 'Décision',
 			'moderation.decisions.keep' => 'Contenu maintenu',
 			'moderation.decisions.restrict' => 'Contenu restreint',
 			'moderation.decisions.remove' => 'Contenu retiré',
-			'moderation.noStatement' => 'Aucune restriction n\'a été appliquée à vos contenus.',
+			'moderation.noStatement' => 'Aucune restriction n\'a été appliquée à tes contenus.',
 			'moderation.complaintAction' => 'Contester cette décision',
 			'moderation.complaintTitle' => 'Contester une décision',
-			'moderation.complaintIntro' => 'Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).',
-			'moderation.complaintExposeLabel' => 'Votre contestation',
-			'moderation.complaintExposeHint' => 'Décrivez les raisons de votre contestation.',
+			'moderation.complaintIntro' => 'Tu peux contester une décision de modération. Explique pourquoi tu estimes la décision injustifiée (article 20).',
+			'moderation.complaintExposeLabel' => 'Ta contestation',
+			'moderation.complaintExposeHint' => 'Décris les raisons de ta contestation.',
 			'moderation.complaintSubmit' => 'Envoyer la contestation',
 			'moderation.complaintSent' => 'Contestation enregistrée. Elle sera examinée.',
-			'moderation.complaintEmpty' => 'Veuillez expliquer votre contestation.',
+			'moderation.complaintEmpty' => 'Explique ta contestation.',
 			'moderation.a11y.reportForm' => 'Formulaire de signalement de contenu',
 			'moderation.a11y.reasonSelector' => 'Sélecteur de motif de signalement',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Déclaration de bonne foi, ${state}',
 			'moderation.a11y.submitReport' => 'Envoyer le signalement',
 			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
 			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
-			'bootstrap.loading' => 'Préparation de votre randonnée…',
+			'bootstrap.loading' => 'Préparation de ta randonnée…',
 			'recap.title' => 'Mon aventure',
 			'recap.lockedTitle' => 'Disponible à la fin du trek',
-			'recap.lockedMessage' => 'Terminez ou abandonnez votre parcours pour retrouver le récapitulatif de votre aventure.',
+			'recap.lockedMessage' => 'Termine ou abandonne ton parcours pour retrouver le récapitulatif de ton aventure.',
 			'recap.finisherTitle' => 'Félicitations !',
-			'recap.finisherSubtitle' => 'Vous avez terminé votre parcours',
-			'recap.partialTitle' => 'Votre parcours partiel',
-			'recap.partialSubtitle' => 'Votre aventure reste enregistrée',
+			'recap.finisherSubtitle' => 'Tu as terminé ton parcours',
+			'recap.partialTitle' => 'Ton parcours partiel',
+			'recap.partialSubtitle' => 'Ton aventure reste enregistrée',
 			'recap.statsSection' => 'Statistiques',
-			'recap.traceSection' => 'Votre trace',
+			'recap.traceSection' => 'Ta trace',
 			'recap.noTrace' => 'Aucune trace GPS disponible',
 			'recap.stages' => '{done} / {total} étapes parcourues',
 			'recap.distance' => '{km} km parcourus',
@@ -9925,21 +9925,21 @@ extension on Translations {
 			'programme.replan' => 'Replanifier',
 			'programme.replanButton' => 'REPLANIFIER',
 			'programme.replanDialog.title' => 'Replanifier',
-			'programme.replanDialog.message' => 'La replanification va réinitialiser votre programme.\nVos jours de repos seront préservés aux mêmes positions.',
+			'programme.replanDialog.message' => 'La replanification va réinitialiser ton programme.\nTes jours de repos seront préservés aux mêmes positions.',
 			'programme.replanDialog.cancel' => 'Annuler',
 			'programme.replanDialog.confirm' => 'Replanifier',
 			'programme.validate' => 'VALIDER MON PROGRAMME',
 			'programme.validateNext' => 'Valider et choisir les dates',
-			'programme.empty.title' => 'Configurez d\'abord votre itinéraire',
-			'programme.empty.message' => 'Choisissez votre parcours et la durée pour générer votre programme.',
+			'programme.empty.title' => 'Configure d\'abord ton itinéraire',
+			'programme.empty.message' => 'Choisis ton parcours et la durée pour générer ton programme.',
 			'programme.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'programme.info.title' => 'Programme',
 			'programme.info.days.title' => 'Jours de trek',
-			'programme.info.days.body' => 'Chaque ligne = un jour. Appuyez pour voir le détail complet.',
+			'programme.info.days.body' => 'Chaque ligne = un jour. Appuie pour voir le détail complet.',
 			'programme.info.reorder.title' => 'Réorganiser',
-			'programme.info.reorder.body' => 'Glissez la poignée à droite pour changer l\'ordre des jours.',
+			'programme.info.reorder.body' => 'Glisse la poignée à droite pour changer l\'ordre des jours.',
 			'programme.info.rest.title' => 'Jour de repos',
-			'programme.info.rest.body' => 'Insérez un jour de récupération entre deux étapes.',
+			'programme.info.rest.body' => 'Insère un jour de récupération entre deux étapes.',
 			'programme.info.mergeSplit.title' => 'Regrouper / Dégrouper',
 			'programme.info.mergeSplit.body' => 'Regrouper réunit deux jours en un. Dégrouper rend à chaque étape sa journée. Une étape reste entière : elle s\'arrête là où il y a un toit.',
 			'programme.info.colors.title' => 'Couleurs',
@@ -9950,25 +9950,25 @@ extension on Translations {
 			'programme.splitBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',
 			'programme.reorderBlocked' => 'Rando démarrée : l\'ordre des étapes ne change plus',
 			'programme.inTrek.title' => 'Adapter l\'itinéraire',
-			'programme.inTrek.intro' => 'Réorganisez la suite de votre rando. Ce que vous avez déjà marché est figé, et l\'ordre des étapes ne change pas.',
+			'programme.inTrek.intro' => 'Réorganise la suite de ta rando. Ce que tu as déjà marché est figé, et l\'ordre des étapes ne change pas.',
 			'programme.inTrek.doneSection' => 'Déjà marché',
 			'programme.inTrek.upcomingSection' => 'À venir',
 			'programme.inTrek.doneBadge' => 'Fait',
 			'programme.inTrek.lockedDay' => 'Jour déjà marché, non modifiable',
-			'programme.inTrek.allDone' => 'Vous avez marché tous vos jours : il n\'y a plus rien à adapter.',
-			'programme.inTrek.notStarted' => 'Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.',
+			'programme.inTrek.allDone' => 'Tu as marché tous tes jours : il n\'y a plus rien à adapter.',
+			'programme.inTrek.notStarted' => 'Cet écran sert pendant la rando : démarre ton trek pour adapter la suite.',
 			'programme.inTrek.validate' => 'Valider mes changements',
 			'programme.inTrek.saved' => 'Programme mis à jour',
 			'programme.inTrek.info.title' => 'Adapter l\'itinéraire',
 			'programme.inTrek.info.done.title' => 'Jours déjà marchés',
 			'programme.inTrek.info.done.body' => 'Ils sont grisés et verrouillés : ce qui est fait est fait.',
 			'programme.inTrek.info.upcoming.title' => 'Jours à venir',
-			'programme.inTrek.info.upcoming.body' => 'Regroupez, dégroupez ou ajoutez un jour de repos sur la suite de votre parcours.',
+			'programme.inTrek.info.upcoming.body' => 'Regroupe, dégroupe ou ajoute un jour de repos sur la suite de ton parcours.',
 			'programme.inTrek.info.order.title' => 'Ordre des étapes',
 			'programme.inTrek.info.order.body' => 'L\'ordre ne change jamais une fois parti : on n\'inverse pas des étapes déjà engagées.',
 			'programme.inTrek.info.close' => 'Compris !',
 			'programme.inTrek.empty.title' => 'Aucun programme à adapter',
-			'programme.inTrek.empty.message' => 'Construisez d\'abord votre programme depuis la préparation.',
+			'programme.inTrek.empty.message' => 'Construis d\'abord ton programme depuis la préparation.',
 			'calendar.title' => 'Calendrier',
 			'calendar.validate' => 'VALIDER LES DATES',
 			'calendar.departure' => 'DÉPART',
@@ -9998,14 +9998,14 @@ extension on Translations {
 			'calendar.summary.totalDays' => 'Jours total',
 			'calendar.summary.walkDays' => 'Jours marche',
 			'calendar.summary.restDays' => 'Jours repos',
-			'calendar.noDate.title' => 'Choisissez une date de départ',
-			'calendar.noDate.message' => 'Le calendrier de votre trek s\'affichera automatiquement avec les jours de marche et de repos.',
-			'calendar.empty.title' => 'Configurez d\'abord votre itinéraire',
-			'calendar.empty.message' => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.',
+			'calendar.noDate.title' => 'Choisis une date de départ',
+			'calendar.noDate.message' => 'Le calendrier de ton trek s\'affichera automatiquement avec les jours de marche et de repos.',
+			'calendar.empty.title' => 'Configure d\'abord ton itinéraire',
+			'calendar.empty.message' => 'Choisis ton parcours et la durée pour pouvoir configurer tes dates.',
 			'calendar.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'nuitees.title' => 'Réservations nuitées',
 			'nuitees.guideTooltip' => 'Guide des nuitées',
-			'nuitees.infoBar' => 'Réservez chaque nuit à l\'avance en haute saison',
+			'nuitees.infoBar' => 'Réserve chaque nuit à l\'avance en haute saison',
 			'nuitees.types.refuge' => 'Refuge',
 			'nuitees.types.gite' => 'Gîte',
 			'nuitees.types.bivouac' => 'Bivouac',
@@ -10020,14 +10020,14 @@ extension on Translations {
 			'nuitees.card.noPlace' => 'Hébergement',
 			'nuitees.card.available' => '{count} hébergements disponibles',
 			'nuitees.card.call' => 'Appeler {phone}',
-			'nuitees.card.lockedHint' => 'Décochez la nuit pour changer le type',
+			'nuitees.card.lockedHint' => 'Décoche la nuit pour changer le type',
 			'nuitees.card.eveBadge' => 'J-1',
 			'nuitees.card.eveOfDeparture' => 'Veille du départ',
 			'nuitees.summary.remaining' => '{count} nuit(s) restante(s)',
 			'nuitees.summary.done' => '{count} OK',
 			'nuitees.summary.allBooked' => 'TOUTES LES NUITS RÉSERVÉES',
-			'nuitees.empty.title' => 'Configurez d\'abord votre itinéraire',
-			'nuitees.empty.message' => 'Choisissez votre parcours et la durée pour préparer vos nuits.',
+			'nuitees.empty.title' => 'Configure d\'abord ton itinéraire',
+			'nuitees.empty.message' => 'Choisis ton parcours et la durée pour préparer tes nuits.',
 			'nuitees.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'transport.title' => 'Transport',
 			'transport.tabJoin' => 'Rejoindre le départ',
@@ -10076,7 +10076,7 @@ extension on Translations {
 			'fireRisk.number.firefighters' => 'Pompiers',
 			'fireRisk.number.europeanEmergency' => 'Secours européens',
 			'fireRisk.empty.title' => 'Risque incendie indisponible',
-			'fireRisk.empty.message' => 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessayez une fois connecté.',
+			'fireRisk.empty.message' => 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessaie une fois connecté.',
 			'fireRisk.a11y.call' => ({required Object label, required Object number}) => 'Appeler ${label} au ${number}',
 			'fireRisk.a11y.decree' => 'Ouvrir les arrêtés préfectoraux',
 			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Niveau de risque ${level} sur 5',
@@ -10094,7 +10094,7 @@ extension on Translations {
 			'shop.stageHeader' => ({required Object n}) => 'Étape ${n}',
 			'shop.stageBadge' => ({required Object n}) => 'Étape ${n}',
 			'shop.gapShort' => ({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce',
-			'shop.gapLong' => ({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce. Prévoyez vos réserves !',
+			'shop.gapLong' => ({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce. Prévois tes réserves !',
 			'shop.sectionInfo' => 'Informations',
 			'shop.sectionProducts' => 'Produits disponibles',
 			'shop.fieldType' => 'Type',
@@ -10141,15 +10141,15 @@ extension on Translations {
 			'summary.share.dayRest' => ({required Object n}) => 'J${n} : Repos',
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'J${n} : ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Planifié avec ${name}',
-			'summary.empty.title' => 'Configurez d\'abord votre itinéraire',
-			'summary.empty.message' => 'Choisissez votre parcours et la durée pour voir le résumé de votre plan.',
+			'summary.empty.title' => 'Configure d\'abord ton itinéraire',
+			'summary.empty.message' => 'Choisis ton parcours et la durée pour voir le résumé de ton plan.',
 			'summary.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'summary.a11y.dayTile' => ({required Object day}) => 'Voir le détail du jour ${day}',
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Détails du jour de repos ${day}',
 			'summary.a11y.share' => 'Partager mon plan',
 			'import.title' => 'Importer un GPX',
 			'import.headerTitle' => 'Importer un fichier GPX',
-			'import.headerBody' => 'Importez une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer votre récapitulatif.',
+			'import.headerBody' => 'Importe une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer ton récapitulatif.',
 			'import.pickButton' => 'CHOISIR UN FICHIER GPX',
 			'import.traceSection' => 'Trace importée',
 			'import.statsSection' => 'Statistiques',
@@ -10173,7 +10173,7 @@ extension on Translations {
 			'import.errorParsing' => 'Le fichier GPX n\'a pas pu être lu.',
 			'import.validateButton' => 'VALIDER L\'IMPORT',
 			'import.confirmTitle' => 'Valider l\'import ?',
-			'import.confirmBody' => 'Cette trace sera importée comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes détectées\n- Direction : {direction}',
+			'import.confirmBody' => 'Cette trace sera importée comme ton parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes détectées\n- Direction : {direction}',
 			'import.cancel' => 'Annuler',
 			'import.validate' => 'Valider',
 			'import.importedSnack' => 'Trace GPX importée !',
@@ -10182,9 +10182,9 @@ extension on Translations {
 			'myTreks.sectionPrepared' => 'Préparés',
 			'myTreks.sectionCompleted' => 'Terminés',
 			'myTreks.emptyTitle' => 'Aucun trek pour le moment',
-			'myTreks.empty' => 'Aucun trek pour le moment. Découvrez un sentier pour commencer.',
+			'myTreks.empty' => 'Aucun trek pour le moment. Découvre un sentier pour commencer.',
 			'myTreks.discoverTitle' => 'Découvrir des sentiers',
-			'myTreks.discoverSubtitle' => 'Parcourez le catalogue',
+			'myTreks.discoverSubtitle' => 'Parcours le catalogue',
 			'myTreks.accountTitle' => 'Mon compte',
 			'myTreks.accountSubtitle' => 'Profil et réglages',
 			'myTreks.badge.owned' => 'Possédé',
@@ -10195,23 +10195,23 @@ extension on Translations {
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Ouvrir le trek ${nom}',
 			'myTreks.settingsSubtitle' => 'Langue, unités, thème',
-			'myTreks.emptyCatalogueOuDemo' => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.',
-			'myTreks.emptyCatalogueSeul' => 'Vous n\'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un.',
+			'myTreks.emptyCatalogueOuDemo' => 'Tu n\'as pas encore de sentier. Ouvre le catalogue pour en choisir un, ou essaie la démo en tête de la liste.',
+			'myTreks.emptyCatalogueSeul' => 'Tu n\'as pas encore de sentier. Ouvre le catalogue pour en choisir un.',
 			'trekState.abandonDialog.title' => 'Un trek est déjà en cours',
-			'trekState.abandonDialog.message' => 'Vous avez une randonnée en cours. Terminez-la ou abandonnez-la avant d\'en démarrer une autre.',
+			'trekState.abandonDialog.message' => 'Tu as une randonnée en cours. Termine-la ou abandonne-la avant d\'en démarrer une autre.',
 			'trekState.abandonDialog.finish' => 'Terminer',
 			'trekState.abandonDialog.abandon' => 'Abandonner',
 			'trekState.abandonDialog.cancel' => 'Annuler',
-			'trekState.resumeOrphanDialog.title' => 'Reprendre votre randonnée ?',
-			'trekState.resumeOrphanDialog.message' => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Voulez-vous la reprendre ou l\'abandonner ?',
+			'trekState.resumeOrphanDialog.title' => 'Reprendre ta randonnée ?',
+			'trekState.resumeOrphanDialog.message' => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Veux-tu la reprendre ou l\'abandonner ?',
 			'trekState.resumeOrphanDialog.resume' => 'Reprendre',
 			'trekState.resumeOrphanDialog.abandon' => 'Abandonner',
 			'hikerProfile.title' => 'Fiche d\'info',
-			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnée sensible. Elle reste sur votre appareil (et une sauvegarde chiffrée, sans votre nom) pour calculer votre faisabilité.',
+			'hikerProfile.privacyBanner' => 'Ta morphologie est une donnée sensible. Elle reste sur ton appareil (et une sauvegarde chiffrée, sans ton nom) pour calculer ta faisabilité.',
 			'hikerProfile.fieldAge' => 'Âge',
 			'hikerProfile.hintAge' => 'En années',
 			'hikerProfile.errorAge' => 'Âge invalide (18 à 120 ans)',
-			'hikerProfile.ageUsage' => 'À quoi sert votre âge : il fixe la distance de référence de votre test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d\'autre, et rien n\'en sort de votre téléphone.',
+			'hikerProfile.ageUsage' => 'À quoi sert ton âge : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d\'autre, et rien n\'en sort de ton téléphone.',
 			'hikerProfile.fieldHeight' => 'Taille',
 			'hikerProfile.hintHeight' => 'En centimètres',
 			'hikerProfile.errorHeight' => 'Taille invalide (60 à 255 cm)',
@@ -10219,9 +10219,9 @@ extension on Translations {
 			'hikerProfile.hintWeight' => 'En kilogrammes',
 			'hikerProfile.errorWeight' => 'Poids invalide (25 à 200 kg)',
 			'hikerProfile.errorCountry' => 'Code pays invalide (ex. FR)',
-			'hikerProfile.errorEmpty' => 'Fiche vide : renseignez au moins l\'âge, la taille ou le poids.',
-			'hikerProfile.errorSaveFailed' => 'La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessayez.',
-			'hikerProfile.errorConsentRequired' => 'Sans votre accord, rien n\'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d\'être effacé de cet appareil. Cochez l\'autorisation ci-dessus, puis enregistrez.',
+			'hikerProfile.errorEmpty' => 'Fiche vide : renseigne au moins l\'âge, la taille ou le poids.',
+			'hikerProfile.errorSaveFailed' => 'La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessaie.',
+			'hikerProfile.errorConsentRequired' => 'Sans ton accord, rien n\'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d\'être effacé de cet appareil. Coche l\'autorisation ci-dessus, puis enregistre.',
 			'hikerProfile.fieldSex' => 'Sexe (optionnel)',
 			'hikerProfile.sexFemale' => 'Femme',
 			'hikerProfile.sexMale' => 'Homme',
@@ -10233,19 +10233,19 @@ extension on Translations {
 			'hikerProfile.countryNoResult' => 'Aucun pays ne correspond',
 			'hikerProfile.hintCountry' => 'Code (ex. FR)',
 			'hikerProfile.consentTitle' => 'Données de morphologie (article 9 RGPD)',
-			'hikerProfile.consentBody' => 'Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.',
+			'hikerProfile.consentBody' => 'Âge, taille et poids sont des données de santé. Elles restent sur ton appareil et une sauvegarde sans ton nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.',
 			'hikerProfile.consentToggle' => 'J\'autorise l\'usage de ma morphologie pour la faisabilité',
 			'hikerProfile.save' => 'Enregistrer',
 			'hikerProfile.saved' => 'Fiche enregistrée',
-			'hikerProfile.morphoNotPrefilledHint' => 'Rien n\'est pré-rempli : renseignez vos vraies données, c\'est pour votre sécurité.',
+			'hikerProfile.morphoNotPrefilledHint' => 'Rien n\'est pré-rempli : renseigne tes vraies données, c\'est pour ta sécurité.',
 			'hikerProfile.seniorReminder' => 'À partir de 65 ans, une consultation médicale est conseillée avant un trek exigeant.',
 			'walkTest.title' => 'Test de marche 6 minutes',
-			'walkTest.intro' => 'Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre âge et sexe.',
-			'walkTest.safetyWarning' => 'Effort à éviter en cas de souci cardiaque non vérifié. Arrêtez-vous en cas de gêne.',
+			'walkTest.intro' => 'Marche le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de ton âge et sexe.',
+			'walkTest.safetyWarning' => 'Effort à éviter en cas de souci cardiaque non vérifié. Arrête-toi en cas de gêne.',
 			'walkTest.start' => 'Démarrer le test',
 			'walkTest.stop' => 'Arrêter',
 			'walkTest.cancel' => 'Annuler',
-			'walkTest.countdown' => 'Préparez-vous...',
+			'walkTest.countdown' => 'Prépare-toi...',
 			'walkTest.running' => 'En cours',
 			'walkTest.liveDistance' => 'Distance',
 			'walkTest.timeLeft' => 'Temps restant',
@@ -10256,11 +10256,11 @@ extension on Translations {
 			'walkTest.resultDate' => ({required Object date}) => 'Réalisé le ${date}',
 			'walkTest.doneAgain' => 'Refaire le test',
 			'walkTest.gpsNeeded' => 'Le GPS est nécessaire pour mesurer la distance.',
-			'walkTest.gpsDenied' => 'Autorisez la localisation pour lancer le test.',
+			'walkTest.gpsDenied' => 'Autorise la localisation pour lancer le test.',
 			'walkTest.monthlyReminderOn' => 'Rappel mensuel activé',
-			'walkTest.monthlyReminderBody' => 'Un rappel de test vous sera proposé chaque mois pour suivre votre forme.',
+			'walkTest.monthlyReminderBody' => 'Un rappel de test te sera proposé chaque mois pour suivre ta forme.',
 			'walkTest.notDoneYet' => 'Test non réalisé',
-			'walkTest.fallbackNotice' => 'En attendant le test, votre niveau est estimé à partir de votre questionnaire.',
+			'walkTest.fallbackNotice' => 'En attendant le test, ton niveau est estimé à partir de ton questionnaire.',
 			'walkTest.levels.low' => 'Faible',
 			'walkTest.levels.moderate' => 'Moyen',
 			'walkTest.levels.good' => 'Bon',
@@ -10268,8 +10268,8 @@ extension on Translations {
 			'walkTest.absoluteScaleNotice' => 'Ton niveau est lu sur l\'échelle de distance brute : la comparaison à une référence n\'a pas été établie pour ta morphologie, on ne l\'applique donc pas. Ton test, lui, reste parfaitement valable.',
 			'walkTest.ageClampNotice' => 'Au-delà de 80 ans la référence du test s\'arrête : elle est calculée comme à 80 ans, et on te le dit.',
 			'walkTest.gpsUnavailable' => 'La position n\'est pas disponible sur cet appareil : le test ne peut pas mesurer la distance.',
-			'pastHikes.title' => 'Vos 5 dernières randos',
-			'pastHikes.intro' => 'Ajoutez jusqu\'à 5 randos notables. On en déduit votre niveau réel (rythme, endurance, habitude du dénivelé) plutôt qu\'une étiquette.',
+			'pastHikes.title' => 'Tes 5 dernières randos',
+			'pastHikes.intro' => 'Ajoute jusqu\'à 5 randos notables. On en déduit ton niveau réel (rythme, endurance, habitude du dénivelé) plutôt qu\'une étiquette.',
 			'pastHikes.addHike' => 'Ajouter une rando',
 			'pastHikes.empty' => 'Aucune rando saisie pour l\'instant.',
 			'pastHikes.fieldDate' => 'Date',
@@ -10281,7 +10281,7 @@ extension on Translations {
 			'pastHikes.errorHours' => 'Durée invalide (0 à 24 h)',
 			'pastHikes.errorElevation' => 'Dénivelé invalide (0 à 5000 m)',
 			'pastHikes.errorDistance' => 'Distance invalide (0 à 100 km)',
-			'pastHikes.errorEffort' => 'Renseignez au moins le dénivelé ou la distance',
+			'pastHikes.errorEffort' => 'Renseigne au moins le dénivelé ou la distance',
 			'pastHikes.perDay' => 'par jour',
 			'pastHikes.editHike' => 'Modifier la rando',
 			'pastHikes.deleteHike' => 'Supprimer',
@@ -10304,38 +10304,38 @@ extension on Translations {
 			'ffrando.effortLevels.k4' => 'Difficile',
 			'ffrando.effortLevels.k5' => 'Très difficile',
 			'sos.title' => 'Appeler les secours ?',
-			'sos.body' => 'Vous êtes sur le point d\'appeler le 112 (urgences européennes).',
-			'sos.positionTitle' => 'Votre position actuelle',
+			'sos.body' => 'Tu es sur le point d\'appeler le 112 (urgences européennes).',
+			'sos.positionTitle' => 'Ta position actuelle',
 			'sos.positionUnavailable' => 'Position GPS indisponible',
 			'sos.gpsAcquiring' => 'Acquisition GPS…',
 			'sos.ageNow' => 'Position à l\'instant',
 			'sos.ageMinutes' => ({required Object minutes}) => 'Position il y a ${minutes} min',
 			'sos.ageHours' => ({required Object hours, required Object minutes}) => 'Position il y a ${hours} h ${minutes}',
-			'sos.estimated' => 'Estimée sur le tracé d\'après vos pas',
+			'sos.estimated' => 'Estimée sur le tracé d\'après tes pas',
 			'sos.freshFailed' => ({required Object seconds}) => 'Pas de position plus récente en ${seconds} s : la dernière connue reste affichée.',
-			'sos.unavailableHelp' => 'Appelez quand même le 112 : donnez le dernier lieu passé (refuge, col, balisage) et restez où vous êtes si vous le pouvez.',
+			'sos.unavailableHelp' => 'Appelle quand même le 112 : donne le dernier lieu passé (refuge, col, balisage) et reste où tu es si tu le peux.',
 			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Position : ${lat}, ${lng}  -  Alt. ${alt} m',
 			'sos.noContacts' => 'Aucun contact configuré',
 			'sos.callContact' => ({required Object name}) => 'Appeler ${name}',
 			'sos.altitudeUnavailable' => 'Altitude : indisponible',
-			'sos.communicate' => 'Communiquez ces coordonnées aux secours.',
+			'sos.communicate' => 'Communique ces coordonnées aux secours.',
 			'sos.cancel' => 'Annuler',
 			'sos.call' => 'Appeler 112',
 			'sos.medicalId.action' => 'Fiche médicale du téléphone',
-			'sos.medicalId.hint' => 'Affichez vos infos vitales aux secours, même écran verrouillé.',
-			'sos.medicalId.unavailable' => 'Ouvrez la fiche médicale dans les réglages Santé de votre téléphone.',
-			'sos.cannotCall' => ({required Object number}) => 'Impossible de lancer l\'appel depuis cet appareil. Composez le ${number}.',
+			'sos.medicalId.hint' => 'Affiche tes infos vitales aux secours, même écran verrouillé.',
+			'sos.medicalId.unavailable' => 'Ouvre la fiche médicale dans les réglages Santé de ton téléphone.',
+			'sos.cannotCall' => ({required Object number}) => 'Impossible de lancer l\'appel depuis cet appareil. Compose le ${number}.',
 			'recovery.section' => 'Compte et reconnexion',
 			'recovery.sectionDesc' => 'Voir mon code de reconnexion',
 			'recovery.title' => 'Mon code de reconnexion',
-			'recovery.intro' => 'Ce code ouvre votre coffre (pseudonyme, avatar et solde d\'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe. Votre fiche médicale, elle, n\'y est PAS : elle ne quitte jamais ce téléphone.',
-			'recovery.codeLabel' => 'Votre code',
+			'recovery.intro' => 'Ce code ouvre ton coffre (pseudonyme, avatar et solde d\'étapes) sur un autre téléphone. Note-le et garde-le en lieu sûr : il fonctionne comme un mot de passe. Ta fiche médicale, elle, n\'y est PAS : elle ne quitte jamais ce téléphone.',
+			'recovery.codeLabel' => 'Ton code',
 			'recovery.copy' => 'Copier le code',
 			'recovery.copied' => 'Code copié',
-			'recovery.warning' => 'Personne d\'autre ne peut lire votre coffre, pas même nous. Si vous perdez ce code, vos données seront définitivement irrécupérables.',
+			'recovery.warning' => 'Personne d\'autre ne peut lire ton coffre, pas même nous. Si tu perds ce code, tes données seront définitivement irrécupérables.',
 			'recovery.error' => 'Impossible de générer le code pour le moment.',
 			'recovery.noVaultTitle' => 'Pas encore de coffre à rouvrir',
-			'recovery.noVaultBody' => 'La sauvegarde en ligne n\'est pas activée sur cette installation : vos données restent sur ce téléphone. Il n\'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l\'instant.',
+			'recovery.noVaultBody' => 'La sauvegarde en ligne n\'est pas activée sur cette installation : tes données restent sur ce téléphone. Il n\'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l\'instant.',
 			'common.cannotLoadStages' => 'Impossible de charger les étapes',
 			'common.noStages' => 'Aucune étape disponible',
 			'common.cannotLoadStage' => 'Impossible de charger cette étape',

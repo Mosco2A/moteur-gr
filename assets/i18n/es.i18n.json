@@ -194,23 +194,23 @@
     "basculerVersEtape": "Ver etapa",
     "guide": {
       "buttonsTitle": "Botones",
-      "position": "Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe el permiso de localización.",
+      "position": "Tu posición GPS, actualizada al caminar. Si el punto desaparece, comprueba el permiso de localización.",
       "track": "El trazado del sendero. El aviso de salida de ruta se refiere a él.",
-      "centerOnMe": "Devuelve el mapa a su posición.",
+      "centerOnMe": "Devuelve el mapa a tu posición.",
       "photo": "Hace una foto para el diario del día.",
-      "sos": "Abre la llamada de emergencia con sus coordenadas GPS. Solo para una emergencia real.",
+      "sos": "Abre la llamada de emergencia con tus coordenadas GPS. Solo para una emergencia real.",
       "onlyInTrek": "Solo visible una vez iniciada la ruta.",
       "currentStage": "Lo que queda por andar en la etapa en curso. Un guión: la ruta no ha empezado.",
-      "offTrack": "Se enciende cuando se aleja del trazado. Vuelva sobre él para apagarlo.",
+      "offTrack": "Se enciende cuando te alejas del trazado. Vuelve sobre él para apagarlo.",
       "poi": {
-        "water": "Manantial o fuente señalada. Un manantial puede estar seco en verano: no cuente con él.",
-        "shelter": "Refugio o abrigo. Toque la marca: altitud, servicios, contacto.",
+        "water": "Manantial o fuente señalada. Un manantial puede estar seco en verano: no cuentes con él.",
+        "shelter": "Refugio o abrigo. Toca la marca: altitud, servicios, contacto.",
         "accommodation": "Casa rural, habitación u hotel. Reserva en el propio establecimiento.",
-        "campsite": "Camping o bivac. Las normas cambian según el territorio: infórmese antes de plantar la tienda.",
+        "campsite": "Camping o bivac. Las normas cambian según el territorio: infórmate antes de plantar la tienda.",
         "shop": "Comercio donde abastecerse. Horarios no garantizados fuera de temporada.",
         "restaurant": "Restaurante o mesa de huéspedes en el recorrido o muy cerca.",
         "viewpoint": "Mirador destacado. Bueno para la parada.",
-        "danger": "Paso delicado. Reduzca el ritmo y observe el terreno antes de entrar.",
+        "danger": "Paso delicado. Reduce el ritmo y observa el terreno antes de entrar.",
         "emergency": "Punto de socorro: puesto, helipuerto o poste de llamada de emergencia.",
         "info": "Panel o punto de información del sendero."
       }
@@ -250,7 +250,7 @@
     "waterSources": {
       "title": "Puntos de agua",
       "count": "{n} fuente(s)",
-      "none": "No hay ningún punto de agua indicado en esta etapa. Lleve al menos 3 L por persona."
+      "none": "No hay ningún punto de agua indicado en esta etapa. Lleva al menos 3 L por persona."
     },
     "accommodation": {
       "title": "Alojamientos",
@@ -258,11 +258,11 @@
     },
     "advice": {
       "title": "Consejos",
-      "waterScarce": "Pocos puntos de agua: salga con al menos 2,5 L.",
-      "waterAmple": "Rellene las cantimploras en cada punto de agua que encuentre.",
-      "hardStage": "Etapa técnica: salga temprano para evitar el calor y las tormentas de la tarde.",
+      "waterScarce": "Pocos puntos de agua: sal con al menos 2,5 L.",
+      "waterAmple": "Rellena las cantimploras en cada punto de agua que encuentres.",
+      "hardStage": "Etapa técnica: sal temprano para evitar el calor y las tormentas de la tarde.",
       "earlyStart": "Se recomienda salir antes de las 8 h para aprovechar el fresco matinal.",
-      "bigClimb": "Fuerte desnivel positivo: dosifique el esfuerzo y haga pausas regulares."
+      "bigClimb": "Fuerte desnivel positivo: dosifica el esfuerzo y haz pausas regulares."
     }
   },
   "trail": {
@@ -694,7 +694,7 @@
     "wind": "Viento",
     "uv": "Índice UV",
     "fireRisk": "Riesgo de incendio",
-    "fireRiskDesc": "Alto riesgo de incendio. Consulte las instrucciones de seguridad.",
+    "fireRiskDesc": "Alto riesgo de incendio. Consulta las instrucciones de seguridad.",
     "fireSafetyTips": "Instrucciones contra incendios",
     "alertCount": "alerta",
     "alertCountPlural": "alertas",
@@ -932,10 +932,10 @@
     },
     "formula": {
       "title": "Viabilidad para este trek",
-      "answerTitle": "¿Está a su alcance?",
-      "answerGreen": "Sí. Este sendero está a su alcance en ${days} días.",
+      "answerTitle": "¿Está a tu alcance?",
+      "answerGreen": "Sí. Este sendero está a tu alcance en ${days} días.",
       "answerOrange": "Sí, en ${days} días. Pero una jornada será dura.",
-      "answerRed": "Todavía no. Una jornada de este sendero pide más de lo que usted aguanta hoy. Gane forma, o salga fuera del verano.",
+      "answerRed": "Todavía no. Una jornada de este sendero pide más de lo que aguantas hoy. Gana forma, o sal fuera del verano.",
       "answerDaysNote": "El sendero se camina en ${walking} días. Consejo: ${rest} día(s) de descanso.",
       "answerNoRest": "El sendero se camina en ${walking} días.",
       "explainToggle": "Cómo se calcula este resultado",
@@ -1124,7 +1124,7 @@
     "quitter": "Salir",
     "boutonTitre": "Probar la demo",
     "boutonSous": "Toda la aplicación. No se guarda nada.",
-    "rienNeCompte": "Está en modo demo: no se guarda nada. Ni etapas, ni diploma, ni compra.",
+    "rienNeCompte": "Estás en modo demo: no se guarda nada. Ni etapas, ni diploma, ni compra.",
     "simulerEtape": "Simular la siguiente etapa",
     "simulerFin": "Simular la llegada",
     "simulerRelancer": "Reiniciar la demo",
@@ -1172,7 +1172,7 @@
   },
   "cloud": {
     "localModeTitle": "Modo local",
-    "localModeBody": "Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Sus datos permanecen en el dispositivo.",
+    "localModeBody": "Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Tus datos permanecen en el dispositivo.",
     "statusSection": "Nube",
     "statusActive": "Servicios en línea activos",
     "statusActiveDesc": "Copia de seguridad y seguimiento en directo disponibles.",
@@ -1237,7 +1237,7 @@
     "buyOutcomeOffline": "Te faltan $steps etapas y el pago exige conexión. No se ha cobrado nada.",
     "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada.",
     "buyOutcomeUnknownPrice": "Esta ruta no está en venta ahora mismo. No se ha cobrado nada.",
-    "buyOutcomeDemo": "Está en modo demo: no se puede comprar nada, y no se ha cobrado nada.",
+    "buyOutcomeDemo": "Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.",
     "subscriptionPrice": "$price al mes",
     "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.",
     "cancelCta": "Cancelar mi suscripción",
@@ -1589,10 +1589,10 @@
       "doctor": "Ej.: Dr. García +34 91 xxx xx xx",
       "insurance": "Ej.: tarjeta sanitaria europea",
       "fullName": "Ej.: Christophe Mosconi",
-      "birthDate": "Pulse para elegir",
+      "birthDate": "Pulsa para elegir",
       "address": "Ej.: calle de las Lilas 12, 20000 Ajaccio",
       "conditions": "Ej.: diabetes tipo 1, epilepsia, anticoagulante",
-      "organDonor": "Elija una opción"
+      "organDonor": "Elige una opción"
     },
     "error": {
       "bloodType": "Grupo sanguíneo no válido (A+, A-, B+, B-, AB+, AB-, O+, O-)"
@@ -1630,17 +1630,17 @@
       "ackDone": "Consejos leídos"
     },
     "section": {
-      "identity": "Quién es usted",
+      "identity": "Quién eres",
       "identityWhy": "Es lo primero que lee un rescatador: sin nombre, atiende a un desconocido y no puede avisar a nadie.",
       "contacts": "A quién avisar",
-      "contactsWhy": "Lo que buscan los servicios de rescate justo después de identificarle. Tres personas como máximo: más allá, no se llama a ninguna.",
-      "vital": "Lo que le trata",
-      "vitalWhy": "En el orden en que pregunta un médico de urgencias: primero lo que puede matarle durante el tratamiento, después lo que sirve en el hospital.",
+      "contactsWhy": "Lo que buscan los servicios de rescate justo después de identificarte. Tres personas como máximo: más allá, no se llama a ninguna.",
+      "vital": "Lo que te trata",
+      "vitalWhy": "En el orden en que pregunta un médico de urgencias: primero lo que puede matarte durante el tratamiento, después lo que sirve en el hospital.",
       "admin": "Administrativo",
       "adminWhy": "Lo que se copia en el mostrador del hospital, no lo que se lee bajo la lluvia."
     },
     "bloodTypeUnknown": "No lo sé",
-    "bloodTypeLegacy": "Su entrada anterior « $valeur » no es un grupo sanguíneo reconocido. Elija en la lista.",
+    "bloodTypeLegacy": "Tu entrada anterior « $valeur » no es un grupo sanguíneo reconocido. Elige en la lista.",
     "organDonor": {
       "yes": "Donante",
       "no": "Opuesto a la donación",
@@ -1653,8 +1653,8 @@
       "phone": "Teléfono",
       "phoneHint": "Ej.: +34 612 34 56 78",
       "remove": "Quitar esta persona",
-      "errorName": "Indique un nombre; si no, el rescate no sabe a quién llama.",
-      "errorPhone": "Indique un número; si no, este nombre no sirve de nada."
+      "errorName": "Indica un nombre; si no, el rescate no sabe a quién llama.",
+      "errorPhone": "Indica un número; si no, este nombre no sirve de nada."
     },
     "cards": {
       "vitale": "Foto de la tarjeta sanitaria",
@@ -1663,14 +1663,14 @@
       "retake": "Repetir la foto",
       "pick": "Elegir una imagen",
       "remove": "Quitar la foto",
-      "stored": "Foto guardada en este teléfono. No se envía a ninguna parte y desaparece con la ficha cuando la borra.",
+      "stored": "Foto guardada en este teléfono. No se envía a ninguna parte y desaparece con la ficha cuando la borras.",
       "explain": "La foto permanece en este teléfono, en la misma carpeta protegida que el resto de la ficha.",
       "permissionRefused": "Acceso a la cámara denegado. La ficha funciona perfectamente sin ella.",
       "failed": "No se ha podido guardar la foto."
     },
     "phoneCard": {
-      "title": "Copie su ficha en la del teléfono",
-      "why": "Es la única pantalla que un rescatador alcanza sin su código, tanto en iPhone como en Android. Ajustes del teléfono, apartado Emergencia o Salud: nombre, grupo sanguíneo, alergias, tratamientos y personas a avisar.",
+      "title": "Copia tu ficha en la del teléfono",
+      "why": "Es la única pantalla que un rescatador alcanza sin tu código, tanto en iPhone como en Android. Ajustes del teléfono, apartado Emergencia o Salud: nombre, grupo sanguíneo, alergias, tratamientos y personas a avisar.",
       "done": "Hecho, mi ficha también está en el teléfono"
     },
     "localOnlyPriceTitle": "Cambiar de teléfono significa volver a escribirla",
@@ -1690,63 +1690,63 @@
     }
   },
   "consent": {
-    "onboardingTitle": "Tu privacidad, tu elección",
-    "onboardingIntro": "Nada está activado por defecto. Elige, finalidad por finalidad, lo que autorizas. Podrás cambiarlo todo en cualquier momento en los ajustes.",
+    "onboardingTitle": "Su privacidad, su elección",
+    "onboardingIntro": "Nada está activado por defecto. Elija, finalidad por finalidad, lo que autoriza. Podrá cambiarlo todo en cualquier momento en los ajustes.",
     "settingsTitle": "Privacidad y consentimiento",
-    "settingsIntro": "Gestiona aquí cada permiso. Puedes retirar un consentimiento en cualquier momento, sin afectar al resto.",
+    "settingsIntro": "Gestione aquí cada permiso. Puede retirar un consentimiento en cualquier momento, sin afectar al resto.",
     "settingsEntry": "Privacidad y consentimiento",
     "settingsEntryDesc": "Gestionar mis permisos (ubicación, compartir, publicidad, salud)",
     "purposes": {
       "locationNavigation": "Navegación personal",
-      "locationNavigationDesc": "Usar tu ubicación para el mapa y el seguimiento de tu etapa. Permanece en tu dispositivo.",
+      "locationNavigationDesc": "Usar su ubicación para el mapa y el seguimiento de su etapa. Permanece en su dispositivo.",
       "socialSharing": "Compartir social",
       "socialSharingDesc": "Aparecer en las clasificaciones y en el feed de la comunidad, con un seudónimo.",
       "publicReporting": "Avisos públicos",
       "publicReportingDesc": "Publicar avisos (agua, peligro, condiciones) visibles para otros senderistas.",
       "advertising": "Publicidad personalizada",
-      "advertisingDesc": "Adaptar los anuncios a tus intereses. Sin este permiso, la aplicación gratuita sigue mostrando anuncios, pero no están segmentados y ningún dato de segmentación sale de tu dispositivo.",
+      "advertisingDesc": "Adaptar los anuncios a sus intereses. Sin este permiso, la aplicación gratuita sigue mostrando anuncios, pero no están segmentados y ningún dato de segmentación sale de su dispositivo.",
       "healthData": "Datos de salud",
-      "healthDataDesc": "Leer tu frecuencia cardíaca (banda o app de salud) para enriquecer el seguimiento del esfuerzo."
+      "healthDataDesc": "Leer su frecuencia cardíaca (banda o app de salud) para enriquecer el seguimiento del esfuerzo."
     },
     "healthBadge": "Dato sensible",
-    "healthWarning": "La frecuencia cardíaca es un dato de salud (artículo 9 del RGPD). Este consentimiento se solicita por separado y nunca se agrupa con los demás. Tus datos de salud no se envían a nuestros servidores.",
+    "healthWarning": "La frecuencia cardíaca es un dato de salud (artículo 9 del RGPD). Este consentimiento se solicita por separado y nunca se agrupa con los demás. Sus datos de salud no se envían a nuestros servidores.",
     "granted": "Autorizado",
     "denied": "No autorizado",
     "grant": "Autorizar",
     "revoke": "Retirar",
     "decidedOn": "Elegido el $date",
-    "notDecided": "A la espera de tu elección",
+    "notDecided": "A la espera de su elección",
     "acceptSelected": "Confirmar mis elecciones",
     "declineAll": "Rechazar todo",
-    "declineAllNote": "Rechazar todo retira tus cinco permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puedes volver a conceder cualquiera en cualquier momento.",
+    "declineAllNote": "Rechazar todo retira sus cinco permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puede volver a conceder cualquiera en cualquier momento.",
     "declineAllCancel": "Cancelar",
     "continueLabel": "Continuar",
     "privacyPolicyLink": "Leer la política de privacidad",
     "adsPrivacyOptions": "Opciones de privacidad publicitaria",
-    "reviewNeeded": "Nuestra política ha cambiado: revisa tus elecciones.",
+    "reviewNeeded": "Nuestra política ha cambiado: revise sus elecciones.",
     "a11y": {
       "purposeToggle": "$purpose, actualmente $state",
       "healthSection": "Sección de datos de salud, consentimiento reforzado",
       "policyButton": "Abrir la política de privacidad"
     },
-    "healthDataMorphoNote": "Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.",
-    "healthBackupNote": "Este permiso no afecta a tu ficha médica : esa no se guarda nunca, ni en nuestros servidores ni en otro sitio, con permiso o sin él. Si cambias de teléfono la volverás a escribir. Es el precio de guardarla solo para ti."
+    "healthDataMorphoNote": "Incluye sus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.",
+    "healthBackupNote": "Este permiso no afecta a su ficha médica : esa no se guarda nunca, ni en nuestros servidores ni en otro sitio, con permiso o sin él. Si cambia de teléfono la volverá a escribir. Es el precio de guardarla solo para usted."
   },
   "erasure": {
     "section": "Mis datos",
     "entry": "Borrar mis datos",
-    "entryDesc": "Eliminar definitivamente lo que la aplicación guarda sobre ti",
+    "entryDesc": "Eliminar definitivamente lo que la aplicación guarda sobre usted",
     "dialogTitle": "¿Borrar mis datos?",
     "goesTitle": "Lo que se borra",
-    "goes": "Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación. Y todo tu trabajo de preparación: tu Programa y el reparto de etapas que has elegido, tu fecha de salida, tu progreso de preparación física, lo que ya has completado en Preparar, tus ajustes de compartir y visibilidad, y los puntos de etapa que has marcado.",
+    "goes": "Su ficha de senderista (edad, altura, peso, test de marcha), su ficha de información médica, sus rutas pasadas y su diario, las etapas que ha caminado, sus pernoctaciones, sus trazas GPS, sus consentimientos y su código de recuperación. Y todo su trabajo de preparación: su Programa y el reparto de etapas que ha elegido, su fecha de salida, su progreso de preparación física, lo que ya ha completado en Preparar, sus ajustes de compartir y visibilidad, y los puntos de etapa que ha marcado.",
     "staysTitle": "Lo que se queda",
-    "stays": "Tus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no te quitamos lo que has pagado. Y tus ajustes de visualización (idioma, tema, unidades), que no dicen nada de ti.",
-    "finalWarning": "Es definitivo: ni tú ni nosotros podremos recuperar estos datos.",
+    "stays": "Sus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no le quitamos lo que ha pagado. Y sus ajustes de visualización (idioma, tema, unidades), que no dicen nada de usted.",
+    "finalWarning": "Es definitivo: ni usted ni nosotros podremos recuperar estos datos.",
     "confirmCheckbox": "Lo he leído y quiero borrar mis datos",
     "confirm": "Borrar definitivamente",
     "cancel": "Cancelar",
-    "done": "Tus datos se han borrado.",
-    "error": "El borrado no se completó. Vuelve a intentarlo — lo que ya se ha borrado no vuelve.",
+    "done": "Sus datos se han borrado.",
+    "error": "El borrado no se completó. Vuelva a intentarlo — lo que ya se ha borrado no vuelve.",
     "a11y": {
       "entry": "Borrar mis datos, abre una solicitud de confirmación"
     }
@@ -2278,7 +2278,7 @@
     "hintWeight": "En kilogramos",
     "errorWeight": "Peso no válido (25 a 200 kg)",
     "errorCountry": "Código de país no válido (ej. FR)",
-    "errorEmpty": "Ficha vacía: indique al menos la edad, la altura o el peso.",
+    "errorEmpty": "Ficha vacía: indica al menos la edad, la altura o el peso.",
     "errorSaveFailed": "No se ha podido guardar la ficha. No se ha modificado nada: inténtalo de nuevo.",
     "errorConsentRequired": "Sin tu consentimiento no se guarda nada: edad, altura y peso son datos de salud. Lo que estaba guardado acaba de borrarse de este dispositivo. Marca la autorización de arriba y vuelve a guardar.",
     "fieldSex": "Sexo (opcional)",
@@ -2375,27 +2375,27 @@
   },
   "sos": {
     "title": "¿Llamar a emergencias?",
-    "body": "Está a punto de llamar al 112 (emergencias europeas).",
-    "positionTitle": "Su posición actual",
+    "body": "Estás a punto de llamar al 112 (emergencias europeas).",
+    "positionTitle": "Tu posición actual",
     "positionUnavailable": "Posición GPS no disponible",
     "gpsAcquiring": "Adquiriendo GPS…",
     "ageNow": "Posición ahora mismo",
     "ageMinutes": "Posición hace $minutes min",
     "ageHours": "Posición hace $hours h $minutes",
-    "estimated": "Estimada en el sendero a partir de sus pasos",
+    "estimated": "Estimada en el sendero a partir de tus pasos",
     "freshFailed": "Ninguna posición más reciente en $seconds s: se sigue mostrando la última conocida.",
-    "unavailableHelp": "Llame igualmente al 112: indique el último lugar por el que pasó (refugio, collado, baliza) y quédese donde está si puede.",
+    "unavailableHelp": "Llama igualmente al 112: indica el último lugar por el que pasaste (refugio, collado, baliza) y quédate donde estás si puedes.",
     "positionLine": "Posición: $lat, $lng  -  Alt. $alt m",
     "noContacts": "Ningún contacto configurado",
     "callContact": "Llamar a $name",
     "altitudeUnavailable": "Altitud: no disponible",
-    "communicate": "Comunique estas coordenadas a los servicios de emergencia.",
+    "communicate": "Comunica estas coordenadas a los servicios de emergencia.",
     "cancel": "Cancelar",
     "call": "Llamar al 112",
     "medicalId": {
       "action": "Ficha médica del teléfono",
-      "hint": "Muestre sus datos vitales a emergencias, incluso con la pantalla bloqueada.",
-      "unavailable": "Abra la ficha médica en los ajustes de Salud de su teléfono."
+      "hint": "Muestra tus datos vitales a emergencias, incluso con la pantalla bloqueada.",
+      "unavailable": "Abre la ficha médica en los ajustes de Salud de tu teléfono."
     },
     "cannotCall": "Este dispositivo no puede realizar la llamada. Marca $number."
   },
