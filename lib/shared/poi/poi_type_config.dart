@@ -35,8 +35,20 @@ class PoiTypeConfig {
 
   /// Styles connus par type de POI (String extensible)
   static const Map<String, PoiTypeStyle> _styles = {
+    // UN POINT D'EAU SE DESSINE EN GOUTTE, PAS EN AVERSE (tache 772).
+    //
+    // Retour de Christophe, deux fois plutot qu'une : « L'icone source est
+    // toujours un nuage avec de la pluie ???? ».
+    //
+    // CE QUI ETAIT EN CAUSE, MESURE AVANT DE TOUCHER QUOI QUE CE SOIT : le
+    // FICHIER n'avait rien a se reprocher. `assets/icons/point-eau.svg` dessine
+    // bien une goutte, et il existait depuis le depart — il n'etait simplement
+    // appele NULLE PART. C'est la clef qui avait glisse : le point d'eau
+    // portait le dessin de la METEO (`pluie.svg`, un nuage et trois gouttes),
+    // tout en gardant la couleur `pointEau`. Le bleu disait « eau », le trace
+    // disait « il pleut ».
     'water': PoiTypeStyle(
-      icon: StepwaysIcons.pluie,
+      icon: StepwaysIcons.pointEau,
       color: CouleursSemantiques.pointEau,
       labelKey: 'Eau',
     ),

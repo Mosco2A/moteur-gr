@@ -107,7 +107,10 @@ class StagePoiChecklist extends ConsumerWidget {
 
         // --- Points d'eau de l'etape ---
         _ChecklistGroup(
-          icon: StepwaysIcons.pluie,
+          // L'ICONE VIENT DU REGISTRE, COMME LA COULEUR (tache 772). Elle
+          // etait ecrite ici a la main, a cote d'une couleur lue au registre —
+          // et c'est cette copie qui avait derive.
+          icon: PoiTypeConfig.getStyle('water').icon,
           color: PoiTypeConfig.getStyle('water').color,
           title: t.stage.waterSources.title,
           // Convention du projet : Slang n'interpole pas `{n}`, on remplace en

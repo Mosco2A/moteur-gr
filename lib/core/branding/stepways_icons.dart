@@ -1,4 +1,4 @@
-/// Les 156 icones de la marque, a trait courant : elles prennent la couleur
+/// Les 157 icones de la marque, a trait courant : elles prennent la couleur
 /// qu'on leur donne, comme une icone Material.
 library;
 
@@ -18,6 +18,12 @@ import 'app_branding.dart';
 /// chemin faux ne leve rien — il fait un trou a l'ecran).
 ///
 /// Le commentaire de chaque constante porte son code ICO ou MAT, comme chez lui.
+///
+/// 157 ET NON 156, ET LA DIFFERENCE SE NOMME. Christophe en a livre 156. La
+/// 157e, `resume`, a ete dessinee par la tache 772 dans le meme style que ses
+/// voisines — meme boite de 24, meme trait de 2, meme accent orange #D9772B —
+/// parce que le Resume n'avait pas de dessin a lui et portait celui du
+/// Programme. C'est la SEULE icone du dossier qui ne vienne pas de lui.
 ///
 /// AJOUTE dessous, et seulement dessous : les trois familles BICOLORES
 /// ([RubriqueStepways], [IcoStepways], [MatStepways]) et le widget
@@ -81,6 +87,8 @@ abstract final class StepwaysIcons {
   static const faisabilite = 'assets/icons/faisabilite.svg'; // Faisabilité
   static const itineraire = 'assets/icons/itineraire.svg'; // Itinéraires
   static const programme = 'assets/icons/programme.svg'; // Programme
+  /// Résumé — la synthèse du plan (tache 772, dessin propre au Résumé).
+  static const resume = 'assets/icons/resume.svg';
   static const calendrier = 'assets/icons/calendrier.svg'; // Calendrier
   static const preparationPhysique =
       'assets/icons/preparation-physique.svg'; // Préparation physique
@@ -358,7 +366,9 @@ abstract interface class IconeBicolore {
   bool get duoParDefaut;
 }
 
-/// LES 20 RUBRIQUES DE L'APPLICATION.
+/// LES 21 RUBRIQUES DE L'APPLICATION.
+///
+/// Vingt livrees par Christophe (tache 632), plus `resume` (tache 772).
 enum RubriqueStepways implements IconeBicolore {
   trailCatalog('catalogue-sentiers'),
   myAccount('mon-compte'),
@@ -366,6 +376,14 @@ enum RubriqueStepways implements IconeBicolore {
   faisabilite('faisabilite'),
   itineraire('itineraire'),
   programme('programme'),
+
+  /// LE RESUME A SON PROPRE DESSIN DEPUIS LA TACHE 772. Il portait celui du
+  /// PROGRAMME — la carte « Resume » passait `icon: StepwaysIcons.programme`,
+  /// que la regle ci-dessus resout PAR NOM DE FICHIER vers la rubrique
+  /// `programme` : les deux cartes du cockpit sortaient donc, a l'identique, le
+  /// trace pointille de l'itineraire. Un resume est ce qu'on retient d'un coup
+  /// d'oeil, pas un chemin.
+  resume('resume'),
   calendrier('calendrier'),
   preparationPhysique('preparation-physique'),
   ficheMedicale('fiche-medicale'),

@@ -139,7 +139,9 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
                           const SizedBox(height: AppTheme.spacingSm),
                           _TypeOption(
                             type: SignalementType.eauASec,
-                            icon: StepwaysIcons.pluie,
+                            // UN POINT D'EAU A SEC RESTE UN POINT D'EAU
+                            // (tache 772) : la goutte, pas le nuage.
+                            icon: StepwaysIcons.pointEau,
                             label: t.signalement.types.eauASec,
                             selected: _selectedType == SignalementType.eauASec,
                             onTap: () => setState(
