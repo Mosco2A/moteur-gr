@@ -163,13 +163,64 @@ class TrailCatalogScreen extends ConsumerWidget {
     // ([AdStateBadge]). Le randonneur sait ce qu'il va trouver, et il a
     // « Acheter » a cote s'il n'en veut pas.
 
+    // LE SECOND APPUI NE DECLENCHE RIEN (tache 796).
+    //
+    // CE GESTE FAIT DEUX CHOSES QUI NE SE DEFONT PAS : il BASCULE le sentier
+    // actif, puis il CHANGE D'ECRAN. Le randonneur le repete pourtant, parce
+    // qu'une transition dure trois cents millisecondes et que, pendant ce
+    // temps, la carte est TOUJOURS SOUS SON DOIGT. Le persona MALADROIT
+    // (tache 573) joue exactement ce doigt-la.
+    //
+    // CE QUE LA MESURE DIT, ET IL FAUT L'ECRIRE PLUTOT QUE DE LAISSER CROIRE
+    // AUTRE CHOSE. Sur le code d'avant cette garde, le double appui sur CE
+    // bouton ne cassait RIEN : rebasculer sur le sentier qu'on vient de choisir
+    // ecrit la meme valeur, et renaviguer vers l'ecran ou l'on est deja ne
+    // produit aucune annonce de plus. Le geste etait deja idempotent — mais
+    // PAR COINCIDENCE, parce que ses deux effets se trouvaient etre des
+    // no-op repetes. Cette garde ne repare pas un defaut constate : elle rend
+    // l'idempotence EXPLICITE au lieu de la laisser dependre de ce hasard. Le
+    // jour ou la destination deviendrait un `push` (qui, lui, EMPILE), ou ou la
+    // bascule porterait un effet de bord, le hasard cesserait de proteger.
+    //
+    // ET CE N'EST PAS CE GESTE QUI FAISAIT ROUGIR LE MALADROIT : le rouge vient
+    // d'une VRAIE bascule de sentier apres qu'un cockpit a deja ete construit,
+    // pas d'un double appui. Voir le rapport de la tache 796 — ce chemin-la
+    // reste ouvert et attend son lot.
+    //
+    // POURQUOI LA GARDE EST UNE QUESTION AU ROUTEUR, ET PAS UN DRAPEAU. Cet
+    // ecran est un [ConsumerWidget] : il n'a pas d'etat ou poser un « c'est
+    // parti ». Un drapeau exigerait soit un etat local (donc convertir l'ecran,
+    // pour une precaution), soit un provider (donc une ECRITURE de plus dans la
+    // chaine de configuration, au moment precis ou l'on cherche a ne pas la
+    // salir — le remede porterait la maladie). Or l'information existe deja, et
+    // elle est exacte : le routeur SAIT ou il est. `context.go` a pose la
+    // destination AVANT de rendre la main — des le premier appui, la
+    // configuration courante dit deja `/home`. Le second appui n'a donc rien a
+    // deduire ni a retenir : il constate qu'il est arrive, et il se tait.
+    //
+    // CE N'EST PAS UN ANTI-REBOND (pas de minuterie, pas de duree a regler) :
+    // c'est l'idempotence du geste, exprimee par son RESULTAT. Tant qu'on n'est
+    // pas a destination, le geste part ; des qu'on y est, il n'a plus d'objet.
+    if (GoRouter.of(context).routerDelegate.currentConfiguration.uri.path ==
+        _destinationPreparer) {
+      return;
+    }
+
     // On CHANGE DE SENTIER, puis on change d'ecran — dans cet ordre, et la
     // bascule est resolue avant la navigation ([chooseTrail] dit pourquoi :
     // sans cela, quatre « setState during build » par bascule).
     chooseTrail(ref, trailId);
-    context.go('/home');
+    context.go(_destinationPreparer);
   }
 }
+
+/// Ou mene « Preparer » : l'accueil TERRAIN, c'est-a-dire le cockpit du sentier
+/// qu'on vient de choisir.
+///
+/// Nomme une seule fois parce que la garde d'idempotence de [_enterTrail] le
+/// COMPARE : deux litteraux qui divergent rendraient la garde silencieusement
+/// inoperante, ce qui est la pire panne pour un garde-fou.
+const String _destinationPreparer = '/home';
 
 /// LE BOUTON DEMO ORANGE, EN TETE DU CATALOGUE (tache 634, DEM-260929-1123).
 ///
