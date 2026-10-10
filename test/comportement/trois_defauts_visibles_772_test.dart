@@ -56,6 +56,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:moteur_gr/core/branding/stepways_icons.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
@@ -73,6 +74,7 @@ import 'package:moteur_gr/features/map/providers/location_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/features/trek/data/gps_service.dart';
 import 'package:moteur_gr/features/trek/data/marcheur_simule_providers.dart';
+import 'package:moteur_gr/features/trek/presentation/map/centre_de_la_moitie_haute.dart';
 import 'package:moteur_gr/features/trek/presentation/map/map_content.dart';
 import 'package:moteur_gr/features/trek/presentation/map/map_controller.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
@@ -328,15 +330,38 @@ void main() {
         await tester.tap(find.byTooltip(t.a11y.centerOnMe));
         await tester.pump();
 
-        final camera = container.read(mapControllerProvider).camera.center;
+        // CETTE MESURE A CHANGE DE FORME AVEC LA TACHE 790, PAS D'INTENTION.
+        //
+        // Elle lisait le CENTRE de la camera et le voulait egal a la position
+        // du marcheur. Depuis le 790, le centre de la camera n'est PLUS le
+        // marcheur, et c'est voulu : Christophe a demande que le point
+        // recentre tombe « sur les 50% de l'ecran du haut », donc au quart de
+        // la hauteur, parce qu'au centre geometrique le panneau de chiffres le
+        // recouvre. Le centre de la camera part d'autant vers le sud.
+        //
+        // CE QUE CETTE GARDE-CI DOIT PROUVER RESTE EXACTEMENT LE MEME : que le
+        // bouton a visé LE MARCHEUR SIMULE, et non son repli sur le trace. On
+        // le mesure donc la ou cela se voit — la position du marcheur A
+        // L'ECRAN — au lieu du centre de la camera. La fraction vient de la
+        // regle elle-meme ([fractionDuCentreHaut]) : si Christophe la change,
+        // cette garde suit sans mentir.
+        final camera = container.read(mapControllerProvider).camera;
+        final ouALEcran = camera.latLngToScreenOffset(
+          LatLng(marcheurOu!.latitude, marcheurOu.longitude),
+        );
         expect(
-          camera.latitude,
-          closeTo(marcheurOu!.latitude, 1e-6),
+          ouALEcran.dy,
+          closeTo(camera.nonRotatedSize.height * fractionDuCentreHaut, 1.0),
           reason:
               'le bouton doit recentrer sur le MARCHEUR SIMULE, comme il '
-              'recentre sur le randonneur en vrai',
+              'recentre sur le randonneur en vrai — et le poser au quart du '
+              'haut (tache 790). S il s etait rabattu sur le trace, le '
+              'marcheur ne tomberait pas la.',
         );
-        expect(camera.longitude, closeTo(marcheurOu.longitude, 1e-6));
+        // LE DECALAGE DU 790 EST PUREMENT VERTICAL : la longitude du centre
+        // reste celle du marcheur, et c'est une mesure de plus que le bouton
+        // l'a bien visé.
+        expect(camera.center.longitude, closeTo(marcheurOu.longitude, 1e-6));
       },
     );
 
