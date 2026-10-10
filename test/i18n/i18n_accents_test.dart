@@ -386,6 +386,25 @@ const Map<String, Map<String, String>> formesFautives =
 /// Mots qui RESSEMBLENT a une faute mais n en sont pas (cf. en-tete).
 const Map<String, List<String>> nonFautes = <String, List<String>>{
   'fr': <String>[
+    // TACHE 757 — « ajoute » et « termine » rejoignent « arrive », « oriente »,
+    // « certifie » et « valide », qui etaient deja ici pour la meme raison.
+    //
+    // L APPLICATION TUTOIE LE RANDONNEUR depuis la decision de Christophe du
+    // 09/10 15:02, et l imperatif de la deuxieme personne du singulier s ecrit
+    // SANS ACCENT : « Ajoute tes photos », « Termine ton parcours ». Le
+    // dictionnaire associait « ajoute » a « ajoute » accentue, ce qui est juste
+    // pour le PARTICIPE (« un jour ajoute ») et faux pour l imperatif. Neuf
+    // clefs tombaient sur ce faux positif — navPilote.startGateSubtitle,
+    // diploma.lockedMessage, recap.lockedMessage, journal.lockedBody,
+    // trekState.abandonDialog.message, moderation.detailsHint,
+    // checklist.ui.shoppingListEmpty, pastHikes.intro et
+    // programme.inTrek.info.upcoming.body.
+    //
+    // LE PRIX EST ASSUME, ET C EST CELUI DEJA PAYE POUR « valide » : le
+    // participe « ajoute » / « termine » perd sa protection d accent. Un
+    // homographe ne peut pas etre garde par une liste de mots sans contexte ;
+    // la liste choisit alors de ne pas crier au loup sur une forme correcte.
+    'ajoute',
     'arrive',
     'base',
     'certifie',
@@ -393,6 +412,7 @@ const Map<String, List<String>> nonFautes = <String, List<String>>{
     'repartir',
     'sec',
     'secs',
+    'termine',
     'valide',
   ],
   'de': <String>[

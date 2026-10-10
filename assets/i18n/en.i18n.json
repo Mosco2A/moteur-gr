@@ -1482,8 +1482,8 @@
       "savedPendingSync": "It will be published when the network is back.",
       "pendingCount": "$n pending synchronization",
       "close": "Close",
-      "emptyTitle": "Please enter a title for the waypoint.",
-      "emptyComment": "Please enter your observation.",
+      "emptyTitle": "Enter a title for the waypoint.",
+      "emptyComment": "Enter your observation.",
       "noLocation": "GPS position unavailable. Try again under open sky.",
       "error": "Cannot save right now."
     }
@@ -1641,7 +1641,7 @@
       "adminWhy": "What gets copied at the hospital desk, not what is read in the rain."
     },
     "bloodTypeUnknown": "I don't know",
-    "bloodTypeLegacy": "Your previous entry « $valeur » is not a recognised blood group. Please choose from the list.",
+    "bloodTypeLegacy": "Your previous entry « $valeur » is not a recognised blood group. Choose from the list.",
     "organDonor": {
       "yes": "Donor",
       "no": "Opted out",
@@ -1771,8 +1771,8 @@
     "submit": "Send report",
     "submitting": "Sending…",
     "sent": "Report sent. Thank you, a moderator will review it.",
-    "errorRequired": "Please fill in the reason, your email and the good-faith declaration.",
-    "errorGeneric": "The report could not be sent. Please try again.",
+    "errorRequired": "Fill in the reason, your email and the good-faith declaration.",
+    "errorGeneric": "The report could not be sent. Try again.",
     "cancel": "Cancel",
     "reasonsTitle": "Why was this content restricted?",
     "reasonsIntro": "In accordance with article 17, here is the reason for the moderation decision regarding your content.",
@@ -1790,7 +1790,7 @@
     "complaintExposeHint": "Describe the reasons for your challenge.",
     "complaintSubmit": "Send challenge",
     "complaintSent": "Challenge recorded. It will be reviewed.",
-    "complaintEmpty": "Please explain your challenge.",
+    "complaintEmpty": "Explain your challenge.",
     "a11y": {
       "reportForm": "Content reporting form",
       "reasonSelector": "Report reason selector",
@@ -2280,7 +2280,7 @@
     "errorWeight": "Invalid weight (25 to 200 kg)",
     "errorCountry": "Invalid country code (e.g. FR)",
     "errorEmpty": "Empty profile: enter at least your age, height or weight.",
-    "errorSaveFailed": "Your details could not be saved. Nothing was changed: please try again.",
+    "errorSaveFailed": "Your details could not be saved. Nothing was changed: try again.",
     "errorConsentRequired": "Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.",
     "fieldSex": "Sex (optional)",
     "sexFemale": "Female",

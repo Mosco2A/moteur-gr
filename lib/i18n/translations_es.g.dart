@@ -552,7 +552,7 @@ class _Translations$weather$es extends Translations$weather$fr {
 	@override String get wind => 'Viento';
 	@override String get uv => 'Índice UV';
 	@override String get fireRisk => 'Riesgo de incendio';
-	@override String get fireRiskDesc => 'Alto riesgo de incendio. Consulte las instrucciones de seguridad.';
+	@override String get fireRiskDesc => 'Alto riesgo de incendio. Consulta las instrucciones de seguridad.';
 	@override String get fireSafetyTips => 'Instrucciones contra incendios';
 	@override String get alertCount => 'alerta';
 	@override String get alertCountPlural => 'alertas';
@@ -871,7 +871,7 @@ class _Translations$demo$es extends Translations$demo$fr {
 	@override String get quitter => 'Salir';
 	@override String get boutonTitre => 'Probar la demo';
 	@override String get boutonSous => 'Toda la aplicación. No se guarda nada.';
-	@override String get rienNeCompte => 'Está en modo demo: no se guarda nada. Ni etapas, ni diploma, ni compra.';
+	@override String get rienNeCompte => 'Estás en modo demo: no se guarda nada. Ni etapas, ni diploma, ni compra.';
 	@override String get simulerEtape => 'Simular la siguiente etapa';
 	@override String get simulerFin => 'Simular la llegada';
 	@override String get simulerRelancer => 'Reiniciar la demo';
@@ -940,7 +940,7 @@ class _Translations$cloud$es extends Translations$cloud$fr {
 
 	// Translations
 	@override String get localModeTitle => 'Modo local';
-	@override String get localModeBody => 'Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Sus datos permanecen en el dispositivo.';
+	@override String get localModeBody => 'Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Tus datos permanecen en el dispositivo.';
 	@override String get statusSection => 'Nube';
 	@override String get statusActive => 'Servicios en línea activos';
 	@override String get statusActiveDesc => 'Copia de seguridad y seguimiento en directo disponibles.';
@@ -1019,7 +1019,7 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String buyOutcomeOffline({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.';
 	@override String get buyOutcomeFailed => 'El pago no se ha completado. No se ha cobrado nada.';
 	@override String get buyOutcomeUnknownPrice => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.';
-	@override String get buyOutcomeDemo => 'Está en modo demo: no se puede comprar nada, y no se ha cobrado nada.';
+	@override String get buyOutcomeDemo => 'Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.';
 	@override String subscriptionPrice({required Object price}) => '${price} al mes';
 	@override String get subscriptionAllowanceForLife => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.';
 	@override String get cancelCta => 'Cancelar mi suscripción';
@@ -1308,7 +1308,7 @@ class _Translations$health$es extends Translations$health$fr {
 	@override late final _Translations$health$advice$es advice = _Translations$health$advice$es._(_root);
 	@override late final _Translations$health$section$es section = _Translations$health$section$es._(_root);
 	@override String get bloodTypeUnknown => 'No lo sé';
-	@override String bloodTypeLegacy({required Object valeur}) => 'Su entrada anterior « ${valeur} » no es un grupo sanguíneo reconocido. Elija en la lista.';
+	@override String bloodTypeLegacy({required Object valeur}) => 'Tu entrada anterior « ${valeur} » no es un grupo sanguíneo reconocido. Elige en la lista.';
 	@override late final _Translations$health$organDonor$es organDonor = _Translations$health$organDonor$es._(_root);
 	@override late final _Translations$health$contacts$es contacts = _Translations$health$contacts$es._(_root);
 	@override late final _Translations$health$cards$es cards = _Translations$health$cards$es._(_root);
@@ -1340,32 +1340,32 @@ class _Translations$consent$es extends Translations$consent$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get onboardingTitle => 'Tu privacidad, tu elección';
-	@override String get onboardingIntro => 'Nada está activado por defecto. Elige, finalidad por finalidad, lo que autorizas. Podrás cambiarlo todo en cualquier momento en los ajustes.';
+	@override String get onboardingTitle => 'Su privacidad, su elección';
+	@override String get onboardingIntro => 'Nada está activado por defecto. Elija, finalidad por finalidad, lo que autoriza. Podrá cambiarlo todo en cualquier momento en los ajustes.';
 	@override String get settingsTitle => 'Privacidad y consentimiento';
-	@override String get settingsIntro => 'Gestiona aquí cada permiso. Puedes retirar un consentimiento en cualquier momento, sin afectar al resto.';
+	@override String get settingsIntro => 'Gestione aquí cada permiso. Puede retirar un consentimiento en cualquier momento, sin afectar al resto.';
 	@override String get settingsEntry => 'Privacidad y consentimiento';
 	@override String get settingsEntryDesc => 'Gestionar mis permisos (ubicación, compartir, publicidad, salud)';
 	@override late final _Translations$consent$purposes$es purposes = _Translations$consent$purposes$es._(_root);
 	@override String get healthBadge => 'Dato sensible';
-	@override String get healthWarning => 'La frecuencia cardíaca es un dato de salud (artículo 9 del RGPD). Este consentimiento se solicita por separado y nunca se agrupa con los demás. Tus datos de salud no se envían a nuestros servidores.';
+	@override String get healthWarning => 'La frecuencia cardíaca es un dato de salud (artículo 9 del RGPD). Este consentimiento se solicita por separado y nunca se agrupa con los demás. Sus datos de salud no se envían a nuestros servidores.';
 	@override String get granted => 'Autorizado';
 	@override String get denied => 'No autorizado';
 	@override String get grant => 'Autorizar';
 	@override String get revoke => 'Retirar';
 	@override String decidedOn({required Object date}) => 'Elegido el ${date}';
-	@override String get notDecided => 'A la espera de tu elección';
+	@override String get notDecided => 'A la espera de su elección';
 	@override String get acceptSelected => 'Confirmar mis elecciones';
 	@override String get declineAll => 'Rechazar todo';
-	@override String get declineAllNote => 'Rechazar todo retira tus cinco permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puedes volver a conceder cualquiera en cualquier momento.';
+	@override String get declineAllNote => 'Rechazar todo retira sus cinco permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puede volver a conceder cualquiera en cualquier momento.';
 	@override String get declineAllCancel => 'Cancelar';
 	@override String get continueLabel => 'Continuar';
 	@override String get privacyPolicyLink => 'Leer la política de privacidad';
 	@override String get adsPrivacyOptions => 'Opciones de privacidad publicitaria';
-	@override String get reviewNeeded => 'Nuestra política ha cambiado: revisa tus elecciones.';
+	@override String get reviewNeeded => 'Nuestra política ha cambiado: revise sus elecciones.';
 	@override late final _Translations$consent$a11y$es a11y = _Translations$consent$a11y$es._(_root);
-	@override String get healthDataMorphoNote => 'Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.';
-	@override String get healthBackupNote => 'Este permiso no afecta a tu ficha médica : esa no se guarda nunca, ni en nuestros servidores ni en otro sitio, con permiso o sin él. Si cambias de teléfono la volverás a escribir. Es el precio de guardarla solo para ti.';
+	@override String get healthDataMorphoNote => 'Incluye sus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.';
+	@override String get healthBackupNote => 'Este permiso no afecta a su ficha médica : esa no se guarda nunca, ni en nuestros servidores ni en otro sitio, con permiso o sin él. Si cambia de teléfono la volverá a escribir. Es el precio de guardarla solo para usted.';
 }
 
 // Path: erasure
@@ -1377,18 +1377,18 @@ class _Translations$erasure$es extends Translations$erasure$fr {
 	// Translations
 	@override String get section => 'Mis datos';
 	@override String get entry => 'Borrar mis datos';
-	@override String get entryDesc => 'Eliminar definitivamente lo que la aplicación guarda sobre ti';
+	@override String get entryDesc => 'Eliminar definitivamente lo que la aplicación guarda sobre usted';
 	@override String get dialogTitle => '¿Borrar mis datos?';
 	@override String get goesTitle => 'Lo que se borra';
-	@override String get goes => 'Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación. Y todo tu trabajo de preparación: tu Programa y el reparto de etapas que has elegido, tu fecha de salida, tu progreso de preparación física, lo que ya has completado en Preparar, tus ajustes de compartir y visibilidad, y los puntos de etapa que has marcado.';
+	@override String get goes => 'Su ficha de senderista (edad, altura, peso, test de marcha), su ficha de información médica, sus rutas pasadas y su diario, las etapas que ha caminado, sus pernoctaciones, sus trazas GPS, sus consentimientos y su código de recuperación. Y todo su trabajo de preparación: su Programa y el reparto de etapas que ha elegido, su fecha de salida, su progreso de preparación física, lo que ya ha completado en Preparar, sus ajustes de compartir y visibilidad, y los puntos de etapa que ha marcado.';
 	@override String get staysTitle => 'Lo que se queda';
-	@override String get stays => 'Tus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no te quitamos lo que has pagado. Y tus ajustes de visualización (idioma, tema, unidades), que no dicen nada de ti.';
-	@override String get finalWarning => 'Es definitivo: ni tú ni nosotros podremos recuperar estos datos.';
+	@override String get stays => 'Sus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no le quitamos lo que ha pagado. Y sus ajustes de visualización (idioma, tema, unidades), que no dicen nada de usted.';
+	@override String get finalWarning => 'Es definitivo: ni usted ni nosotros podremos recuperar estos datos.';
 	@override String get confirmCheckbox => 'Lo he leído y quiero borrar mis datos';
 	@override String get confirm => 'Borrar definitivamente';
 	@override String get cancel => 'Cancelar';
-	@override String get done => 'Tus datos se han borrado.';
-	@override String get error => 'El borrado no se completó. Vuelve a intentarlo — lo que ya se ha borrado no vuelve.';
+	@override String get done => 'Sus datos se han borrado.';
+	@override String get error => 'El borrado no se completó. Vuelva a intentarlo — lo que ya se ha borrado no vuelve.';
 	@override late final _Translations$erasure$a11y$es a11y = _Translations$erasure$a11y$es._(_root);
 }
 
@@ -1761,7 +1761,7 @@ class _Translations$hikerProfile$es extends Translations$hikerProfile$fr {
 	@override String get hintWeight => 'En kilogramos';
 	@override String get errorWeight => 'Peso no válido (25 a 200 kg)';
 	@override String get errorCountry => 'Código de país no válido (ej. FR)';
-	@override String get errorEmpty => 'Ficha vacía: indique al menos la edad, la altura o el peso.';
+	@override String get errorEmpty => 'Ficha vacía: indica al menos la edad, la altura o el peso.';
 	@override String get errorSaveFailed => 'No se ha podido guardar la ficha. No se ha modificado nada: inténtalo de nuevo.';
 	@override String get errorConsentRequired => 'Sin tu consentimiento no se guarda nada: edad, altura y peso son datos de salud. Lo que estaba guardado acaba de borrarse de este dispositivo. Marca la autorización de arriba y vuelve a guardar.';
 	@override String get fieldSex => 'Sexo (opcional)';
@@ -1875,21 +1875,21 @@ class _Translations$sos$es extends Translations$sos$fr {
 
 	// Translations
 	@override String get title => '¿Llamar a emergencias?';
-	@override String get body => 'Está a punto de llamar al 112 (emergencias europeas).';
-	@override String get positionTitle => 'Su posición actual';
+	@override String get body => 'Estás a punto de llamar al 112 (emergencias europeas).';
+	@override String get positionTitle => 'Tu posición actual';
 	@override String get positionUnavailable => 'Posición GPS no disponible';
 	@override String get gpsAcquiring => 'Adquiriendo GPS…';
 	@override String get ageNow => 'Posición ahora mismo';
 	@override String ageMinutes({required Object minutes}) => 'Posición hace ${minutes} min';
 	@override String ageHours({required Object hours, required Object minutes}) => 'Posición hace ${hours} h ${minutes}';
-	@override String get estimated => 'Estimada en el sendero a partir de sus pasos';
+	@override String get estimated => 'Estimada en el sendero a partir de tus pasos';
 	@override String freshFailed({required Object seconds}) => 'Ninguna posición más reciente en ${seconds} s: se sigue mostrando la última conocida.';
-	@override String get unavailableHelp => 'Llame igualmente al 112: indique el último lugar por el que pasó (refugio, collado, baliza) y quédese donde está si puede.';
+	@override String get unavailableHelp => 'Llama igualmente al 112: indica el último lugar por el que pasaste (refugio, collado, baliza) y quédate donde estás si puedes.';
 	@override String positionLine({required Object lat, required Object lng, required Object alt}) => 'Posición: ${lat}, ${lng}  -  Alt. ${alt} m';
 	@override String get noContacts => 'Ningún contacto configurado';
 	@override String callContact({required Object name}) => 'Llamar a ${name}';
 	@override String get altitudeUnavailable => 'Altitud: no disponible';
-	@override String get communicate => 'Comunique estas coordenadas a los servicios de emergencia.';
+	@override String get communicate => 'Comunica estas coordenadas a los servicios de emergencia.';
 	@override String get cancel => 'Cancelar';
 	@override String get call => 'Llamar al 112';
 	@override late final _Translations$sos$medicalId$es medicalId = _Translations$sos$medicalId$es._(_root);
@@ -2120,14 +2120,14 @@ class _Translations$map$guide$es extends Translations$map$guide$fr {
 
 	// Translations
 	@override String get buttonsTitle => 'Botones';
-	@override String get position => 'Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe el permiso de localización.';
+	@override String get position => 'Tu posición GPS, actualizada al caminar. Si el punto desaparece, comprueba el permiso de localización.';
 	@override String get track => 'El trazado del sendero. El aviso de salida de ruta se refiere a él.';
-	@override String get centerOnMe => 'Devuelve el mapa a su posición.';
+	@override String get centerOnMe => 'Devuelve el mapa a tu posición.';
 	@override String get photo => 'Hace una foto para el diario del día.';
-	@override String get sos => 'Abre la llamada de emergencia con sus coordenadas GPS. Solo para una emergencia real.';
+	@override String get sos => 'Abre la llamada de emergencia con tus coordenadas GPS. Solo para una emergencia real.';
 	@override String get onlyInTrek => 'Solo visible una vez iniciada la ruta.';
 	@override String get currentStage => 'Lo que queda por andar en la etapa en curso. Un guión: la ruta no ha empezado.';
-	@override String get offTrack => 'Se enciende cuando se aleja del trazado. Vuelva sobre él para apagarlo.';
+	@override String get offTrack => 'Se enciende cuando te alejas del trazado. Vuelve sobre él para apagarlo.';
 	@override late final _Translations$map$guide$poi$es poi = _Translations$map$guide$poi$es._(_root);
 }
 
@@ -2165,7 +2165,7 @@ class _Translations$stage$waterSources$es extends Translations$stage$waterSource
 	// Translations
 	@override String get title => 'Puntos de agua';
 	@override String get count => '{n} fuente(s)';
-	@override String get none => 'No hay ningún punto de agua indicado en esta etapa. Lleve al menos 3 L por persona.';
+	@override String get none => 'No hay ningún punto de agua indicado en esta etapa. Lleva al menos 3 L por persona.';
 }
 
 // Path: stage.accommodation
@@ -2187,11 +2187,11 @@ class _Translations$stage$advice$es extends Translations$stage$advice$fr {
 
 	// Translations
 	@override String get title => 'Consejos';
-	@override String get waterScarce => 'Pocos puntos de agua: salga con al menos 2,5 L.';
-	@override String get waterAmple => 'Rellene las cantimploras en cada punto de agua que encuentre.';
-	@override String get hardStage => 'Etapa técnica: salga temprano para evitar el calor y las tormentas de la tarde.';
+	@override String get waterScarce => 'Pocos puntos de agua: sal con al menos 2,5 L.';
+	@override String get waterAmple => 'Rellena las cantimploras en cada punto de agua que encuentres.';
+	@override String get hardStage => 'Etapa técnica: sal temprano para evitar el calor y las tormentas de la tarde.';
 	@override String get earlyStart => 'Se recomienda salir antes de las 8 h para aprovechar el fresco matinal.';
-	@override String get bigClimb => 'Fuerte desnivel positivo: dosifique el esfuerzo y haga pausas regulares.';
+	@override String get bigClimb => 'Fuerte desnivel positivo: dosifica el esfuerzo y haz pausas regulares.';
 }
 
 // Path: accommodation.types
@@ -2628,10 +2628,10 @@ class _Translations$feasibility$formula$es extends Translations$feasibility$form
 
 	// Translations
 	@override String get title => 'Viabilidad para este trek';
-	@override String get answerTitle => '¿Está a su alcance?';
-	@override String answerGreen({required Object days}) => 'Sí. Este sendero está a su alcance en ${days} días.';
+	@override String get answerTitle => '¿Está a tu alcance?';
+	@override String answerGreen({required Object days}) => 'Sí. Este sendero está a tu alcance en ${days} días.';
 	@override String answerOrange({required Object days}) => 'Sí, en ${days} días. Pero una jornada será dura.';
-	@override String get answerRed => 'Todavía no. Una jornada de este sendero pide más de lo que usted aguanta hoy. Gane forma, o salga fuera del verano.';
+	@override String get answerRed => 'Todavía no. Una jornada de este sendero pide más de lo que aguantas hoy. Gana forma, o sal fuera del verano.';
 	@override String answerDaysNote({required Object walking, required Object rest}) => 'El sendero se camina en ${walking} días. Consejo: ${rest} día(s) de descanso.';
 	@override String answerNoRest({required Object walking}) => 'El sendero se camina en ${walking} días.';
 	@override String get explainToggle => 'Cómo se calcula este resultado';
@@ -3060,10 +3060,10 @@ class _Translations$health$hint$es extends Translations$health$hint$fr {
 	@override String get doctor => 'Ej.: Dr. García +34 91 xxx xx xx';
 	@override String get insurance => 'Ej.: tarjeta sanitaria europea';
 	@override String get fullName => 'Ej.: Christophe Mosconi';
-	@override String get birthDate => 'Pulse para elegir';
+	@override String get birthDate => 'Pulsa para elegir';
 	@override String get address => 'Ej.: calle de las Lilas 12, 20000 Ajaccio';
 	@override String get conditions => 'Ej.: diabetes tipo 1, epilepsia, anticoagulante';
-	@override String get organDonor => 'Elija una opción';
+	@override String get organDonor => 'Elige una opción';
 }
 
 // Path: health.error
@@ -3137,12 +3137,12 @@ class _Translations$health$section$es extends Translations$health$section$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get identity => 'Quién es usted';
+	@override String get identity => 'Quién eres';
 	@override String get identityWhy => 'Es lo primero que lee un rescatador: sin nombre, atiende a un desconocido y no puede avisar a nadie.';
 	@override String get contacts => 'A quién avisar';
-	@override String get contactsWhy => 'Lo que buscan los servicios de rescate justo después de identificarle. Tres personas como máximo: más allá, no se llama a ninguna.';
-	@override String get vital => 'Lo que le trata';
-	@override String get vitalWhy => 'En el orden en que pregunta un médico de urgencias: primero lo que puede matarle durante el tratamiento, después lo que sirve en el hospital.';
+	@override String get contactsWhy => 'Lo que buscan los servicios de rescate justo después de identificarte. Tres personas como máximo: más allá, no se llama a ninguna.';
+	@override String get vital => 'Lo que te trata';
+	@override String get vitalWhy => 'En el orden en que pregunta un médico de urgencias: primero lo que puede matarte durante el tratamiento, después lo que sirve en el hospital.';
 	@override String get admin => 'Administrativo';
 	@override String get adminWhy => 'Lo que se copia en el mostrador del hospital, no lo que se lee bajo la lluvia.';
 }
@@ -3172,8 +3172,8 @@ class _Translations$health$contacts$es extends Translations$health$contacts$fr {
 	@override String get phone => 'Teléfono';
 	@override String get phoneHint => 'Ej.: +34 612 34 56 78';
 	@override String get remove => 'Quitar esta persona';
-	@override String get errorName => 'Indique un nombre; si no, el rescate no sabe a quién llama.';
-	@override String get errorPhone => 'Indique un número; si no, este nombre no sirve de nada.';
+	@override String get errorName => 'Indica un nombre; si no, el rescate no sabe a quién llama.';
+	@override String get errorPhone => 'Indica un número; si no, este nombre no sirve de nada.';
 }
 
 // Path: health.cards
@@ -3189,7 +3189,7 @@ class _Translations$health$cards$es extends Translations$health$cards$fr {
 	@override String get retake => 'Repetir la foto';
 	@override String get pick => 'Elegir una imagen';
 	@override String get remove => 'Quitar la foto';
-	@override String get stored => 'Foto guardada en este teléfono. No se envía a ninguna parte y desaparece con la ficha cuando la borra.';
+	@override String get stored => 'Foto guardada en este teléfono. No se envía a ninguna parte y desaparece con la ficha cuando la borras.';
 	@override String get explain => 'La foto permanece en este teléfono, en la misma carpeta protegida que el resto de la ficha.';
 	@override String get permissionRefused => 'Acceso a la cámara denegado. La ficha funciona perfectamente sin ella.';
 	@override String get failed => 'No se ha podido guardar la foto.';
@@ -3202,8 +3202,8 @@ class _Translations$health$phoneCard$es extends Translations$health$phoneCard$fr
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Copie su ficha en la del teléfono';
-	@override String get why => 'Es la única pantalla que un rescatador alcanza sin su código, tanto en iPhone como en Android. Ajustes del teléfono, apartado Emergencia o Salud: nombre, grupo sanguíneo, alergias, tratamientos y personas a avisar.';
+	@override String get title => 'Copia tu ficha en la del teléfono';
+	@override String get why => 'Es la única pantalla que un rescatador alcanza sin tu código, tanto en iPhone como en Android. Ajustes del teléfono, apartado Emergencia o Salud: nombre, grupo sanguíneo, alergias, tratamientos y personas a avisar.';
 	@override String get done => 'Hecho, mi ficha también está en el teléfono';
 }
 
@@ -3227,15 +3227,15 @@ class _Translations$consent$purposes$es extends Translations$consent$purposes$fr
 
 	// Translations
 	@override String get locationNavigation => 'Navegación personal';
-	@override String get locationNavigationDesc => 'Usar tu ubicación para el mapa y el seguimiento de tu etapa. Permanece en tu dispositivo.';
+	@override String get locationNavigationDesc => 'Usar su ubicación para el mapa y el seguimiento de su etapa. Permanece en su dispositivo.';
 	@override String get socialSharing => 'Compartir social';
 	@override String get socialSharingDesc => 'Aparecer en las clasificaciones y en el feed de la comunidad, con un seudónimo.';
 	@override String get publicReporting => 'Avisos públicos';
 	@override String get publicReportingDesc => 'Publicar avisos (agua, peligro, condiciones) visibles para otros senderistas.';
 	@override String get advertising => 'Publicidad personalizada';
-	@override String get advertisingDesc => 'Adaptar los anuncios a tus intereses. Sin este permiso, la aplicación gratuita sigue mostrando anuncios, pero no están segmentados y ningún dato de segmentación sale de tu dispositivo.';
+	@override String get advertisingDesc => 'Adaptar los anuncios a sus intereses. Sin este permiso, la aplicación gratuita sigue mostrando anuncios, pero no están segmentados y ningún dato de segmentación sale de su dispositivo.';
 	@override String get healthData => 'Datos de salud';
-	@override String get healthDataDesc => 'Leer tu frecuencia cardíaca (banda o app de salud) para enriquecer el seguimiento del esfuerzo.';
+	@override String get healthDataDesc => 'Leer su frecuencia cardíaca (banda o app de salud) para enriquecer el seguimiento del esfuerzo.';
 }
 
 // Path: consent.a11y
@@ -3853,8 +3853,8 @@ class _Translations$sos$medicalId$es extends Translations$sos$medicalId$fr {
 
 	// Translations
 	@override String get action => 'Ficha médica del teléfono';
-	@override String get hint => 'Muestre sus datos vitales a emergencias, incluso con la pantalla bloqueada.';
-	@override String get unavailable => 'Abra la ficha médica en los ajustes de Salud de su teléfono.';
+	@override String get hint => 'Muestra tus datos vitales a emergencias, incluso con la pantalla bloqueada.';
+	@override String get unavailable => 'Abre la ficha médica en los ajustes de Salud de tu teléfono.';
 }
 
 // Path: lieu.a11y
@@ -3876,14 +3876,14 @@ class _Translations$map$guide$poi$es extends Translations$map$guide$poi$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get water => 'Manantial o fuente señalada. Un manantial puede estar seco en verano: no cuente con él.';
-	@override String get shelter => 'Refugio o abrigo. Toque la marca: altitud, servicios, contacto.';
+	@override String get water => 'Manantial o fuente señalada. Un manantial puede estar seco en verano: no cuentes con él.';
+	@override String get shelter => 'Refugio o abrigo. Toca la marca: altitud, servicios, contacto.';
 	@override String get accommodation => 'Casa rural, habitación u hotel. Reserva en el propio establecimiento.';
-	@override String get campsite => 'Camping o bivac. Las normas cambian según el territorio: infórmese antes de plantar la tienda.';
+	@override String get campsite => 'Camping o bivac. Las normas cambian según el territorio: infórmate antes de plantar la tienda.';
 	@override String get shop => 'Comercio donde abastecerse. Horarios no garantizados fuera de temporada.';
 	@override String get restaurant => 'Restaurante o mesa de huéspedes en el recorrido o muy cerca.';
 	@override String get viewpoint => 'Mirador destacado. Bueno para la parada.';
-	@override String get danger => 'Paso delicado. Reduzca el ritmo y observe el terreno antes de entrar.';
+	@override String get danger => 'Paso delicado. Reduce el ritmo y observa el terreno antes de entrar.';
 	@override String get emergency => 'Punto de socorro: puesto, helipuerto o poste de llamada de emergencia.';
 	@override String get info => 'Panel o punto de información del sendero.';
 }
@@ -4385,22 +4385,22 @@ extension on TranslationsEs {
 			'map.basculerVersSentier' => 'Ver sendero completo',
 			'map.basculerVersEtape' => 'Ver etapa',
 			'map.guide.buttonsTitle' => 'Botones',
-			'map.guide.position' => 'Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe el permiso de localización.',
+			'map.guide.position' => 'Tu posición GPS, actualizada al caminar. Si el punto desaparece, comprueba el permiso de localización.',
 			'map.guide.track' => 'El trazado del sendero. El aviso de salida de ruta se refiere a él.',
-			'map.guide.centerOnMe' => 'Devuelve el mapa a su posición.',
+			'map.guide.centerOnMe' => 'Devuelve el mapa a tu posición.',
 			'map.guide.photo' => 'Hace una foto para el diario del día.',
-			'map.guide.sos' => 'Abre la llamada de emergencia con sus coordenadas GPS. Solo para una emergencia real.',
+			'map.guide.sos' => 'Abre la llamada de emergencia con tus coordenadas GPS. Solo para una emergencia real.',
 			'map.guide.onlyInTrek' => 'Solo visible una vez iniciada la ruta.',
 			'map.guide.currentStage' => 'Lo que queda por andar en la etapa en curso. Un guión: la ruta no ha empezado.',
-			'map.guide.offTrack' => 'Se enciende cuando se aleja del trazado. Vuelva sobre él para apagarlo.',
-			'map.guide.poi.water' => 'Manantial o fuente señalada. Un manantial puede estar seco en verano: no cuente con él.',
-			'map.guide.poi.shelter' => 'Refugio o abrigo. Toque la marca: altitud, servicios, contacto.',
+			'map.guide.offTrack' => 'Se enciende cuando te alejas del trazado. Vuelve sobre él para apagarlo.',
+			'map.guide.poi.water' => 'Manantial o fuente señalada. Un manantial puede estar seco en verano: no cuentes con él.',
+			'map.guide.poi.shelter' => 'Refugio o abrigo. Toca la marca: altitud, servicios, contacto.',
 			'map.guide.poi.accommodation' => 'Casa rural, habitación u hotel. Reserva en el propio establecimiento.',
-			'map.guide.poi.campsite' => 'Camping o bivac. Las normas cambian según el territorio: infórmese antes de plantar la tienda.',
+			'map.guide.poi.campsite' => 'Camping o bivac. Las normas cambian según el territorio: infórmate antes de plantar la tienda.',
 			'map.guide.poi.shop' => 'Comercio donde abastecerse. Horarios no garantizados fuera de temporada.',
 			'map.guide.poi.restaurant' => 'Restaurante o mesa de huéspedes en el recorrido o muy cerca.',
 			'map.guide.poi.viewpoint' => 'Mirador destacado. Bueno para la parada.',
-			'map.guide.poi.danger' => 'Paso delicado. Reduzca el ritmo y observe el terreno antes de entrar.',
+			'map.guide.poi.danger' => 'Paso delicado. Reduce el ritmo y observa el terreno antes de entrar.',
 			'map.guide.poi.emergency' => 'Punto de socorro: puesto, helipuerto o poste de llamada de emergencia.',
 			'map.guide.poi.info' => 'Panel o punto de información del sendero.',
 			'map.supplyDismiss' => 'Ocultar el aviso',
@@ -4432,15 +4432,15 @@ extension on TranslationsEs {
 			'stage.difficultyLabel' => 'Dificultad',
 			'stage.waterSources.title' => 'Puntos de agua',
 			'stage.waterSources.count' => '{n} fuente(s)',
-			'stage.waterSources.none' => 'No hay ningún punto de agua indicado en esta etapa. Lleve al menos 3 L por persona.',
+			'stage.waterSources.none' => 'No hay ningún punto de agua indicado en esta etapa. Lleva al menos 3 L por persona.',
 			'stage.accommodation.title' => 'Alojamientos',
 			'stage.accommodation.none' => 'No hay ningún alojamiento indicado en esta etapa.',
 			'stage.advice.title' => 'Consejos',
-			'stage.advice.waterScarce' => 'Pocos puntos de agua: salga con al menos 2,5 L.',
-			'stage.advice.waterAmple' => 'Rellene las cantimploras en cada punto de agua que encuentre.',
-			'stage.advice.hardStage' => 'Etapa técnica: salga temprano para evitar el calor y las tormentas de la tarde.',
+			'stage.advice.waterScarce' => 'Pocos puntos de agua: sal con al menos 2,5 L.',
+			'stage.advice.waterAmple' => 'Rellena las cantimploras en cada punto de agua que encuentres.',
+			'stage.advice.hardStage' => 'Etapa técnica: sal temprano para evitar el calor y las tormentas de la tarde.',
 			'stage.advice.earlyStart' => 'Se recomienda salir antes de las 8 h para aprovechar el fresco matinal.',
-			'stage.advice.bigClimb' => 'Fuerte desnivel positivo: dosifique el esfuerzo y haga pausas regulares.',
+			'stage.advice.bigClimb' => 'Fuerte desnivel positivo: dosifica el esfuerzo y haz pausas regulares.',
 			'trail.stages' => 'Etapas',
 			'trail.totalDistance' => 'Distancia total',
 			'trail.totalElevation' => 'Desnivel total',
@@ -4830,7 +4830,7 @@ extension on TranslationsEs {
 			'weather.wind' => 'Viento',
 			'weather.uv' => 'Índice UV',
 			'weather.fireRisk' => 'Riesgo de incendio',
-			'weather.fireRiskDesc' => 'Alto riesgo de incendio. Consulte las instrucciones de seguridad.',
+			'weather.fireRiskDesc' => 'Alto riesgo de incendio. Consulta las instrucciones de seguridad.',
 			'weather.fireSafetyTips' => 'Instrucciones contra incendios',
 			'weather.alertCount' => 'alerta',
 			'weather.alertCountPlural' => 'alertas',
@@ -5027,10 +5027,10 @@ extension on TranslationsEs {
 			'feasibility.gaps.fitness' => 'Forma insuficiente en la prueba de 6 minutos',
 			'feasibility.gaps.effort' => 'Esfuerzo global (IBP) por encima de tu experiencia',
 			'feasibility.formula.title' => 'Viabilidad para este trek',
-			'feasibility.formula.answerTitle' => '¿Está a su alcance?',
-			'feasibility.formula.answerGreen' => ({required Object days}) => 'Sí. Este sendero está a su alcance en ${days} días.',
+			'feasibility.formula.answerTitle' => '¿Está a tu alcance?',
+			'feasibility.formula.answerGreen' => ({required Object days}) => 'Sí. Este sendero está a tu alcance en ${days} días.',
 			'feasibility.formula.answerOrange' => ({required Object days}) => 'Sí, en ${days} días. Pero una jornada será dura.',
-			'feasibility.formula.answerRed' => 'Todavía no. Una jornada de este sendero pide más de lo que usted aguanta hoy. Gane forma, o salga fuera del verano.',
+			'feasibility.formula.answerRed' => 'Todavía no. Una jornada de este sendero pide más de lo que aguantas hoy. Gana forma, o sal fuera del verano.',
 			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'El sendero se camina en ${walking} días. Consejo: ${rest} día(s) de descanso.',
 			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'El sendero se camina en ${walking} días.',
 			'feasibility.formula.explainToggle' => 'Cómo se calcula este resultado',
@@ -5192,7 +5192,7 @@ extension on TranslationsEs {
 			'demo.quitter' => 'Salir',
 			'demo.boutonTitre' => 'Probar la demo',
 			'demo.boutonSous' => 'Toda la aplicación. No se guarda nada.',
-			'demo.rienNeCompte' => 'Está en modo demo: no se guarda nada. Ni etapas, ni diploma, ni compra.',
+			'demo.rienNeCompte' => 'Estás en modo demo: no se guarda nada. Ni etapas, ni diploma, ni compra.',
 			'demo.simulerEtape' => 'Simular la siguiente etapa',
 			'demo.simulerFin' => 'Simular la llegada',
 			'demo.simulerRelancer' => 'Reiniciar la demo',
@@ -5234,7 +5234,7 @@ extension on TranslationsEs {
 			'follow.invalidLink' => 'Enlace no válido',
 			'follow.invalidLinkHint' => 'Este enlace de seguimiento no existe o ha caducado.',
 			'cloud.localModeTitle' => 'Modo local',
-			'cloud.localModeBody' => 'Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Sus datos permanecen en el dispositivo.',
+			'cloud.localModeBody' => 'Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Tus datos permanecen en el dispositivo.',
 			'cloud.statusSection' => 'Nube',
 			'cloud.statusActive' => 'Servicios en línea activos',
 			'cloud.statusActiveDesc' => 'Copia de seguridad y seguimiento en directo disponibles.',
@@ -5297,7 +5297,7 @@ extension on TranslationsEs {
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.',
 			'monetization.buyOutcomeFailed' => 'El pago no se ha completado. No se ha cobrado nada.',
 			'monetization.buyOutcomeUnknownPrice' => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.',
-			'monetization.buyOutcomeDemo' => 'Está en modo demo: no se puede comprar nada, y no se ha cobrado nada.',
+			'monetization.buyOutcomeDemo' => 'Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mes',
 			'monetization.subscriptionAllowanceForLife' => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.',
 			'monetization.cancelCta' => 'Cancelar mi suscripción',
@@ -5572,10 +5572,10 @@ extension on TranslationsEs {
 			'health.hint.doctor' => 'Ej.: Dr. García +34 91 xxx xx xx',
 			'health.hint.insurance' => 'Ej.: tarjeta sanitaria europea',
 			'health.hint.fullName' => 'Ej.: Christophe Mosconi',
-			'health.hint.birthDate' => 'Pulse para elegir',
+			'health.hint.birthDate' => 'Pulsa para elegir',
 			'health.hint.address' => 'Ej.: calle de las Lilas 12, 20000 Ajaccio',
 			'health.hint.conditions' => 'Ej.: diabetes tipo 1, epilepsia, anticoagulante',
-			'health.hint.organDonor' => 'Elija una opción',
+			'health.hint.organDonor' => 'Elige una opción',
 			'health.error.bloodType' => 'Grupo sanguíneo no válido (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Guardar',
 			'health.saving' => 'Guardando…',
@@ -5601,16 +5601,16 @@ extension on TranslationsEs {
 			'health.advice.paper' => 'Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.',
 			'health.advice.ackButton' => 'He leído estos consejos',
 			'health.advice.ackDone' => 'Consejos leídos',
-			'health.section.identity' => 'Quién es usted',
+			'health.section.identity' => 'Quién eres',
 			'health.section.identityWhy' => 'Es lo primero que lee un rescatador: sin nombre, atiende a un desconocido y no puede avisar a nadie.',
 			'health.section.contacts' => 'A quién avisar',
-			'health.section.contactsWhy' => 'Lo que buscan los servicios de rescate justo después de identificarle. Tres personas como máximo: más allá, no se llama a ninguna.',
-			'health.section.vital' => 'Lo que le trata',
-			'health.section.vitalWhy' => 'En el orden en que pregunta un médico de urgencias: primero lo que puede matarle durante el tratamiento, después lo que sirve en el hospital.',
+			'health.section.contactsWhy' => 'Lo que buscan los servicios de rescate justo después de identificarte. Tres personas como máximo: más allá, no se llama a ninguna.',
+			'health.section.vital' => 'Lo que te trata',
+			'health.section.vitalWhy' => 'En el orden en que pregunta un médico de urgencias: primero lo que puede matarte durante el tratamiento, después lo que sirve en el hospital.',
 			'health.section.admin' => 'Administrativo',
 			'health.section.adminWhy' => 'Lo que se copia en el mostrador del hospital, no lo que se lee bajo la lluvia.',
 			'health.bloodTypeUnknown' => 'No lo sé',
-			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Su entrada anterior « ${valeur} » no es un grupo sanguíneo reconocido. Elija en la lista.',
+			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Tu entrada anterior « ${valeur} » no es un grupo sanguíneo reconocido. Elige en la lista.',
 			'health.organDonor.yes' => 'Donante',
 			'health.organDonor.no' => 'Opuesto a la donación',
 			'health.organDonor.unknown' => 'No lo he decidido',
@@ -5620,20 +5620,20 @@ extension on TranslationsEs {
 			'health.contacts.phone' => 'Teléfono',
 			'health.contacts.phoneHint' => 'Ej.: +34 612 34 56 78',
 			'health.contacts.remove' => 'Quitar esta persona',
-			'health.contacts.errorName' => 'Indique un nombre; si no, el rescate no sabe a quién llama.',
-			'health.contacts.errorPhone' => 'Indique un número; si no, este nombre no sirve de nada.',
+			'health.contacts.errorName' => 'Indica un nombre; si no, el rescate no sabe a quién llama.',
+			'health.contacts.errorPhone' => 'Indica un número; si no, este nombre no sirve de nada.',
 			'health.cards.vitale' => 'Foto de la tarjeta sanitaria',
 			'health.cards.mutuelle' => 'Foto de la tarjeta del seguro complementario',
 			'health.cards.take' => 'Hacer una foto',
 			'health.cards.retake' => 'Repetir la foto',
 			'health.cards.pick' => 'Elegir una imagen',
 			'health.cards.remove' => 'Quitar la foto',
-			'health.cards.stored' => 'Foto guardada en este teléfono. No se envía a ninguna parte y desaparece con la ficha cuando la borra.',
+			'health.cards.stored' => 'Foto guardada en este teléfono. No se envía a ninguna parte y desaparece con la ficha cuando la borras.',
 			'health.cards.explain' => 'La foto permanece en este teléfono, en la misma carpeta protegida que el resto de la ficha.',
 			'health.cards.permissionRefused' => 'Acceso a la cámara denegado. La ficha funciona perfectamente sin ella.',
 			'health.cards.failed' => 'No se ha podido guardar la foto.',
-			'health.phoneCard.title' => 'Copie su ficha en la del teléfono',
-			'health.phoneCard.why' => 'Es la única pantalla que un rescatador alcanza sin su código, tanto en iPhone como en Android. Ajustes del teléfono, apartado Emergencia o Salud: nombre, grupo sanguíneo, alergias, tratamientos y personas a avisar.',
+			'health.phoneCard.title' => 'Copia tu ficha en la del teléfono',
+			'health.phoneCard.why' => 'Es la única pantalla que un rescatador alcanza sin tu código, tanto en iPhone como en Android. Ajustes del teléfono, apartado Emergencia o Salud: nombre, grupo sanguíneo, alergias, tratamientos y personas a avisar.',
 			'health.phoneCard.done' => 'Hecho, mi ficha también está en el teléfono',
 			'health.localOnlyPriceTitle' => 'Cambiar de teléfono significa volver a escribirla',
 			'health.localOnlyPrice' => 'Si cambias de teléfono, esta ficha no te sigue: tendrás que volver a escribir tu grupo sanguíneo, tus alergias y tus tratamientos. Es el precio de la promesa, y por eso nadie, nosotros incluidos, puede leerla en otro sitio que aquí.',
@@ -5646,57 +5646,57 @@ extension on TranslationsEs {
 			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Sendero ${nom}, ${region}',
 			'trailSelection.a11y.currentBadge' => 'Sendero actualmente activo',
 			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activar el sendero ${nom}',
-			'consent.onboardingTitle' => 'Tu privacidad, tu elección',
-			'consent.onboardingIntro' => 'Nada está activado por defecto. Elige, finalidad por finalidad, lo que autorizas. Podrás cambiarlo todo en cualquier momento en los ajustes.',
+			'consent.onboardingTitle' => 'Su privacidad, su elección',
+			'consent.onboardingIntro' => 'Nada está activado por defecto. Elija, finalidad por finalidad, lo que autoriza. Podrá cambiarlo todo en cualquier momento en los ajustes.',
 			'consent.settingsTitle' => 'Privacidad y consentimiento',
-			'consent.settingsIntro' => 'Gestiona aquí cada permiso. Puedes retirar un consentimiento en cualquier momento, sin afectar al resto.',
+			'consent.settingsIntro' => 'Gestione aquí cada permiso. Puede retirar un consentimiento en cualquier momento, sin afectar al resto.',
 			'consent.settingsEntry' => 'Privacidad y consentimiento',
 			'consent.settingsEntryDesc' => 'Gestionar mis permisos (ubicación, compartir, publicidad, salud)',
 			'consent.purposes.locationNavigation' => 'Navegación personal',
-			'consent.purposes.locationNavigationDesc' => 'Usar tu ubicación para el mapa y el seguimiento de tu etapa. Permanece en tu dispositivo.',
+			'consent.purposes.locationNavigationDesc' => 'Usar su ubicación para el mapa y el seguimiento de su etapa. Permanece en su dispositivo.',
 			'consent.purposes.socialSharing' => 'Compartir social',
 			'consent.purposes.socialSharingDesc' => 'Aparecer en las clasificaciones y en el feed de la comunidad, con un seudónimo.',
 			'consent.purposes.publicReporting' => 'Avisos públicos',
 			'consent.purposes.publicReportingDesc' => 'Publicar avisos (agua, peligro, condiciones) visibles para otros senderistas.',
 			'consent.purposes.advertising' => 'Publicidad personalizada',
-			'consent.purposes.advertisingDesc' => 'Adaptar los anuncios a tus intereses. Sin este permiso, la aplicación gratuita sigue mostrando anuncios, pero no están segmentados y ningún dato de segmentación sale de tu dispositivo.',
+			'consent.purposes.advertisingDesc' => 'Adaptar los anuncios a sus intereses. Sin este permiso, la aplicación gratuita sigue mostrando anuncios, pero no están segmentados y ningún dato de segmentación sale de su dispositivo.',
 			'consent.purposes.healthData' => 'Datos de salud',
-			'consent.purposes.healthDataDesc' => 'Leer tu frecuencia cardíaca (banda o app de salud) para enriquecer el seguimiento del esfuerzo.',
+			'consent.purposes.healthDataDesc' => 'Leer su frecuencia cardíaca (banda o app de salud) para enriquecer el seguimiento del esfuerzo.',
 			'consent.healthBadge' => 'Dato sensible',
-			'consent.healthWarning' => 'La frecuencia cardíaca es un dato de salud (artículo 9 del RGPD). Este consentimiento se solicita por separado y nunca se agrupa con los demás. Tus datos de salud no se envían a nuestros servidores.',
+			'consent.healthWarning' => 'La frecuencia cardíaca es un dato de salud (artículo 9 del RGPD). Este consentimiento se solicita por separado y nunca se agrupa con los demás. Sus datos de salud no se envían a nuestros servidores.',
 			'consent.granted' => 'Autorizado',
 			'consent.denied' => 'No autorizado',
 			'consent.grant' => 'Autorizar',
 			'consent.revoke' => 'Retirar',
 			'consent.decidedOn' => ({required Object date}) => 'Elegido el ${date}',
-			'consent.notDecided' => 'A la espera de tu elección',
+			'consent.notDecided' => 'A la espera de su elección',
 			'consent.acceptSelected' => 'Confirmar mis elecciones',
 			'consent.declineAll' => 'Rechazar todo',
-			'consent.declineAllNote' => 'Rechazar todo retira tus cinco permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puedes volver a conceder cualquiera en cualquier momento.',
+			'consent.declineAllNote' => 'Rechazar todo retira sus cinco permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puede volver a conceder cualquiera en cualquier momento.',
 			'consent.declineAllCancel' => 'Cancelar',
 			'consent.continueLabel' => 'Continuar',
 			'consent.privacyPolicyLink' => 'Leer la política de privacidad',
 			'consent.adsPrivacyOptions' => 'Opciones de privacidad publicitaria',
-			'consent.reviewNeeded' => 'Nuestra política ha cambiado: revisa tus elecciones.',
+			'consent.reviewNeeded' => 'Nuestra política ha cambiado: revise sus elecciones.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actualmente ${state}',
 			'consent.a11y.healthSection' => 'Sección de datos de salud, consentimiento reforzado',
 			'consent.a11y.policyButton' => 'Abrir la política de privacidad',
-			'consent.healthDataMorphoNote' => 'Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.',
-			'consent.healthBackupNote' => 'Este permiso no afecta a tu ficha médica : esa no se guarda nunca, ni en nuestros servidores ni en otro sitio, con permiso o sin él. Si cambias de teléfono la volverás a escribir. Es el precio de guardarla solo para ti.',
+			'consent.healthDataMorphoNote' => 'Incluye sus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.',
+			'consent.healthBackupNote' => 'Este permiso no afecta a su ficha médica : esa no se guarda nunca, ni en nuestros servidores ni en otro sitio, con permiso o sin él. Si cambia de teléfono la volverá a escribir. Es el precio de guardarla solo para usted.',
 			'erasure.section' => 'Mis datos',
 			'erasure.entry' => 'Borrar mis datos',
-			'erasure.entryDesc' => 'Eliminar definitivamente lo que la aplicación guarda sobre ti',
+			'erasure.entryDesc' => 'Eliminar definitivamente lo que la aplicación guarda sobre usted',
 			'erasure.dialogTitle' => '¿Borrar mis datos?',
 			'erasure.goesTitle' => 'Lo que se borra',
-			'erasure.goes' => 'Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación. Y todo tu trabajo de preparación: tu Programa y el reparto de etapas que has elegido, tu fecha de salida, tu progreso de preparación física, lo que ya has completado en Preparar, tus ajustes de compartir y visibilidad, y los puntos de etapa que has marcado.',
+			'erasure.goes' => 'Su ficha de senderista (edad, altura, peso, test de marcha), su ficha de información médica, sus rutas pasadas y su diario, las etapas que ha caminado, sus pernoctaciones, sus trazas GPS, sus consentimientos y su código de recuperación. Y todo su trabajo de preparación: su Programa y el reparto de etapas que ha elegido, su fecha de salida, su progreso de preparación física, lo que ya ha completado en Preparar, sus ajustes de compartir y visibilidad, y los puntos de etapa que ha marcado.',
 			'erasure.staysTitle' => 'Lo que se queda',
-			'erasure.stays' => 'Tus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no te quitamos lo que has pagado. Y tus ajustes de visualización (idioma, tema, unidades), que no dicen nada de ti.',
-			'erasure.finalWarning' => 'Es definitivo: ni tú ni nosotros podremos recuperar estos datos.',
+			'erasure.stays' => 'Sus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no le quitamos lo que ha pagado. Y sus ajustes de visualización (idioma, tema, unidades), que no dicen nada de usted.',
+			'erasure.finalWarning' => 'Es definitivo: ni usted ni nosotros podremos recuperar estos datos.',
 			'erasure.confirmCheckbox' => 'Lo he leído y quiero borrar mis datos',
 			'erasure.confirm' => 'Borrar definitivamente',
 			'erasure.cancel' => 'Cancelar',
-			'erasure.done' => 'Tus datos se han borrado.',
-			'erasure.error' => 'El borrado no se completó. Vuelve a intentarlo — lo que ya se ha borrado no vuelve.',
+			'erasure.done' => 'Sus datos se han borrado.',
+			'erasure.error' => 'El borrado no se completó. Vuelva a intentarlo — lo que ya se ha borrado no vuelve.',
 			'erasure.a11y.entry' => 'Borrar mis datos, abre una solicitud de confirmación',
 			'moderation.reportTitle' => 'Denunciar este contenido',
 			'moderation.reportIntro' => 'Ayúdanos a mantener una comunidad sana. Indica por qué este contenido te parece ilícito. Tu denuncia será examinada por un moderador.',
@@ -6096,7 +6096,7 @@ extension on TranslationsEs {
 			'hikerProfile.hintWeight' => 'En kilogramos',
 			'hikerProfile.errorWeight' => 'Peso no válido (25 a 200 kg)',
 			'hikerProfile.errorCountry' => 'Código de país no válido (ej. FR)',
-			'hikerProfile.errorEmpty' => 'Ficha vacía: indique al menos la edad, la altura o el peso.',
+			'hikerProfile.errorEmpty' => 'Ficha vacía: indica al menos la edad, la altura o el peso.',
 			'hikerProfile.errorSaveFailed' => 'No se ha podido guardar la ficha. No se ha modificado nada: inténtalo de nuevo.',
 			'hikerProfile.errorConsentRequired' => 'Sin tu consentimiento no se guarda nada: edad, altura y peso son datos de salud. Lo que estaba guardado acaba de borrarse de este dispositivo. Marca la autorización de arriba y vuelve a guardar.',
 			'hikerProfile.fieldSex' => 'Sexo (opcional)',
@@ -6181,26 +6181,26 @@ extension on TranslationsEs {
 			'ffrando.effortLevels.k4' => 'Difícil',
 			'ffrando.effortLevels.k5' => 'Muy difícil',
 			'sos.title' => '¿Llamar a emergencias?',
-			'sos.body' => 'Está a punto de llamar al 112 (emergencias europeas).',
-			'sos.positionTitle' => 'Su posición actual',
+			'sos.body' => 'Estás a punto de llamar al 112 (emergencias europeas).',
+			'sos.positionTitle' => 'Tu posición actual',
 			'sos.positionUnavailable' => 'Posición GPS no disponible',
 			'sos.gpsAcquiring' => 'Adquiriendo GPS…',
 			'sos.ageNow' => 'Posición ahora mismo',
 			'sos.ageMinutes' => ({required Object minutes}) => 'Posición hace ${minutes} min',
 			'sos.ageHours' => ({required Object hours, required Object minutes}) => 'Posición hace ${hours} h ${minutes}',
-			'sos.estimated' => 'Estimada en el sendero a partir de sus pasos',
+			'sos.estimated' => 'Estimada en el sendero a partir de tus pasos',
 			'sos.freshFailed' => ({required Object seconds}) => 'Ninguna posición más reciente en ${seconds} s: se sigue mostrando la última conocida.',
-			'sos.unavailableHelp' => 'Llame igualmente al 112: indique el último lugar por el que pasó (refugio, collado, baliza) y quédese donde está si puede.',
+			'sos.unavailableHelp' => 'Llama igualmente al 112: indica el último lugar por el que pasaste (refugio, collado, baliza) y quédate donde estás si puedes.',
 			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Posición: ${lat}, ${lng}  -  Alt. ${alt} m',
 			'sos.noContacts' => 'Ningún contacto configurado',
 			'sos.callContact' => ({required Object name}) => 'Llamar a ${name}',
 			'sos.altitudeUnavailable' => 'Altitud: no disponible',
-			'sos.communicate' => 'Comunique estas coordenadas a los servicios de emergencia.',
+			'sos.communicate' => 'Comunica estas coordenadas a los servicios de emergencia.',
 			'sos.cancel' => 'Cancelar',
 			'sos.call' => 'Llamar al 112',
 			'sos.medicalId.action' => 'Ficha médica del teléfono',
-			'sos.medicalId.hint' => 'Muestre sus datos vitales a emergencias, incluso con la pantalla bloqueada.',
-			'sos.medicalId.unavailable' => 'Abra la ficha médica en los ajustes de Salud de su teléfono.',
+			'sos.medicalId.hint' => 'Muestra tus datos vitales a emergencias, incluso con la pantalla bloqueada.',
+			'sos.medicalId.unavailable' => 'Abre la ficha médica en los ajustes de Salud de tu teléfono.',
 			'sos.cannotCall' => ({required Object number}) => 'Este dispositivo no puede realizar la llamada. Marca ${number}.',
 			'recovery.section' => 'Cuenta y recuperación',
 			'recovery.sectionDesc' => 'Ver mi código de recuperación',

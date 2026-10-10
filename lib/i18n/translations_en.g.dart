@@ -1308,7 +1308,7 @@ class _Translations$health$en extends Translations$health$fr {
 	@override late final _Translations$health$advice$en advice = _Translations$health$advice$en._(_root);
 	@override late final _Translations$health$section$en section = _Translations$health$section$en._(_root);
 	@override String get bloodTypeUnknown => 'I don\'t know';
-	@override String bloodTypeLegacy({required Object valeur}) => 'Your previous entry « ${valeur} » is not a recognised blood group. Please choose from the list.';
+	@override String bloodTypeLegacy({required Object valeur}) => 'Your previous entry « ${valeur} » is not a recognised blood group. Choose from the list.';
 	@override late final _Translations$health$organDonor$en organDonor = _Translations$health$organDonor$en._(_root);
 	@override late final _Translations$health$contacts$en contacts = _Translations$health$contacts$en._(_root);
 	@override late final _Translations$health$cards$en cards = _Translations$health$cards$en._(_root);
@@ -1411,8 +1411,8 @@ class _Translations$moderation$en extends Translations$moderation$fr {
 	@override String get submit => 'Send report';
 	@override String get submitting => 'Sending…';
 	@override String get sent => 'Report sent. Thank you, a moderator will review it.';
-	@override String get errorRequired => 'Please fill in the reason, your email and the good-faith declaration.';
-	@override String get errorGeneric => 'The report could not be sent. Please try again.';
+	@override String get errorRequired => 'Fill in the reason, your email and the good-faith declaration.';
+	@override String get errorGeneric => 'The report could not be sent. Try again.';
 	@override String get cancel => 'Cancel';
 	@override String get reasonsTitle => 'Why was this content restricted?';
 	@override String get reasonsIntro => 'In accordance with article 17, here is the reason for the moderation decision regarding your content.';
@@ -1426,7 +1426,7 @@ class _Translations$moderation$en extends Translations$moderation$fr {
 	@override String get complaintExposeHint => 'Describe the reasons for your challenge.';
 	@override String get complaintSubmit => 'Send challenge';
 	@override String get complaintSent => 'Challenge recorded. It will be reviewed.';
-	@override String get complaintEmpty => 'Please explain your challenge.';
+	@override String get complaintEmpty => 'Explain your challenge.';
 	@override late final _Translations$moderation$a11y$en a11y = _Translations$moderation$a11y$en._(_root);
 }
 
@@ -1762,7 +1762,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get errorWeight => 'Invalid weight (25 to 200 kg)';
 	@override String get errorCountry => 'Invalid country code (e.g. FR)';
 	@override String get errorEmpty => 'Empty profile: enter at least your age, height or weight.';
-	@override String get errorSaveFailed => 'Your details could not be saved. Nothing was changed: please try again.';
+	@override String get errorSaveFailed => 'Your details could not be saved. Nothing was changed: try again.';
 	@override String get errorConsentRequired => 'Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.';
 	@override String get fieldSex => 'Sex (optional)';
 	@override String get sexFemale => 'Female';
@@ -2937,8 +2937,8 @@ class _Translations$waypoints$contribution$en extends Translations$waypoints$con
 	@override String get savedPendingSync => 'It will be published when the network is back.';
 	@override String pendingCount({required Object n}) => '${n} pending synchronization';
 	@override String get close => 'Close';
-	@override String get emptyTitle => 'Please enter a title for the waypoint.';
-	@override String get emptyComment => 'Please enter your observation.';
+	@override String get emptyTitle => 'Enter a title for the waypoint.';
+	@override String get emptyComment => 'Enter your observation.';
 	@override String get noLocation => 'GPS position unavailable. Try again under open sky.';
 	@override String get error => 'Cannot save right now.';
 }
@@ -5486,8 +5486,8 @@ extension on TranslationsEn {
 			'waypoints.contribution.savedPendingSync' => 'It will be published when the network is back.',
 			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} pending synchronization',
 			'waypoints.contribution.close' => 'Close',
-			'waypoints.contribution.emptyTitle' => 'Please enter a title for the waypoint.',
-			'waypoints.contribution.emptyComment' => 'Please enter your observation.',
+			'waypoints.contribution.emptyTitle' => 'Enter a title for the waypoint.',
+			'waypoints.contribution.emptyComment' => 'Enter your observation.',
 			'waypoints.contribution.noLocation' => 'GPS position unavailable. Try again under open sky.',
 			'waypoints.contribution.error' => 'Cannot save right now.',
 			'cartesHorsLigne.title' => 'Offline maps',
@@ -5610,7 +5610,7 @@ extension on TranslationsEn {
 			'health.section.admin' => 'Paperwork',
 			'health.section.adminWhy' => 'What gets copied at the hospital desk, not what is read in the rain.',
 			'health.bloodTypeUnknown' => 'I don\'t know',
-			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Your previous entry « ${valeur} » is not a recognised blood group. Please choose from the list.',
+			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Your previous entry « ${valeur} » is not a recognised blood group. Choose from the list.',
 			'health.organDonor.yes' => 'Donor',
 			'health.organDonor.no' => 'Opted out',
 			'health.organDonor.unknown' => 'I have not decided',
@@ -5714,8 +5714,8 @@ extension on TranslationsEn {
 			'moderation.submit' => 'Send report',
 			'moderation.submitting' => 'Sending…',
 			'moderation.sent' => 'Report sent. Thank you, a moderator will review it.',
-			'moderation.errorRequired' => 'Please fill in the reason, your email and the good-faith declaration.',
-			'moderation.errorGeneric' => 'The report could not be sent. Please try again.',
+			'moderation.errorRequired' => 'Fill in the reason, your email and the good-faith declaration.',
+			'moderation.errorGeneric' => 'The report could not be sent. Try again.',
 			'moderation.cancel' => 'Cancel',
 			'moderation.reasonsTitle' => 'Why was this content restricted?',
 			'moderation.reasonsIntro' => 'In accordance with article 17, here is the reason for the moderation decision regarding your content.',
@@ -5731,7 +5731,7 @@ extension on TranslationsEn {
 			'moderation.complaintExposeHint' => 'Describe the reasons for your challenge.',
 			'moderation.complaintSubmit' => 'Send challenge',
 			'moderation.complaintSent' => 'Challenge recorded. It will be reviewed.',
-			'moderation.complaintEmpty' => 'Please explain your challenge.',
+			'moderation.complaintEmpty' => 'Explain your challenge.',
 			'moderation.a11y.reportForm' => 'Content reporting form',
 			'moderation.a11y.reasonSelector' => 'Report reason selector',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
@@ -6097,7 +6097,7 @@ extension on TranslationsEn {
 			'hikerProfile.errorWeight' => 'Invalid weight (25 to 200 kg)',
 			'hikerProfile.errorCountry' => 'Invalid country code (e.g. FR)',
 			'hikerProfile.errorEmpty' => 'Empty profile: enter at least your age, height or weight.',
-			'hikerProfile.errorSaveFailed' => 'Your details could not be saved. Nothing was changed: please try again.',
+			'hikerProfile.errorSaveFailed' => 'Your details could not be saved. Nothing was changed: try again.',
 			'hikerProfile.errorConsentRequired' => 'Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.',
 			'hikerProfile.fieldSex' => 'Sex (optional)',
 			'hikerProfile.sexFemale' => 'Female',

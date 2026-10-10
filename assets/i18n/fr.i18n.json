@@ -5,7 +5,7 @@
     "zoomOut": "Dézoomer",
     "centerOnMe": "Centrer sur ma position",
     "mapRegion": "Carte du sentier",
-    "userPosition": "Votre position",
+    "userPosition": "Ta position",
     "stageMarker": "Étape $number",
     "poiMarker": "Point d'intérêt : $name",
     "markerCluster": "$count points groupés",
@@ -44,29 +44,29 @@
     "after": "Après",
     "sos": "SOS",
     "demoLockedTitle": "$phase — réservé aux treks achetés",
-    "demoLockedBody": "En mode démo, seule la préparation est accessible. Débloquez ce trek pour randonner et revivre votre aventure.",
+    "demoLockedBody": "En mode démo, seule la préparation est accessible. Débloque ce trek pour randonner et revivre ton aventure.",
     "demoTrekMode": "Simuler mode trek (démo)",
     "exitTitle": "Quitter l'application ?",
-    "exitMessage": "Vous êtes à l'accueil. Voulez-vous fermer l'application ?",
+    "exitMessage": "Tu es à l'accueil. Veux-tu fermer l'application ?",
     "exitConfirm": "Quitter",
     "exitCancel": "Rester",
     "startTrek": "Démarrer le trek",
     "finishTrek": "Terminer le trek",
     "reviewPrep": "Revoir la préparation",
-    "startGateSubtitle": "Terminez Itinéraire, Date et Programme pour démarrer",
+    "startGateSubtitle": "Termine Itinéraire, Date et Programme pour démarrer",
     "startAwayTitle": "Démarrer le trek",
     "startAwayBody": "Tu ne sembles pas au point de départ (à $distance m). Démarrer quand même ?",
     "startNoGpsBody": "Position indisponible. Démarrer quand même ?",
     "startConfirm": "Démarrer quand même",
     "startCancel": "Annuler",
-    "phasePrepareSub": "Organisez votre trek avant le départ",
-    "phaseHikeSub": "Votre trek est en cours",
+    "phasePrepareSub": "Organise ton trek avant le départ",
+    "phaseHikeSub": "Ton trek est en cours",
     "phaseHikeInProgress": "$trek en cours",
-    "phaseAfterSub": "Revivez votre aventure",
+    "phaseAfterSub": "Revis ton aventure",
     "phaseBanner": "Phase en cours",
     "demoPreview": "Aperçu des phases (démo) : Préparer, Randonner, Après",
     "dominantHand": "Main dominante",
-    "dominantHandDesc": "Place le SOS et les commandes clés du côté de votre main",
+    "dominantHandDesc": "Place le SOS et les commandes clés du côté de ta main",
     "dominantHandRight": "Droitier",
     "dominantHandLeft": "Gaucher",
     "weatherBannerTitle": "Ici et maintenant",
@@ -74,15 +74,15 @@
     "weatherBannerUnavailable": "Météo localisée indisponible"
   },
   "branding": {
-    "tagline": "Votre compagnon de randonnée",
-    "subline": "Préparez, marchez, partagez"
+    "tagline": "Ton compagnon de randonnée",
+    "subline": "Prépare, marche, partage"
   },
   "hub": {
     "greeting": "Bonjour, $name !",
     "greetingFallback": "Randonneur",
     "infoTooltip": "À propos de ce sentier",
     "profileTooltip": "Mon profil",
-    "infoSheetBody": "Préparez votre itinéraire, puis votre sac. Partez ensuite en navigation GPS. Tout part de cet écran.",
+    "infoSheetBody": "Prépare ton itinéraire, puis ton sac. Pars ensuite en navigation GPS. Tout part de cet écran.",
     "trekCard": {
       "activeTitle": "Randonnée en cours",
       "distanceCovered": "Distance parcourue",
@@ -91,7 +91,7 @@
       "progressLabel": "$percent % du sentier",
       "resume": "Reprendre la navigation",
       "noTrekTitle": "Prêt à partir ?",
-      "noTrekBody": "Planifiez votre itinéraire, puis lancez votre randonnée.",
+      "noTrekBody": "Planifie ton itinéraire, puis lance ta randonnée.",
       "plan": "Planifier ma randonnée",
       "completedTitle": "Trek terminé"
     },
@@ -112,29 +112,29 @@
     },
     "cards": {
       "feasibility": "Faisabilité",
-      "feasibilitySub": "À votre portée ?",
+      "feasibilitySub": "À ta portée ?",
       "itinerary": "Itinéraire",
-      "itinerarySub": "Le déroulé de vos étapes",
+      "itinerarySub": "Le déroulé de tes étapes",
       "programme": "Programme",
-      "programmeSub": "Répartissez vos étapes",
+      "programmeSub": "Répartis tes étapes",
       "calendar": "Calendrier",
       "calendarSub": "Choisir les dates",
       "transport": "Transport",
       "transportSub": "Aller & retour",
       "nuitees": "Nuitées",
-      "nuiteesSub": "Réserver vos nuits",
+      "nuiteesSub": "Réserver tes nuits",
       "checklist": "Matériel & Sac",
-      "checklistSub": "Préparez votre sac à dos",
+      "checklistSub": "Prépare ton sac à dos",
       "training": "Préparation physique",
-      "trainingSub": "Votre programme d'entraînement",
+      "trainingSub": "Ton programme d'entraînement",
       "health": "Fiche médicale",
       "healthSub": "À remplir avant de partir",
       "cartes": "Cartes hors ligne",
       "cartesSub": "Télécharger les cartes du circuit",
       "offline": "Découvrir des sentiers",
-      "offlineSub": "Parcourez le catalogue",
+      "offlineSub": "Parcours le catalogue",
       "group": "Mon groupe",
-      "groupSub": "Suivi de vos compagnons",
+      "groupSub": "Suivi de tes compagnons",
       "navigation": "Navigation",
       "navigationSub": "Carte et suivi GPS",
       "emergency": "Urgence",
@@ -142,7 +142,7 @@
       "signalement": "Signaler",
       "signalementSub": "Obstacle, point d'eau, danger",
       "journal": "Journal",
-      "journalSub": "Vos notes et souvenirs",
+      "journalSub": "Tes notes et souvenirs",
       "accommodations": "Hébergements",
       "accommodationsSub": "Où dormir à proximité",
       "tips": "Fiches conseils",
@@ -150,11 +150,11 @@
       "townGuides": "Guides des villes",
       "townGuidesSub": "Infos pratiques des étapes",
       "recap": "Récapitulatif",
-      "recapSub": "Votre aventure en résumé",
+      "recapSub": "Ton aventure en résumé",
       "importGpx": "Import GPX",
       "importGpxSub": "Importer une trace GPS",
       "diploma": "Diplôme",
-      "diplomaSub": "Votre certificat de fin",
+      "diplomaSub": "Ton certificat de fin",
       "resume": "Résumé",
       "resumeSub": "Synthèse du plan",
       "shop": "Ravitaillement",
@@ -164,7 +164,7 @@
       "fire": "Incendie",
       "fireSub": "Risques & alertes",
       "adjust": "Adapter l'itinéraire",
-      "adjustSub": "Modifier vos jours à venir"
+      "adjustSub": "Modifier tes jours à venir"
     },
     "fab": {
       "feedback": "Donner mon avis",
@@ -185,7 +185,7 @@
     "viewMap": "Voir la carte",
     "layers": "Calques",
     "layersTitle": "Calques de la carte",
-    "layersSubtitle": "Choisissez les points affichés sur la carte",
+    "layersSubtitle": "Choisis les points affichés sur la carte",
     "stageRemaining": "$km km restants",
     "offTrackChip": "Hors trace",
     "perimetreEtape": "Étape",
@@ -194,23 +194,23 @@
     "basculerVersEtape": "Voir l'étape",
     "guide": {
       "buttonsTitle": "Boutons",
-      "position": "Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez l'autorisation de localisation.",
+      "position": "Ta position GPS, mise à jour en marchant. Si le point disparaît, vérifie l'autorisation de localisation.",
       "track": "Le tracé du sentier. L'alerte hors trace s'y réfère.",
-      "centerOnMe": "Ramène la carte sur votre position.",
+      "centerOnMe": "Ramène la carte sur ta position.",
       "photo": "Prend une photo pour le journal du jour.",
-      "sos": "Ouvre l'appel d'urgence avec vos coordonnées GPS. À n'utiliser qu'en cas de réelle urgence.",
+      "sos": "Ouvre l'appel d'urgence avec tes coordonnées GPS. À n'utiliser qu'en cas de réelle urgence.",
       "onlyInTrek": "Visible seulement une fois la randonnée démarrée.",
       "currentStage": "Ce qu'il reste à marcher sur l'étape en cours. Un tiret : la randonnée n'a pas démarré.",
-      "offTrack": "S'allume quand vous vous éloignez du tracé. Revenez dessus pour l'éteindre.",
+      "offTrack": "S'allume quand tu t'éloignes du tracé. Reviens dessus pour l'éteindre.",
       "poi": {
-        "water": "Source ou fontaine signalée. Une source peut être à sec en été : ne comptez pas dessus.",
-        "shelter": "Refuge ou abri. Touchez le repère : altitude, services, contact.",
-        "accommodation": "Gîte, chambre ou hôtel. Vous réservez auprès de l'établissement.",
-        "campsite": "Camping ou bivouac. Les règles changent selon le territoire : renseignez-vous avant de planter la tente.",
-        "shop": "Commerce où vous ravitailler. Horaires non garantis hors saison.",
+        "water": "Source ou fontaine signalée. Une source peut être à sec en été : ne compte pas dessus.",
+        "shelter": "Refuge ou abri. Touche le repère : altitude, services, contact.",
+        "accommodation": "Gîte, chambre ou hôtel. Tu réserves auprès de l'établissement.",
+        "campsite": "Camping ou bivouac. Les règles changent selon le territoire : renseigne-toi avant de planter la tente.",
+        "shop": "Commerce où te ravitailler. Horaires non garantis hors saison.",
         "restaurant": "Restaurant ou table d'hôtes sur le parcours ou tout près.",
         "viewpoint": "Point de vue remarquable. Bon pour la halte.",
-        "danger": "Passage délicat. Ralentissez et regardez le terrain avant de vous engager.",
+        "danger": "Passage délicat. Ralentis et regarde le terrain avant de t'engager.",
         "emergency": "Point de secours : poste, héliport ou borne d'appel d'urgence.",
         "info": "Panneau ou point d'information du sentier."
       }
@@ -239,7 +239,7 @@
       "extreme": "Extrême"
     },
     "remaining": "{distance} km restants",
-    "arrived": "Vous êtes arrivé !",
+    "arrived": "Tu es arrivé !",
     "altitudeProfile": "Profil altimétrique",
     "statistics": "Statistiques",
     "departureArrival": "De {from} à {to}",
@@ -251,7 +251,7 @@
     "waterSources": {
       "title": "Points d'eau",
       "count": "{n} source(s)",
-      "none": "Pas de point d'eau référencé sur cette étape. Prévoyez au moins 3 L par personne."
+      "none": "Pas de point d'eau référencé sur cette étape. Prévois au moins 3 L par personne."
     },
     "accommodation": {
       "title": "Hébergements",
@@ -259,11 +259,11 @@
     },
     "advice": {
       "title": "Conseils",
-      "waterScarce": "Peu de points d'eau : partez avec au moins 2,5 L.",
-      "waterAmple": "Remplissez vos gourdes à chaque point d'eau rencontré.",
-      "hardStage": "Étape technique : partez tôt le matin pour éviter la chaleur et les orages d'après-midi.",
+      "waterScarce": "Peu de points d'eau : pars avec au moins 2,5 L.",
+      "waterAmple": "Remplis tes gourdes à chaque point d'eau rencontré.",
+      "hardStage": "Étape technique : pars tôt le matin pour éviter la chaleur et les orages d'après-midi.",
       "earlyStart": "Départ recommandé avant 8 h pour profiter de la fraîcheur matinale.",
-      "bigClimb": "Fort dénivelé positif : gérez votre effort, faites des pauses régulières."
+      "bigClimb": "Fort dénivelé positif : gère ton effort, fais des pauses régulières."
     }
   },
   "trail": {
@@ -305,9 +305,9 @@
     "centeredOnTrack": "Position introuvable — carte recentrée sur le tracé"
   },
   "navAlert": {
-    "offTrackBanner": "Vous vous éloignez du sentier — $meters m. Vérifiez votre position.",
-    "offTrackNotifTitle": "Vous quittez le sentier",
-    "offTrackNotifBody": "Vous vous éloignez du sentier ($meters m). Vérifiez votre position."
+    "offTrackBanner": "Tu t'éloignes du sentier — $meters m. Vérifie ta position.",
+    "offTrackNotifTitle": "Tu quittes le sentier",
+    "offTrackNotifBody": "Tu t'éloignes du sentier ($meters m). Vérifie ta position."
   },
   "planning": {
     "title": "Planning",
@@ -323,7 +323,7 @@
   },
   "itinerary": {
     "title": "Itinéraire",
-    "subtitle": "Le déroulé de vos étapes",
+    "subtitle": "Le déroulé de tes étapes",
     "direction": {
       "title": "Sens de la rando",
       "from": "Départ",
@@ -396,7 +396,7 @@
   },
   "checklist": {
     "title": "Matériel & Sac",
-    "subtitle": "Préparez votre sac à dos",
+    "subtitle": "Prépare ton sac à dos",
     "progress": "{checked}/{total} préparés",
     "complete": "Checklist complète !",
     "reset": "Réinitialiser",
@@ -527,9 +527,9 @@
       "kilograms": "kg",
       "adviceUltraLight": "Sac ultra-léger — idéal pour le trek",
       "adviceOk": "Sac bien équilibré",
-      "adviceHeavy": "Correct mais lourd — envisagez d'alléger",
-      "adviceTooHeavy": "Attention genoux ! Allégez le sac",
-      "adviceDanger": "Danger blessure — allégez absolument !",
+      "adviceHeavy": "Correct mais lourd — envisage d'alléger",
+      "adviceTooHeavy": "Attention genoux ! Allège le sac",
+      "adviceDanger": "Danger blessure — allège absolument !",
       "itemWeight": "Poids de l'article",
       "cancel": "Annuler",
       "save": "Enregistrer",
@@ -567,7 +567,7 @@
       "deleteItemTitle": "Supprimer cet article ?",
       "deleteItemBody": "L'article \"{name}\" sera définitivement supprimé.",
       "requiredWarnTitle": "Équipement obligatoire",
-      "requiredWarnBody": "Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Voulez-vous vraiment le retirer ?",
+      "requiredWarnBody": "Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Veux-tu vraiment le retirer ?",
       "keep": "Garder",
       "removeAnyway": "Retirer quand même",
       "reduceQuantity": "Réduire quantité",
@@ -576,20 +576,20 @@
       "removeFromShoppingList": "Retirer de la liste",
       "help": "Aide",
       "shoppingListTitle": "Liste de courses",
-      "shoppingListEmpty": "Votre liste de courses est vide. Ajoutez des items avec le bouton panier.",
+      "shoppingListEmpty": "Ta liste de courses est vide. Ajoute des items avec le bouton panier.",
       "shoppingToBuy": "À acheter",
       "shoppingPurchased": "Déjà acheté",
       "share": "PARTAGER",
       "infoTitle": "Matériel & Sac",
       "infoCheckTitle": "Cocher les items",
-      "infoCheckBody": "Cochez ce que vous emportez — le poids se recalcule en haut.",
+      "infoCheckBody": "Coche ce que tu emportes — le poids se recalcule en haut.",
       "infoRequiredTitle": "Obligatoires",
       "infoRequiredBody": "Items avec cadenas = réglementation (sifflet, lampe, couverture survie).",
       "infoGaugeTitle": "Jauge poids",
-      "infoGaugeBody": "Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.",
+      "infoGaugeBody": "Objectif : sac < 15% de ton poids. Vert = OK, Orange = attention, Rouge = trop lourd.",
       "infoAddTitle": "Ajouter",
-      "infoAddBody": "Bouton + en bas de chaque catégorie pour vos propres items.",
-      "infoValidateBody": "Validez quand votre sac est prêt — un check apparaîtra sur l'accueil.",
+      "infoAddBody": "Bouton + en bas de chaque catégorie pour tes propres items.",
+      "infoValidateBody": "Valide quand ton sac est prêt — un check apparaîtra sur l'accueil.",
       "infoUnderstood": "Compris !",
       "prepTitle": "Préparation du sac",
       "prepCounter": "{prepared} / {total} items préparés",
@@ -598,7 +598,7 @@
       "preDepartureCounter": "{checked}/{total} vérifiés",
       "preDep1": "Vérifier la météo des prochains jours",
       "preDep2": "Charger téléphone + batterie externe",
-      "preDep3": "Prévenir un proche de votre itinéraire",
+      "preDep3": "Prévenir un proche de ton itinéraire",
       "preDep4": "Vérifier que le sac est bien fermé et étanche",
       "preDep5": "Remplir les gourdes (minimum 2L)",
       "preDep6": "Appliquer crème solaire et anti-frottements",
@@ -611,21 +611,21 @@
       "shareGroup": "PARTAGER AVEC LE GROUPE",
       "exportList": "EXPORTER LA LISTE",
       "bagValidTitle": "Sac valide",
-      "bagValidBody": "Tous les {total} équipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids de référence)\n\nÊtes-vous certain que votre sac est prêt ?",
+      "bagValidBody": "Tous les {total} équipements obligatoires sont dans ton sac.\n\nPoids total : {weight} kg ({pct}% du poids de référence)\n\nEs-tu certain que ton sac est prêt ?",
       "checkAgain": "Vérifier encore",
       "yesBagOk": "Oui, sac OK",
       "bagValidatedSnack": "Sac valide !",
-      "validationCancelledSnack": "Validation du sac annulée — vous pouvez modifier votre matériel.",
+      "validationCancelledSnack": "Validation du sac annulée — tu peux modifier ton matériel.",
       "missingTitle": "Équipement manquant",
       "missingBody": "{checked}/{total} équipements obligatoires cochés.",
       "missingList": "Il manque :",
       "understood": "Compris",
       "validateAnyway": "Valider quand même",
       "bagValidatedMissingSnack": "Sac valide (avec items manquants) !",
-      "shareGroupHint": "Rejoignez un groupe pour partager votre checklist.",
+      "shareGroupHint": "Rejoins un groupe pour partager ta checklist.",
       "shareFailed": "Le partage n'a pas pu s'ouvrir sur cet appareil."
     },
-    "seasonalBanner": "Sac adapté à la saison ($season) et à votre sentier.",
+    "seasonalBanner": "Sac adapté à la saison ($season) et à ton sentier.",
     "seasons": {
       "winter": "hiver",
       "spring": "printemps",
@@ -637,17 +637,17 @@
     "seasonalWeight": "$g g",
     "demoBridledTitle": "Version d'essai",
     "demoBridledBody": "Les premières catégories sont jouables pour de faux. Le sac complet, adapté à la randonnée et à la saison, s'ouvre avec la randonnée.",
-    "demoLockedCategory": "Achetez la randonnée pour cette catégorie",
+    "demoLockedCategory": "Achète la randonnée pour cette catégorie",
     "demoUnlockCta": "Acheter la randonnée"
   },
   "journal": {
     "title": "Journal de randonnée",
-    "empty": "Votre journal est vide",
-    "emptySubtitle": "Notez vos impressions et souvenirs de randonnée",
+    "empty": "Ton journal est vide",
+    "emptySubtitle": "Note tes impressions et souvenirs de randonnée",
     "addNote": "Nouvelle note",
     "stage": "Étape",
-    "yourNote": "Votre note",
-    "placeholder": "Décrivez votre journée de randonnée...",
+    "yourNote": "Ta note",
+    "placeholder": "Décris ta journée de randonnée...",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
@@ -679,7 +679,7 @@
     "shareSubject": "Mon carnet de randonnée",
     "shareError": "Partage impossible",
     "lockedTitle": "Le journal fait partie du pack",
-    "lockedBody": "Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.",
+    "lockedBody": "Note tes impressions, ajoute tes photos et relis chaque journée de marche. Le journal se débloque avec le sentier.",
     "lockedUnlock": "Acheter"
   },
   "weather": {
@@ -695,7 +695,7 @@
     "wind": "Vent",
     "uv": "Indice UV",
     "fireRisk": "Risque incendie",
-    "fireRiskDesc": "Risque incendie élevé. Consultez les consignes de sécurité.",
+    "fireRiskDesc": "Risque incendie élevé. Consulte les consignes de sécurité.",
     "fireSafetyTips": "Consignes incendie",
     "alertCount": "alerte",
     "alertCountPlural": "alertes",
@@ -725,7 +725,7 @@
     "alert": {
       "storm": {
         "title": "Orage prévu",
-        "desc": "$condition. Évitez les crêtes et les zones exposées."
+        "desc": "$condition. Évite les crêtes et les zones exposées."
       },
       "wind": {
         "title": "Vent fort",
@@ -791,8 +791,8 @@
   },
   "diploma": {
     "title": "Diplôme de randonnée",
-    "yourName": "Votre nom",
-    "namePlaceholder": "Entrez votre nom...",
+    "yourName": "Ton nom",
+    "namePlaceholder": "Entre ton nom...",
     "generatePdf": "Générer le PDF",
     "certifies": "Certifie que",
     "completed": "a parcouru le",
@@ -805,7 +805,7 @@
     "pdfFrom": "Du",
     "pdfTo": "au",
     "pdfIssuedOn": "Délivré le {date}",
-    "recapTitle": "Votre aventure",
+    "recapTitle": "Ton aventure",
     "recapJournalPhotos": "Photos du journal",
     "recapNoPhotos": "Aucune photo dans le journal",
     "recapStats": "Statistiques",
@@ -818,7 +818,7 @@
     "recapJournalEntries": "{count} notes de journal",
     "downloadPdf": "Télécharger le diplôme PDF",
     "lockedTitle": "Diplôme verrouillé",
-    "lockedMessage": "Terminez l'intégralité de votre parcours pour débloquer votre diplôme de finisher.",
+    "lockedMessage": "Termine l'intégralité de ton parcours pour débloquer ton diplôme de finisher.",
     "labelIntegral": "Parcours intégral",
     "labelPartial": "Parcours partiel",
     "pdfSaved": "Diplôme enregistré : $file",
@@ -832,12 +832,12 @@
     "weatherAlerts": "Alertes météo",
     "countdown": "Rappel J-2",
     "countdownDesc": "Notification 2 jours avant le départ",
-    "schedulerCountdownTitle": "Votre randonnée approche !",
-    "schedulerCountdownBody": "Départ dans 2 jours. Vérifiez votre checklist et la météo.",
+    "schedulerCountdownTitle": "Ta randonnée approche !",
+    "schedulerCountdownBody": "Départ dans 2 jours. Vérifie ta checklist et la météo.",
     "schedulerDailyTitle": "Bonne journée de randonnée !",
-    "schedulerDailyBody": "Consultez la météo et préparez votre étape du jour.",
+    "schedulerDailyBody": "Consulte la météo et prépare ton étape du jour.",
     "permissionBlockedTitle": "Notifications bloquées",
-    "permissionBlockedBody": "Votre téléphone bloque les notifications de l'application : aucun rappel, aucune alerte ne vous parviendra.",
+    "permissionBlockedBody": "Ton téléphone bloque les notifications de l'application : aucun rappel, aucune alerte ne te parviendra.",
     "permissionAsk": "Autoriser les notifications"
   },
   "settings": {
@@ -861,7 +861,7 @@
     "countdownReminder": "Rappel J-2",
     "countdownDesc": "Notification 2 jours avant le départ",
     "offTrackAlerts": "Alerte hors-trace",
-    "offTrackAlertsDesc": "Notification + vibration si vous quittez le sentier",
+    "offTrackAlertsDesc": "Notification + vibration si tu quittes le sentier",
     "version": "Version",
     "versionLabel": "Version de l'application",
     "noDateChosen": "Aucune date choisie",
@@ -875,68 +875,68 @@
     "compliment": "Compliment",
     "question": "Question",
     "other": "Autre",
-    "message": "Votre message",
-    "messagePlaceholder": "Décrivez votre retour...",
+    "message": "Ton message",
+    "messagePlaceholder": "Décris ton retour...",
     "satisfaction": "Satisfaction",
     "send": "Envoyer",
     "sending": "Envoi...",
-    "thanks": "Merci pour votre retour !",
+    "thanks": "Merci pour ton retour !",
     "pending": "en attente",
-    "emptyMessage": "Écrivez votre message avant de l'envoyer.",
-    "sendFailed": "Votre message n'a pas pu être enregistré.",
-    "keptLocally": "Enregistré sur ce téléphone. Votre retour partira dès que l'envoi sera possible.",
-    "keptLocallyNotice": "L'envoi des retours n'est pas encore ouvert : vos messages sont gardés sur ce téléphone.",
-    "sentThanks": "Merci, votre retour est parti."
+    "emptyMessage": "Écris ton message avant de l'envoyer.",
+    "sendFailed": "Ton message n'a pas pu être enregistré.",
+    "keptLocally": "Enregistré sur ce téléphone. Ton retour partira dès que l'envoi sera possible.",
+    "keptLocallyNotice": "L'envoi des retours n'est pas encore ouvert : tes messages sont gardés sur ce téléphone.",
+    "sentThanks": "Merci, ton retour est parti."
   },
   "auth": {
     "profile": "Profil",
     "anonymous": "Randonneur sans compte",
     "connectedVia": "Connecté via",
     "signInGoogle": "Se connecter avec Google",
-    "signInGoogleDesc": "Pour sauvegarder votre progression",
+    "signInGoogleDesc": "Pour sauvegarder ta progression",
     "signOut": "Se déconnecter",
     "signOutDesc": "Revenir au mode sans compte",
     "signOutConfirm": "Se déconnecter ?",
-    "signOutMessage": "Vous reviendrez au mode sans compte. Vos données locales sont conservées.",
+    "signOutMessage": "Tu reviendras au mode sans compte. Tes données locales sont conservées.",
     "deleteAccount": "Supprimer mon compte",
-    "deleteAccountDesc": "Toutes vos données seront effacées",
-    "deleteConfirm": "Supprimer votre compte ?",
-    "deleteMessage": "Cette action est irréversible. Toutes vos données, notes et progression seront effacées.",
+    "deleteAccountDesc": "Toutes tes données seront effacées",
+    "deleteConfirm": "Supprimer ton compte ?",
+    "deleteMessage": "Cette action est irréversible. Toutes tes données, notes et progression seront effacées.",
     "cancel": "Annuler",
     "pseudonym": "Pseudonyme",
-    "pseudonymHint": "Votre nom de randonneur",
+    "pseudonymHint": "Ton nom de randonneur",
     "save": "Enregistrer",
     "changeAvatar": "Changer l'avatar",
     "chooseAvatar": "Choisir un avatar",
     "errorLoading": "Erreur de chargement",
     "appVersion": "StepWays v$version (build $build)",
-    "errorTimeout": "Le compte n'a pas répondu. Vérifiez votre connexion, puis réessayez."
+    "errorTimeout": "Le compte n'a pas répondu. Vérifie ta connexion, puis réessaie."
   },
   "feasibility": {
     "restart": "Recommencer",
     "objectiveTitle": "Faisabilité pour ce trek",
-    "objectiveIntro": "Ce verdict croise votre profil réel et les exigences du trek.",
+    "objectiveIntro": "Ce verdict croise ton profil réel et les exigences du trek.",
     "openProfile": "Ma fiche d'info",
     "openWalkTest": "Test 6 minutes",
     "openPastHikes": "Mes 5 dernières randos",
-    "sourceObjective": "Basé sur votre profil objectif",
-    "sourceFallback": "Basé sur le questionnaire (en attendant votre profil)",
+    "sourceObjective": "Basé sur ton profil objectif",
+    "sourceFallback": "Basé sur le questionnaire (en attendant ton profil)",
     "gapTooHigh": "Écart trop important",
     "gaps": {
-      "elevationPerDay": "Dénivelé par jour trop élevé vs votre habitude",
-      "distancePerDay": "Distance par jour supérieure à votre expérience",
+      "elevationPerDay": "Dénivelé par jour trop élevé vs ton habitude",
+      "distancePerDay": "Distance par jour supérieure à ton expérience",
       "consecutiveDays": "Nombre de jours consécutifs jamais atteint",
-      "technicity": "Technicité du terrain au-dessus de votre niveau",
+      "technicity": "Technicité du terrain au-dessus de ton niveau",
       "risk": "Niveau de risque élevé pour ce trek",
       "fitness": "Forme insuffisante au test 6 minutes",
-      "effort": "Effort global (IBP) supérieur à votre expérience"
+      "effort": "Effort global (IBP) supérieur à ton expérience"
     },
     "formula": {
       "title": "Faisabilité pour ce trek",
-      "answerTitle": "Est-ce faisable pour vous ?",
-      "answerGreen": "Oui. Ce sentier est à votre portée en ${days} jours.",
+      "answerTitle": "Est-ce faisable pour toi ?",
+      "answerGreen": "Oui. Ce sentier est à ta portée en ${days} jours.",
       "answerOrange": "Oui, en ${days} jours. Mais une journée sera dure.",
-      "answerRed": "Pas encore. Une journée de ce sentier demande plus que ce que vous tenez aujourd'hui. Gagnez en forme, ou partez hors été.",
+      "answerRed": "Pas encore. Une journée de ce sentier demande plus que ce que tu tiens aujourd'hui. Gagne en forme, ou pars hors été.",
       "answerDaysNote": "Le sentier se marche en ${walking} jours. ${rest} jour(s) de repos conseillés.",
       "answerNoRest": "Le sentier se marche en ${walking} jours.",
       "explainToggle": "Comment ce résultat est calculé",
@@ -1051,7 +1051,7 @@
   "tips": {
     "carouselTitle": "Conseils randonnée",
     "allCategories": "Toutes",
-    "swipeHint": "Glissez pour voir plus",
+    "swipeHint": "Glisse pour voir plus",
     "detailTitle": "Détail du conseil",
     "readMore": "Lire la suite",
     "noTips": "Aucun conseil disponible",
@@ -1076,7 +1076,7 @@
     "altitude": "Altitude min.",
     "screenTitle": "Fiches conseils",
     "screenIntro": "Préparation, matériel, sécurité, santé.",
-    "followUs": "Suivez-nous :",
+    "followUs": "Suis-nous :",
     "viewOnFacebook": "Voir sur Facebook",
     "viewOnInstagram": "Instagram",
     "linkOffline": "Lien indisponible hors-ligne",
@@ -1097,14 +1097,14 @@
   },
   "noData": {
     "title": "Aucun sentier téléchargé",
-    "subtitle": "Téléchargez un sentier pour commencer",
-    "offlineHint": "Les données seront disponibles hors ligne pour votre randonnée.",
+    "subtitle": "Télécharge un sentier pour commencer",
+    "offlineHint": "Les données seront disponibles hors ligne pour ta randonnée.",
     "browseCta": "Parcourir les sentiers"
   },
   "catalog": {
     "title": "Catalogue des sentiers",
     "prepare": "Préparer",
-    "mustDownload": "Téléchargez ce sentier pour l'explorer.",
+    "mustDownload": "Télécharge ce sentier pour l'explorer.",
     "emptyTitle": "Aucun sentier disponible",
     "emptySubtitle": "Aucun sentier n'est encore proposé au catalogue.",
     "a11y": {
@@ -1116,23 +1116,23 @@
     "freeBadge": "Gratuit",
     "freeTrailTagline": "Les $etapes premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée.",
     "loadFailedTitle": "Liste des sentiers indisponible",
-    "loadFailedSubtitle": "Impossible de récupérer la liste des sentiers pour le moment. Vos sentiers déjà téléchargés restent accessibles hors ligne.",
+    "loadFailedSubtitle": "Impossible de récupérer la liste des sentiers pour le moment. Tes sentiers déjà téléchargés restent accessibles hors ligne.",
     "loadFailedRetry": "Réessayer",
-    "staleNoticeOffline": "Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau."
+    "staleNoticeOffline": "Hors ligne : voici tes sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau."
   },
   "demo": {
     "bandeau": "MODE DÉMO",
     "quitter": "Quitter",
     "boutonTitre": "Essayer la démo",
     "boutonSous": "Toute l'application. Rien n'est enregistré.",
-    "rienNeCompte": "Vous êtes en démo : rien n'est enregistré. Ni étapes, ni diplôme, ni achat.",
+    "rienNeCompte": "Tu es en démo : rien n'est enregistré. Ni étapes, ni diplôme, ni achat.",
     "simulerEtape": "Simuler l'étape suivante",
     "simulerFin": "Simuler l'arrivée",
     "simulerRelancer": "Recommencer la démo",
     "marcheSimulee": "Marche simulée — temps accéléré ×$facteur",
-    "arriveeTitre": "Bravo, vous êtes arrivé !",
-    "arriveeTexte": "Vous avez terminé le sentier en démo. Rien n'a été enregistré.",
-    "arriveeChiffres": "Votre démonstration",
+    "arriveeTitre": "Bravo, tu es arrivé !",
+    "arriveeTexte": "Tu as terminé le sentier en démo. Rien n'a été enregistré.",
+    "arriveeChiffres": "Ta démonstration",
     "arriveeFermer": "Fermer",
     "sortieTitre": "Fin de la démo",
     "sortieEnTeteCatalogue": "La démo reste en haut de la liste des sentiers.",
@@ -1149,14 +1149,14 @@
     "compteReafficherSous": "Le bouton revient en haut de la liste des sentiers",
     "collecteTitre": "Ce qui a servi au calcul",
     "collecteIntro": "Les informations utilisées pour calculer la faisabilité.",
-    "collecteProfil": "Votre profil",
-    "collecteForme": "Votre forme",
-    "collecteExperience": "Votre expérience",
+    "collecteProfil": "Ton profil",
+    "collecteForme": "Ta forme",
+    "collecteExperience": "Ton expérience",
     "collecteSaison": "Saison du départ",
     "collecteSentier": "Le sentier",
     "collecteJours": "Nombre de jours",
     "collecteAbsent": "Non renseigné",
-    "sortieFaite": "Vous avez quitté la démo."
+    "sortieFaite": "Tu as quitté la démo."
   },
   "updates": {
     "readyTitle": "Mise à jour prête",
@@ -1173,7 +1173,7 @@
   },
   "cloud": {
     "localModeTitle": "Mode local",
-    "localModeBody": "Cette installation n'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Vos données restent sur l'appareil.",
+    "localModeBody": "Cette installation n'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Tes données restent sur l'appareil.",
     "statusSection": "Cloud",
     "statusActive": "Services en ligne actifs",
     "statusActiveDesc": "Sauvegarde et suivi en temps réel disponibles.",
@@ -1185,18 +1185,18 @@
     "next": "Suivant",
     "getStarted": "Commencer",
     "welcomeTitle": "Bienvenue sur $appName",
-    "welcomeSubtitle": "Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.",
-    "languageTitle": "Choisissez votre langue",
-    "languageSubtitle": "Vous pourrez la modifier à tout moment dans les paramètres.",
-    "downloadTitle": "Téléchargez votre premier sentier",
-    "downloadSubtitle": "Parcourez le catalogue et téléchargez un sentier pour l'utiliser entièrement hors ligne.",
+    "welcomeSubtitle": "Ton compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.",
+    "languageTitle": "Choisis ta langue",
+    "languageSubtitle": "Tu pourras la modifier à tout moment dans les paramètres.",
+    "downloadTitle": "Télécharge ton premier sentier",
+    "downloadSubtitle": "Parcours le catalogue et télécharge un sentier pour l'utiliser entièrement hors ligne.",
     "browseCatalog": "Parcourir le catalogue",
-    "recoveryNudge": "Pensez à noter votre code de reconnexion (dans les réglages) : il ouvre vos données sur un autre téléphone."
+    "recoveryNudge": "Pense à noter ton code de reconnexion (dans les réglages) : il ouvre tes données sur un autre téléphone."
   },
   "monetization": {
-    "demoBanner": "Mode démo — touchez pour débloquer",
-    "paywallTitle": "Débloquez cette randonnée",
-    "paywallBody": "Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.",
+    "demoBanner": "Mode démo — touche pour débloquer",
+    "paywallTitle": "Débloque cette randonnée",
+    "paywallBody": "Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.",
     "featureMap": "Carte hors ligne + GPS + suivi en direct",
     "featureJournal": "Journal de bord complet",
     "featureDiploma": "Diplôme de fin de randonnée",
@@ -1208,13 +1208,13 @@
     "rewardedEarned": "Merci ! Sans publicité pendant 24 h.",
     "rewardedUnavailable": "Aucune vidéo disponible pour le moment.",
     "walletTitle": "Compte-étapes",
-    "walletSubtitle": "Vos étapes servent à débloquer les randonnées",
+    "walletSubtitle": "Tes étapes servent à débloquer les randonnées",
     "walletUnit": "étapes",
     "storeUnavailable": "Le paiement n'est pas disponible pour le moment.",
     "restoreUnavailable": "Restauration impossible : le paiement n'est pas disponible pour le moment.",
-    "restoreRequested": "Restauration demandée. Vos achats réapparaîtront dans un instant.",
+    "restoreRequested": "Restauration demandée. Tes achats réapparaîtront dans un instant.",
     "restoreCta": "Restaurer mes achats",
-    "restoreWhatItCovers": "La restauration ramène votre abonnement et vos recharges. Les randonnées débloquées avec vos étapes sont enregistrées sur cet appareil.",
+    "restoreWhatItCovers": "La restauration ramène ton abonnement et tes recharges. Les randonnées débloquées avec tes étapes sont enregistrées sur cet appareil.",
     "rechargeTitle": "Recharger mon compte-étapes",
     "rechargeSubtitle": "Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.",
     "rechargeBalance": "Solde actuel",
@@ -1238,12 +1238,12 @@
     "buyOutcomeOffline": "Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.",
     "buyOutcomeFailed": "Le paiement n'a pas abouti. Rien n'a été débité.",
     "buyOutcomeUnknownPrice": "Ce sentier n'est pas en vente pour le moment. Rien n'a été débité.",
-    "buyOutcomeDemo": "Vous êtes en démo : aucun achat n'est possible, et rien n'a été débité.",
+    "buyOutcomeDemo": "Tu es en démo : aucun achat n'est possible, et rien n'a été débité.",
     "subscriptionPrice": "$price par mois",
-    "subscriptionAllowanceForLife": "Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.",
+    "subscriptionAllowanceForLife": "Les étapes créditées restent acquises à vie, même si tu arrêtes l’abonnement.",
     "cancelCta": "Arrêter mon abonnement",
-    "cancelExplains": "L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.",
-    "cancelStoreUnavailable": "Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.",
+    "cancelExplains": "L’arrêt se fait dans la boutique qui te facture (Google Play ou l’App Store). Ce bouton t’y conduit directement. Ton accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées te restent.",
+    "cancelStoreUnavailable": "Impossible d’ouvrir la boutique. Ouvre-la toi-même, puis Abonnements.",
     "adsBadgePub": "Avec publicité",
     "adsBadgeAbonne": "Abonné — sans publicité",
     "adsBadgeAchete": "Acheté — sans publicité",
@@ -1260,7 +1260,7 @@
   },
   "signalement": {
     "title": "Signaler",
-    "chooseType": "Que voulez-vous signaler ?",
+    "chooseType": "Que veux-tu signaler ?",
     "types": {
       "obstacle": "Obstacle sur le sentier",
       "eauASec": "Point d'eau à sec",
@@ -1268,7 +1268,7 @@
     },
     "latencyBanner": "Enregistré. Visible par les autres randonneurs après synchronisation réseau.",
     "confirm": "Confirmer le signalement",
-    "noLocation": "Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.",
+    "noLocation": "Position GPS indisponible pour le moment. Réessaie sous le ciel ouvert.",
     "savedTitle": "Signalement enregistré",
     "savedPendingSync": "Il sera partagé dès le retour du réseau.",
     "pendingCount": "$n en attente de synchronisation",
@@ -1289,7 +1289,7 @@
   },
   "hebergement": {
     "title": "Hébergements à proximité",
-    "facilitatorNote": "StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l'application.",
+    "facilitatorNote": "StepWays t'oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l'application.",
     "detourAR": "Détour aller-retour : $km km",
     "openSite": "Voir le site",
     "cannotOpen": "Impossible d'ouvrir ce lien sur cet appareil.",
@@ -1304,7 +1304,7 @@
   },
   "training": {
     "title": "Préparation physique",
-    "localNotice": "Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.",
+    "localNotice": "Ton programme est calculé et conservé sur ton téléphone. Les rappels sont des notifications locales, sans suivi.",
     "reminderTitle": "Séance d'entraînement aujourd'hui",
     "scheduleReminders": "Programmer les rappels",
     "remindersScheduled": "$n rappel(s) programmé(s)",
@@ -1323,26 +1323,26 @@
     },
     "paywallTitle": "Programme d'entraînement personnalisé",
     "paywallIncludedIn": "Inclus dans le pack « $trail ».",
-    "paywallSubtitle": "Plan adapté à votre profil et à votre date de départ.",
+    "paywallSubtitle": "Plan adapté à ton profil et à ta date de départ.",
     "unlock": "Acheter",
     "effortIntro": "Un plan progressif sur $weeks semaines pour aborder les $km km et environ $elevation m de dénivelé.",
     "countdown": "Départ dans $days jours",
     "planOverWeeks": "Plan sur $n semaines",
     "phaseWeeks": "Semaines $start-$end · $title",
     "objectiveTitle": "Objectif clé",
-    "inviteSetDate": "Posez votre date de départ dans le Calendrier pour caler le compte à rebours.",
-    "inviteFillProfile": "Remplissez votre fiche de renseignement pour adapter le plan à votre profil.",
-    "cautionVerdictNotice": "Votre faisabilité invite à la prudence : respectez la progression et n'écourtez pas la préparation.",
+    "inviteSetDate": "Pose ta date de départ dans le Calendrier pour caler le compte à rebours.",
+    "inviteFillProfile": "Remplis ta fiche de renseignement pour adapter le plan à ton profil.",
+    "cautionVerdictNotice": "Ta faisabilité invite à la prudence : respecte la progression et n'écourte pas la préparation.",
     "freqPerWeek": "$n× par semaine",
     "freqOncePerPhase": "une fois dans la phase",
     "freqFinalWeek": "la dernière semaine seulement",
     "freqSourceNotice": "Les fréquences ne sont pas des chiffres maison : 3 séances d'endurance et 2 de renforcement par semaine, 2 jours de repos, d'après REI (Conditioning for Backpacking), Terres d'Aventure et les recommandations 2020 de l'OMS.",
-    "noDateWhy": "Sans date de départ, ce plan n'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s'affiche.",
+    "noDateWhy": "Sans date de départ, ce plan n'a pas de fin : impossible de dire dans quelle semaine tu es, ni quand affûter. Pose ta date dans le Calendrier et le plan s'affiche.",
     "tooShortTitle": "Aucune préparation proposée",
-    "tooShortWhy": "Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne vous est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marchez régulièrement et n'allez pas chercher la surcharge.",
+    "tooShortWhy": "Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne t'est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marche régulièrement et ne va pas chercher la surcharge.",
     "demoBridledTitle": "Version d'essai",
     "demoBridledBody": "La première phase est jouable pour de faux : rien n'est conservé. Les phases suivantes s'ouvrent avec la randonnée.",
-    "demoLockedPhase": "Débloquez la randonnée pour voir les séances"
+    "demoLockedPhase": "Débloque la randonnée pour voir les séances"
   },
   "eta": {
     "title": "Temps estimé",
@@ -1472,8 +1472,8 @@
       "titleComment": "Signaler une condition",
       "chooseType": "Type de point",
       "titleField": "Titre du point",
-      "conditionPrompt": "Décrivez la condition observée",
-      "commentField": "Votre observation",
+      "conditionPrompt": "Décris la condition observée",
+      "commentField": "Ton observation",
       "conditionField": "État (optionnel)",
       "conditionHelper": "ex : eau à sec, eau coule bien, passage glissant",
       "latencyBanner": "Sera publié à la prochaine synchronisation réseau.",
@@ -1482,9 +1482,9 @@
       "savedPendingSync": "Elle sera publiée dès le retour du réseau.",
       "pendingCount": "$n en attente de synchronisation",
       "close": "Fermer",
-      "emptyTitle": "Indiquez un titre pour le point.",
-      "emptyComment": "Saisissez votre observation.",
-      "noLocation": "Position GPS indisponible. Réessayez sous le ciel ouvert.",
+      "emptyTitle": "Indique un titre pour le point.",
+      "emptyComment": "Saisis ton observation.",
+      "noLocation": "Position GPS indisponible. Réessaie sous le ciel ouvert.",
       "error": "Enregistrement impossible pour le moment."
     }
   },
@@ -1506,28 +1506,28 @@
     "pretesPoids": "$mo Mo sur le téléphone",
     "libere": "Cartes supprimées, espace libéré.",
     "supprimerTitre": "Supprimer les cartes ?",
-    "supprimerCorps": "Les cartes seront retirées du téléphone pour libérer de l'espace. Vous pourrez les retélécharger.",
+    "supprimerCorps": "Les cartes seront retirées du téléphone pour libérer de l'espace. Tu pourras les retélécharger.",
     "supprimerAnnuler": "Annuler",
     "supprimerConfirmer": "Supprimer",
-    "horsWifiTitre": "$mo Mo sur votre forfait ?",
-    "horsWifiCorps": "Vous n'êtes pas en Wi-Fi. Les cartes d'un circuit peuvent peser lourd sur un forfait mobile.",
+    "horsWifiTitre": "$mo Mo sur ton forfait ?",
+    "horsWifiCorps": "Tu n'es pas en Wi-Fi. Les cartes d'un circuit peuvent peser lourd sur un forfait mobile.",
     "horsWifiAttendre": "Attendre le Wi-Fi",
     "horsWifiContinuer": "Télécharger quand même",
     "refus": {
-      "niveauInsuffisant": "Les cartes descendent au moment où vous préparez le circuit pour le marcher.",
-      "sentierInconnu": "Ce circuit n'est pas encore sur votre téléphone. Téléchargez-le depuis la liste des sentiers.",
+      "niveauInsuffisant": "Les cartes descendent au moment où tu prépares le circuit pour le marcher.",
+      "sentierInconnu": "Ce circuit n'est pas encore sur ton téléphone. Télécharge-le depuis la liste des sentiers.",
       "aucuneCartePubliee": "Aucune carte hors ligne n'est publiée pour ce circuit pour le moment. Le tracé, lui, reste disponible.",
       "droitDeRealiserManquant": "Les cartes hors ligne font partie du circuit acheté.",
-      "horsLigne": "Sans réseau, une carte ne peut pas être téléchargée. Reconnectez-vous puis réessayez.",
-      "stockageIndisponible": "Le téléphone n'a pas répondu. Réessayez ; s'il insiste, redémarrez-le."
+      "horsLigne": "Sans réseau, une carte ne peut pas être téléchargée. Reconnecte-toi puis réessaie.",
+      "stockageIndisponible": "Le téléphone n'a pas répondu. Réessaie ; s'il insiste, redémarre-le."
     },
     "echec": {
-      "reseau": "La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprenez quand vous voulez.",
-      "empreinteInvalide": "La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessayez.",
-      "tailleInattendue": "La carte reçue est incomplète : elle a été écartée. Réessayez.",
-      "plusDePlace": "Il n'y a plus de place sur le téléphone. Libérez de l'espace, puis reprenez.",
-      "ecritureImpossible": "L'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprenez.",
-      "stockageIndisponible": "Le téléphone n'a pas rendu son espace de stockage. Réessayez ; s'il insiste, redémarrez-le.",
+      "reseau": "La liaison a été coupée. Ce qui est déjà téléchargé est gardé : reprends quand tu veux.",
+      "empreinteInvalide": "La carte reçue ne correspond pas à celle publiée : elle a été écartée. Réessaie.",
+      "tailleInattendue": "La carte reçue est incomplète : elle a été écartée. Réessaie.",
+      "plusDePlace": "Il n'y a plus de place sur le téléphone. Libère de l'espace, puis reprends.",
+      "ecritureImpossible": "L'écriture sur le téléphone a échoué. Ce qui est téléchargé est gardé : reprends.",
+      "stockageIndisponible": "Le téléphone n'a pas rendu son espace de stockage. Réessaie ; s'il insiste, redémarre-le.",
       "annulee": "Téléchargement annulé. Ce qui est déjà téléchargé est gardé."
     },
     "demoIndisponible": "Le téléchargement des cartes n'est pas disponible pendant la démonstration.",
@@ -1542,7 +1542,7 @@
     "sectionsCount": "$n rubriques pratiques",
     "empty": "Aucun guide disponible pour ce sentier.",
     "noItems": "Aucune information dans cette section pour le moment.",
-    "facilitatorNote": "StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l'application.",
+    "facilitatorNote": "StepWays t'oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l'application.",
     "openSite": "Voir le site",
     "cannotOpen": "Impossible d'ouvrir ce lien sur cet appareil.",
     "categories": {
@@ -1569,7 +1569,7 @@
   },
   "health": {
     "title": "Informations santé",
-    "privacyBanner": "Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.",
+    "privacyBanner": "Ces données restent sur ton téléphone. Elles ne sont jamais envoyées sur internet.",
     "field": {
       "bloodType": "Groupe sanguin",
       "allergies": "Allergies",
@@ -1590,10 +1590,10 @@
       "doctor": "Ex : Dr Dupont 04 95 xx xx xx",
       "insurance": "Ex : carte européenne",
       "fullName": "Ex : Christophe Mosconi",
-      "birthDate": "Appuyez pour choisir",
+      "birthDate": "Appuie pour choisir",
       "address": "Ex : 12 rue des Lilas, 20000 Ajaccio",
       "conditions": "Ex : diabète type 1, épilepsie, anticoagulant",
-      "organDonor": "Faites votre choix"
+      "organDonor": "Fais ton choix"
     },
     "error": {
       "bloodType": "Groupe sanguin invalide (A+, A-, B+, B-, AB+, AB-, O+, O-)"
@@ -1601,7 +1601,7 @@
     "save": "Sauvegarder",
     "saving": "Sauvegarde…",
     "saved": "Informations sauvegardées",
-    "emergencyHint": "En cas d'urgence, montrez cet écran aux secours.",
+    "emergencyHint": "En cas d'urgence, montre cet écran aux secours.",
     "entryTitle": "Mes infos santé",
     "entrySubtitle": "À montrer aux secours (restées sur le téléphone)",
     "a11y": {
@@ -1631,17 +1631,17 @@
       "ackDone": "Conseils lus"
     },
     "section": {
-      "identity": "Qui vous êtes",
+      "identity": "Qui tu es",
       "identityWhy": "C'est la première chose que lit un secouriste : sans nom, il soigne un inconnu et ne peut prévenir personne.",
       "contacts": "Qui prévenir",
-      "contactsWhy": "Ce que les secours cherchent juste après vous avoir identifié. Trois personnes au maximum : au-delà, on n'en appelle aucune.",
-      "vital": "Ce qui vous soigne",
-      "vitalWhy": "Dans l'ordre où un médecin d'urgence interroge : d'abord ce qui peut vous tuer pendant le soin, ensuite ce qui sert à l'hôpital.",
+      "contactsWhy": "Ce que les secours cherchent juste après t'avoir identifié. Trois personnes au maximum : au-delà, on n'en appelle aucune.",
+      "vital": "Ce qui te soigne",
+      "vitalWhy": "Dans l'ordre où un médecin d'urgence interroge : d'abord ce qui peut te tuer pendant le soin, ensuite ce qui sert à l'hôpital.",
       "admin": "Administratif",
       "adminWhy": "Ce qu'on recopie à l'accueil de l'hôpital, pas ce qu'on lit sous la pluie."
     },
     "bloodTypeUnknown": "Je ne sais pas",
-    "bloodTypeLegacy": "Votre ancienne saisie « $valeur » n'est pas un groupe sanguin reconnu. Choisissez dans la liste.",
+    "bloodTypeLegacy": "Ton ancienne saisie « $valeur » n'est pas un groupe sanguin reconnu. Choisis dans la liste.",
     "organDonor": {
       "yes": "Donneur",
       "no": "Opposé au don",
@@ -1654,8 +1654,8 @@
       "phone": "Téléphone",
       "phoneHint": "Ex : 06 12 34 56 78",
       "remove": "Retirer cette personne",
-      "errorName": "Donnez un nom, sinon les secours ne savent pas qui ils appellent.",
-      "errorPhone": "Donnez un numéro, sinon ce nom ne sert à rien."
+      "errorName": "Donne un nom, sinon les secours ne savent pas qui ils appellent.",
+      "errorPhone": "Donne un numéro, sinon ce nom ne sert à rien."
     },
     "cards": {
       "vitale": "Photo de la carte Vitale",
@@ -1664,14 +1664,14 @@
       "retake": "Reprendre la photo",
       "pick": "Choisir une image",
       "remove": "Retirer la photo",
-      "stored": "Photo enregistrée sur ce téléphone. Elle n'est envoyée nulle part et part avec la fiche quand vous l'effacez.",
+      "stored": "Photo enregistrée sur ce téléphone. Elle n'est envoyée nulle part et part avec la fiche quand tu l'effaces.",
       "explain": "La photo reste sur ce téléphone, dans le même dossier protégé que le reste de la fiche.",
       "permissionRefused": "Accès à l'appareil photo refusé. La fiche fonctionne très bien sans.",
       "failed": "La photo n'a pas pu être enregistrée."
     },
     "phoneCard": {
-      "title": "Recopiez votre fiche dans celle du téléphone",
-      "why": "C'est le seul écran qu'un secouriste atteint sans votre code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.",
+      "title": "Recopie ta fiche dans celle du téléphone",
+      "why": "C'est le seul écran qu'un secouriste atteint sans ton code, sur iPhone comme sur Android. Réglages du téléphone, rubrique Urgence ou Santé : nom, groupe sanguin, allergies, traitements et personnes à prévenir.",
       "done": "C'est fait, ma fiche est aussi dans le téléphone"
     },
     "localOnlyPriceTitle": "Changer de téléphone veut dire la ressaisir",
@@ -1754,7 +1754,7 @@
   },
   "moderation": {
     "reportTitle": "Signaler ce contenu",
-    "reportIntro": "Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.",
+    "reportIntro": "Aide-nous à garder la communauté saine. Indique pourquoi ce contenu te semble illicite. Ton signalement sera examiné par un modérateur.",
     "reasonLabel": "Motif du signalement",
     "reasons": {
       "illegal": "Contenu illégal",
@@ -1763,34 +1763,34 @@
       "dangerous": "Information dangereuse ou trompeuse",
       "other": "Autre"
     },
-    "detailsLabel": "Précisez (facultatif)",
-    "detailsHint": "Ajoutez un commentaire pour aider le modérateur.",
-    "contactLabel": "Votre adresse e-mail",
-    "contactHint": "Pour vous tenir informé du traitement (article 16).",
+    "detailsLabel": "Précise (facultatif)",
+    "detailsHint": "Ajoute un commentaire pour aider le modérateur.",
+    "contactLabel": "Ton adresse e-mail",
+    "contactHint": "Pour te tenir informé du traitement (article 16).",
     "goodFaithLabel": "Je déclare de bonne foi que ces informations sont exactes.",
     "submit": "Envoyer le signalement",
     "submitting": "Envoi en cours…",
     "sent": "Signalement envoyé. Merci, un modérateur va l'examiner.",
-    "errorRequired": "Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.",
-    "errorGeneric": "Le signalement n'a pas pu être envoyé. Réessayez.",
+    "errorRequired": "Complète le motif, ton e-mail et la déclaration de bonne foi.",
+    "errorGeneric": "Le signalement n'a pas pu être envoyé. Réessaie.",
     "cancel": "Annuler",
     "reasonsTitle": "Pourquoi ce contenu a-t-il été restreint ?",
-    "reasonsIntro": "Conformément à l'article 17, voici la raison de la décision de modération concernant votre contenu.",
+    "reasonsIntro": "Conformément à l'article 17, voici la raison de la décision de modération concernant ton contenu.",
     "decisionLabel": "Décision",
     "decisions": {
       "keep": "Contenu maintenu",
       "restrict": "Contenu restreint",
       "remove": "Contenu retiré"
     },
-    "noStatement": "Aucune restriction n'a été appliquée à vos contenus.",
+    "noStatement": "Aucune restriction n'a été appliquée à tes contenus.",
     "complaintAction": "Contester cette décision",
     "complaintTitle": "Contester une décision",
-    "complaintIntro": "Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).",
-    "complaintExposeLabel": "Votre contestation",
-    "complaintExposeHint": "Décrivez les raisons de votre contestation.",
+    "complaintIntro": "Tu peux contester une décision de modération. Explique pourquoi tu estimes la décision injustifiée (article 20).",
+    "complaintExposeLabel": "Ta contestation",
+    "complaintExposeHint": "Décris les raisons de ta contestation.",
     "complaintSubmit": "Envoyer la contestation",
     "complaintSent": "Contestation enregistrée. Elle sera examinée.",
-    "complaintEmpty": "Veuillez expliquer votre contestation.",
+    "complaintEmpty": "Explique ta contestation.",
     "a11y": {
       "reportForm": "Formulaire de signalement de contenu",
       "reasonSelector": "Sélecteur de motif de signalement",
@@ -1801,18 +1801,18 @@
     }
   },
   "bootstrap": {
-    "loading": "Préparation de votre randonnée…"
+    "loading": "Préparation de ta randonnée…"
   },
   "recap": {
     "title": "Mon aventure",
     "lockedTitle": "Disponible à la fin du trek",
-    "lockedMessage": "Terminez ou abandonnez votre parcours pour retrouver le récapitulatif de votre aventure.",
+    "lockedMessage": "Termine ou abandonne ton parcours pour retrouver le récapitulatif de ton aventure.",
     "finisherTitle": "Félicitations !",
-    "finisherSubtitle": "Vous avez terminé votre parcours",
-    "partialTitle": "Votre parcours partiel",
-    "partialSubtitle": "Votre aventure reste enregistrée",
+    "finisherSubtitle": "Tu as terminé ton parcours",
+    "partialTitle": "Ton parcours partiel",
+    "partialSubtitle": "Ton aventure reste enregistrée",
     "statsSection": "Statistiques",
-    "traceSection": "Votre trace",
+    "traceSection": "Ta trace",
     "noTrace": "Aucune trace GPS disponible",
     "stages": "{done} / {total} étapes parcourues",
     "distance": "{km} km parcourus",
@@ -1878,30 +1878,30 @@
     "replanButton": "REPLANIFIER",
     "replanDialog": {
       "title": "Replanifier",
-      "message": "La replanification va réinitialiser votre programme.\nVos jours de repos seront préservés aux mêmes positions.",
+      "message": "La replanification va réinitialiser ton programme.\nTes jours de repos seront préservés aux mêmes positions.",
       "cancel": "Annuler",
       "confirm": "Replanifier"
     },
     "validate": "VALIDER MON PROGRAMME",
     "validateNext": "Valider et choisir les dates",
     "empty": {
-      "title": "Configurez d'abord votre itinéraire",
-      "message": "Choisissez votre parcours et la durée pour générer votre programme.",
+      "title": "Configure d'abord ton itinéraire",
+      "message": "Choisis ton parcours et la durée pour générer ton programme.",
       "action": "CONFIGURER L'ITINÉRAIRE"
     },
     "info": {
       "title": "Programme",
       "days": {
         "title": "Jours de trek",
-        "body": "Chaque ligne = un jour. Appuyez pour voir le détail complet."
+        "body": "Chaque ligne = un jour. Appuie pour voir le détail complet."
       },
       "reorder": {
         "title": "Réorganiser",
-        "body": "Glissez la poignée à droite pour changer l'ordre des jours."
+        "body": "Glisse la poignée à droite pour changer l'ordre des jours."
       },
       "rest": {
         "title": "Jour de repos",
-        "body": "Insérez un jour de récupération entre deux étapes."
+        "body": "Insère un jour de récupération entre deux étapes."
       },
       "mergeSplit": {
         "title": "Regrouper / Dégrouper",
@@ -1921,13 +1921,13 @@
     "reorderBlocked": "Rando démarrée : l'ordre des étapes ne change plus",
     "inTrek": {
       "title": "Adapter l'itinéraire",
-      "intro": "Réorganisez la suite de votre rando. Ce que vous avez déjà marché est figé, et l'ordre des étapes ne change pas.",
+      "intro": "Réorganise la suite de ta rando. Ce que tu as déjà marché est figé, et l'ordre des étapes ne change pas.",
       "doneSection": "Déjà marché",
       "upcomingSection": "À venir",
       "doneBadge": "Fait",
       "lockedDay": "Jour déjà marché, non modifiable",
-      "allDone": "Vous avez marché tous vos jours : il n'y a plus rien à adapter.",
-      "notStarted": "Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.",
+      "allDone": "Tu as marché tous tes jours : il n'y a plus rien à adapter.",
+      "notStarted": "Cet écran sert pendant la rando : démarre ton trek pour adapter la suite.",
       "validate": "Valider mes changements",
       "saved": "Programme mis à jour",
       "info": {
@@ -1938,7 +1938,7 @@
         },
         "upcoming": {
           "title": "Jours à venir",
-          "body": "Regroupez, dégroupez ou ajoutez un jour de repos sur la suite de votre parcours."
+          "body": "Regroupe, dégroupe ou ajoute un jour de repos sur la suite de ton parcours."
         },
         "order": {
           "title": "Ordre des étapes",
@@ -1948,7 +1948,7 @@
       },
       "empty": {
         "title": "Aucun programme à adapter",
-        "message": "Construisez d'abord votre programme depuis la préparation."
+        "message": "Construis d'abord ton programme depuis la préparation."
       }
     }
   },
@@ -1989,19 +1989,19 @@
       "restDays": "Jours repos"
     },
     "noDate": {
-      "title": "Choisissez une date de départ",
-      "message": "Le calendrier de votre trek s'affichera automatiquement avec les jours de marche et de repos."
+      "title": "Choisis une date de départ",
+      "message": "Le calendrier de ton trek s'affichera automatiquement avec les jours de marche et de repos."
     },
     "empty": {
-      "title": "Configurez d'abord votre itinéraire",
-      "message": "Choisissez votre parcours et la durée pour pouvoir configurer vos dates.",
+      "title": "Configure d'abord ton itinéraire",
+      "message": "Choisis ton parcours et la durée pour pouvoir configurer tes dates.",
       "action": "CONFIGURER L'ITINÉRAIRE"
     }
   },
   "nuitees": {
     "title": "Réservations nuitées",
     "guideTooltip": "Guide des nuitées",
-    "infoBar": "Réservez chaque nuit à l'avance en haute saison",
+    "infoBar": "Réserve chaque nuit à l'avance en haute saison",
     "types": {
       "refuge": "Refuge",
       "gite": "Gîte",
@@ -2021,7 +2021,7 @@
       "noPlace": "Hébergement",
       "available": "{count} hébergements disponibles",
       "call": "Appeler {phone}",
-      "lockedHint": "Décochez la nuit pour changer le type",
+      "lockedHint": "Décoche la nuit pour changer le type",
       "eveBadge": "J-1",
       "eveOfDeparture": "Veille du départ"
     },
@@ -2031,8 +2031,8 @@
       "allBooked": "TOUTES LES NUITS RÉSERVÉES"
     },
     "empty": {
-      "title": "Configurez d'abord votre itinéraire",
-      "message": "Choisissez votre parcours et la durée pour préparer vos nuits.",
+      "title": "Configure d'abord ton itinéraire",
+      "message": "Choisis ton parcours et la durée pour préparer tes nuits.",
       "action": "CONFIGURER L'ITINÉRAIRE"
     }
   },
@@ -2101,7 +2101,7 @@
     },
     "empty": {
       "title": "Risque incendie indisponible",
-      "message": "Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessayez une fois connecté."
+      "message": "Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessaie une fois connecté."
     },
     "a11y": {
       "call": "Appeler $label au $number",
@@ -2124,7 +2124,7 @@
     "stageHeader": "Étape $n",
     "stageBadge": "Étape $n",
     "gapShort": "Dernier ravitaillement avant $n étapes sans commerce",
-    "gapLong": "Dernier ravitaillement avant $n étapes sans commerce. Prévoyez vos réserves !",
+    "gapLong": "Dernier ravitaillement avant $n étapes sans commerce. Prévois tes réserves !",
     "sectionInfo": "Informations",
     "sectionProducts": "Produits disponibles",
     "fieldType": "Type",
@@ -2182,8 +2182,8 @@
       "footer": "Planifié avec $name"
     },
     "empty": {
-      "title": "Configurez d'abord votre itinéraire",
-      "message": "Choisissez votre parcours et la durée pour voir le résumé de votre plan.",
+      "title": "Configure d'abord ton itinéraire",
+      "message": "Choisis ton parcours et la durée pour voir le résumé de ton plan.",
       "action": "CONFIGURER L'ITINÉRAIRE"
     },
     "a11y": {
@@ -2195,7 +2195,7 @@
   "import": {
     "title": "Importer un GPX",
     "headerTitle": "Importer un fichier GPX",
-    "headerBody": "Importez une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer votre récapitulatif.",
+    "headerBody": "Importe une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer ton récapitulatif.",
     "pickButton": "CHOISIR UN FICHIER GPX",
     "traceSection": "Trace importée",
     "statsSection": "Statistiques",
@@ -2219,7 +2219,7 @@
     "errorParsing": "Le fichier GPX n'a pas pu être lu.",
     "validateButton": "VALIDER L'IMPORT",
     "confirmTitle": "Valider l'import ?",
-    "confirmBody": "Cette trace sera importée comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes détectées\n- Direction : {direction}",
+    "confirmBody": "Cette trace sera importée comme ton parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes détectées\n- Direction : {direction}",
     "cancel": "Annuler",
     "validate": "Valider",
     "importedSnack": "Trace GPX importée !"
@@ -2230,9 +2230,9 @@
     "sectionPrepared": "Préparés",
     "sectionCompleted": "Terminés",
     "emptyTitle": "Aucun trek pour le moment",
-    "empty": "Aucun trek pour le moment. Découvrez un sentier pour commencer.",
+    "empty": "Aucun trek pour le moment. Découvre un sentier pour commencer.",
     "discoverTitle": "Découvrir des sentiers",
-    "discoverSubtitle": "Parcourez le catalogue",
+    "discoverSubtitle": "Parcours le catalogue",
     "accountTitle": "Mon compte",
     "accountSubtitle": "Profil et réglages",
     "badge": {
@@ -2247,31 +2247,31 @@
       "openTrek": "Ouvrir le trek $nom"
     },
     "settingsSubtitle": "Langue, unités, thème",
-    "emptyCatalogueOuDemo": "Vous n'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un, ou essayez la démo en tête de la liste.",
-    "emptyCatalogueSeul": "Vous n'avez pas encore de sentier. Ouvrez le catalogue pour en choisir un."
+    "emptyCatalogueOuDemo": "Tu n'as pas encore de sentier. Ouvre le catalogue pour en choisir un, ou essaie la démo en tête de la liste.",
+    "emptyCatalogueSeul": "Tu n'as pas encore de sentier. Ouvre le catalogue pour en choisir un."
   },
   "trekState": {
     "abandonDialog": {
       "title": "Un trek est déjà en cours",
-      "message": "Vous avez une randonnée en cours. Terminez-la ou abandonnez-la avant d'en démarrer une autre.",
+      "message": "Tu as une randonnée en cours. Termine-la ou abandonne-la avant d'en démarrer une autre.",
       "finish": "Terminer",
       "abandon": "Abandonner",
       "cancel": "Annuler"
     },
     "resumeOrphanDialog": {
-      "title": "Reprendre votre randonnée ?",
-      "message": "Une randonnée était en cours lors de la dernière fermeture de l'application. Voulez-vous la reprendre ou l'abandonner ?",
+      "title": "Reprendre ta randonnée ?",
+      "message": "Une randonnée était en cours lors de la dernière fermeture de l'application. Veux-tu la reprendre ou l'abandonner ?",
       "resume": "Reprendre",
       "abandon": "Abandonner"
     }
   },
   "hikerProfile": {
     "title": "Fiche d'info",
-    "privacyBanner": "Votre morphologie est une donnée sensible. Elle reste sur votre appareil (et une sauvegarde chiffrée, sans votre nom) pour calculer votre faisabilité.",
+    "privacyBanner": "Ta morphologie est une donnée sensible. Elle reste sur ton appareil (et une sauvegarde chiffrée, sans ton nom) pour calculer ta faisabilité.",
     "fieldAge": "Âge",
     "hintAge": "En années",
     "errorAge": "Âge invalide (18 à 120 ans)",
-    "ageUsage": "À quoi sert votre âge : il fixe la distance de référence de votre test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d'autre, et rien n'en sort de votre téléphone.",
+    "ageUsage": "À quoi sert ton âge : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d'autre, et rien n'en sort de ton téléphone.",
     "fieldHeight": "Taille",
     "hintHeight": "En centimètres",
     "errorHeight": "Taille invalide (60 à 255 cm)",
@@ -2279,9 +2279,9 @@
     "hintWeight": "En kilogrammes",
     "errorWeight": "Poids invalide (25 à 200 kg)",
     "errorCountry": "Code pays invalide (ex. FR)",
-    "errorEmpty": "Fiche vide : renseignez au moins l'âge, la taille ou le poids.",
-    "errorSaveFailed": "La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessayez.",
-    "errorConsentRequired": "Sans votre accord, rien n'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d'être effacé de cet appareil. Cochez l'autorisation ci-dessus, puis enregistrez.",
+    "errorEmpty": "Fiche vide : renseigne au moins l'âge, la taille ou le poids.",
+    "errorSaveFailed": "La fiche n’a pas pu être enregistrée. Rien n’a été modifié : réessaie.",
+    "errorConsentRequired": "Sans ton accord, rien n'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d'être effacé de cet appareil. Coche l'autorisation ci-dessus, puis enregistre.",
     "fieldSex": "Sexe (optionnel)",
     "sexFemale": "Femme",
     "sexMale": "Homme",
@@ -2293,21 +2293,21 @@
     "countryNoResult": "Aucun pays ne correspond",
     "hintCountry": "Code (ex. FR)",
     "consentTitle": "Données de morphologie (article 9 RGPD)",
-    "consentBody": "Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.",
+    "consentBody": "Âge, taille et poids sont des données de santé. Elles restent sur ton appareil et une sauvegarde sans ton nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.",
     "consentToggle": "J'autorise l'usage de ma morphologie pour la faisabilité",
     "save": "Enregistrer",
     "saved": "Fiche enregistrée",
-    "morphoNotPrefilledHint": "Rien n'est pré-rempli : renseignez vos vraies données, c'est pour votre sécurité.",
+    "morphoNotPrefilledHint": "Rien n'est pré-rempli : renseigne tes vraies données, c'est pour ta sécurité.",
     "seniorReminder": "À partir de 65 ans, une consultation médicale est conseillée avant un trek exigeant."
   },
   "walkTest": {
     "title": "Test de marche 6 minutes",
-    "intro": "Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre âge et sexe.",
-    "safetyWarning": "Effort à éviter en cas de souci cardiaque non vérifié. Arrêtez-vous en cas de gêne.",
+    "intro": "Marche le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de ton âge et sexe.",
+    "safetyWarning": "Effort à éviter en cas de souci cardiaque non vérifié. Arrête-toi en cas de gêne.",
     "start": "Démarrer le test",
     "stop": "Arrêter",
     "cancel": "Annuler",
-    "countdown": "Préparez-vous...",
+    "countdown": "Prépare-toi...",
     "running": "En cours",
     "liveDistance": "Distance",
     "timeLeft": "Temps restant",
@@ -2318,11 +2318,11 @@
     "resultDate": "Réalisé le $date",
     "doneAgain": "Refaire le test",
     "gpsNeeded": "Le GPS est nécessaire pour mesurer la distance.",
-    "gpsDenied": "Autorisez la localisation pour lancer le test.",
+    "gpsDenied": "Autorise la localisation pour lancer le test.",
     "monthlyReminderOn": "Rappel mensuel activé",
-    "monthlyReminderBody": "Un rappel de test vous sera proposé chaque mois pour suivre votre forme.",
+    "monthlyReminderBody": "Un rappel de test te sera proposé chaque mois pour suivre ta forme.",
     "notDoneYet": "Test non réalisé",
-    "fallbackNotice": "En attendant le test, votre niveau est estimé à partir de votre questionnaire.",
+    "fallbackNotice": "En attendant le test, ton niveau est estimé à partir de ton questionnaire.",
     "levels": {
       "low": "Faible",
       "moderate": "Moyen",
@@ -2334,8 +2334,8 @@
     "gpsUnavailable": "La position n'est pas disponible sur cet appareil : le test ne peut pas mesurer la distance."
   },
   "pastHikes": {
-    "title": "Vos 5 dernières randos",
-    "intro": "Ajoutez jusqu'à 5 randos notables. On en déduit votre niveau réel (rythme, endurance, habitude du dénivelé) plutôt qu'une étiquette.",
+    "title": "Tes 5 dernières randos",
+    "intro": "Ajoute jusqu'à 5 randos notables. On en déduit ton niveau réel (rythme, endurance, habitude du dénivelé) plutôt qu'une étiquette.",
     "addHike": "Ajouter une rando",
     "empty": "Aucune rando saisie pour l'instant.",
     "fieldDate": "Date",
@@ -2347,7 +2347,7 @@
     "errorHours": "Durée invalide (0 à 24 h)",
     "errorElevation": "Dénivelé invalide (0 à 5000 m)",
     "errorDistance": "Distance invalide (0 à 100 km)",
-    "errorEffort": "Renseignez au moins le dénivelé ou la distance",
+    "errorEffort": "Renseigne au moins le dénivelé ou la distance",
     "perDay": "par jour",
     "editHike": "Modifier la rando",
     "deleteHike": "Supprimer",
@@ -2376,42 +2376,42 @@
   },
   "sos": {
     "title": "Appeler les secours ?",
-    "body": "Vous êtes sur le point d'appeler le 112 (urgences européennes).",
-    "positionTitle": "Votre position actuelle",
+    "body": "Tu es sur le point d'appeler le 112 (urgences européennes).",
+    "positionTitle": "Ta position actuelle",
     "positionUnavailable": "Position GPS indisponible",
     "gpsAcquiring": "Acquisition GPS…",
     "ageNow": "Position à l'instant",
     "ageMinutes": "Position il y a $minutes min",
     "ageHours": "Position il y a $hours h $minutes",
-    "estimated": "Estimée sur le tracé d'après vos pas",
+    "estimated": "Estimée sur le tracé d'après tes pas",
     "freshFailed": "Pas de position plus récente en $seconds s : la dernière connue reste affichée.",
-    "unavailableHelp": "Appelez quand même le 112 : donnez le dernier lieu passé (refuge, col, balisage) et restez où vous êtes si vous le pouvez.",
+    "unavailableHelp": "Appelle quand même le 112 : donne le dernier lieu passé (refuge, col, balisage) et reste où tu es si tu le peux.",
     "positionLine": "Position : $lat, $lng  -  Alt. $alt m",
     "noContacts": "Aucun contact configuré",
     "callContact": "Appeler $name",
     "altitudeUnavailable": "Altitude : indisponible",
-    "communicate": "Communiquez ces coordonnées aux secours.",
+    "communicate": "Communique ces coordonnées aux secours.",
     "cancel": "Annuler",
     "call": "Appeler 112",
     "medicalId": {
       "action": "Fiche médicale du téléphone",
-      "hint": "Affichez vos infos vitales aux secours, même écran verrouillé.",
-      "unavailable": "Ouvrez la fiche médicale dans les réglages Santé de votre téléphone."
+      "hint": "Affiche tes infos vitales aux secours, même écran verrouillé.",
+      "unavailable": "Ouvre la fiche médicale dans les réglages Santé de ton téléphone."
     },
-    "cannotCall": "Impossible de lancer l'appel depuis cet appareil. Composez le $number."
+    "cannotCall": "Impossible de lancer l'appel depuis cet appareil. Compose le $number."
   },
   "recovery": {
     "section": "Compte et reconnexion",
     "sectionDesc": "Voir mon code de reconnexion",
     "title": "Mon code de reconnexion",
-    "intro": "Ce code ouvre votre coffre (pseudonyme, avatar et solde d'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe. Votre fiche médicale, elle, n'y est PAS : elle ne quitte jamais ce téléphone.",
-    "codeLabel": "Votre code",
+    "intro": "Ce code ouvre ton coffre (pseudonyme, avatar et solde d'étapes) sur un autre téléphone. Note-le et garde-le en lieu sûr : il fonctionne comme un mot de passe. Ta fiche médicale, elle, n'y est PAS : elle ne quitte jamais ce téléphone.",
+    "codeLabel": "Ton code",
     "copy": "Copier le code",
     "copied": "Code copié",
-    "warning": "Personne d'autre ne peut lire votre coffre, pas même nous. Si vous perdez ce code, vos données seront définitivement irrécupérables.",
+    "warning": "Personne d'autre ne peut lire ton coffre, pas même nous. Si tu perds ce code, tes données seront définitivement irrécupérables.",
     "error": "Impossible de générer le code pour le moment.",
     "noVaultTitle": "Pas encore de coffre à rouvrir",
-    "noVaultBody": "La sauvegarde en ligne n'est pas activée sur cette installation : vos données restent sur ce téléphone. Il n'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l'instant."
+    "noVaultBody": "La sauvegarde en ligne n'est pas activée sur cette installation : tes données restent sur ce téléphone. Il n'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l'instant."
   },
   "common": {
     "cannotLoadStages": "Impossible de charger les étapes",

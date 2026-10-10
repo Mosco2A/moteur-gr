@@ -219,7 +219,9 @@ void main() {
       // Compteur "0 source(s)".
       expect(find.textContaining('0 source'), findsOneWidget);
       // Message d'avertissement (parite GR20 : prevoir de l'eau).
-      expect(find.textContaining('Prévoyez au moins 3 L'), findsOneWidget);
+      // TACHE 757 : le conseil tutoie desormais le randonneur
+      // (« Prévoyez » -> « Prévois »), decision de Christophe du 09/10 15:02.
+      expect(find.textContaining('Prévois au moins 3 L'), findsOneWidget);
     });
   });
 
@@ -329,8 +331,9 @@ void main() {
       expect(find.text('Conseils'), findsOneWidget);
       // Etape 'hard' -> conseil "etape technique".
       expect(find.textContaining('Étape technique'), findsOneWidget);
-      // 2 points d'eau -> conseil "remplissez vos gourdes".
-      expect(find.textContaining('Remplissez vos gourdes'), findsOneWidget);
+      // 2 points d'eau -> conseil "remplis tes gourdes".
+      // TACHE 757 : tutoiement (« Remplissez vos » -> « Remplis tes »).
+      expect(find.textContaining('Remplis tes gourdes'), findsOneWidget);
     });
 
     testWidgets('conseil eau adapte quand peu de sources', (tester) async {
