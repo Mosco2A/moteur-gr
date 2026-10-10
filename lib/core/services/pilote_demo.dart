@@ -59,7 +59,35 @@ import 'session_demo.dart';
 /// Le sentier selectionne avant la demo est note dans l'etat de demo pour etre
 /// restaure a la sortie (bug 19). C'est la seule chose que l'entree memorise :
 /// il n'y a rien d'autre a sauvegarder, parce que rien ne sera ecrit.
+///
+/// ON N'ENTRE PAS DEUX FOIS DANS LA MEME DEMO (tache 796), et ce n'est pas une
+/// precaution de style : sans cette garde, un POUCE QUI APPUIE DEUX FOIS rouvre
+/// le bug 19.
+///
+/// LE MECANISME. Ce geste lit « le sentier d'avant » dans l'etat
+/// COURANT, puis bascule sur le sentier de demo. Au second appui, l'etat
+/// courant EST deja le sentier de demo : la memoire du retour se remplit
+/// donc avec le sentier de la demo elle-meme. A la sortie, [quitterLaDemo]
+/// restaure
+/// fidelement ce qu'on lui a dit — et replace le randonneur DANS la demo. C'est
+/// mot pour mot le defaut que la tache 638 avait ferme (bug 19,
+/// DEM-260930-1028, « on est toujours en mode demo sans le savoir »), rouvert
+/// par un geste que tout le monde fait : appuyer deux fois parce qu'on n'a pas
+/// vu que le premier appui avait pris.
+///
+/// LA GARDE EST POSEE ICI, ET PAS SUR LE BOUTON. Les deux portes d'entree en
+/// demo — le bouton orange du catalogue et la relance depuis Mon compte —
+/// passent toutes les deux par cette fonction ([relancerLaDemo] en bas de
+/// fichier le dit deja). Une garde sur l'une des deux aurait laisse l'autre
+/// ouverte ; ici, elle les couvre ensemble, par construction.
+///
+/// `active` EST LA BONNE QUESTION. Pas un drapeau « en cours » a maintenir, pas
+/// une minuterie a regler : l'etat de demo DIT deja s'il est actif, et une
+/// seconde entree n'a de sens que si l'on n'y est pas. Entrer en demo
+/// quand on y est deja n'est pas une erreur a signaler — c'est un geste
+/// sans objet, et il ne fait donc rien.
 void entrerEnDemo(WidgetRef ref) {
+  if (ref.read(sessionDemoProvider).active) return;
   final sentierAvant = ref.read(selectedTrailIdProvider);
   ref.read(sessionDemoProvider.notifier).entrer(sentierAvant: sentierAvant);
   // On entre en demo AVANT de basculer de sentier : la barriere d'ecriture est

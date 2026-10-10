@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moteur_gr/core/config/mare_a_mare_centre_trail_config.dart';
 import 'package:moteur_gr/core/config/pyrenees_trail_config.dart';
-import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/config/trail_selection.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
@@ -89,11 +89,19 @@ void main() {
     tester,
   ) async {
     fenetreHaute(tester);
-    // Container partage : selection initiale sur le sentier de test, on lira
+    // Container partage : selection initiale sur le sentier par defaut, on lira
     // l'etat apres l'action UI.
+    //
+    // TACHE 793 — CE TEST DEMARRAIT SUR LE SENTIER FICTIF. Retire du catalogue,
+    // celui-ci n'a plus de carte a l'ecran et n'est plus resoluble : la
+    // selection serait retombee sur le defaut et l'assertion d'etat initial
+    // aurait rougi. On part donc du sentier REEL par defaut, et le geste teste
+    // — entrer dans un AUTRE sentier que l'actif — est exactement le meme.
     final container = ProviderContainer(
       overrides: [
-        selectedTrailIdProvider.overrideWith((ref) => testTrailConfig.id),
+        selectedTrailIdProvider.overrideWith(
+          (ref) => mareAMareCentreTrailConfig.id,
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -109,7 +117,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // Etat initial : sentier de test actif, on est bien sur le catalogue.
-    expect(container.read(trailConfigProvider).id, testTrailConfig.id);
+    expect(
+      container.read(trailConfigProvider).id,
+      mareAMareCentreTrailConfig.id,
+    );
     expect(find.byKey(const ValueKey('trail-catalog-list')), findsOneWidget);
 
     // Entrer dans le sentier Pyrenees (autre que l'actif).

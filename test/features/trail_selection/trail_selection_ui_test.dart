@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moteur_gr/core/config/mare_a_mare_centre_trail_config.dart';
 import 'package:moteur_gr/core/config/pyrenees_trail_config.dart';
-import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/config/trail_selection.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
@@ -85,10 +85,19 @@ void main() {
   ) async {
     fenetreHaute(tester);
     // Sentier actif force sur le defaut du catalogue.
+    //
+    // TACHE 793 — IL ETAIT FORCE SUR LE SENTIER FICTIF, dont le commentaire
+    // disait deja « le defaut du catalogue » alors qu'il ne l'etait pas. Retire
+    // du catalogue, il n'a plus de ligne dans la liste : le badge « actif »
+    // n'aurait ete trouve nulle part. Les deux temoins sont desormais les deux
+    // sentiers REELS du catalogue, et l'opposition testee — l'actif porte le
+    // badge et aucun bouton, l'autre garde son bouton vivant — est intacte.
     await tester.pumpWidget(
       wrap(
         overrides: [
-          selectedTrailIdProvider.overrideWith((ref) => testTrailConfig.id),
+          selectedTrailIdProvider.overrideWith(
+            (ref) => mareAMareCentreTrailConfig.id,
+          ),
         ],
       ),
     );
@@ -96,7 +105,7 @@ void main() {
 
     // Badge « actif » sur le sentier courant, pas sur l'autre.
     expect(
-      find.byKey(ValueKey('trail-current-${testTrailConfig.id}')),
+      find.byKey(ValueKey('trail-current-${mareAMareCentreTrailConfig.id}')),
       findsOneWidget,
     );
     expect(
@@ -109,7 +118,7 @@ void main() {
     // etat deja dit par la pastille, double d une zone inerte dans l arbre que
     // le balayage « aucun geste mort » finissait par taper.
     expect(
-      find.byKey(ValueKey('trail-select-${testTrailConfig.id}')),
+      find.byKey(ValueKey('trail-select-${mareAMareCentreTrailConfig.id}')),
       findsNothing,
       reason: 'rien a changer sur le sentier deja actif',
     );
@@ -126,7 +135,9 @@ void main() {
     // Container partage pour lire l'etat apres l'action de l'UI.
     final container = ProviderContainer(
       overrides: [
-        selectedTrailIdProvider.overrideWith((ref) => testTrailConfig.id),
+        selectedTrailIdProvider.overrideWith(
+          (ref) => mareAMareCentreTrailConfig.id,
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -140,7 +151,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // Etat initial : sentier de test actif.
-    expect(container.read(trailConfigProvider).id, testTrailConfig.id);
+    expect(
+      container.read(trailConfigProvider).id,
+      mareAMareCentreTrailConfig.id,
+    );
 
     // Bascule vers le sentier Pyrenees (1er hors Corse).
     await tester.tap(
