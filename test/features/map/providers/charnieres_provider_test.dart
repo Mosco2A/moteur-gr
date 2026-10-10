@@ -13,9 +13,15 @@ import 'package:moteur_gr/features/map/providers/charnieres_provider.dart';
 import '../../../comportement/traces_fabriquees_671.dart';
 
 /// LOT 671-04 — LES CHARNIERES DU SENTIER ENRICHIES PAR LES JONCTIONS (fiche
-/// E2 (5)) : chaque jonction projetee SEULE sur tout le trace (la fenetre de
-/// 50 segments de project ratait un repere eloigne), ignoree au-dela de 80 m
-/// du trace, et zero jonction — le cas d'aujourd'hui — sans effet.
+/// E2 (5)) : chaque jonction projetee SEULE sur tout le trace — des reperes
+/// epars et sans ordre n'ont pas d'index a s'enchainer — ignoree au-dela de
+/// 80 m du trace, et zero jonction — le cas d'aujourd'hui — sans effet.
+///
+/// LA FENETRE DE 50 SEGMENTS DE project RATAIT UN REPERE ELOIGNE, et c'est ce
+/// que ce fichier mesurait. La tache 780 a ferme ce piege a la source : la
+/// projection se replie sur le trace entier des que la fenetre a perdu la
+/// position. Le temoin exige donc maintenant la BONNE abscisse la ou il
+/// constatait la mauvaise.
 void main() {
   group('l enrichissement par les reperes de type jonction', () {
     // 300 segments de 10 m vers l'est, puis 300 vers le nord.
@@ -29,20 +35,39 @@ void main() {
       // Les metres du plan local et ceux de Haversine different de 0,1 %.
       expect(c.first.abscisseM, closeTo(200, 1));
       expect(c.last.abscisseM, closeTo(5500, 10));
-      // Le piege mesure : en passant l'index du precedent, la fenetre de 50
-      // segments de project ne va pas jusqu'au second repere.
+      // LE PIEGE QUI JUSTIFIAIT CE CHOIX EST DESORMAIS FERME A LA SOURCE
+      // (tache 780). Il etait mesure ici : en passant l'index du precedent, la
+      // fenetre de 50 segments de project ne montait pas jusqu'au second
+      // repere et rendait une abscisse de moins de 1 000 m au lieu de 5 500.
+      // [TrackProjector.project] se replie maintenant sur le trace entier des
+      // que la fenetre a perdu la position, donc elle rend LA MEME CHOSE que
+      // le scan complet — ce temoin le verifie, et c'est plus fort que
+      // l'ancien : il exige la bonne reponse au lieu de constater la mauvaise.
+      //
+      // PROJETER CHAQUE JONCTION SEULE RESTE LE BON GESTE : les reperes sont
+      // epars et sans ordre, leur enchainer un index n'a aucun sens. Ce n'est
+      // plus la seule chose qui empeche de rater un repere, c'est tout.
       final premier = TrackProjector.project(
         userLat: pres.lat,
         userLng: pres.lng,
         trackPoints: trace,
       );
-      final glisse = TrackProjector.project(
+      final surToutLeTrace = TrackProjector.project(
+        userLat: loin.lat,
+        userLng: loin.lng,
+        trackPoints: trace,
+      );
+      final avecLIndexDuPrecedent = TrackProjector.project(
         userLat: loin.lat,
         userLng: loin.lng,
         trackPoints: trace,
         lastKnownIndex: premier.trackIndexPosition,
       );
-      expect(glisse.distanceFromStartM, lessThan(1000));
+      expect(
+        avecLIndexDuPrecedent.distanceFromStartM,
+        closeTo(surToutLeTrace.distanceFromStartM, 1),
+      );
+      expect(avecLIndexDuPrecedent.distanceFromStartM, closeTo(5500, 10));
     });
 
     test('une jonction a plus de 80 m du trace est IGNOREE', () {
