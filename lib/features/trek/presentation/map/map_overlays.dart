@@ -24,6 +24,7 @@ import '../../../map/map_facade.dart'
         trackPositionProvider;
 import '../../data/calibration_du_pas.dart';
 import '../../providers/tracking_providers.dart';
+import 'centre_de_la_moitie_haute.dart';
 import 'controls/map_controls.dart';
 import '../../../../core/branding/stepways_icons.dart';
 import 'map_controller.dart';
@@ -139,9 +140,40 @@ class _MapRightControls extends StatelessWidget {
             final posAsync = ref.read(currentPositionProvider);
             final pos = posAsync.value;
             if (pos != null) {
+              // LE MARCHEUR VA AU CENTRE VISIBLE, PAS AU CENTRE
+              // GEOMETRIQUE (tache 790).
+              //
+              // RETOUR DE CHRISTOPHE DU 10/10 16:17 : « On a toujours ce
+              // point qui n est pas centre quand on centre la carte ». Et
+              // la cause, de sa main une minute plus tard : « Il est
+              // centré sur la carte mais comme est cachée par le panneau
+              // de stat on croit qu'elle est en bas. Il faut la centrer
+              // sur les 50% de l'écran du haut ».
+              //
+              // CE QUI SE PASSAIT. `move` sans decalage pose le point au
+              // centre GEOMETRIQUE du widget de carte. Or la moitie basse
+              // de ce widget est recouverte par le panneau de chiffres et
+              // la rangee de boutons : le marcheur y arrivait DERRIERE
+              // eux. La recette 778 l'avait releve dans les memes termes —
+              // « il atterrit en bas de la zone visible, a demi cache par
+              // le panneau d'info ». Le bouton recentrait juste, et
+              // paraissait faux.
+              //
+              // CE QUI CHANGE : le point vise tombe au quart de la hauteur
+              // depuis le haut, donc au milieu de la moitie haute.
+              // Le calcul et son signe sont dans
+              // [decalageVersLeCentreHaut], avec la raison pour laquelle le
+              // decalage est en PIXELS et jamais en degres.
+              //
+              // CE QUI NE CHANGE PAS : la VALEUR visee. Le lot 772 a
+              // corrige la position que ce bouton recevait — le robinet
+              // qui l'effacait pendant un rechargement. Ici on ne touche
+              // qu'au PLACEMENT.
+              final camera = mapController.camera;
               mapController.move(
                 LatLng(pos.latitude, pos.longitude),
-                mapController.camera.zoom,
+                camera.zoom,
+                offset: decalageVersLeCentreHaut(camera.nonRotatedSize),
               );
               return;
             }
