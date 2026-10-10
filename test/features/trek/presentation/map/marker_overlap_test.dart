@@ -315,19 +315,36 @@ void main() {
       final enVueLarge = MarkerOverlap.groupByLocation(reperes, zoom: 11);
       expect(enVueLarge.length, lessThan(reperes.length));
 
-      // Au plus fin, chaque lieu retrouve son propre repere — SAUF UN
-      // COUPLE, et c'est la preuve que le critere est bien geographique :
-      // le depart de l'etape 3 et le « Gite d etape de Cozzano » sont au MEME
-      // point (0,0 m). Aucun zoom ne peut separer un seul et meme lieu, et
-      // c'est precisement pour ce cas qu'un decalage de quelques pixels
-      // n'aurait rien regle.
+      // TACHE 761 — LE COUPLE SUPERPOSE A DISPARU, ET IL FAUT DIRE POURQUOI.
+      // Jusqu ici le depart de l etape 3 et le « Gite d etape de Cozzano »
+      // etaient au MEME point, a 0,0 m : les deux avaient ete poses a la main
+      // sur la MEME coordonnee inventee. Les coupures d etape sont desormais
+      // ancrees sur la trace relevee dans OpenStreetMap, donc sur le vrai
+      // Cozzano (41,9352 / 9,1546) — a 3,6 km de la coordonnee que le lieu
+      // porte encore.
+      //
+      // CE QUE CA REVELE EST UNE DETTE, PAS UN DETAIL : les lieux n ont PAS
+      // ete releves, eux. Mesure sur les 20 POI livres, 18 sont a plus de
+      // 500 m de la trace reelle, l ecart median vaut 1 596 m et le pire
+      // 7 129 m — ils flottent a cote du chemin. Les replacer demande de
+      // relever 20 POI et 18 hebergements un par un : c est le lot suivant, et
+      // il n est pas fait ici, parce qu inventer une coordonnee de terrain
+      // serait pire que de nommer le probleme.
+      //
+      // Ce test continue donc de verifier qu au plus fin rien ne se perd et
+      // rien ne se duplique ; il n affirme plus une coincidence qui n a plus
+      // lieu d etre. La preuve que le critere est bien geographique vit
+      // desormais dans les cas fabriques du meme fichier, ou deux reperes sont
+      // poses exactement au meme point.
       final auPlusFin = MarkerOverlap.groupByLocation(reperes, zoom: 22);
-      expect(auPlusFin.length, reperes.length - 1);
-      final encoreFusionne = auPlusFin.singleWhere((g) => g.isMerged);
-      expect(encoreFusionne.anchor.data, 'etape 3');
+      expect(auPlusFin.length, reperes.length);
       expect(
-        encoreFusionne.members.map((m) => m.data),
-        contains('shelter Gite d etape de Cozzano'),
+        auPlusFin.where((g) => g.isMerged),
+        isEmpty,
+        reason:
+            'au zoom le plus fin, plus aucun couple ne partage un point : les '
+            'coupures d etape sont sur la trace relevee, les lieux sont restes '
+            'ou ils etaient',
       );
     });
   });

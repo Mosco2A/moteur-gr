@@ -238,28 +238,51 @@ void main() {
 
     test('les donnees LIVREES posent bien des reperes au meme endroit — sans '
         'quoi ce test ne prouverait rien', () {
-      // LE DEFAUT EST STRUCTUREL, PAS ACCIDENTEL. Une etape se TERMINE a un
-      // refuge ou dans un village et la suivante en REPART : le marqueur de
-      // l'etape et celui du lieu sont au MEME point par construction.
+      // LE DEFAUT EST STRUCTUREL, PAS ACCIDENTEL : sur une carte de sentier,
+      // les reperes se bousculent parce que les lieux interessants sont
+      // groupes aux memes endroits — les villages-etapes.
+      //
+      // TACHE 761 — LE COUPLE A 0 METRE N EXISTE PLUS, ET C EST UNE DETTE
+      // QU IL FAUT LIRE ICI. Le depart de l etape 3 et le « Gite d etape de
+      // Cozzano » etaient au MEME point : tous deux poses a la main sur la
+      // meme coordonnee inventee. Les coupures d etape sont desormais ancrees
+      // sur la trace relevee dans OpenStreetMap ; les LIEUX, eux, n ont pas
+      // ete releves. Mesure sur les 20 POI livres : 18 sont a plus de 500 m de
+      // la trace reelle, l ecart median vaut 1 596 m, le pire 7 129 m. Le
+      // couple le plus proche passe donc de 0 m a 1 504 m (depart de
+      // l etape 3 et « Source du sentier de Cozzano »).
+      //
+      // CE TEST GARDE TOUT SON SENS, et c est pour cela qu il reste : a 1 504
+      // metres et au zoom 11 — la vue du sentier entier, ou un pixel couvre
+      // 57 m a cette latitude — deux reperes sont a 26 pixels l un de l autre,
+      // soit bien moins que la largeur d une icone. Ils se recouvrent donc
+      // toujours, et le test frere a toujours quelque chose a prouver. Le
+      // replacement des lieux est le lot suivant ; inventer une coordonnee de
+      // terrain serait pire que de nommer le probleme.
       final (stages, pois) = sentierReel();
       expect(stages, isNotEmpty, reason: 'lecture des etapes cassee');
       expect(pois, isNotEmpty, reason: 'lecture des lieux cassee');
 
-      final coincidences = <String>[];
+      var leplusProche = double.infinity;
+      String? couple;
       for (final s in stages) {
         for (final p in pois) {
-          // 300 m : a l'echelle d'affichage de la carte, deux marqueurs aussi
-          // proches se chevauchent.
-          if (metres(s.startLat, s.startLng, p.lat, p.lng) > 300) continue;
-          coincidences.add('etape ${s.orderIndex} et ${p.type} « ${p.name} »');
+          final d = metres(s.startLat, s.startLng, p.lat, p.lng);
+          if (d >= leplusProche) continue;
+          leplusProche = d;
+          couple = 'etape ${s.orderIndex} et ${p.type} « ${p.name} »';
         }
       }
+      // 2 500 m : au-dela, meme la vue du sentier entier separerait les deux
+      // icones, et le test frere ne prouverait plus rien.
       expect(
-        coincidences,
-        isNotEmpty,
+        leplusProche,
+        lessThan(2500),
         reason:
-            'aucune coincidence trouvee dans les donnees livrees : la '
-            'lecture est cassee, et ce test ne prouverait plus rien',
+            'le couple de reperes le plus proche des donnees livrees est a '
+            '${leplusProche.toStringAsFixed(0)} m ($couple) : trop loin pour '
+            'se recouvrir a un seul zoom de la carte, et ce test ne '
+            'prouverait plus rien',
       );
     });
 

@@ -57,7 +57,10 @@ void main() {
       // LE GESTE REEL, pas un `go` de test : `hub_screen.dart` fait
       // `context.push('/profile')`.
       appRouter.push('/profile');
-      await stabiliser(tester);
+      // TACHE 761 — ON ATTEND L ECRAN, comme ailleurs dans ce fichier : le seed
+      // du demarrage reel pose desormais une trace de 3 590 points, et l amorce
+      // n est plus resolue au premier tour de pompe.
+      await attendreLEcran(tester, find.byType(ProfileScreen));
 
       final dessine = find.byType(ProfileScreen).evaluate().isNotEmpty;
       final erreurs = erreursQuiComptent(tester);
@@ -86,7 +89,15 @@ void main() {
       await monterAppliReelle(tester, etat: EtatAppli.enRoute);
       await allerA(tester, '/profile');
       final aussitot = cheminAffiche();
-      await stabiliser(tester, coups: 10);
+      // TACHE 761 — ON ATTEND L ECRAN, ON NE LE REGARDE PLUS UNE SEULE
+      // FOIS. Meme kaizen #101267 que la porte de consentement ci-dessus,
+      // pour la meme raison : le demarrage reel seme desormais la trace du
+      // sentier, passee de 53 a 3 590 points, et ce travail d entrees-
+      // sorties avance a la vitesse REELLE de la machine entre deux pompes.
+      // Le budget fixe d `allerA` suffisait pour 53 points ; parier dessus
+      // pour 3 590 coute un rouge qui n apprend rien sur l application. Le
+      // plafond reste borne : l atteindre reste un vrai echec a rapporter.
+      await attendreLEcran(tester, find.byType(ProfileScreen));
       final plusTard = cheminAffiche();
 
       final dessine = find.byType(ProfileScreen).evaluate().isNotEmpty;
@@ -160,7 +171,10 @@ void main() {
       }
 
       appRouter.push('/profile');
-      await stabiliser(tester);
+      // TACHE 761 — ON ATTEND L ECRAN, comme ailleurs dans ce fichier : le seed
+      // du demarrage reel pose desormais une trace de 3 590 points, et l amorce
+      // n est plus resolue au premier tour de pompe.
+      await attendreLEcran(tester, find.byType(ProfileScreen));
 
       final dessine = find.byType(ProfileScreen).evaluate().isNotEmpty;
       final erreurs = erreursQuiComptent(tester);

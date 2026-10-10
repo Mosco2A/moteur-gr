@@ -127,6 +127,7 @@ class Publicateur {
         chemin: precedente.filePath,
         empreinte: precedente.hash,
         octets: precedente.fileSize,
+        precedente: precedente,
       );
       final ficheChangee = entree != precedente;
       if (ficheChangee) {
@@ -175,6 +176,7 @@ class Publicateur {
       chemin: chemin,
       empreinte: empreinte,
       octets: octets.length,
+      precedente: precedente,
     );
     _ecrireLaListe(list);
 
@@ -210,6 +212,7 @@ class Publicateur {
       chemin: precedente?.filePath ?? '',
       empreinte: precedente?.hash ?? '',
       octets: precedente?.fileSize ?? 0,
+      precedente: precedente,
     );
     list[source.trailId] = entree;
     _ecrireLaListe(list);
@@ -398,12 +401,32 @@ class Publicateur {
   /// publie parce qu il est lisible et que le retirer de la liste depasserait
   /// « seul le type de la comparaison change » ; mais il ne peut plus diverger, et
   /// [verifier] refuse un depot ou il l aurait fait.
+  /// L ENTREE DE LISTE D UN SENTIER, ET ELLE NE DOIT RIEN PERDRE EN CHEMIN.
+  ///
+  /// [precedente] EST L ENTREE QUE CET APPEL REMPLACE, ET C EST TOUT L OBJET DU
+  /// PARAMETRE (tache 761). Trois champs de l entree ne viennent PAS de la
+  /// source du sentier : `tilesPath`, `tilesSize` et `tilesHash`, l adresse de
+  /// la carte hors ligne, que `tool/cartes_hors_ligne/publier.py` ecrit
+  /// directement dans la liste. Les reconstruire depuis la seule source les
+  /// laissait donc nuls, et `_ecrireLaListe` les faisait disparaitre :
+  /// republier les DONNEES d un sentier effacait l adresse de sa CARTE, sans
+  /// un mot.
+  ///
+  /// C EST EXACTEMENT LE PIEGE QUE L INTEGRATION 647 A FERME DANS L AUTRE
+  /// OUTIL, et il etait reste ouvert dans celui-ci. La garde
+  /// `pousser_ne_perd_pas_les_cartes_647_test` tient le troisieme maillon — le
+  /// manifeste declare vraiment la carte du Mare a Mare Centre — et c est elle
+  /// qui a rougi quand la tache 761 a republie le sentier pour y poser la vraie
+  /// trace. Deux outils qui ecrivent le meme document doivent chacun preserver
+  /// ce que l autre y pose ; sinon le dernier a parler gagne, et personne ne
+  /// l apprend avant que la carte ne manque sur un telephone.
   TrailManifestEntry _entree(
     SourceDeSentier source, {
     required HorodatageServeur revision,
     required String chemin,
     required String empreinte,
     required int octets,
+    TrailManifestEntry? precedente,
   }) {
     return TrailManifestEntry(
       trailId: source.trailId,
@@ -414,6 +437,9 @@ class Publicateur {
       status: source.statut,
       lastUpdated: revision.iso8601,
       fiche: source.fiche,
+      tilesPath: precedente?.tilesPath,
+      tilesSize: precedente?.tilesSize,
+      tilesHash: precedente?.tilesHash,
     );
   }
 

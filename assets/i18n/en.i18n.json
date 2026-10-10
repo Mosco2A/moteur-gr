@@ -218,7 +218,8 @@
     "supplyDismiss": "Dismiss alert",
     "pinMergedTitle": "Several markers at the same place",
     "attribution": {
-      "licence": "Map data under ODbL licence — view the licence"
+      "licence": "Map data under ODbL licence — view the licence",
+      "traces": "Trail tracks surveyed in OpenStreetMap"
     }
   },
   "stage": {

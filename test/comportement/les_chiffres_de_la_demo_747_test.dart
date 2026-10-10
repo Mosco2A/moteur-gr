@@ -205,19 +205,34 @@ void main() {
       expect(changements, 7);
     });
 
-    test(
-      'A 63,0 KM — L ABSCISSE DE LA CAPTURE DE CHRISTOPHE — c est l etape 7 '
-      '« Bastelica », et non l etape 5 « Zicavo » que la barre affichait',
-      () {
-        final etapes = etapesDeDemo();
-        final jalons = jalonsDesEtapes(traceDeDemo(), etapes);
-        final jalon = jalonALAbscisse(jalons, 63000)!;
+    test('A 63,0 KM — L ABSCISSE DE LA CAPTURE DE CHRISTOPHE — c est l etape 5 '
+        '« Quasquara - Santa-Maria-Siche », et le rattachement vient de la '
+        'TRANCHE, pas d un plus-proche-voisin', () {
+      final etapes = etapesDeDemo();
+      final jalons = jalonsDesEtapes(traceDeDemo(), etapes);
+      final jalon = jalonALAbscisse(jalons, 63000)!;
 
-        expect(jalon.numero, 7);
-        final nom = etapes.firstWhere((e) => e.stageNumber == 7).name;
-        expect(nom, contains('Bastelica'));
-      },
-    );
+      // TACHE 761 — LA REPONSE A CHANGE PARCE QUE LA DONNEE ETAIT FAUSSE, PAS
+      // PARCE QUE LE CODE A REGRESSE. Au lot 747, la bonne reponse a 63 km
+      // etait l etape 7 « Bastelica » : non pas parce que le marcheur y
+      // etait, mais parce que les points de coupure n etaient PAS SUR LE
+      // CHEMIN. Bastelica est a 7,8 km de la trace reelle, et son abscisse
+      // tombait AVANT celle de Guitera : le bornage, force de garder des
+      // tranches croissantes, ecrasait les etapes 5 et 6 et laissait
+      // l etape 7 couvrir 25,4 km des 72,9. Avec la trace relevee dans
+      // OpenStreetMap, les huit coupures tombent sur le chemin ET dans
+      // l ordre (0 / 19,9 / 34,8 / 48,5 / 58,2 / 66,3 / 76,2 / 87,3 km) :
+      // 63,0 km tombe donc dans la cinquieme tranche, et c est la verite du
+      // terrain. Ce que le lot 747 a reellement ferme — une seule autorite,
+      // la tranche sur l abscisse — tient toujours, et c est cela que ce
+      // test verifie.
+      expect(jalon.numero, 5);
+      final nom = etapes.firstWhere((e) => e.stageNumber == 5).name;
+      expect(nom, contains('Quasquara'));
+      // L abscisse demandee est bien DANS la tranche rendue : c est
+      // l invariant, et il ne depend d aucun nom de village.
+      expect(jalon.contient(63000), isTrue);
+    });
 
     test('AU BOUT EXACT de la trace, c est la DERNIERE etape : le marcheur ne '
         'sort pas du sentier a l instant ou il le termine', () {
@@ -273,7 +288,13 @@ void main() {
         for (var d = 0.0; d <= longueur; d += 1000) {
           final c = ChiffresDuPerimetre(totalM: longueur, parcouruM: d);
           expect(c.parcouruM + c.restantM, closeTo(c.totalM, 0.000001));
-          expect(c.totalKm, closeTo(72.892, 0.01));
+          // TACHE 761 — 87,284 km et non 72,892 : la barre mesure toujours la
+          // LONGUEUR DE LA TRACE et jamais celle de la fiche, c est l invariant
+          // de ce test et il ne change pas. Ce qui change, c est la trace :
+          // 3 590 points releves dans OpenStreetMap au lieu de 53. Et comme la
+          // fiche annonce desormais 87,3 km, mesures sur cette meme trace, les
+          // deux chiffres ne se contredisent plus.
+          expect(c.totalKm, closeTo(87.284, 0.01));
         }
       },
     );
@@ -285,14 +306,18 @@ void main() {
         totalM: trace.last.distanceFromStart,
         parcouruM: 63000,
       );
-      // Ce que Christophe a vu : Total 84,0 / Parcouru 63,0 / restants 9,9.
-      // Ce que la barre dit maintenant : 72,9 / 63,0 / 9,9 — et 63 + 9,9 font
-      // bien 72,9.
-      expect(c.totalKm, closeTo(72.892, 0.01));
+      // Ce que Christophe a vu : Total 84,0 / Parcouru 63,0 / restants 9,9 —
+      // trois chiffres qui ne s additionnaient pas, parce que le total venait
+      // de la fiche et le parcouru de la trace.
+      // TACHE 761 — la barre dit maintenant 87,3 / 63,0 / 24,3, et les trois
+      // viennent de la MEME trace relevee : 63,0 + 24,3 font bien 87,3. Mieux,
+      // la fiche annonce elle aussi 87,3, mesures sur cette trace : il n y a
+      // plus deux chiffres pour un seul sentier.
+      expect(c.totalKm, closeTo(87.284, 0.01));
       expect(c.parcouruKm, closeTo(63.0, 0.01));
-      expect(c.restantKm, closeTo(9.892, 0.01));
+      expect(c.restantKm, closeTo(24.284, 0.01));
       expect(c.parcouruKm + c.restantKm, closeTo(c.totalKm, 0.000001));
-      expect((c.ratio * 100).round(), 86);
+      expect((c.ratio * 100).round(), 72);
     });
 
     test('une position aberrante ne produit ni parcouru negatif ni plus de '

@@ -2139,6 +2139,7 @@ class _Translations$map$attribution$es extends Translations$map$attribution$fr {
 
 	// Translations
 	@override String get licence => 'Datos cartograficos con licencia ODbL — ver la licencia';
+	@override String get traces => 'Trazados de los senderos recogidos en OpenStreetMap';
 }
 
 // Path: stage.difficulty
@@ -4405,6 +4406,7 @@ extension on TranslationsEs {
 			'map.supplyDismiss' => 'Ocultar el aviso',
 			'map.pinMergedTitle' => 'Varios puntos en el mismo lugar',
 			'map.attribution.licence' => 'Datos cartograficos con licencia ODbL — ver la licencia',
+			'map.attribution.traces' => 'Trazados de los senderos recogidos en OpenStreetMap',
 			'stage.distance' => 'Distancia',
 			'stage.elevation' => 'Desnivel',
 			'stage.elevationGain' => 'Desnivel positivo',
@@ -4724,9 +4726,9 @@ extension on TranslationsEs {
 			'checklist.ui.infoRequiredTitle' => 'Obligatorios',
 			'checklist.ui.infoRequiredBody' => 'Artículos con candado = reglamento (silbato, linterna, manta de supervivencia).',
 			'checklist.ui.infoGaugeTitle' => 'Indicador de peso',
-			'checklist.ui.infoGaugeBody' => 'Objetivo: mochila < 15% de tu peso. Verde = OK, Naranja = cuidado, Rojo = demasiado pesado.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoGaugeBody' => 'Objetivo: mochila < 15% de tu peso. Verde = OK, Naranja = cuidado, Rojo = demasiado pesado.',
 			'checklist.ui.infoAddTitle' => 'Añadir',
 			'checklist.ui.infoAddBody' => 'El botón + al final de cada categoría para tus propios artículos.',
 			'checklist.ui.infoValidateBody' => 'Valida cuando tu mochila esté lista — aparecerá una marca en el inicio.',
@@ -5238,9 +5240,9 @@ extension on TranslationsEs {
 			'cloud.statusActiveDesc' => 'Copia de seguridad y seguimiento en directo disponibles.',
 			'cloud.statusLocal' => 'Modo local (sin nube)',
 			'cloud.statusLocalDesc' => 'No se envía ningún dato en línea. Falta la configuración de la nube.',
-			'onboarding.skip' => 'Saltar',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.skip' => 'Saltar',
 			'onboarding.next' => 'Siguiente',
 			'onboarding.getStarted' => 'Empezar',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenido a ${appName}',
@@ -5752,9 +5754,9 @@ extension on TranslationsEs {
 			'recap.elevation' => '{meters} m de desnivel positivo',
 			'recap.duration' => '{days} días en total, marcha y descanso incluidos',
 			'recap.dates' => 'Del {start} al {end}',
-			'recap.viewDiploma' => 'Ver mi diploma',
 			_ => null,
 		} ?? switch (path) {
+			'recap.viewDiploma' => 'Ver mi diploma',
 			'recap.viewJournal' => 'Ver mi diario',
 			'recap.noData' => 'Aún no hay datos de ruta para mostrar.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m de desnivel negativo',

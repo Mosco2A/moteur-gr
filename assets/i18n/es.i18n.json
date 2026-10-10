@@ -218,7 +218,8 @@
     "supplyDismiss": "Ocultar el aviso",
     "pinMergedTitle": "Varios puntos en el mismo lugar",
     "attribution": {
-      "licence": "Datos cartograficos con licencia ODbL — ver la licencia"
+      "licence": "Datos cartograficos con licencia ODbL — ver la licencia",
+      "traces": "Trazados de los senderos recogidos en OpenStreetMap"
     }
   },
   "stage": {

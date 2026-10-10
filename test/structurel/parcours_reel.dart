@@ -268,6 +268,29 @@ void brancherLesPlugins() {
     (appel) async => dossier,
   );
 
+  // AUCUN RESEAU, ET IL LE DIT (tache 761). `connectivity_plus` parle par DEUX
+  // canaux : un canal de methode pour l'etat courant, et un canal d'EVENEMENTS
+  // pour les changements. Sans interlocuteur declare, l'abonnement au second
+  // leve `MissingPluginException(... listen on channel
+  // dev.fluttercommunity.plus/connectivity_status)`.
+  //
+  // POURQUOI CA N'APPARAISSAIT PAS AVANT. L'abonnement n'etait jamais atteint :
+  // l'amorce se resolvait dans les microtaches et le test finissait avant. Le
+  // seed pose desormais une trace de 3 590 points, `attendreLEcran` donne du
+  // temps REEL (voir son commentaire), l'amorce va donc jusqu'au bout — et cet
+  // abonnement-la aussi. L'exception etait latente, pas absente : elle
+  // attendait seulement qu'un test aille assez loin pour la rencontrer.
+  //
+  // L'APPAREIL MODELISE RESTE LE MEME : honnete et demuni. Il declare « aucune
+  // connexion » et n'annonce jamais de changement — le pire reseau plausible,
+  // celui sur lequel un ecran qui exige le reseau sans le dire se voit.
+  repondre('dev.fluttercommunity.plus/connectivity', (appel) async => ['none']);
+  const canalEtatReseau = EventChannel(
+    'dev.fluttercommunity.plus/connectivity_status',
+  );
+  messager.setMockStreamHandler(canalEtatReseau, _AucunChangementDeReseau());
+  addTearDown(() => messager.setMockStreamHandler(canalEtatReseau, null));
+
   // AUCUNE REGIE PUBLICITAIRE (tache 595). Depuis que la banniere est branchee,
   // le cockpit et le catalogue touchent le SDK Google Mobile Ads — dont les
   // canaux muets font PENDRE l'amorce du consentement pendant six secondes de
@@ -275,6 +298,19 @@ void brancherLesPlugins() {
   // apprendre de l'application. L'appareil declare donc honnetement qu'il n'a
   // pas de regie. Voir `regie_pub_absente.dart` pour la mecanique exacte.
   brancherAucuneRegiePub();
+}
+
+/// Le canal d'evenements de `connectivity_plus` sur un appareil sans reseau :
+/// l'abonnement reussit, et plus rien n'arrive jamais. C'est ce qu'il faut pour
+/// que le code sous test s'abonne sans lever et sans jamais etre reveille.
+class _AucunChangementDeReseau extends MockStreamHandler {
+  @override
+  void onListen(Object? arguments, MockStreamHandlerEventSink sink) {
+    // Aucun evenement : l'etat courant passe par le canal de methode.
+  }
+
+  @override
+  void onCancel(Object? arguments) {}
 }
 
 /// Demonte l'application PROPREMENT a la fin d'un test.
@@ -320,6 +356,30 @@ Future<void> stabiliser(WidgetTester tester, {int coups = 6}) async {
 /// ICI, ON ATTEND L'EVENEMENT. Une machine lente coute des tours de pompe, jamais
 /// un rouge. Et le plafond reste BORNE : l'atteindre veut dire que l'ecran
 /// n'arrive pas, ce qui est un vrai echec a rapporter.
+///
+/// TACHE 761 — ET ON LUI DONNE DU TEMPS REEL, SANS QUOI CE COMMENTAIRE MENTAIT.
+/// Le paragraphe ci-dessus affirme que « les vraies entrees-sorties avancent a
+/// la vitesse REELLE de la machine » entre deux `pump`. C'etait faux :
+/// `tester.pump` avance une horloge FICTIVE et vide la file des microtaches,
+/// mais il ne rend jamais la main a la boucle d'evenements du systeme. Tout ce
+/// qui attend un veritable aller-retour — et la base Drift en est un, elle
+/// repond depuis un autre isolat — n'avance donc PAS, quel que soit le nombre
+/// de tours.
+///
+/// LA MESURE QUI L'A MONTRE. La trace du sentier de reference est passee de
+/// 53 a 3 590 points (geometrie relevee dans OpenStreetMap). Le seed du
+/// demarrage
+/// reel fait desormais assez d'allers-retours vers la base pour qu'un `pump`
+/// seul ne suffise plus : l'application restait indefiniment sur
+/// « Preparation de votre randonnee… », 600 tours de pompe compris, et trois
+/// tests du geste de Christophe rougissaient — pour une raison qui n'apprenait
+/// rien sur l'application, c'est-a-dire exactement ce que ce helper existe pour
+/// eviter. Avec 53 points, le seed tenait dans les microtaches : la panne etait
+/// masquee, pas absente.
+///
+/// `runAsync` rend la main au systeme pour de vrai. Le delai est volontairement
+/// court : un ecran qui arrive du premier coup ne paie rien, et seul celui qui
+/// fait patienter paie l'attente.
 Future<bool> attendreLEcran(
   WidgetTester tester,
   Finder f, {
@@ -328,6 +388,9 @@ Future<bool> attendreLEcran(
   for (var i = 0; i < coups; i++) {
     _ramasser(tester);
     if (f.evaluate().isNotEmpty) return true;
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 5)),
+    );
     await tester.pump(const Duration(milliseconds: 120));
   }
   _ramasser(tester);

@@ -450,7 +450,12 @@ void main() {
       final duFichier = await GpxDepuisLesAssets.parseFromAsset(
         'assets/data/mare_a_mare_centre/track.gpx',
       );
-      expect(duFichier, hasLength(53), reason: 'temoin de la mesure');
+      // TACHE 761 — 3 590 points et non 53 : la trace est desormais la
+      // geometrie relevee dans OpenStreetMap. Ce que ce test prouve ne change
+      // pas d un iota — l aller-retour base/asset doit rendre les MEMES points
+      // — mais il le prouve sur une vraie trace, donc sur un cas ou une
+      // simplification silencieuse aurait bien plus a detruire.
+      expect(duFichier, hasLength(3590), reason: 'temoin de la mesure');
 
       // On pose en base ce que le semeur pose desormais : la trace ENTIERE.
       await TrailGpxTracksDao(db).insertOrReplace(

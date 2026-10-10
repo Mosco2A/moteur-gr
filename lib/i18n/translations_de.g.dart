@@ -2139,6 +2139,7 @@ class _Translations$map$attribution$de extends Translations$map$attribution$fr {
 
 	// Translations
 	@override String get licence => 'Kartendaten unter ODbL-Lizenz — Lizenz ansehen';
+	@override String get traces => 'Wegverlaufe aus OpenStreetMap erfasst';
 }
 
 // Path: stage.difficulty
@@ -4405,6 +4406,7 @@ extension on TranslationsDe {
 			'map.supplyDismiss' => 'Hinweis ausblenden',
 			'map.pinMergedTitle' => 'Mehrere Markierungen am selben Ort',
 			'map.attribution.licence' => 'Kartendaten unter ODbL-Lizenz — Lizenz ansehen',
+			'map.attribution.traces' => 'Wegverlaufe aus OpenStreetMap erfasst',
 			'stage.distance' => 'Entfernung',
 			'stage.elevation' => 'Höhenunterschied',
 			'stage.elevationGain' => 'Höhenmeter aufwärts',
@@ -4724,9 +4726,9 @@ extension on TranslationsDe {
 			'checklist.ui.infoRequiredTitle' => 'Pflicht',
 			'checklist.ui.infoRequiredBody' => 'Artikel mit Schloss = Vorschrift (Pfeife, Lampe, Rettungsdecke).',
 			'checklist.ui.infoGaugeTitle' => 'Gewichtsanzeige',
-			'checklist.ui.infoGaugeBody' => 'Ziel: Rucksack < 15% deines Gewichts. Grün = OK, Orange = Achtung, Rot = zu schwer.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoGaugeBody' => 'Ziel: Rucksack < 15% deines Gewichts. Grün = OK, Orange = Achtung, Rot = zu schwer.',
 			'checklist.ui.infoAddTitle' => 'Hinzufügen',
 			'checklist.ui.infoAddBody' => 'Der +-Button unten in jeder Kategorie für eigene Artikel.',
 			'checklist.ui.infoValidateBody' => 'Bestätige, wenn dein Rucksack fertig ist — ein Haken erscheint auf der Startseite.',
@@ -5238,9 +5240,9 @@ extension on TranslationsDe {
 			'cloud.statusActiveDesc' => 'Sicherung und Live-Verfolgung verfügbar.',
 			'cloud.statusLocal' => 'Lokaler Modus (ohne Cloud)',
 			'cloud.statusLocalDesc' => 'Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden.',
-			'onboarding.skip' => 'Überspringen',
 			_ => null,
 		} ?? switch (path) {
+			'onboarding.skip' => 'Überspringen',
 			'onboarding.next' => 'Weiter',
 			'onboarding.getStarted' => 'Los geht\'s',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Willkommen bei ${appName}',
@@ -5752,9 +5754,9 @@ extension on TranslationsDe {
 			'recap.elevation' => '{meters} m Höhenmeter',
 			'recap.duration' => '{days} Tage insgesamt, Wandern und Ruhe inklusive',
 			'recap.dates' => 'Vom {start} bis {end}',
-			'recap.viewDiploma' => 'Mein Diplom ansehen',
 			_ => null,
 		} ?? switch (path) {
+			'recap.viewDiploma' => 'Mein Diplom ansehen',
 			'recap.viewJournal' => 'Mein Tagebuch ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m Abstieg',

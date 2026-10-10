@@ -125,12 +125,25 @@ void main() {
       File('assets/data/mare_a_mare_centre/track.gpx').readAsStringSync(),
     ).allTrackPoints;
     final l = await ligneDuTableau('Mare a Mare Centre', trace);
-    expect(l['points'], 53);
-    expect(l['charnieres'], 2);
-    expect(l['fenetres_apres_fusion'], 2);
-    expect(double.parse(l['pct_sous_fenetre']! as String), lessThan(10));
-    // 72,9 km a 4 km/h : 18 h 13, 365 tirs a 3 minutes.
-    expect(l['tirs_sans_fenetres'], 365);
+    // TACHE 761 — LE RELEVE CHANGE D ORDRE DE GRANDEUR, ET C EST LE CHIFFRE LE
+    // PLUS IMPORTANT DE CE FICHIER. La trace de 53 points ne portait QUE DEUX
+    // charnieres : entre deux points espaces de 1,1 km, un virage ne se voit
+    // pas, il est avale par la ligne droite. La trace relevee dans
+    // OpenStreetMap, avec un point tous les 19 m, en montre 273 — et 89 une
+    // fois les fenetres voisines fusionnees. Consequence directe sur la
+    // batterie : 58 % du sentier tombe desormais sous une fenetre
+    // d acquisition rapprochee, et la traversee complete demande 1 754 tirs
+    // GPS au lieu de 437, soit QUATRE FOIS PLUS. Ce n est pas une regression du
+    // code : le cout etait deja la sur le terrain, c est la donnee qui ne le
+    // montrait pas. Rien n est corrige ici, le chiffre est donne — mais il
+    // merite un arbitrage produit a lui seul.
+    expect(l['points'], 3590);
+    expect(l['charnieres'], 273);
+    expect(l['fenetres_apres_fusion'], 89);
+    expect(double.parse(l['pct_sous_fenetre']! as String), closeTo(58.14, 0.5));
+    // 87,3 km a 4 km/h : 21 h 49, 437 tirs a 3 minutes.
+    expect(l['tirs_sans_fenetres'], 437);
+    expect(l['tirs_avec_fenetres'], 1754);
   }, timeout: const Timeout(Duration(minutes: 10)));
 
   test('LE TEMOIN DES CHIFFRES DU JOUR (fiche E6) : les tirs de fenetre sont '

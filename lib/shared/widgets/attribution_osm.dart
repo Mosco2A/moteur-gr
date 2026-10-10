@@ -22,6 +22,16 @@
 /// LE LIBELLE PASSE PAR SLANG, dans les cinq langues, comme tout le reste de
 /// l application. Le nom « OpenStreetMap » lui, ne se traduit pas : c est un nom
 /// propre.
+///
+/// TACHE 761 — LA TRACE AUSSI VIENT D OPENSTREETMAP, ET ELLE EST DISTRIBUEE.
+/// Jusqu ici seules les TUILES venaient d OSM ; la mention parlait donc de
+/// « donnees cartographiques ». La trace du Mare a Mare Centre est desormais la
+/// geometrie de la relation d itineraire 10032398, relevee dans
+/// OpenStreetMap et EMBARQUEE dans le binaire
+/// (`assets/data/mare_a_mare_centre/track.gpx`). C est
+/// une seconde distribution de donnees ODbL, et elle merite d etre nommee pour
+/// elle-meme : une mention qui ne parle que du fond de carte laisserait croire
+/// que le chemin, lui, vient d ailleurs. D ou la troisieme ligne.
 library;
 
 import 'package:flutter/material.dart';
@@ -54,6 +64,14 @@ class AttributionOsm extends StatelessWidget {
           t.map.attribution.licence,
           prependCopyright: false,
           onTap: () => _ouvrirLaLicence(),
+        ),
+        TextSourceAttribution(
+          t.map.attribution.traces,
+          prependCopyright: false,
+          // Reference directe et non fermeture : `unnecessary_lambdas` compte
+          // chaque fermeture inutile, et la gate du depot interdit au nombre
+          // d avertissements d analyse de monter.
+          onTap: _ouvrirLaLicence,
         ),
       ],
     );
