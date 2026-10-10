@@ -80,6 +80,7 @@ class SyncScheduler with WidgetsBindingObserver {
     required this.progressDao,
     this.ficheTechnique,
     this.monterLesConsentements,
+    this.identiteDuJeton,
     this.attenteAvantMontee = attenteParDefaut,
     this.config = const SyncConfig(),
     this.identifiantLocalDesRandos = "local",
@@ -114,6 +115,28 @@ class SyncScheduler with WidgetsBindingObserver {
   /// tache 616. Le branchement se fait dans le provider, et le registre a besoin
   /// des preferences, qui sont asynchrones.
   final Future<int> Function()? monterLesConsentements;
+
+  /// L IDENTIFIANT DU JETON, RELU A CHAQUE PASSE (tache 771).
+  ///
+  /// POURQUOI UNE FONCTION ET PAS UNE VALEUR. [start] recevait un identifiant
+  /// et le gardait : une COPIE, prise une fois, au moment de l armement. Le
+  /// 10/10 cette copie etait fausse — deux comptes anonymes etaient nes a 37 ms
+  /// d ecart, le jeton portait le second et la copie retenait le premier, donc
+  /// toutes les ecritures visaient `users/<le premier>` avec le jeton du
+  /// second. `firestore.rules` exige `request.auth.uid == userId` : refus sur
+  /// toute la ligne.
+  ///
+  /// La cause de ces deux comptes est corrigee chez
+  /// [FirebaseAuthService.garantirUneIdentite] ; cette fonction-ci ferme la
+  /// porte d APRES, et elle la ferme pour de bon : le nom sous lequel on ecrit
+  /// n est plus jamais une valeur retenue, c est une LECTURE du jeton, faite au
+  /// moment d ecrire. Un seul endroit decide de l identite, et c est celui que
+  /// le serveur authentifie.
+  ///
+  /// NULLE, l ancien comportement est conserve : les chemins portent
+  /// l identifiant passe a [start]. C est ce dont se servent les tests qui ne
+  /// s interessent pas a l identite.
+  final Future<String?> Function()? identiteDuJeton;
 
   /// Le delai de regroupement des ecritures locales.
   final Duration attenteAvantMontee;
@@ -270,8 +293,7 @@ class SyncScheduler with WidgetsBindingObserver {
   /// PERDUE — elle est REJOUEE a la fin, sinon le dernier geste du randonneur,
   /// celui qui a declenche la demande, ne monterait jamais.
   Future<int> monterMaintenant([String cause = "appel direct"]) async {
-    final userId = _userId;
-    if (userId == null) return 0;
+    if (_userId == null) return 0;
     if (_enCours) {
       _redemander = true;
       _log.d("[Montee] Passe ($cause) differee : une montee tourne deja.");
@@ -279,7 +301,7 @@ class SyncScheduler with WidgetsBindingObserver {
     }
     _enCours = true;
     try {
-      return await _monter(userId, cause);
+      return await _monter(cause);
     } catch (e) {
       // UNE PASSE QUI ECHOUE NE TUE PAS LA MONTEE. Le prochain geste ou le
       // prochain retour de reseau reessaiera. Avaler sans DIRE serait la faute
@@ -295,11 +317,18 @@ class SyncScheduler with WidgetsBindingObserver {
     }
   }
 
-  Future<int> _monter(String userId, String cause) async {
+  Future<int> _monter(String cause) async {
     if (!firebaseService.isAvailable) {
       _log.d("[Montee] Passe ($cause) sans effet : Firebase indisponible.");
       return 0;
     }
+
+    // LE NOM SOUS LEQUEL ON VA ECRIRE SE LIT ICI, PAS A L ARMEMENT (tache 771).
+    // Il est relu APRES la prise du verrou : le commentaire de
+    // [monterMaintenant] en fait une invariante, et une lecture placee avant
+    // aurait rouvert la porte a deux passes simultanees.
+    final userId = await _identitePourLesChemins(cause);
+    if (userId == null) return 0;
 
     final ConnectivityStatus statut;
     try {
@@ -413,6 +442,45 @@ class SyncScheduler with WidgetsBindingObserver {
     }
   }
 
+  /// SOUS QUEL NOM CETTE PASSE ECRIT — LE JETON, ET RIEN D AUTRE (tache 771).
+  ///
+  /// Rend `null` quand il n y a pas d identite a presenter : la passe ne fait
+  /// alors RIEN. C est volontaire et c est le point entier. Ecrire sous la
+  /// derniere copie connue, c est au mieux se faire refuser par
+  /// `firestore.rules`, au pire deposer les donnees de ce randonneur dans le
+  /// compte d un autre.
+  ///
+  /// Sans [identiteDuJeton] (tests qui ne s interessent pas a l identite), on
+  /// garde l identifiant de l armement : le comportement d avant, identique.
+  Future<String?> _identitePourLesChemins(String cause) async {
+    final lecture = identiteDuJeton;
+    if (lecture == null) return _userId;
+
+    final String? jeton;
+    try {
+      jeton = await lecture();
+    } on Object catch (e) {
+      _log.w('[Montee] Jeton illisible ($e) — passe ($cause) sans effet.');
+      return null;
+    }
+    if (jeton == null || jeton.isEmpty) {
+      _log.d('[Montee] Passe ($cause) sans effet : aucune identite au jeton.');
+      return null;
+    }
+    if (jeton != _userId) {
+      // L ARMEMENT AVAIT RETENU AUTRE CHOSE, et c est exactement ce qui s est
+      // produit le 10/10. On suit le jeton, et on le DIT : un changement
+      // d identite en cours de route est une anomalie qui doit se lire dans un
+      // journal, pas une situation a absorber en silence.
+      _log.w(
+        '[Montee] L identite a change depuis l armement — les chemins '
+        'suivent le jeton (passe $cause).',
+      );
+      _userId = jeton;
+    }
+    return jeton;
+  }
+
   Future<void> _poserLaFicheTechnique(String cause) async {
     final fiche = ficheTechnique;
     if (fiche == null || _userId == null) return;
@@ -444,6 +512,26 @@ final syncSchedulerProvider = Provider<SyncScheduler>((ref) {
     monterLesConsentements: () async {
       final registre = await ref.read(monteeDesConsentementsProvider.future);
       return registre.monter();
+    },
+    // L IDENTITE DES CHEMINS SE LIT AU JETON, A CHAQUE PASSE (tache 771).
+    //
+    // `FirebaseAuthService.accountId` EST LA SEULE AUTORITE, et c est deja son
+    // role declare (tache 631) : il rend l identifiant d AUTHENTIFICATION, lu
+    // en direct sur l utilisateur courant du SDK — exactement la source dont
+    // Firestore tire son jeton. Un identifiant retenu ailleurs, meme une
+    // seconde plus tot, peut deja etre le mauvais : c est precisement ce qui
+    // s est produit le 10/10.
+    //
+    // DANS UNE FERMETURE, DONC JAMAIS A LA CONSTRUCTION. Lire
+    // `authServiceProvider` ici CONSTRUIRAIT le service, donc toucherait le
+    // greffon natif dans le `create` de ce provider — et la lecon de la tache
+    // 637 est que cette erreur-la remonte jusqu a noircir tous les ecrans. La
+    // lecture n a lieu qu au moment d ecrire, et
+    // `SyncScheduler._identitePourLesChemins` la protege : ce qui leve ici ne
+    // coute que la passe.
+    identiteDuJeton: () async {
+      final service = ref.read(authServiceProvider);
+      return service is FirebaseAuthService ? service.accountId : null;
     },
   );
   ref.onDispose(montee.stop);

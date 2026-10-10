@@ -32,6 +32,15 @@ class FirebaseAuthService implements AuthService {
   AuthUser? _currentUser;
   final _authController = StreamController<AuthUser?>.broadcast();
 
+  /// LA TENTATIVE DE CONNEXION EN VOL, ET IL N Y EN A JAMAIS QU UNE (771).
+  ///
+  /// Nulle quand aucune connexion n est en cours. Tant qu elle ne l est pas,
+  /// tout nouvel appel a [garantirUneIdentite] recoit CETTE MEME attente au
+  /// lieu d ouvrir la sienne. Remise a nulle des que la tentative s achemine a
+  /// son terme — reussie ou non — pour qu un premier lancement en zone
+  /// blanche n interdise pas la suivante.
+  Future<AuthUser?>? _identiteEnVol;
+
   @override
   AuthUser? get currentUser => _currentUser;
 
@@ -83,18 +92,60 @@ class FirebaseAuthService implements AuthService {
   /// second, mais on ne s appuie pas dessus — un compte de plus, c est un
   /// compte de trop, et ce serait des droits perdus a chaque lancement.
   ///
+  /// UNE SEULE TENTATIVE EN VOL, ET C EST LE CORRECTIF DU 10/10 (tache 771).
+  ///
+  /// LE DEFAUT MESURE SUR emulator-5560. DEUX comptes anonymes naissaient au
+  /// MEME lancement, a 37 millisecondes d ecart (2026-10-10T08:36:59.093Z et
+  /// .130Z). Le jeton portait le second, les chemins Firestore visaient le
+  /// premier, et `firestore.rules` exigeant `request.auth.uid == userId`, le
+  /// serveur refusait TOUT : « Write failed at users/pY0i... :
+  /// PERMISSION_DENIED », « [RegistreConsentement] healthData :
+  /// permission-denied », « [FicheTechnique] ecriture impossible ». Les regles
+  /// etaient justes ; c est l application qui se trompait d identite.
+  ///
+  /// POURQUOI DEUX, ALORS QUE LE SERVICE EST UNIQUE. Il n y a qu un
+  /// `ProviderScope` et donc qu une instance de cette classe — le provider
+  /// n etait PAS reconstruit. Mais DEUX appelants la tirent au demarrage, sans
+  /// savoir l un de l autre : `auth_provider.dart` en fire-and-forget dans le
+  /// `create` du provider, et `monteeEnBaseDemarreeProvider`
+  /// (`sync_scheduler.dart`) qui l attend aussitot apres le `ref.read` ayant
+  /// JUSTE construit ce service.
+  ///
+  /// Le corps ci-dessous etait un CONTROLE-PUIS-AGIS que rien ne rendait
+  /// atomique : le premier appel partait et se suspendait sur le reseau, le
+  /// second lisait `currentUser` encore nul, et ouvrait un SECOND compte.
+  ///
+  /// CE QUI LE REND IMPOSSIBLE MAINTENANT. La tentative est MEMORISEE avant le
+  /// premier `await`, et les appels suivants recoivent cette meme attente.
+  /// Cette methode n est volontairement PAS `async` : une `async` rend le
+  /// controle a son appelant au premier `await`, et c est precisement dans cet
+  /// interstice que le second appel se glissait. Ici, de l entree jusqu a
+  /// l affectation de [_identiteEnVol], aucun point de suspension n existe —
+  /// donc aucun second appel ne peut passer entre les deux.
+  ///
   /// NE LEVE PAS : sans reseau au premier lancement, l identite n existera
   /// qu au suivant, et l application marche entre-temps sur sa base locale.
-  Future<AuthUser?> garantirUneIdentite() async {
+  Future<AuthUser?> garantirUneIdentite() {
     final deja = _firebaseAuth.currentUser;
     if (deja != null) {
       _currentUser = _toAnonymizedUser(deja);
-      return _currentUser;
+      return Future<AuthUser?>.value(_currentUser);
     }
+    return _identiteEnVol ??= _ouvrirUneIdentite();
+  }
+
+  /// LA TENTATIVE ELLE-MEME. Appelee par [garantirUneIdentite] seulement, et
+  /// jamais plus d une fois a la fois.
+  Future<AuthUser?> _ouvrirUneIdentite() async {
     try {
       return await signInAnonymously();
     } on Object {
       return null;
+    } finally {
+      // LE DROIT DE REESSAYER. Sans cette remise a nulle, un refus au premier
+      // lancement (zone blanche) laisserait l application sans identite pour
+      // toujours : chaque appel suivant se verrait rendre l echec memorise.
+      _identiteEnVol = null;
     }
   }
 
