@@ -38,8 +38,10 @@ class WaypointTypeConfig {
   WaypointTypeConfig._();
 
   static const Map<String, WaypointTypeStyle> _styles = {
+    // MEME CORRECTION QUE LE REGISTRE DES POINTS D'INTERET (tache 772) : un
+    // repere d'eau se dessine en GOUTTE. Il portait le nuage de la meteo.
     WaypointType.eau: WaypointTypeStyle(
-      icon: StepwaysIcons.pluie,
+      icon: StepwaysIcons.pointEau,
       color: CouleursSemantiques.pointEau,
       labelKey: 'eau',
     ),

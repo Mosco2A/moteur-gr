@@ -247,8 +247,15 @@ class HubPrepareSection extends ConsumerWidget {
     // « Synthese du plan » (parite GR20). Route hors-shell atteinte
     // via `context.push` -> retour propre (jamais context.go qui
     // viderait la pile). Generique multi-sentiers, zero hardcode.
+    //
+    // SON DESSIN EST LE SIEN DEPUIS LA TACHE 772. Cette carte passait
+    // `icon: StepwaysIcons.programme`, que la regle mono/duo resout PAR NOM DE
+    // FICHIER vers la rubrique « programme » : elle sortait donc, au pixel
+    // pres, le trace pointille de la carte « Programme » posee quelques lignes
+    // plus haut. Deux cartes voisines, un seul dessin — plus rien a distinguer
+    // d'un coup d'oeil. Elle nomme desormais SA rubrique.
     QuickAccessCard(
-      icon: StepwaysIcons.programme,
+      rubrique: RubriqueStepways.resume,
       title: t.hub.cards.resume,
       subtitle: t.hub.cards.resumeSub,
       stepStatus: _coche(ref, SujetDePreparation.resume),

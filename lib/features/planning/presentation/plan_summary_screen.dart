@@ -177,8 +177,11 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // L'ETAT VIDE DU RESUME MONTRE LE DESSIN DU RESUME (tache 772). Il
+            // montrait celui du Programme : l'ecran du Resume s'annoncait avec
+            // l'icone d'un autre ecran.
             StepIcon(
-              StepwaysIcons.programme,
+              StepwaysIcons.resume,
               size: 80,
               color: AppTheme.grisGranite.withAlpha(80),
             ),

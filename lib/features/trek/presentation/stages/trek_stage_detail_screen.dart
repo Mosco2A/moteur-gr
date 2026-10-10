@@ -565,7 +565,15 @@ class _WaterSourcesSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            StepIcon(StepwaysIcons.pluie, size: 20, color: waterColor),
+            // L'ICONE VIENT DU REGISTRE, COMME LA COULEUR (tache 772) :
+            // une copie ecrite a la main a cote d'une valeur lue au
+            // registre finit toujours par en diverger, et c'est ce qui
+            // etait arrive — le nuage de la meteo pour une source.
+            StepIcon(
+              PoiTypeConfig.getStyle('water').icon,
+              size: 20,
+              color: waterColor,
+            ),
             const SizedBox(width: AppTheme.spacingSm),
             Text(
               t.stage.waterSources.title,
@@ -666,7 +674,7 @@ class _WaterPointTile extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: StepIcon(
-                  StepwaysIcons.pluie,
+                  PoiTypeConfig.getStyle('water').icon,
                   size: 20,
                   color: waterColor,
                 ),
@@ -819,25 +827,29 @@ class _WaterStatusChip extends StatelessWidget {
 }
 
 /// Visuel (libelle i18n, couleur, icone) d'un statut de point d'eau.
+///
+/// LES TROIS ETATS PORTENT LE DESSIN DU POINT D'EAU (tache 772), et c'est la
+/// COULEUR qui dit l'etat — vert disponible, orange bas, rouge a sec. Ils
+/// portaient le nuage de pluie : un point d'eau a sec annonce par une averse.
 (String, Color, String) _statusVisual(String? status) {
   switch (status) {
     case 'water_available':
       return (
         t.signalement.water.states.available,
         AppTheme.vertFacile,
-        StepwaysIcons.pluie,
+        StepwaysIcons.pointEau,
       );
     case 'water_low':
       return (
         t.signalement.water.states.low,
         AppTheme.orangeDifficile,
-        StepwaysIcons.pluie,
+        StepwaysIcons.pointEau,
       );
     case 'water_dry':
       return (
         t.signalement.water.states.dry,
         AppTheme.emergencyRed,
-        StepwaysIcons.pluie,
+        StepwaysIcons.pointEau,
       );
     default:
       return (

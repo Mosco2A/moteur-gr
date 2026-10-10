@@ -223,9 +223,12 @@ void main() {
       expect(find.text(t.summary.empty.title), findsOneWidget);
       expect(find.text(t.summary.empty.message), findsOneWidget);
       expect(find.text(t.summary.empty.action), findsOneWidget);
+      // TACHE 772 : l'etat vide du Resume montre le dessin du RESUME. Ce test
+      // exigeait celui du Programme — il verrouillait le defaut que Christophe
+      // a signale (« Programme et Resume, le meme icone »).
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.programme,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.resume,
         ),
         findsOneWidget,
       );
@@ -516,7 +519,7 @@ void main() {
               body: Center(
                 child: InkWell(
                   onTap: () => context.push('/trail/$trailId/summary'),
-                  child: const StepIcon(StepwaysIcons.programme),
+                  child: const StepIcon(StepwaysIcons.resume),
                 ),
               ),
             ),
@@ -542,16 +545,16 @@ void main() {
       );
       await settle(tester);
 
-      // Aller : taper la carte HUB (icone summarize) ouvre le Resume.
+      // Aller : taper la carte HUB (icone du Resume) ouvre le Resume.
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.programme,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.resume,
         ),
         findsOneWidget,
       );
       await tester.tap(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.programme,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.resume,
         ),
       );
       await settle(tester);
@@ -566,7 +569,7 @@ void main() {
       expect(find.text(t.summary.title), findsNothing);
       expect(
         find.byWidgetPredicate(
-          (w) => w is StepIcon && w.asset == StepwaysIcons.programme,
+          (w) => w is StepIcon && w.asset == StepwaysIcons.resume,
         ),
         findsOneWidget,
       );

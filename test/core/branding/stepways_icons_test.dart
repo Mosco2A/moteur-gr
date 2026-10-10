@@ -21,11 +21,14 @@ void main() {
       .toList();
 
   group('Le depot porte bien les quatre jeux', () {
-    test('les 156 traces monochromes sont la', () {
-      expect(plats.length, 156);
+    test('les 157 traces monochromes sont la', () {
+      // 157 ET NON 156 DEPUIS LA TACHE 772 : le RESUME a recu son propre
+      // dessin. Il portait celui du Programme, et les deux cartes du cockpit
+      // sortaient le meme trace pointille.
+      expect(plats.length, 157);
     });
 
-    test('les 20 rubriques, 43 ICO et 38 MAT ont leurs TROIS traces', () {
+    test('les 21 rubriques, 43 ICO et 38 MAT ont leurs TROIS traces', () {
       for (final IconeBicolore icone in <IconeBicolore>[
         ...RubriqueStepways.values,
         ...IcoStepways.values,
@@ -39,7 +42,8 @@ void main() {
           );
         }
       }
-      expect(RubriqueStepways.values.length, 20);
+      // 21 depuis la tache 772 (la rubrique « resume »).
+      expect(RubriqueStepways.values.length, 21);
       expect(IcoStepways.values.length, 43);
       expect(MatStepways.values.length, 38);
     });
@@ -76,7 +80,7 @@ void main() {
   });
 
   group('Elles se rendent vraiment dans Flutter', () {
-    testWidgets('les 156 traces monochromes passent dans flutter_svg', (
+    testWidgets('les 157 traces monochromes passent dans flutter_svg', (
       tester,
     ) async {
       for (final chemin in plats) {

@@ -112,5 +112,41 @@ final currentPositionProvider = Provider<AsyncValue<CurrentPosition>>((ref) {
   if (estimate != null) {
     return AsyncData(CurrentPosition.estimated(estimate));
   }
-  return ref.watch(locationProvider).whenData(CurrentPosition.measured);
+  final releve = ref.watch(locationProvider);
+
+  // UN ROBINET QUI SE RECHARGE N'EFFACE PLUS LA POSITION CONNUE (tache 772).
+  //
+  // RETOUR DE CHRISTOPHE DU 10/10 11:08, mot pour mot : « en demo le centrage
+  // du point d'avancement ne centre rien ».
+  //
+  // CE QUI SE PASSAIT, MESURE. Cette ligne composait le resultat avec
+  // `AsyncValue.whenData`, qui ne transforme QUE la branche `data` : sur la
+  // branche `loading` il rend une `AsyncLoading` NUE. Or Riverpod, pendant un
+  // rechargement, RETIENT la derniere valeur — et `whenData` la jetait. Mesure
+  // faite en demo, marcheur toujours en marche : `locationProvider` rendait
+  // `hasValue: true` avec la bonne latitude A L'INSTANT PRECIS ou ce
+  // provider-ci rendait `null`. L'application cessait de savoir ou est le
+  // randonneur alors qu'elle le savait encore.
+  //
+  // CE QUE LE RANDONNEUR VOYAIT : son marqueur disparaissait de la carte, le
+  // cadrage retombait sur la premiere etape, et « centrer sur moi » se
+  // rabattait sur le trace en annoncant « Position introuvable ».
+  //
+  // POURQUOI LA DEMO EN SOUFFRAIT PLUS QUE LA VRAIE RANDONNEE. Le robinet se
+  // reconstruit pour des raisons ordinaires — un changement de profil GPS
+  // decide par le recalage, une entree ou une sortie de demo. En randonnee
+  // reelle le recepteur reemet de lui-meme et la trouee se referme en une
+  // seconde ; en demo les positions passent par un flux DIFFUSE, ou un nouvel
+  // abonne ne recoit rien avant le battement suivant — et plus rien du tout
+  // quand le marcheur simule est ARRIVE. La trouee pouvait donc ne jamais se
+  // refermer.
+  //
+  // LA BRANCHE D'ERREUR N'EST PAS TOUCHEE : une permission refusee doit
+  // continuer de remonter telle quelle, sinon l'ecran la cacherait derriere
+  // une position perimee. Seule la fenetre de rechargement est rattrapee.
+  final retenue = releve.value;
+  if (releve.isLoading && retenue != null) {
+    return AsyncData(CurrentPosition.measured(retenue));
+  }
+  return releve.whenData(CurrentPosition.measured);
 });
