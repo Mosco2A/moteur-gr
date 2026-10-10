@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../domain/auth_service.dart';
+import '../domain/diffusion_identite.dart';
 import 'anonymous_id_service.dart';
 
 /// Service d'authentification Firebase avec anonymisation (E4.15).
@@ -29,8 +30,17 @@ class FirebaseAuthService implements AuthService {
   final fb.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
-  AuthUser? _currentUser;
-  final _authController = StreamController<AuthUser?>.broadcast();
+  /// L IDENTITE ET SA DIFFUSION, EN UN SEUL ENDROIT (tache 781).
+  ///
+  /// Remplace le couple « champ `_currentUser` + controleur de diffusion » qui
+  /// vivait ici. Deux raisons, et la seconde a coute l ecran « Mon compte » :
+  ///
+  ///   1. UN SEUL ETAT. Tenir la valeur a part du flux laissait les deux
+  ///      divergier : [garantirUneIdentite] posait `_currentUser` sans rien
+  ///      publier, et seule l ecoute de Firebase rattrapait l emission.
+  ///   2. UN FLUX QUI SE REDIT. Le controleur de diffusion ne rejouait rien a
+  ///      un abonne tardif — voir [DiffusionIdentite] pour le defaut mesure.
+  final _identite = DiffusionIdentite<AuthUser>();
 
   /// LA TENTATIVE DE CONNEXION EN VOL, ET IL N Y EN A JAMAIS QU UNE (771).
   ///
@@ -42,21 +52,15 @@ class FirebaseAuthService implements AuthService {
   Future<AuthUser?>? _identiteEnVol;
 
   @override
-  AuthUser? get currentUser => _currentUser;
+  AuthUser? get currentUser => _identite.valeur;
 
   @override
-  Stream<AuthUser?> get authStateChanges => _authController.stream;
+  Stream<AuthUser?> get authStateChanges => _identite.flux;
 
   /// Initialise l'ecoute des changements d'etat Firebase.
   void initialize() {
     _firebaseAuth.authStateChanges().listen((fb.User? fbUser) {
-      if (fbUser == null) {
-        _currentUser = null;
-        _authController.add(null);
-      } else {
-        _currentUser = _toAnonymizedUser(fbUser);
-        _authController.add(_currentUser);
-      }
+      _identite.publier(fbUser == null ? null : _toAnonymizedUser(fbUser));
     });
   }
 
@@ -128,8 +132,11 @@ class FirebaseAuthService implements AuthService {
   Future<AuthUser?> garantirUneIdentite() {
     final deja = _firebaseAuth.currentUser;
     if (deja != null) {
-      _currentUser = _toAnonymizedUser(deja);
-      return Future<AuthUser?>.value(_currentUser);
+      // PUBLIE, ET PLUS SEULEMENT RETENU (tache 781). Ce chemin posait la
+      // valeur dans un champ prive sans rien dire a personne : l identite
+      // n arrivait aux lecteurs que si l ecoute de Firebase la redonnait.
+      _identite.publier(_toAnonymizedUser(deja));
+      return Future<AuthUser?>.value(_identite.valeur);
     }
     return _identiteEnVol ??= _ouvrirUneIdentite();
   }
@@ -153,8 +160,7 @@ class FirebaseAuthService implements AuthService {
   Future<AuthUser> signInAnonymously() async {
     final credential = await _firebaseAuth.signInAnonymously();
     final user = _toAnonymizedUser(credential.user!);
-    _currentUser = user;
-    _authController.add(user);
+    _identite.publier(user);
     return user;
   }
 
@@ -180,8 +186,7 @@ class FirebaseAuthService implements AuthService {
         userCredential.user!,
         method: AuthMethodValues.google,
       );
-      _currentUser = user;
-      _authController.add(user);
+      _identite.publier(user);
       return user;
     } on Exception {
       return null;
@@ -205,8 +210,7 @@ class FirebaseAuthService implements AuthService {
         userCredential.user!,
         method: AuthMethodValues.apple,
       );
-      _currentUser = user;
-      _authController.add(user);
+      _identite.publier(user);
       return user;
     } on Exception {
       return null;
@@ -217,8 +221,7 @@ class FirebaseAuthService implements AuthService {
   Future<void> signOut() async {
     await _googleSignIn.signOut();
     await _firebaseAuth.signOut();
-    _currentUser = null;
-    _authController.add(null);
+    _identite.publier(null);
   }
 
   @override
@@ -228,40 +231,42 @@ class FirebaseAuthService implements AuthService {
       await fbUser.delete();
     }
     await _googleSignIn.signOut();
-    _currentUser = null;
-    _authController.add(null);
+    _identite.publier(null);
   }
 
   @override
   Future<void> updateDisplayName(String name) async {
-    if (_currentUser == null) return;
+    final actuel = _identite.valeur;
+    if (actuel == null) return;
 
     final trimmed = name.trim();
-    _currentUser = AuthUser(
-      uid: _currentUser!.uid,
-      authMethod: _currentUser!.authMethod,
-      displayName: trimmed.isEmpty ? null : trimmed,
-      avatarIndex: _currentUser!.avatarIndex,
-      isAnonymous: _currentUser!.isAnonymous,
-      // Jamais email/photoUrl — zero PII
+    _identite.publier(
+      AuthUser(
+        uid: actuel.uid,
+        authMethod: actuel.authMethod,
+        displayName: trimmed.isEmpty ? null : trimmed,
+        avatarIndex: actuel.avatarIndex,
+        isAnonymous: actuel.isAnonymous,
+        // Jamais email/photoUrl — zero PII
+      ),
     );
-    _authController.add(_currentUser);
   }
 
   @override
   Future<void> updateAvatarIndex(int index) async {
-    if (_currentUser == null) return;
+    final actuel = _identite.valeur;
+    if (actuel == null) return;
 
-    final clampedIndex = index.clamp(0, 7);
-    _currentUser = AuthUser(
-      uid: _currentUser!.uid,
-      authMethod: _currentUser!.authMethod,
-      displayName: _currentUser!.displayName,
-      avatarIndex: clampedIndex,
-      isAnonymous: _currentUser!.isAnonymous,
-      // Jamais email/photoUrl — zero PII
+    _identite.publier(
+      AuthUser(
+        uid: actuel.uid,
+        authMethod: actuel.authMethod,
+        displayName: actuel.displayName,
+        avatarIndex: index.clamp(0, 7),
+        isAnonymous: actuel.isAnonymous,
+        // Jamais email/photoUrl — zero PII
+      ),
     );
-    _authController.add(_currentUser);
   }
 
   /// Convertit un utilisateur Firebase en AuthUser anonymise.
@@ -287,6 +292,6 @@ class FirebaseAuthService implements AuthService {
 
   /// Libere les ressources.
   void dispose() {
-    _authController.close();
+    _identite.fermer();
   }
 }

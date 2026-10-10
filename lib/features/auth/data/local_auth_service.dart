@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../domain/auth_service.dart';
+import '../domain/diffusion_identite.dart';
 
 /// Implémentation locale du service d'authentification.
 ///
@@ -24,31 +25,22 @@ class LocalAuthService implements AuthService {
   static const String _keyMethod = 'auth_method';
   static const String _keyAvatarIndex = 'auth_avatar_index';
 
-  AuthUser? _currentUser;
-  final _authController = StreamController<AuthUser?>.broadcast();
-
-  @override
-  AuthUser? get currentUser => _currentUser;
-
-  @override
-  Stream<AuthUser?> get authStateChanges => _authController.stream;
-
-  /// Emet un etat SI le service est encore vivant.
+  /// L IDENTITE ET SA DIFFUSION, COMME SUR LE CHEMIN FIREBASE (tache 781).
   ///
-  /// POURQUOI CE GARDE-FOU (tache 561, J3). `authServiceProvider` lance
-  /// `initialize()` en fire-and-forget (`unawaited`), puis ferme ce controller
-  /// au dispose du provider. Quand le dispose arrive pendant que
-  /// l'initialisation est ENCORE EN VOL — ce qui depend de la charge machine,
-  /// donc « une fois sur trois » —, l'emission tombait sur un controller ferme
-  /// et levait `Bad state: Cannot add new events after calling close`. Une
-  /// erreur asynchrone sans porteur : en test elle etait imputee au test
-  /// suivant (suite rouge par intermittence), en production elle remontait en
-  /// erreur non geree. Emettre dans le vide est ici le comportement correct :
-  /// plus personne n'ecoute.
-  void _emit(AuthUser? user) {
-    if (_authController.isClosed) return;
-    _authController.add(user);
-  }
+  /// Le repli local souffrait EXACTEMENT du meme defaut que le chemin
+  /// Firebase : son flux de diffusion ne rejouait rien a un abonne tardif, et
+  /// il n emet qu une fois (`initialize()` au demarrage). Les deux
+  /// implementations partagent donc la meme diffusion, pour qu aucune ne puisse
+  /// redevenir l exception — voir [DiffusionIdentite], qui porte aussi le
+  /// garde-fou « emettre dans le vide » de la tache 561 autrefois tenu ici par
+  /// un `_emit` prive.
+  final _identite = DiffusionIdentite<AuthUser>();
+
+  @override
+  AuthUser? get currentUser => _identite.valeur;
+
+  @override
+  Stream<AuthUser?> get authStateChanges => _identite.flux;
 
   /// Initialise depuis les préférences sauvegardées.
   ///
@@ -56,7 +48,7 @@ class LocalAuthService implements AuthService {
   /// tolerer un dispose survenu pendant son attente, sans rien emettre.
   Future<void> initialize() async {
     final prefs = await SharedPreferences.getInstance();
-    if (_authController.isClosed) return;
+    if (_identite.estFerme) return;
     final uid = prefs.getString(_keyUid);
 
     if (uid != null) {
@@ -65,14 +57,15 @@ class LocalAuthService implements AuthService {
           prefs.getString(_keyMethod) ?? AuthMethodValues.anonymous;
       final avatarIdx = prefs.getInt(_keyAvatarIndex) ?? 0;
 
-      _currentUser = AuthUser(
-        uid: uid,
-        authMethod: AuthMethodValues.fromString(methodStr),
-        displayName: name,
-        avatarIndex: avatarIdx,
-        isAnonymous: methodStr == AuthMethodValues.anonymous,
+      _identite.publier(
+        AuthUser(
+          uid: uid,
+          authMethod: AuthMethodValues.fromString(methodStr),
+          displayName: name,
+          avatarIndex: avatarIdx,
+          isAnonymous: methodStr == AuthMethodValues.anonymous,
+        ),
       );
-      _emit(_currentUser);
     } else {
       // Auto-connexion anonyme au premier lancement
       await signInAnonymously();
@@ -84,7 +77,7 @@ class LocalAuthService implements AuthService {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString(_keyUid) ?? const Uuid().v4();
 
-    _currentUser = AuthUser(
+    final utilisateur = AuthUser(
       uid: uid,
       authMethod: AuthMethodValues.anonymous,
       isAnonymous: true,
@@ -93,8 +86,8 @@ class LocalAuthService implements AuthService {
     await prefs.setString(_keyUid, uid);
     await prefs.setString(_keyMethod, AuthMethodValues.anonymous);
 
-    _emit(_currentUser);
-    return _currentUser!;
+    _identite.publier(utilisateur);
+    return utilisateur;
   }
 
   @override
@@ -116,17 +109,17 @@ class LocalAuthService implements AuthService {
     // Garder l'UID pour les données locales mais revenir en anonyme
     final uid = prefs.getString(_keyUid) ?? const Uuid().v4();
 
-    _currentUser = AuthUser(
-      uid: uid,
-      authMethod: AuthMethodValues.anonymous,
-      isAnonymous: true,
-    );
-
     await prefs.remove(_keyName);
     await prefs.setString(_keyMethod, AuthMethodValues.anonymous);
     await prefs.remove(_keyAvatarIndex);
 
-    _emit(_currentUser);
+    _identite.publier(
+      AuthUser(
+        uid: uid,
+        authMethod: AuthMethodValues.anonymous,
+        isAnonymous: true,
+      ),
+    );
   }
 
   @override
@@ -137,8 +130,7 @@ class LocalAuthService implements AuthService {
     await prefs.remove(_keyMethod);
     await prefs.remove(_keyAvatarIndex);
 
-    _currentUser = null;
-    _emit(null);
+    _identite.publier(null);
 
     // Recréer un compte anonyme immédiatement
     await signInAnonymously();
@@ -146,18 +138,11 @@ class LocalAuthService implements AuthService {
 
   @override
   Future<void> updateDisplayName(String name) async {
-    if (_currentUser == null) return;
+    final actuel = _identite.valeur;
+    if (actuel == null) return;
 
     final prefs = await SharedPreferences.getInstance();
     final trimmed = name.trim();
-
-    _currentUser = AuthUser(
-      uid: _currentUser!.uid,
-      authMethod: _currentUser!.authMethod,
-      displayName: trimmed.isEmpty ? null : trimmed,
-      avatarIndex: _currentUser!.avatarIndex,
-      isAnonymous: _currentUser!.isAnonymous,
-    );
 
     if (trimmed.isEmpty) {
       await prefs.remove(_keyName);
@@ -165,30 +150,40 @@ class LocalAuthService implements AuthService {
       await prefs.setString(_keyName, trimmed);
     }
 
-    _emit(_currentUser);
+    _identite.publier(
+      AuthUser(
+        uid: actuel.uid,
+        authMethod: actuel.authMethod,
+        displayName: trimmed.isEmpty ? null : trimmed,
+        avatarIndex: actuel.avatarIndex,
+        isAnonymous: actuel.isAnonymous,
+      ),
+    );
   }
 
   @override
   Future<void> updateAvatarIndex(int index) async {
-    if (_currentUser == null) return;
+    final actuel = _identite.valeur;
+    if (actuel == null) return;
 
     final prefs = await SharedPreferences.getInstance();
     final clampedIndex = index.clamp(0, 7);
 
-    _currentUser = AuthUser(
-      uid: _currentUser!.uid,
-      authMethod: _currentUser!.authMethod,
-      displayName: _currentUser!.displayName,
-      avatarIndex: clampedIndex,
-      isAnonymous: _currentUser!.isAnonymous,
-    );
-
     await prefs.setInt(_keyAvatarIndex, clampedIndex);
-    _emit(_currentUser);
+
+    _identite.publier(
+      AuthUser(
+        uid: actuel.uid,
+        authMethod: actuel.authMethod,
+        displayName: actuel.displayName,
+        avatarIndex: clampedIndex,
+        isAnonymous: actuel.isAnonymous,
+      ),
+    );
   }
 
   /// Libère les ressources
   void dispose() {
-    _authController.close();
+    _identite.fermer();
   }
 }
