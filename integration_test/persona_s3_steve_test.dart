@@ -1328,9 +1328,12 @@ Future<void> _terrainConsultations(WidgetTester tester, String persona) async {
   )) {
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     await settleAndShoot(tester, persona, 'S3E_37b_health');
+    // TACHE 757 : health.privacyBanner tutoie desormais (« votre » -> « ton »).
+    // Ce finder est dans un `||`, donc il n aurait pas rougi : il aurait juste
+    // cesse de prouver quoi que ce soit, en silence.
     final onHealth =
         present(find.text('Informations santé')) ||
-        present(find.textContaining('restent sur votre téléphone'));
+        present(find.textContaining('restent sur ton téléphone'));
     // Saisie d'un champ (1er TextFormField = groupe sanguin) + sauvegarde.
     final fields = find.byType(TextFormField);
     if (present(fields)) {

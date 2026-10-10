@@ -822,7 +822,12 @@ void main() {
         'información médica',
         'rutas pasadas',
         'diario',
-        'etapas que has caminado',
+        // TACHE 757 — « has caminado » devient « ha caminado ». Le droit a
+        // l effacement est un texte RGPD : il reste au registre FORMEL dans
+        // les cinq langues, et l espagnol y etait au tutoiement, a l inverse
+        // du francais et de l allemand. Seul le mot-clef change ; l element
+        // promis, lui, est le meme.
+        'etapas que ha caminado',
         'pernoctaciones',
         'trazas GPS',
         'consentimientos',
