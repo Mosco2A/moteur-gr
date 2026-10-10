@@ -66,15 +66,15 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 ## Arborescence mesurée
 
 `lib/` compte713<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-138 664<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+138 759<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
-| `lib/core/` |191 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |32 245<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` |468<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |96 695<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
-| `lib/shared/` | 30 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 5 266<!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
+| `lib/core/` |191 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |32 263<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
+| `lib/features/` |468<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |96 760<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/shared/` | 30 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 5 278<!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
 **`lib/domain/` n'a pas de ligne dans l'audit** : `mesurer_arborescence` ne
@@ -88,11 +88,11 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 
 | Feature | Fichiers | Lignes |
 |---|---|---|
-| `trek` |78<!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> |17 280<!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
-| `safety` | 31 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> |7 066 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
+| `trek` |78<!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> |17 292<!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
+| `safety` | 31 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> |7 068 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
 | `feasibility` | 31 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 736 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
 | `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 5 054 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
-| `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 932 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
+| `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 935 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
 
 `trek` reste la plus grosse feature, et de loin.
 
