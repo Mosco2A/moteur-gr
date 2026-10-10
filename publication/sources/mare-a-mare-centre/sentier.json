@@ -202,14 +202,14 @@
       "name_it": "Rifugio tappa Serra di Fiumorbu",
       "name_es": "Albergue Serra di Fiumorbu",
       "type": "gite",
-      "lat": 41.957,
-      "lng": 9.287,
+      "lat": 41.962918,
+      "lng": 9.259836,
       "capacity": 20,
       "price_range": "35-50EUR",
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Gite de Catastaghju, San Gavino di Fiumorbu, 07 81 76 84 71) ; https://www.corseorientale.com/Decouvrir/Cote-Montagne/Sentiers-de-randonnees/GHISONACCIA-AJACCIO-MARE-A-MARE-CENTRE (Gite Catastaghju Sangavinu)",
       "address": "Catastaghju, 20243 San-Gavino-di-Fiumorbo",
       "phone": "+33781768471",
-      "email": "mairie.sangavinodifiumo@wanadoo.fr",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Gite de Catastaghju, San Gavino di Fiumorbu, 07 81 76 84 71) ; https://www.corseorientale.com/Decouvrir/Cote-Montagne/Sentiers-de-randonnees/GHISONACCIA-AJACCIO-MARE-A-MARE-CENTRE (Gite Catastaghju Sangavinu)"
+      "email": "mairie.sangavinodifiumo@wanadoo.fr"
     },
     {
       "id": "mam-acc-02",
@@ -236,14 +236,14 @@
       "name_it": "Rifugio di Cozzano",
       "name_es": "Albergue de Cozzano",
       "type": "gite",
-      "lat": 41.9395,
-      "lng": 9.1985,
+      "lat": 41.9352431,
+      "lng": 9.1546064,
       "capacity": 16,
       "price_range": "40-55EUR",
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Gites Anita Renucci, Cozzano, 04 95 10 54 30 / 06 47 00 43 69)",
       "address": "20148 Cozzano",
       "phone": "+33495105430",
-      "website": "https://www.gites-anita-renucci.com",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Gites Anita Renucci, Cozzano, 04 95 10 54 30 / 06 47 00 43 69)"
+      "website": "https://www.gites-anita-renucci.com"
     },
     {
       "id": "mam-acc-04",
@@ -254,14 +254,14 @@
       "name_it": "Rifugio tappa Guitera-les-Bains",
       "name_es": "Albergue Guitera-les-Bains",
       "type": "gite",
-      "lat": 41.915,
-      "lng": 9.1415,
+      "lat": 41.9125784,
+      "lng": 9.0843688,
       "capacity": 18,
       "price_range": "35-50EUR",
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Chez Paul-Antoine, Guitera-les-Bains, 04 95 24 44 40 / 06 84 22 40 47)",
       "address": "20153 Guitera-les-Bains",
       "phone": "+33495244440",
-      "website": "https://chez-paul-antoine.com",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Chez Paul-Antoine, Guitera-les-Bains, 04 95 24 44 40 / 06 84 22 40 47)"
+      "website": "https://chez-paul-antoine.com"
     },
     {
       "id": "mam-acc-05",
@@ -288,12 +288,12 @@
       "name_it": "Rifugio di Quasquara",
       "name_es": "Albergue de Quasquara",
       "type": "gite",
-      "lat": 41.9286,
-      "lng": 9.076,
+      "lat": 41.9004613,
+      "lng": 9.0102656,
       "capacity": 14,
       "price_range": "35-50EUR",
-      "address": "20117 Quasquara",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ — le gite d etape de Quasquara (« L Aghja ») y est declare FERME. Voir le point d information mam-info-01 : ne pas compter sur une nuit ici sans avoir telephone."
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ — le gite d etape de Quasquara (« L Aghja ») y est declare FERME. Voir le point d information mam-info-01 : ne pas compter sur une nuit ici sans avoir telephone.",
+      "address": "20117 Quasquara"
     },
     {
       "id": "mam-acc-07",
@@ -304,12 +304,12 @@
       "name_it": "Rifugio tappa Santa Maria Siche",
       "name_es": "Albergue Santa Maria Siche",
       "type": "gite",
-      "lat": 41.945,
-      "lng": 9.0088,
+      "lat": 41.8771458,
+      "lng": 8.983603,
       "capacity": 22,
       "price_range": "35-55EUR",
-      "address": "a completer",
-      "source": "AUCUN gite d etape a Santa-Maria-Sicche dans https://www.mare-a-mare.fr/centre/refuges/ le 30/09/2026. Hebergements sources les plus proches de l itineraire : Chatelet de Campo (Campo, 04 95 53 74 18) et Auberge du Col Saint-Georges (Grosseto-Prugna, 04 95 25 70 06), publies ici sous mam-acc-17 et mam-acc-18. Entree a verifier."
+      "source": "AUCUN gite d etape a Santa-Maria-Sicche dans https://www.mare-a-mare.fr/centre/refuges/ le 30/09/2026. Hebergements sources les plus proches de l itineraire : Chatelet de Campo (Campo, 04 95 53 74 18) et Auberge du Col Saint-Georges (Grosseto-Prugna, 04 95 25 70 06), publies ici sous mam-acc-17 et mam-acc-18. Entree a verifier.",
+      "address": "a completer"
     },
     {
       "id": "mam-acc-08",
@@ -352,12 +352,12 @@
       "name_it": "Hotel di Porticcio",
       "name_es": "Hotel de Porticcio",
       "type": "hotel",
-      "lat": 41.8905,
-      "lng": 8.8135,
+      "lat": 41.8883892,
+      "lng": 8.8019281,
       "capacity": 30,
       "price_range": "60-120EUR",
-      "address": "a completer",
-      "source": "« Hotel de Porticcio » n est pas un etablissement identifie : aucune source publique le 30/09/2026. Nom generique a remplacer par un etablissement reel."
+      "source": "« Hotel de Porticcio » n est pas un etablissement identifie : aucune source publique le 30/09/2026. Nom generique a remplacer par un etablissement reel.",
+      "address": "a completer"
     },
     {
       "id": "mam-acc-11",
@@ -401,13 +401,13 @@
       "name_it": "Camping-Village Marina d Erba Rossa (Ghisonaccia)",
       "name_es": "Camping-Village Marina d Erba Rossa (Ghisonaccia)",
       "type": "camping",
-      "lat": 42.0156,
-      "lng": 9.4039,
+      "lat": 41.9995967,
+      "lng": 9.4466775,
       "phone": "+33442168990",
       "email": "contact@marina-erbarossa.com",
       "website": "https://www.marina-erbarossa.com",
       "address": "20240 Ghisonaccia, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Camping-Village Marina d Erba Rossa, Ghisonaccia, 04 42 16 89 90)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Camping-Village Marina d Erba Rossa, Ghisonaccia, 04 42 16 89 90) | COORDONNEE RELEVEE (tache 775) : OSM way 1559412066 (tourism=camp_site, Marina d Erba Rossa, route de la Mer, Ghisonaccia)"
     },
     {
       "id": "mam-acc-14",
@@ -418,11 +418,11 @@
       "name_it": "Da Mme Guidicelli (Serra-di-Fiumorbo)",
       "name_es": "Casa de Mme Guidicelli (Serra-di-Fiumorbo)",
       "type": "gite",
-      "lat": 41.9567,
-      "lng": 9.2864,
+      "lat": 41.9863703,
+      "lng": 9.3363062,
       "phone": "+33495567548",
       "address": "20243 Serra-di-Fiumorbo, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Mme Guidicelli, Serra di Fium obru, 04 95 56 75 48 / 06 81 04 69 49)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Mme Guidicelli, Serra di Fium obru, 04 95 56 75 48 / 06 81 04 69 49) | COORDONNEE RELEVEE (tache 775) : OSM node 339974698 (place=village, Serra-di-Fiumorbo)"
     },
     {
       "id": "mam-acc-15",
@@ -433,12 +433,12 @@
       "name_it": "Rifugio tappa Bella Vista (Cozzano)",
       "name_es": "Albergue Bella Vista (Cozzano)",
       "type": "gite",
-      "lat": 41.9392,
-      "lng": 9.1978,
+      "lat": 41.936814,
+      "lng": 9.1605962,
       "phone": "+33495244159",
       "website": "https://www.gitecozzanohebergementcorse.com",
       "address": "20148 Cozzano, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Gite d etape Bella Vista, Cozzano, 04 95 24 41 59 / 06 72 92 89 46)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Gite d etape Bella Vista, Cozzano, 04 95 24 41 59 / 06 72 92 89 46) | COORDONNEE RELEVEE (tache 775) : OSM node 1379768801 (tourism=hostel, Gite d etape Bella Vista), a Cozzano"
     },
     {
       "id": "mam-acc-16",
@@ -449,11 +449,11 @@
       "name_it": "A Filetta (Cozzano)",
       "name_es": "A Filetta (Cozzano)",
       "type": "gite",
-      "lat": 41.9392,
-      "lng": 9.1978,
+      "lat": 41.9352431,
+      "lng": 9.1546064,
       "phone": "+33495244561",
       "address": "20148 Cozzano, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (A Filetta, Cozzano, 04 95 24 45 61 / 06 79 82 37 15)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (A Filetta, Cozzano, 04 95 24 45 61 / 06 79 82 37 15) | COORDONNEE RELEVEE (tache 775) : OSM node 1280431110 (place=village, Cozzano)"
     },
     {
       "id": "mam-acc-17",
@@ -464,12 +464,12 @@
       "name_it": "Chatelet de Campo (Campo)",
       "name_es": "Chatelet de Campo (Campo)",
       "type": "gite",
-      "lat": 41.9447,
-      "lng": 9.0083,
+      "lat": 41.892072,
+      "lng": 9.0054983,
       "phone": "+33495537418",
       "website": "https://www.chatelet-de-campo.com",
       "address": "20142 Campo, adresse precise a completer",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Chatelet de Campo, Campo, 04 95 53 74 18). Campo est un village voisin de Santa-Maria-Sicche, desservi par la meme ligne d autocar C6."
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Chatelet de Campo, Campo, 04 95 53 74 18). Campo est un village voisin de Santa-Maria-Sicche, desservi par la meme ligne d autocar C6. | COORDONNEE RELEVEE (tache 775) : OSM node 1624369843 (place=village, Campo)"
     },
     {
       "id": "mam-acc-18",
@@ -480,31 +480,32 @@
       "name_it": "Auberge du Col Saint-Georges (Grosseto-Prugna)",
       "name_es": "Auberge du Col Saint-Georges (Grosseto-Prugna)",
       "type": "gite",
-      "lat": 41.8917,
-      "lng": 8.9278,
+      "lat": 41.8798088,
+      "lng": 8.9330617,
       "phone": "+33495257006",
       "address": "Col Saint-Georges, 20128 Grosseto-Prugna",
-      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Auberge du Col Saint Georges, Grosseto-Prugna, 04 95 25 70 06)"
+      "source": "https://www.mare-a-mare.fr/centre/refuges/ (Auberge du Col Saint Georges, Grosseto-Prugna, 04 95 25 70 06) | COORDONNEE RELEVEE (tache 775) : OSM node 7897372511 (tourism=hotel, Auberge du Col Saint Georges)"
     }
   ],
   "pois": [
     {
       "id": "mam-poi-01",
       "stage_id": "mam-ew-s1",
-      "name_fr": "Fontaine de Puzzichellu",
-      "name_en": "Puzzichellu Fountain",
-      "name_de": "Brunnen Puzzichellu",
-      "name_it": "Fontana di Puzzichellu",
-      "name_es": "Fuente de Puzzichellu",
+      "name_fr": "Fontaine de Serra-di-Fiumorbo",
+      "name_en": "Fontaine de Serra-di-Fiumorbo",
+      "name_de": "Fontaine de Serra-di-Fiumorbo",
+      "name_it": "Fontaine de Serra-di-Fiumorbo",
+      "name_es": "Fontaine de Serra-di-Fiumorbo",
       "description_fr": "Point d'eau potable en bord de sentier, dernier ravitaillement avant la montee.",
       "description_en": "Drinking water point along the trail, last supply before the climb.",
       "description_de": "Trinkwasserstelle am Weg, letzte Versorgung vor dem Aufstieg.",
       "description_it": "Punto d'acqua potabile lungo il sentiero, ultimo rifornimento prima della salita.",
       "description_es": "Punto de agua potable junto al sendero, ultimo abastecimiento antes de la subida.",
       "type": "water",
-      "lat": 41.995,
-      "lng": 9.37,
-      "elevation": 280.0
+      "lat": 41.9858205,
+      "lng": 9.3368117,
+      "elevation": 450.0,
+      "source": "OSM node 5558951240 (amenity=fountain, drinking_water=yes), au village de Serra-di-Fiumorbo (OSM node 339974698, place=village)"
     },
     {
       "id": "mam-poi-02",
@@ -520,9 +521,10 @@
       "description_it": "Vista aperta sulla pianura orientale e il Mar Tirreno dal passo.",
       "description_es": "Vista despejada sobre el llano oriental y el mar Tirreno desde el collado.",
       "type": "viewpoint",
-      "lat": 41.978,
-      "lng": 9.33,
-      "elevation": 720.0
+      "lat": 41.9519443,
+      "lng": 9.3098885,
+      "elevation": 779.0,
+      "source": "OSM node 9537582199 (natural=saddle, ele=779, « u Cataru »)"
     },
     {
       "id": "mam-poi-04",
@@ -538,9 +540,10 @@
       "description_it": "Attraversamento di una magnifica foresta di pini laricio, specie endemica corsa.",
       "description_es": "Travesia de un magnifico bosque de pinos laricio, especie endemica corsa.",
       "type": "info",
-      "lat": 41.943,
-      "lng": 9.22,
-      "elevation": 1050.0
+      "lat": 41.962151,
+      "lng": 9.239395,
+      "elevation": 1050.0,
+      "source": "OSM way 42225939 (landuse=forest, leaf_type=needleleaved). OSM NE NOMME PAS l'espece : « pins laricio » reste une affirmation editoriale"
     },
     {
       "id": "mam-poi-05",
@@ -556,9 +559,10 @@
       "description_it": "Sorgenti naturali di acqua calda solforosa, note dall'Antichita. Bagno possibile.",
       "description_es": "Fuentes naturales de agua caliente sulfurosa, conocidas desde la Antiguedad. Bano posible.",
       "type": "water",
-      "lat": 41.9145,
-      "lng": 9.1408,
-      "elevation": 580.0
+      "lat": 41.9000724,
+      "lng": 9.0973054,
+      "elevation": 658.0,
+      "source": "OSM node 5746820140 (natural=spring, « Source Thermale des Bains de Guitera »)"
     },
     {
       "id": "mam-poi-06",
@@ -574,9 +578,10 @@
       "description_it": "Autentico villaggio di montagna con alimentari e bar. Rifornimento possibile.",
       "description_es": "Autentico pueblo de montana con tienda y bar. Avituallamiento posible.",
       "type": "village",
-      "lat": 41.9392,
-      "lng": 9.1978,
-      "elevation": 730.0
+      "lat": 41.9352431,
+      "lng": 9.1546064,
+      "elevation": 732.0,
+      "source": "OSM node 1280431110 (place=village, « Cozzano »)"
     },
     {
       "id": "mam-poi-07",
@@ -610,9 +615,10 @@
       "description_it": "Fontana del villaggio, acqua potabile fresca.",
       "description_es": "Fuente del pueblo, agua potable fresca.",
       "type": "water",
-      "lat": 41.915,
-      "lng": 9.142,
-      "elevation": 595.0
+      "lat": 41.9131154,
+      "lng": 9.0825806,
+      "elevation": 653.0,
+      "source": "OSM node 7929636052 (amenity=drinking_water), au village de Guitera / Vutera (OSM node 1280468809, place=village)"
     },
     {
       "id": "mam-poi-09",
@@ -628,27 +634,29 @@
       "description_it": "Tipico villaggio arroccato con vista sulla valle del Taravo.",
       "description_es": "Tipico pueblo encaramado con vistas al valle del Taravo.",
       "type": "village",
-      "lat": 41.9283,
-      "lng": 9.0756,
-      "elevation": 650.0
+      "lat": 41.9004613,
+      "lng": 9.0102656,
+      "elevation": 751.0,
+      "source": "OSM node 1706302935 (place=village, « Quasquara »)"
     },
     {
       "id": "mam-poi-10",
       "stage_id": "mam-ew-s5",
-      "name_fr": "Panorama de la vallee du Taravo",
-      "name_en": "Taravo Valley Viewpoint",
-      "name_de": "Aussichtspunkt Taravo-Tal",
-      "name_it": "Panorama della valle del Taravo",
-      "name_es": "Panorama del valle del Taravo",
+      "name_fr": "Bocca di Foce",
+      "name_en": "Bocca di Foce",
+      "name_de": "Bocca di Foce",
+      "name_it": "Bocca di Foce",
+      "name_es": "Bocca di Foce",
       "description_fr": "Point de vue exceptionnel sur la vallee du Taravo et les montagnes environnantes.",
       "description_en": "Exceptional viewpoint over the Taravo valley and surrounding mountains.",
       "description_de": "Aussergewoehnlicher Aussichtspunkt ueber das Taravo-Tal und die umliegenden Berge.",
       "description_it": "Punto di vista eccezionale sulla valle del Taravo e le montagne circostanti.",
       "description_es": "Punto de vista excepcional sobre el valle del Taravo y las montanas circundantes.",
       "type": "viewpoint",
-      "lat": 41.936,
-      "lng": 9.042,
-      "elevation": 780.0
+      "lat": 41.9113683,
+      "lng": 8.9982713,
+      "elevation": 1159.0,
+      "source": "OSM node 1039666319 (natural=saddle, ele=1159, « Bocca di Foce »)"
     },
     {
       "id": "mam-poi-11",
@@ -664,9 +672,10 @@
       "description_it": "Capoluogo di cantone con negozi e servizi. Luogo di nascita di Sampiero Corso.",
       "description_es": "Cabecera de canton con comercios y servicios. Lugar de nacimiento de Sampiero Corso.",
       "type": "village",
-      "lat": 41.9447,
-      "lng": 9.0083,
-      "elevation": 450.0
+      "lat": 41.8771458,
+      "lng": 8.983603,
+      "elevation": 773.0,
+      "source": "OSM node 1877120458 (place=hamlet, « Santa-Maria-Sicche »)"
     },
     {
       "id": "mam-poi-12",
@@ -689,20 +698,21 @@
     {
       "id": "mam-poi-13",
       "stage_id": "mam-ew-s7",
-      "name_fr": "Panorama du golfe d'Ajaccio",
-      "name_en": "Gulf of Ajaccio Viewpoint",
-      "name_de": "Aussichtspunkt Golf von Ajaccio",
-      "name_it": "Panorama del golfo di Ajaccio",
-      "name_es": "Panorama del golfo de Ajaccio",
+      "name_fr": "Tour de Frassu (panorama du golfe d'Ajaccio)",
+      "name_en": "Tour de Frassu (panorama du golfe d'Ajaccio)",
+      "name_de": "Tour de Frassu (panorama du golfe d'Ajaccio)",
+      "name_it": "Tour de Frassu (panorama du golfe d'Ajaccio)",
+      "name_es": "Tour de Frassu (panorama du golfe d'Ajaccio)",
       "description_fr": "Vue panoramique sur le golfe d'Ajaccio et les iles Sanguinaires en fin de parcours.",
       "description_en": "Panoramic view over the Gulf of Ajaccio and the Sanguinaires Islands near the end.",
       "description_de": "Panoramablick auf den Golf von Ajaccio und die Sanguinaires-Inseln nahe dem Ziel.",
       "description_it": "Vista panoramica sul golfo di Ajaccio e le isole Sanguinarie verso la fine.",
       "description_es": "Vista panoramica sobre el golfo de Ajaccio y las islas Sanguinarias al final.",
       "type": "viewpoint",
-      "lat": 41.891,
-      "lng": 8.86,
-      "elevation": 320.0
+      "lat": 41.885023,
+      "lng": 8.84168,
+      "elevation": 341.0,
+      "source": "OSM way 1064470433 (man_made=tower, tourism=viewpoint, « Tour de Frassu »)"
     },
     {
       "id": "mam-poi-14",
@@ -718,9 +728,10 @@
       "description_it": "Arrivo del sentiero sulla spiaggia di Porticcio, di fronte al golfo di Ajaccio.",
       "description_es": "Llegada del sendero a la playa de Porticcio, frente al golfo de Ajaccio.",
       "type": "info",
-      "lat": 41.8903,
-      "lng": 8.8128,
-      "elevation": 5.0
+      "lat": 41.89003,
+      "lng": 8.80297,
+      "elevation": 1.0,
+      "source": "dernier point de la relation OSM 10032398 (« Mare a Mare Centre Principal ») : l'arrivee du sentier sur le rivage de Porticcio"
     },
     {
       "id": "mam-tr-01",

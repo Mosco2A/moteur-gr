@@ -42,12 +42,12 @@
     },
     {
       "trailId": "mare-a-mare-centre",
-      "dataVersion": "2026-10-10T09:47:31.804Z",
-      "hash": "2ad2fe9f45b741f57916158a31111262fd2316dbe017dadf115ce45779434986",
-      "filePath": "mare_a_mare_centre/v20261010T094731804Z.json",
-      "fileSize": 810408,
+      "dataVersion": "2026-10-10T16:13:55.033Z",
+      "hash": "1cf3f7c3208daeb6581dd8722c6bdd3bc0ab11efe1cb929a6641fbee315f009a",
+      "filePath": "mare_a_mare_centre/v20261010T161355033Z.json",
+      "fileSize": 812352,
       "status": "active",
-      "lastUpdated": "2026-10-10T09:47:31.804Z",
+      "lastUpdated": "2026-10-10T16:13:55.033Z",
       "fiche": {
         "name": "Mare a Mare Centre",
         "displayName": "Mare a Mare Centre",
