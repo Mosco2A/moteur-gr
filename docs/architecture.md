@@ -65,15 +65,15 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte715<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-139 531<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte716<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+139 699<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
 | `lib/core/` |191 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |32 586<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` |470<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |97 191<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/features/` |471<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |97 359<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 30 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 5 296<!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 

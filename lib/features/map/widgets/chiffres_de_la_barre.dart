@@ -24,6 +24,37 @@
 /// absente disparait, ou porte un tiret quand
 /// [ChiffresDeLaBarre.showPendingValues] est vrai. Un zero se lirait comme une
 /// mesure.
+///
+/// ---------------------------------------------------------------------------
+/// TACHE 808 — CE QUI BOUGE EST ICI, CE QUI NE BOUGE PAS EST MONTE AU TITRE
+/// ---------------------------------------------------------------------------
+///
+/// RETOUR DE CHRISTOPHE DU 10/10, EN MODE DEMO, mot pour mot : « dans
+/// navigation total et restant devraient etre inverse . Passer total avec le
+/// titre ca bouge pas et mettre ce qui bouge dans ke tableau en dessous (pour
+/// sentier et etape) ».
+///
+/// LA REGLE EST PLUS LARGE QUE LES DEUX CASES QU'ELLE NOMME, et c'est ainsi
+/// qu'elle est appliquee : une valeur qui ne change pas de toute la marche n'a
+/// rien a faire dans un tableau qu'on relit tous les cent metres. Le TOTAL du
+/// perimetre est fixe — il est monte sur la ligne du titre, avec la pastille
+/// qui dit deja DE QUOI on parle. Le RESTANT, lui, descend de la ligne grise
+/// qu'il occupait jusqu'a la place liberee par le total : PREMIERE CASE DU
+/// TABLEAU.
+///
+/// LES SIX CASES RELUES UNE PAR UNE, DANS LES DEUX VUES — c'est le releve
+/// demande, et il n'a trouve qu'une seule valeur fixe :
+///   * `Restant`, `Parcouru`, `Vit. moy.`, `D+`, `D-` bougent a chaque releve ;
+///   * `Altitude` (vue etape) bouge aussi ;
+///   * `Etapes` (vue sentier, forme « 3 / 7 ») est le SEUL cas mixte : son
+///     numerateur bouge, son denominateur est fixe. Les deux ne se separent
+///     pas — un « 3 » sans « / 7 » ne se lit pas — donc la case reste entiere
+///     dans le tableau. C'est l'exception, elle est dite.
+///
+/// ET LE GAIN N'EST PAS QUE DE RANGEMENT : le restant etait le chiffre le plus
+/// utile au marcheur et le plus mal servi de la barre — 16 points, gris
+/// secondaire, au meme poids que les libelles. Devenu une case, il est rendu
+/// comme toutes les valeurs : 20 points, gras, quasi blanc.
 library;
 
 import 'package:flutter/material.dart';
@@ -42,7 +73,7 @@ class ChiffresDeLaBarre extends StatelessWidget {
     required this.accent,
     required this.showPendingValues,
     super.key,
-    this.totalDistanceKm,
+    this.distanceRemainingKm,
     this.distanceCoveredKm,
     this.avgSpeedKmh,
     this.elevationGainM,
@@ -65,8 +96,11 @@ class ChiffresDeLaBarre extends StatelessWidget {
   /// Affiche les valeurs absentes en attente au lieu de les masquer (LOT D).
   final bool showPendingValues;
 
-  /// Total du perimetre en kilometres. `null` = masque.
-  final double? totalDistanceKm;
+  /// Restant du perimetre en kilometres (tache 808). `null` = masque.
+  ///
+  /// A PRIS LA PLACE DU TOTAL, qui est monte sur la ligne du titre : c'est la
+  /// valeur qui BOUGE, donc celle qui doit etre ici.
+  final double? distanceRemainingKm;
 
   /// Parcouru du perimetre en kilometres. `null` = masque.
   final double? distanceCoveredKm;
@@ -93,7 +127,7 @@ class ChiffresDeLaBarre extends StatelessWidget {
   /// Vrai des qu'au moins une valeur est disponible, ou en mode « en attente ».
   bool get aQuelqueChoseAMontrer =>
       showPendingValues ||
-      totalDistanceKm != null ||
+      distanceRemainingKm != null ||
       distanceCoveredKm != null ||
       elevationGainM != null ||
       elevationLossM != null ||
@@ -115,19 +149,22 @@ class ChiffresDeLaBarre extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Rangee 1 — CE QUI AVANCE : total du perimetre, parcouru, vitesse
-        // moyenne.
+        // Rangee 1 — CE QUI AVANCE : restant, parcouru, vitesse moyenne.
+        //
+        // LE RESTANT OUVRE LA RANGEE DEPUIS LA TACHE 808, a la place du total
+        // monte au titre. Il garde l'icone de distance : c'est la meme mesure,
+        // comptee de l'autre bout.
         _Rangee(
           children: [
-            if (_montre(totalDistanceKm))
+            if (_montre(distanceRemainingKm))
               _CaseMesuree(
                 accent: accent,
                 icon: StepwaysIcons.distance,
-                label: t.tracking.total,
+                label: t.tracking.remaining,
                 value: _valeurOuTiret(
-                  totalDistanceKm == null
+                  distanceRemainingKm == null
                       ? null
-                      : '${totalDistanceKm!.toStringAsFixed(1)} km',
+                      : '${distanceRemainingKm!.toStringAsFixed(1)} km',
                 ),
               ),
             if (_montre(distanceCoveredKm))
@@ -264,11 +301,25 @@ class _CaseMesuree extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
+          // LE LIBELLE REMONTE DE DEUX TONS (tache 808, item 5 de Christophe :
+          // « on est en mode navigation tout doit etre bien lisible »).
+          //
+          // CE QUE LA MESURE DIT, ET ELLE CONTREDIT A MOITIE LE SOUPCON :
+          // [AppTheme.grisTexteSecondaire] (#B0B0B0) sur la surface sombre
+          // (#1E1E1E) donne 7,69:1 — il PASSAIT deja le seuil AA de 4,5. Le
+          // libelle n'etait donc pas illisible en chambre. Mais ce bandeau se
+          // lit DEHORS, bras tendu, en plein soleil, et un ecran sous le
+          // soleil perd l'essentiel de son contraste utile : la marge compte.
+          // [AppTheme.grisClair] (#E0E0E0) porte le meme texte a 12,63:1, soit
+          // 64 % de mieux, SANS le confondre avec la valeur au-dessus — celle-
+          // ci reste distincte par la TAILLE (20 contre 16) et le POIDS (w600
+          // contre w400), qui sont de meilleurs signaux que la couleur pour
+          // qui distingue mal les couleurs.
           Text(
             label,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppTheme.grisTexteSecondaire,
+              color: AppTheme.grisClair,
             ),
           ),
         ],

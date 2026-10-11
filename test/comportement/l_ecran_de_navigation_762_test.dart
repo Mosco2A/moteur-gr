@@ -693,7 +693,11 @@ void main() {
             etapesTotal: vueSentier ? 7 : null,
           ),
         );
-        expect(find.text(t.tracking.total), findsOneWidget);
+        // TACHE 808 — LE TOTAL N'EST PLUS UNE CASE, le restant l'est, ET
+        // CELA VAUT DANS LES DEUX PERIMETRES : Christophe a ecrit « (pour
+        // sentier et etape) », cette boucle est ce qui le verifie.
+        expect(find.text(t.tracking.remaining), findsOneWidget);
+        expect(find.text(t.tracking.total), findsNothing);
         expect(find.text(t.tracking.covered), findsOneWidget);
         expect(find.text(t.tracking.avgSpeed), findsOneWidget);
         expect(find.text(t.tracking.dPlus), findsOneWidget);

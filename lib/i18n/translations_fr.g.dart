@@ -451,6 +451,9 @@ class Translations$map$fr {
 	/// fr: 'Voir l'étape'
 	String get basculerVersEtape => 'Voir l\'étape';
 
+	/// fr: 'Bravo, étape terminée !'
+	String get etapeFinie => 'Bravo, étape terminée !';
+
 	late final Translations$map$guide$fr guide = Translations$map$guide$fr.internal(_root);
 
 	/// fr: 'Masquer l'alerte'
@@ -820,6 +823,9 @@ class Translations$tracking$fr {
 
 	/// fr: 'Total'
 	String get total => 'Total';
+
+	/// fr: 'Restant'
+	String get remaining => 'Restant';
 
 	/// fr: 'Parcouru'
 	String get covered => 'Parcouru';
@@ -8511,6 +8517,7 @@ extension on Translations {
 			'map.perimetreSentier' => 'Sentier',
 			'map.basculerVersSentier' => 'Voir le sentier entier',
 			'map.basculerVersEtape' => 'Voir l\'étape',
+			'map.etapeFinie' => 'Bravo, étape terminée !',
 			'map.guide.buttonsTitle' => 'Boutons',
 			'map.guide.position' => 'Ta position GPS, mise à jour en marchant. Si le point disparaît, vérifie l\'autorisation de localisation.',
 			'map.guide.track' => 'Le tracé du sentier. L\'alerte hors trace s\'y réfère.',
@@ -8649,6 +8656,7 @@ extension on Translations {
 			'tracking.avgSpeed' => 'Vit. moy.',
 			'tracking.altitude' => 'Altitude',
 			'tracking.total' => 'Total',
+			'tracking.remaining' => 'Restant',
 			'tracking.covered' => 'Parcouru',
 			'tracking.stagesDone' => 'Étapes',
 			'tracking.backgroundRationale.title' => 'Suivre ta trace même écran éteint',
@@ -8851,10 +8859,10 @@ extension on Translations {
 			'checklist.ui.infoCheckTitle' => 'Cocher les items',
 			'checklist.ui.infoCheckBody' => 'Coche ce que tu emportes — le poids se recalcule en haut.',
 			'checklist.ui.infoRequiredTitle' => 'Obligatoires',
-			'checklist.ui.infoRequiredBody' => 'Items avec cadenas = réglementation (sifflet, lampe, couverture survie).',
-			'checklist.ui.infoGaugeTitle' => 'Jauge poids',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoRequiredBody' => 'Items avec cadenas = réglementation (sifflet, lampe, couverture survie).',
+			'checklist.ui.infoGaugeTitle' => 'Jauge poids',
 			'checklist.ui.infoGaugeBody' => 'Objectif : sac < 15% de ton poids. Vert = OK, Orange = attention, Rouge = trop lourd.',
 			'checklist.ui.infoAddTitle' => 'Ajouter',
 			'checklist.ui.infoAddBody' => 'Bouton + en bas de chaque catégorie pour tes propres items.',
@@ -9365,10 +9373,10 @@ extension on Translations {
 			'cloud.statusSection' => 'Cloud',
 			'cloud.statusActive' => 'Services en ligne actifs',
 			'cloud.statusActiveDesc' => 'Sauvegarde et suivi en temps réel disponibles.',
-			'cloud.statusLocal' => 'Mode local (sans cloud)',
-			'cloud.statusLocalDesc' => 'Aucune donnée n\'est envoyée en ligne. Configuration cloud absente.',
 			_ => null,
 		} ?? switch (path) {
+			'cloud.statusLocal' => 'Mode local (sans cloud)',
+			'cloud.statusLocalDesc' => 'Aucune donnée n\'est envoyée en ligne. Configuration cloud absente.',
 			'onboarding.skip' => 'Passer',
 			'onboarding.next' => 'Suivant',
 			'onboarding.getStarted' => 'Commencer',
@@ -9879,10 +9887,10 @@ extension on Translations {
 			'recap.stages' => '{done} / {total} étapes parcourues',
 			'recap.distance' => '{km} km parcourus',
 			'recap.elevation' => '{meters} m de dénivelé positif',
-			'recap.duration' => '{days} jours au total, marche et repos compris',
-			'recap.dates' => 'Du {start} au {end}',
 			_ => null,
 		} ?? switch (path) {
+			'recap.duration' => '{days} jours au total, marche et repos compris',
+			'recap.dates' => 'Du {start} au {end}',
 			'recap.viewDiploma' => 'Voir mon diplôme',
 			'recap.viewJournal' => 'Voir mon journal',
 			'recap.noData' => 'Aucune donnée de parcours à afficher pour le moment.',

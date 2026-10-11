@@ -263,6 +263,7 @@ class _Translations$map$de extends Translations$map$fr {
 	@override String get perimetreSentier => 'Weg';
 	@override String get basculerVersSentier => 'Gesamten Weg anzeigen';
 	@override String get basculerVersEtape => 'Etappe anzeigen';
+	@override String get etapeFinie => 'Stark, Etappe geschafft!';
 	@override late final _Translations$map$guide$de guide = _Translations$map$guide$de._(_root);
 	@override String get supplyDismiss => 'Hinweis ausblenden';
 	@override String get pinMergedTitle => 'Mehrere Markierungen am selben Ort';
@@ -446,6 +447,7 @@ class _Translations$tracking$de extends Translations$tracking$fr {
 	@override String get avgSpeed => 'Ø Geschw.';
 	@override String get altitude => 'Höhe';
 	@override String get total => 'Gesamt';
+	@override String get remaining => 'Verbleibend';
 	@override String get covered => 'Zurückgelegt';
 	@override String get stagesDone => 'Etappen';
 	@override late final _Translations$tracking$backgroundRationale$de backgroundRationale = _Translations$tracking$backgroundRationale$de._(_root);
@@ -4384,6 +4386,7 @@ extension on TranslationsDe {
 			'map.perimetreSentier' => 'Weg',
 			'map.basculerVersSentier' => 'Gesamten Weg anzeigen',
 			'map.basculerVersEtape' => 'Etappe anzeigen',
+			'map.etapeFinie' => 'Stark, Etappe geschafft!',
 			'map.guide.buttonsTitle' => 'Schaltflächen',
 			'map.guide.position' => 'Deine GPS-Position, beim Gehen aktualisiert. Verschwindet der Punkt, prüfe die Ortungsberechtigung.',
 			'map.guide.track' => 'Die Linie des Wegs. Die Warnung bei Abweichung bezieht sich darauf.',
@@ -4522,6 +4525,7 @@ extension on TranslationsDe {
 			'tracking.avgSpeed' => 'Ø Geschw.',
 			'tracking.altitude' => 'Höhe',
 			'tracking.total' => 'Gesamt',
+			'tracking.remaining' => 'Verbleibend',
 			'tracking.covered' => 'Zurückgelegt',
 			'tracking.stagesDone' => 'Etappen',
 			'tracking.backgroundRationale.title' => 'Deine Route auch bei ausgeschaltetem Bildschirm aufzeichnen',
@@ -4724,10 +4728,10 @@ extension on TranslationsDe {
 			'checklist.ui.infoCheckTitle' => 'Artikel anhaken',
 			'checklist.ui.infoCheckBody' => 'Hake an, was du mitnimmst — das Gewicht wird oben neu berechnet.',
 			'checklist.ui.infoRequiredTitle' => 'Pflicht',
-			'checklist.ui.infoRequiredBody' => 'Artikel mit Schloss = Vorschrift (Pfeife, Lampe, Rettungsdecke).',
-			'checklist.ui.infoGaugeTitle' => 'Gewichtsanzeige',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoRequiredBody' => 'Artikel mit Schloss = Vorschrift (Pfeife, Lampe, Rettungsdecke).',
+			'checklist.ui.infoGaugeTitle' => 'Gewichtsanzeige',
 			'checklist.ui.infoGaugeBody' => 'Ziel: Rucksack < 15% deines Gewichts. Grün = OK, Orange = Achtung, Rot = zu schwer.',
 			'checklist.ui.infoAddTitle' => 'Hinzufügen',
 			'checklist.ui.infoAddBody' => 'Der +-Button unten in jeder Kategorie für eigene Artikel.',
@@ -5238,10 +5242,10 @@ extension on TranslationsDe {
 			'cloud.statusSection' => 'Cloud',
 			'cloud.statusActive' => 'Online-Dienste aktiv',
 			'cloud.statusActiveDesc' => 'Sicherung und Live-Verfolgung verfügbar.',
-			'cloud.statusLocal' => 'Lokaler Modus (ohne Cloud)',
-			'cloud.statusLocalDesc' => 'Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden.',
 			_ => null,
 		} ?? switch (path) {
+			'cloud.statusLocal' => 'Lokaler Modus (ohne Cloud)',
+			'cloud.statusLocalDesc' => 'Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden.',
 			'onboarding.skip' => 'Überspringen',
 			'onboarding.next' => 'Weiter',
 			'onboarding.getStarted' => 'Los geht\'s',
@@ -5752,10 +5756,10 @@ extension on TranslationsDe {
 			'recap.stages' => '{done} / {total} Etappen gelaufen',
 			'recap.distance' => '{km} km zurückgelegt',
 			'recap.elevation' => '{meters} m Höhenmeter',
-			'recap.duration' => '{days} Tage insgesamt, Wandern und Ruhe inklusive',
-			'recap.dates' => 'Vom {start} bis {end}',
 			_ => null,
 		} ?? switch (path) {
+			'recap.duration' => '{days} Tage insgesamt, Wandern und Ruhe inklusive',
+			'recap.dates' => 'Vom {start} bis {end}',
 			'recap.viewDiploma' => 'Mein Diplom ansehen',
 			'recap.viewJournal' => 'Mein Tagebuch ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',

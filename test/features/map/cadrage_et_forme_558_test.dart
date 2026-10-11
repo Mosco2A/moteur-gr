@@ -214,7 +214,7 @@ void main() {
 
       // Les six libelles sont la...
       for (final label in [
-        t.tracking.total,
+        t.tracking.remaining,
         t.tracking.covered,
         t.tracking.avgSpeed,
         t.tracking.dPlus,
@@ -227,7 +227,7 @@ void main() {
       // ... sur DEUX hauteurs distinctes, trois par hauteur.
       final hauteurs = <double, int>{};
       for (final label in [
-        t.tracking.total,
+        t.tracking.remaining,
         t.tracking.covered,
         t.tracking.avgSpeed,
         t.tracking.dPlus,
@@ -276,7 +276,7 @@ void main() {
       // centres sont equidistants. C'est ce qui donne la disposition centree de
       // la reference, et ce qu'un Wrap « spaceBetween » ne garantissait pas.
       final centres = [
-        tester.getCenter(find.text(t.tracking.total)).dx,
+        tester.getCenter(find.text(t.tracking.remaining)).dx,
         tester.getCenter(find.text(t.tracking.covered)).dx,
         tester.getCenter(find.text(t.tracking.avgSpeed)).dx,
       ];

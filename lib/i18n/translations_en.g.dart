@@ -263,6 +263,7 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get perimetreSentier => 'Trail';
 	@override String get basculerVersSentier => 'View whole trail';
 	@override String get basculerVersEtape => 'View stage';
+	@override String get etapeFinie => 'Well done, stage complete!';
 	@override late final _Translations$map$guide$en guide = _Translations$map$guide$en._(_root);
 	@override String get supplyDismiss => 'Dismiss alert';
 	@override String get pinMergedTitle => 'Several markers at the same place';
@@ -446,6 +447,7 @@ class _Translations$tracking$en extends Translations$tracking$fr {
 	@override String get avgSpeed => 'Avg speed';
 	@override String get altitude => 'Altitude';
 	@override String get total => 'Total';
+	@override String get remaining => 'Remaining';
 	@override String get covered => 'Covered';
 	@override String get stagesDone => 'Stages';
 	@override late final _Translations$tracking$backgroundRationale$en backgroundRationale = _Translations$tracking$backgroundRationale$en._(_root);
@@ -4384,6 +4386,7 @@ extension on TranslationsEn {
 			'map.perimetreSentier' => 'Trail',
 			'map.basculerVersSentier' => 'View whole trail',
 			'map.basculerVersEtape' => 'View stage',
+			'map.etapeFinie' => 'Well done, stage complete!',
 			'map.guide.buttonsTitle' => 'Buttons',
 			'map.guide.position' => 'Your GPS position, updated as you walk. If the dot disappears, check the location permission.',
 			'map.guide.track' => 'The trail line. The off-track alert refers to it.',
@@ -4522,6 +4525,7 @@ extension on TranslationsEn {
 			'tracking.avgSpeed' => 'Avg speed',
 			'tracking.altitude' => 'Altitude',
 			'tracking.total' => 'Total',
+			'tracking.remaining' => 'Remaining',
 			'tracking.covered' => 'Covered',
 			'tracking.stagesDone' => 'Stages',
 			'tracking.backgroundRationale.title' => 'Recording your track with the screen off',
@@ -4724,10 +4728,10 @@ extension on TranslationsEn {
 			'checklist.ui.infoCheckTitle' => 'Check items',
 			'checklist.ui.infoCheckBody' => 'Check what you take — the weight recalculates at the top.',
 			'checklist.ui.infoRequiredTitle' => 'Required',
-			'checklist.ui.infoRequiredBody' => 'Items with a lock = regulation (whistle, lamp, emergency blanket).',
-			'checklist.ui.infoGaugeTitle' => 'Weight gauge',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoRequiredBody' => 'Items with a lock = regulation (whistle, lamp, emergency blanket).',
+			'checklist.ui.infoGaugeTitle' => 'Weight gauge',
 			'checklist.ui.infoGaugeBody' => 'Target: pack < 15% of your weight. Green = OK, Orange = careful, Red = too heavy.',
 			'checklist.ui.infoAddTitle' => 'Add',
 			'checklist.ui.infoAddBody' => 'The + button at the bottom of each category for your own items.',
@@ -5238,10 +5242,10 @@ extension on TranslationsEn {
 			'cloud.statusSection' => 'Cloud',
 			'cloud.statusActive' => 'Online services active',
 			'cloud.statusActiveDesc' => 'Backup and live tracking available.',
-			'cloud.statusLocal' => 'Local mode (no cloud)',
-			'cloud.statusLocalDesc' => 'No data is sent online. Cloud configuration absent.',
 			_ => null,
 		} ?? switch (path) {
+			'cloud.statusLocal' => 'Local mode (no cloud)',
+			'cloud.statusLocalDesc' => 'No data is sent online. Cloud configuration absent.',
 			'onboarding.skip' => 'Skip',
 			'onboarding.next' => 'Next',
 			'onboarding.getStarted' => 'Get started',
@@ -5752,10 +5756,10 @@ extension on TranslationsEn {
 			'recap.stages' => '{done} / {total} stages walked',
 			'recap.distance' => '{km} km travelled',
 			'recap.elevation' => '{meters} m of elevation gain',
-			'recap.duration' => '{days} days in total, walking and rest included',
-			'recap.dates' => 'From {start} to {end}',
 			_ => null,
 		} ?? switch (path) {
+			'recap.duration' => '{days} days in total, walking and rest included',
+			'recap.dates' => 'From {start} to {end}',
 			'recap.viewDiploma' => 'View my diploma',
 			'recap.viewJournal' => 'View my journal',
 			'recap.noData' => 'No route data to display yet.',

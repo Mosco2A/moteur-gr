@@ -192,6 +192,7 @@
     "perimetreSentier": "Sentiero",
     "basculerVersSentier": "Vedi intero sentiero",
     "basculerVersEtape": "Vedi tappa",
+    "etapeFinie": "Bravo, tappa completata!",
     "guide": {
       "buttonsTitle": "Pulsanti",
       "position": "La tua posizione GPS, aggiornata camminando. Se il punto scompare, verifica il permesso di localizzazione.",
@@ -369,6 +370,7 @@
     "avgSpeed": "Vel. media",
     "altitude": "Altitudine",
     "total": "Totale",
+    "remaining": "Rimanente",
     "covered": "Percorso",
     "stagesDone": "Tappe",
     "backgroundRationale": {

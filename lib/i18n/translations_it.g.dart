@@ -263,6 +263,7 @@ class _Translations$map$it extends Translations$map$fr {
 	@override String get perimetreSentier => 'Sentiero';
 	@override String get basculerVersSentier => 'Vedi intero sentiero';
 	@override String get basculerVersEtape => 'Vedi tappa';
+	@override String get etapeFinie => 'Bravo, tappa completata!';
 	@override late final _Translations$map$guide$it guide = _Translations$map$guide$it._(_root);
 	@override String get supplyDismiss => 'Nascondi l\'avviso';
 	@override String get pinMergedTitle => 'Più segnaposti nello stesso punto';
@@ -446,6 +447,7 @@ class _Translations$tracking$it extends Translations$tracking$fr {
 	@override String get avgSpeed => 'Vel. media';
 	@override String get altitude => 'Altitudine';
 	@override String get total => 'Totale';
+	@override String get remaining => 'Rimanente';
 	@override String get covered => 'Percorso';
 	@override String get stagesDone => 'Tappe';
 	@override late final _Translations$tracking$backgroundRationale$it backgroundRationale = _Translations$tracking$backgroundRationale$it._(_root);
@@ -4384,6 +4386,7 @@ extension on TranslationsIt {
 			'map.perimetreSentier' => 'Sentiero',
 			'map.basculerVersSentier' => 'Vedi intero sentiero',
 			'map.basculerVersEtape' => 'Vedi tappa',
+			'map.etapeFinie' => 'Bravo, tappa completata!',
 			'map.guide.buttonsTitle' => 'Pulsanti',
 			'map.guide.position' => 'La tua posizione GPS, aggiornata camminando. Se il punto scompare, verifica il permesso di localizzazione.',
 			'map.guide.track' => 'Il tracciato del sentiero. L\'avviso fuori traccia si riferisce a lui.',
@@ -4522,6 +4525,7 @@ extension on TranslationsIt {
 			'tracking.avgSpeed' => 'Vel. media',
 			'tracking.altitude' => 'Altitudine',
 			'tracking.total' => 'Totale',
+			'tracking.remaining' => 'Rimanente',
 			'tracking.covered' => 'Percorso',
 			'tracking.stagesDone' => 'Tappe',
 			'tracking.backgroundRationale.title' => 'Registrare la tua traccia anche a schermo spento',
@@ -4724,10 +4728,10 @@ extension on TranslationsIt {
 			'checklist.ui.infoCheckTitle' => 'Spunta gli articoli',
 			'checklist.ui.infoCheckBody' => 'Spunta ciò che porti — il peso si ricalcola in alto.',
 			'checklist.ui.infoRequiredTitle' => 'Obbligatori',
-			'checklist.ui.infoRequiredBody' => 'Articoli con lucchetto = regolamento (fischietto, lampada, coperta di sopravvivenza).',
-			'checklist.ui.infoGaugeTitle' => 'Indicatore peso',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoRequiredBody' => 'Articoli con lucchetto = regolamento (fischietto, lampada, coperta di sopravvivenza).',
+			'checklist.ui.infoGaugeTitle' => 'Indicatore peso',
 			'checklist.ui.infoGaugeBody' => 'Obiettivo: zaino < 15% del tuo peso. Verde = OK, Arancione = attenzione, Rosso = troppo pesante.',
 			'checklist.ui.infoAddTitle' => 'Aggiungi',
 			'checklist.ui.infoAddBody' => 'Il pulsante + in fondo a ogni categoria per i tuoi articoli.',
@@ -5238,10 +5242,10 @@ extension on TranslationsIt {
 			'cloud.statusSection' => 'Cloud',
 			'cloud.statusActive' => 'Servizi online attivi',
 			'cloud.statusActiveDesc' => 'Backup e localizzazione in diretta disponibili.',
-			'cloud.statusLocal' => 'Modalità locale (senza cloud)',
-			'cloud.statusLocalDesc' => 'Nessun dato viene inviato online. Configurazione cloud assente.',
 			_ => null,
 		} ?? switch (path) {
+			'cloud.statusLocal' => 'Modalità locale (senza cloud)',
+			'cloud.statusLocalDesc' => 'Nessun dato viene inviato online. Configurazione cloud assente.',
 			'onboarding.skip' => 'Salta',
 			'onboarding.next' => 'Avanti',
 			'onboarding.getStarted' => 'Inizia',
@@ -5752,10 +5756,10 @@ extension on TranslationsIt {
 			'recap.stages' => '{done} / {total} tappe percorse',
 			'recap.distance' => '{km} km percorsi',
 			'recap.elevation' => '{meters} m di dislivello positivo',
-			'recap.duration' => '{days} giorni in totale, cammino e riposo compresi',
-			'recap.dates' => 'Dal {start} al {end}',
 			_ => null,
 		} ?? switch (path) {
+			'recap.duration' => '{days} giorni in totale, cammino e riposo compresi',
+			'recap.dates' => 'Dal {start} al {end}',
 			'recap.viewDiploma' => 'Vedi il mio diploma',
 			'recap.viewJournal' => 'Vedi il mio diario',
 			'recap.noData' => 'Nessun dato di percorso da mostrare al momento.',

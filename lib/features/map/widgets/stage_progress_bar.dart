@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/texte_ajuste.dart';
 import 'chiffres_de_la_barre.dart';
+import 'entete_de_la_barre.dart';
 
 /// Barre de progression d'étape affichée en bas de la carte.
 ///
@@ -200,7 +201,7 @@ class StageProgressBar extends StatelessWidget {
   ChiffresDeLaBarre _chiffresAvec(Color accent) => ChiffresDeLaBarre(
     accent: accent,
     showPendingValues: showPendingValues,
-    totalDistanceKm: totalDistanceKm,
+    distanceRemainingKm: distanceRemainingKm,
     distanceCoveredKm: distanceCoveredKm,
     avgSpeedKmh: avgSpeedKmh,
     elevationGainM: elevationGainM,
@@ -267,102 +268,81 @@ class StageProgressBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ligne titre + indicateur hors tracé
+          // LIGNE DU TITRE — ET DESORMAIS CE QUI NE BOUGE PAS (tache 808).
+          //
+          // LE NOM EST RENDU PAR [TexteAjuste] ET NON PAR UN [Text] NU, et
+          // c'est ce qui autorise a le grossir sans risque : il passe de 14 a
+          // 18 points, et SI un nom long ne tenait plus, il redescend tout
+          // seul — jamais sous 14, la taille qu'il avait avant ce lot. Le
+          // bandeau ne peut donc pas devenir moins lisible qu'il ne l'etait,
+          // et aucun mot n'est coupe (c'est la regle de la tache 634).
           Row(
             children: [
               Expanded(
-                child: Text(
+                child: TexteAjuste(
                   stageName,
-                  style: theme.textTheme.titleSmall?.copyWith(
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  tailleMin: 14,
+                  textAlign: TextAlign.start,
                 ),
               ),
-              // LE MOT DU PERIMETRE, avant la pastille hors-trace : il dit DE
-              // QUOI parlent les cinq chiffres qui suivent.
-              if (perimetreLabel != null) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm,
-                    vertical: AppTheme.spacingXs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: primaryColor.withAlpha(30),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                  ),
-                  child: Text(
-                    perimetreLabel!,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: primaryColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+              const SizedBox(width: AppTheme.spacingXs),
+              // LA PASTILLE DIT LE PERIMETRE **ET SA LONGUEUR** (tache 808).
+              //
+              // Le total a quitte le tableau pour venir ici : il ne bouge pas
+              // de toute la marche, et il n'a de sens que rapporte a ce dont
+              // on parle. « Etape · 8,1 km » se lit d'un bloc ; les memes deux
+              // informations separees de dix centimetres d'ecran ne se lisent
+              // pas. La pastille reste le mot qui porte le sens pour qui
+              // distingue mal les couleurs (tache 747) — elle en porte juste
+              // la mesure en plus.
+              if (perimetreLabel != null || totalDistanceKm != null) ...[
+                PastilleDuPerimetre(
+                  perimetre: perimetreLabel,
+                  totalDistanceKm: totalDistanceKm,
+                  teinte: primaryColor,
                 ),
                 const SizedBox(width: AppTheme.spacingXs),
               ],
-              if (isOffTrack)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm,
-                    vertical: AppTheme.spacingXs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppTheme.emergencyRed.withAlpha(30),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const StepIcon(
-                        StepwaysIcons.danger,
-                        size: 14,
-                        color: AppTheme.emergencyRed,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        t.map.offTrackChip,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppTheme.emergencyRed,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              if (isOffTrack) const PuceHorsTrace(),
             ],
           ),
 
           const SizedBox(height: AppTheme.spacingSm),
 
-          // Barre de progression
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progressRatio.clamp(0.0, 1.0),
-              minHeight: 6,
-              backgroundColor: AppTheme.grisClair,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                isOffTrack ? AppTheme.emergencyRed : primaryColor,
-              ),
-            ),
-          ),
-
-          const SizedBox(height: AppTheme.spacingSm),
-
-          // Ligne distance + pourcentage
+          // LA BARRE ET SON POURCENTAGE SUR LA MEME LIGNE (tache 808).
+          //
+          // Le pourcentage BOUGE, et la regle de Christophe voudrait donc le
+          // mettre au tableau. Il reste ici, et voici pourquoi : il n'est pas
+          // une septieme mesure, il est LA LEGENDE DE LA BARRE qu'il touche —
+          // les separer rendrait la barre muette et le tableau bavard. Et le
+          // tableau doit rester a SIX cases : c'est la forme de la navigation
+          // de reference, tranchee par Chris a la tache 558.
+          //
+          // CE QUE CETTE FUSION RAPPORTE EN PLACE : la ligne « X km restants /
+          // Y % » disparait entierement, soit une ligne de texte et son
+          // interligne rendus a la carte. En demo, deux bandeaux mangent deja
+          // le haut de l'ecran ; cette ligne de moins est ce qui permet au
+          // bandeau de tenir sans deborder.
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                t.map.stageRemaining(
-                  km: distanceRemainingKm.toStringAsFixed(1),
-                ),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.grisTexteSecondaire,
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progressRatio.clamp(0.0, 1.0),
+                    minHeight: 6,
+                    backgroundColor: AppTheme.grisClair,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      isOffTrack ? AppTheme.emergencyRed : primaryColor,
+                    ),
+                  ),
                 ),
               ),
+              const SizedBox(width: AppTheme.spacingSm),
               Text(
                 '$progressPercent%',
                 style: theme.textTheme.bodySmall?.copyWith(
