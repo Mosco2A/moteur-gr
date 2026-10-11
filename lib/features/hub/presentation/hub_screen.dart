@@ -15,9 +15,6 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/quick_access_card.dart';
 import '../../ads/ads_facade.dart' show BannerAdSlot;
 import '../../safety/safety_facade.dart' show SosButton;
-import '../../treks/treks_facade.dart' show currentTrailSummaryProvider;
-import '../../trek/trek_facade.dart'
-    show TrackingSessionStatus, trekSessionManagerProvider;
 import 'cockpit_phase.dart';
 import 'widgets/hub_app_bar.dart';
 import 'widgets/hub_cockpit_scroll.dart';
@@ -60,8 +57,9 @@ import 'widgets/localized_conditions_banner.dart';
 /// `AppBar` (accès Informations / Profil / Mes treks / Réglages, retours Chris) et
 /// présente TOUTES ses sections dans UN seul scroll (parité GR20 `HomeScreen`),
 /// visibles SELON LA PHASE dérivée du cycle de vie du trek :
-///   * **Préparer** : toujours présente, en ACCORDÉON (dépliée en préparation,
-///     repliée une fois parti/rentré — D3, R8+R13) ;
+///   * **Préparer** : ABSENTE pendant la marche (tâche 809, « préparer devrait
+///     disparaître quand tu es en cours de trek »), présente avant et après, en
+///     ACCORDÉON (dépliée en préparation, repliée une fois rentré — D3, R8) ;
 ///   * **Randonner** : uniquement en rando active (phase hike) ;
 ///   * **Informations** : toujours présente ;
 ///   * **Après le trek** : uniquement une fois terminé (phase after).
@@ -149,35 +147,19 @@ class HubScreen extends ConsumerStatefulWidget {
 // locale est deja affichee, la base la complete quand elle repond.
 class _HubScreenState extends ConsumerState<HubScreen> {
   // Retour Chris #13 (LOT 2) : le menu du cockpit est CONTEXTUEL a l'etat du
-  // trek (DECISIONS.md §5.2, accueil « maison »/« terrain »). La PHASE est
-  // DERIVEE du cycle de vie reel du sentier actif ([currentTrailSummaryProvider]
-  // -> [TrekLifecycleState]) via [CockpitPhase.fromLifecycle] — jamais un flag
-  // invente. Regle :
-  //   * Préparer + Informations : TOUJOURS visibles (la prepa se fait avant/
-  //     pendant/apres) ;
-  //   * Randonner : visible UNIQUEMENT en mode rando active (phase hike,
-  //     lifecycle inProgress) ;
+  // trek (DECISIONS.md §5.2, accueil « maison »/« terrain »). Regle :
+  //   * Informations : TOUJOURS visible ;
+  //   * Préparer : visible AVANT et APRES, ABSENTE en rando (tache 809) ;
+  //   * Randonner : visible UNIQUEMENT en rando active (phase hike) ;
   //   * Après le trek : visible UNIQUEMENT une fois le trek termine (phase
-  //     after, lifecycle completed).
+  //     after).
   // Tant qu'on n'est pas en rando, ni « Randonner » ni « Après-trek » ne
   // s'affichent (retour Chris #13, « on en a deja parle »).
   //
-  // PRIORITE A L'ETAT VIVANT (parite [HubTrekCard]) : une session de tracking
-  // `recording`/`paused` en memoire prime sur l'etat DERIVE (la session
-  // persistee peut ne pas etre encore reprise dans `currentTrailSummaryProvider`
-  // apres un demarrage). On considere donc « rando active » des que le tracking
-  // vit OU que le lifecycle vaut inProgress -> phase hike coherente avec la
-  // carte principale et le bouton de demarrage.
-  CockpitPhase _phaseCourante() {
-    final tracking = ref.watch(trekSessionManagerProvider);
-    final liveActive =
-        tracking.status == TrackingSessionStatus.recording ||
-        tracking.status == TrackingSessionStatus.paused;
-    final lifecycle = ref.watch(currentTrailSummaryProvider).value?.state;
-    return liveActive
-        ? CockpitPhase.hike
-        : CockpitPhase.fromLifecycle(lifecycle);
-  }
+  // CET ECRAN NE CALCULE PLUS LA PHASE, IL LA LIT (tache 809). Il la derivait
+  // lui-meme, et deux widgets en faisaient autant de leur cote : trois lectures
+  // du meme fait, qui ne tombaient pas d'accord en demonstration. La phase est
+  // desormais [cockpitPhaseProvider], source unique et seule porte publique.
 
   @override
   void initState() {
@@ -194,7 +176,7 @@ class _HubScreenState extends ConsumerState<HubScreen> {
 
     ref.watch(miseAJourAlOuvertureProvider(trailId));
 
-    final phase = _phaseCourante();
+    final phase = ref.watch(cockpitPhaseProvider);
     final showHike = phase == CockpitPhase.hike;
     final showAfter = phase == CockpitPhase.after;
 
@@ -211,11 +193,38 @@ class _HubScreenState extends ConsumerState<HubScreen> {
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
             HubCockpitTop(trailId: trailId),
-            HubPrepareSection(
-              trailId: trailId,
-              initiallyExpanded: !showHike && !showAfter,
-            ),
-            const SizedBox(height: AppTheme.spacingLg),
+            // --- « PRÉPARER » DISPARAIT PENDANT LA MARCHE (tache 809) ---
+            //
+            // Christophe, 10/10, verbatim : « meme en mode demo preparer
+            // devrait disparaitre quand tu es en cours de trek ».
+            //
+            // ELLE ETAIT REPLIEE, PAS ABSENTE, et c'etait l'arbitrage R13 :
+            // « jamais masquee, juste repliee — le randonneur la deplie d'un
+            // tap pour revoir un point ». Christophe a tranche l'inverse apres
+            // l'avoir vue sur le telephone : en pleine marche, les douze cartes
+            // de la preparation n'ont plus rien a preparer, et leur en-tete
+            // mange le haut du cockpit au moment ou tout ce qui compte est la
+            // trace. Son mot est « disparaitre », pas « replier ».
+            //
+            // ELLE REVIENT APRES L'ARRIVEE, ET CE N'EST PAS UNE DEMI-MESURE.
+            // Christophe n'a parle que du « en cours de trek », et la garder en
+            // phase « apres » est le choix PRUDENT pour une raison mesurable :
+            // la section « Randonner » n'existe plus a ce moment-la, et c'est
+            // elle qui porte la porte vers l'urgence. La fiche medicale
+            // (`/health`) n'a plus alors que CETTE section pour porte dans tout
+            // le cockpit — la retirer ici l'enfermerait. Repliee, donc
+            // discrete, mais atteignable.
+            // SON ESPACEMENT PART AVEC ELLE. Un blanc de la taille d'une
+            // section absente est le defaut que la porte d'achat documente
+            // deja quelques lignes plus bas : ce qui s'efface doit emporter
+            // la place qu'il occupait.
+            if (!showHike) ...[
+              HubPrepareSection(
+                trailId: trailId,
+                initiallyExpanded: !showAfter,
+              ),
+              const SizedBox(height: AppTheme.spacingLg),
+            ],
             if (showHike) ...[
               LocalizedConditionsBanner(trailId: trailId),
               const SizedBox(height: AppTheme.spacingBase),
@@ -235,7 +244,13 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             const SizedBox(height: AppTheme.spacingLg),
             HubCockpitFooter(
               trailId: trailId,
-              showStartButton: !showHike && !showAfter,
+              // LE DEPART N'EXISTE QU'AVANT, ET NE REVIENT PAS (tache 809).
+              // Christophe : « demarrer la randonne, le bouton aparait encore
+              // une fois la randonnee finie au lieu d acceder a la post
+              // rando ».
+              // La condition n'a pas change de forme — c'est sa SOURCE qui est
+              // devenue juste, y compris en demonstration.
+              showStartButton: phase == CockpitPhase.prepare,
             ),
           ],
         ),

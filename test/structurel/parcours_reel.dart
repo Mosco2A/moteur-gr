@@ -239,6 +239,36 @@ void brancherLesPlugins() {
     repondre(canal, pasDeGps);
   }
 
+  // ET LE GEOLOCATOR PARLE PAR DEUX CANAUX, LUI AUSSI (tache 809).
+  //
+  // EXACTEMENT LA MEME FORME QUE `connectivity_plus` ci-dessous, et le meme
+  // remede : un canal de METHODE pour l'etat et les permissions — les trois
+  // lignes au-dessus — et un canal d'EVENEMENTS pour le flux de positions.
+  // Sans interlocuteur declare sur le second, l'abonnement leve
+  // `MissingPluginException(... listen on channel
+  // flutter.baseflow.com/geolocator_updates)`.
+  //
+  // POURQUOI CA N'APPARAISSAIT PAS AVANT, ET CE QUI L'A REVEILLE. Aucun
+  // parcours reel n'allait jusqu'a s'abonner au flux : le seul widget du
+  // cockpit qui le demande est le bandeau des conditions du terrain
+  // ([LocalizedConditionsBanner], via `localizedStageNumberProvider`), et il
+  // restait SOUS la ligne de flottaison de la liste — donc jamais construit. La
+  // tache 809 a retire la section « Préparer » pendant la marche, sur la
+  // demande de Christophe ; le bandeau est remonte d'autant et se construit
+  // desormais pour de vrai. L'exception etait LATENTE, pas absente : elle
+  // attendait qu'un cockpit soit assez court pour la rencontrer.
+  //
+  // L'APPAREIL MODELISE RESTE LE MEME : honnete et demuni. Il refuse la
+  // permission, declare le service eteint, et n'emet jamais une position.
+  const canalDesPositions = EventChannel(
+    'flutter.baseflow.com/geolocator_updates',
+  );
+  messager.setMockStreamHandler(
+    canalDesPositions,
+    _AucuneMiseAJourDePosition(),
+  );
+  addTearDown(() => messager.setMockStreamHandler(canalDesPositions, null));
+
   // Le stockage local existe (dossier temporaire reel) : c'est le cas sur tout
   // appareil, et le simuler absent ferait echouer des parcours pour une raison
   // qui n'arrive jamais en vrai.
@@ -298,6 +328,21 @@ void brancherLesPlugins() {
   // apprendre de l'application. L'appareil declare donc honnetement qu'il n'a
   // pas de regie. Voir `regie_pub_absente.dart` pour la mecanique exacte.
   brancherAucuneRegiePub();
+}
+
+/// Le canal d'evenements du `geolocator` sur un appareil sans GPS :
+/// l'abonnement reussit, et aucune position n'arrive jamais. C'est ce qu'il
+/// faut pour que le code sous test s'abonne sans lever, et reste honnetement
+/// sans position — le meme appareil demuni que decrivent les trois canaux de
+/// methode ci-dessus.
+class _AucuneMiseAJourDePosition extends MockStreamHandler {
+  @override
+  void onListen(Object? arguments, MockStreamHandlerEventSink sink) {
+    // Aucune position : l'appareil n'en connait pas, et il ne mentira pas.
+  }
+
+  @override
+  void onCancel(Object? arguments) {}
 }
 
 /// Le canal d'evenements de `connectivity_plus` sur un appareil sans reseau :

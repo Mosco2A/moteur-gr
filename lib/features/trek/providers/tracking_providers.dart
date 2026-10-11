@@ -837,18 +837,48 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     // final en base perdrait la memoire du finisher. Meme id -> derniere ecriture
     // gagnante, avec les etapes marchees preservees. `status` distingue
     // completed (finish) d'abandoned (abandon) sans autre difference.
-    if (authoritative != null) {
-      await _persistSession(
-        authoritative.copyWith(
-          status: status,
-          finishedAt: authoritative.finishedAt ?? DateTime.now(),
-        ),
-      );
+    final finalisee = authoritative?.copyWith(
+      status: status,
+      finishedAt: authoritative.finishedAt ?? DateTime.now(),
+    );
+    if (finalisee != null) {
+      await _persistSession(finalisee);
     }
 
     final stats = ref.read(trekStatsProvider);
     final finalState = TrackingSessionState(
       status: TrackingSessionStatus.stopped,
+      // LA RANDONNEE FINIE RESTE NOMMEE EN MEMOIRE (tache 809).
+      //
+      // CETTE LIGNE EST LA CORRECTION DE FOND DU LOT, et elle repare un trou
+      // qu'on ne voyait qu'en demonstration. L'etat final effacait la session :
+      // `status` passait a `stopped` et `session` repartait a `null`. Toute la
+      // memoire de ce qui venait de se terminer — quel sentier, termine ou
+      // abandonne, parcours entier ou non — ne survivait donc QUE dans la base.
+      //
+      // OR LA DEMO N'ECRIT RIEN (tache 760). Les quatre barrieres d'ecriture de
+      // ce fichier font qu'aucune ligne de session n'existe pendant une
+      // demonstration : `_persistSession` ci-dessus sort immediatement. A la
+      // seconde ou la marche simulee arrivait, l'application perdait donc TOUTE
+      // trace de l'arrivee — la memoire venait d'etre effacee, la base n'avait
+      // jamais rien recu. Le cockpit, qui lit le cycle de vie derive de la
+      // base, revoyait un sentier « a preparer » : d'ou le « Démarrer la
+      // randonnée » qui revenait apres l'arrivee, constate par Christophe.
+      //
+      // CE N'EST PAS UN DRAPEAU NOUVEAU. La session finalisee existe deja trois
+      // lignes plus haut — c'est exactement celle qu'on persiste. On cesse
+      // simplement de la jeter. Elle porte deja tout ce qu'il faut : `status`
+      // (`completed` ou `abandoned`), `finishedAt`, `completedStages` et
+      // `parcoursFullyWalked`. Hors demo, elle dit la MEME chose que la base,
+      // qui reste la source qui survit au redemarrage.
+      //
+      // LES TROIS GARDES DE CE NOTIFIER NE BOUGENT PAS. `completeOnArrival`,
+      // `recordStageCompleted`, `pause`, `resume` et `_finalize` lui-meme
+      // exigent tous un statut `recording` ou `paused` : une session gardee en
+      // memoire a l'arret ne rouvre aucune porte et ne rend rien reentrant.
+      // `arreterSimulationDemo`, qui promet qu'il ne reste rien a la sortie de
+      // la demo, remet l'etat a neuf — donc a `null` — et le promet toujours.
+      session: finalisee,
       distanceKm: stats.distanceKm,
       elevationGainM: stats.elevationGain,
       elapsedDuration: stats.elapsedDuration,

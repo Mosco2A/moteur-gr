@@ -10,6 +10,7 @@ import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../../core/branding/stepways_icons.dart';
+import '../cockpit_phase.dart';
 
 /// ACHETER DEPUIS LA PREPARATION (tache 614) — deuxieme des trois points
 /// d'entree de l'achat.
@@ -31,6 +32,36 @@ import '../../../../core/branding/stepways_icons.dart';
 /// unique et REACTIVE [isDemoModeProvider] — faux des que le sentier est
 /// possede, gratuit, ou couvert par un abonnement. Elle emet a chaque mutation
 /// des droits : acheter ici fait disparaitre le bouton sans changer d'ecran.
+///
+/// ET IL DISPARAIT AUSSI QUAND LA VENTE N'A PLUS DE SENS (tache 809).
+///
+/// Christophe, 10/10, verbatim : « enlever le bouton acheter quand on est en
+/// trek et en post dtrek car le circuit a forcement ete achete ».
+///
+/// CE BOUTON ETAIT LE SEUL DES TROIS A VIVRE ENTIEREMENT HORS DU MECANISME DE
+/// PHASE, et c'est pour cela qu'il restait visible pendant et apres la marche.
+/// Il ne consultait que la POSSESSION — « ce sentier est-il encore a vendre ? »
+/// — et jamais LA MARCHE. Il n'a donc rien su de la randonnee, ni en
+/// demonstration ni ailleurs.
+///
+/// LA PHASE D'ABORD, LE DROIT ENSUITE. L'ordre compte : la phase est un fait
+/// synchrone et local, la possession une lecture de base. Un sentier qu'on est
+/// en train de marcher ne se vend plus, quelle que soit la reponse des droits.
+///
+/// POURQUOI LA PHASE ET NON LA POSSESSION, ALORS QUE CHRISTOPHE DIT « LE
+/// CIRCUIT A FORCEMENT ETE ACHETE ». Parce que cette phrase decrit son
+/// INTENTION, pas l'etat technique — et qu'il a fait tous ses constats EN MODE
+/// DEMO, ou precisement rien n'est acquis : `ownsTrail` et `canRealizeTrail`
+/// repondent exactement la meme chose pendant une demonstration et hors demo
+/// (garde-fou du lot 601, en-tete de `session_demo.dart`). Attendre la
+/// possession aurait donc laisse le bouton exactement la ou Christophe l'a vu.
+/// On lit la MARCHE, qui est vraie dans les deux mondes — et la demo n'engage
+/// rien, elle le dit deja sous le bouton de depart (« départ simulé »).
+///
+/// L'ACHAT N'EST PAS PERDU POUR AUTANT. Des trois points d'entree de la vente
+/// (catalogue, preparation, depart), seul CELUI-CI se tait pendant et apres la
+/// marche. Le catalogue garde le sien, intact : un marcheur qui veut payer son
+/// sentier apres l'avoir essaye en demonstration y trouve toujours son bouton.
 class HubBuyTrekButton extends ConsumerWidget {
   const HubBuyTrekButton({required this.trailId, super.key});
 
@@ -38,6 +69,10 @@ class HubBuyTrekButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(cockpitPhaseProvider) != CockpitPhase.prepare) {
+      return const SizedBox.shrink();
+    }
+
     final achetable = ref.watch(isDemoModeProvider(trailId)).value ?? false;
     if (!achetable) return const SizedBox.shrink();
 
