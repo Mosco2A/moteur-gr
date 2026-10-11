@@ -1123,6 +1123,11 @@
     "staleNoticeOffline": "Offline: these are the trails you already downloaded. The full list will refresh once you are back online."
   },
   "demo": {
+    "matiereFabriquee": "Made-up example for the demo: these figures and notes are not yours, and nothing is saved.",
+    "carnetNoteDepart": "Day one: $nom. The pack feels heavy, but the trail is ours.",
+    "carnetNoteMontee": "$nom. Long climb in the cool of the morning, a break halfway up.",
+    "carnetNoteVillage": "$nom. Arrived in the early afternoon, a quiet evening at the stop.",
+    "carnetNoteArrivee": "$nom. Last stage, and that is that. My legs will remember it.",
     "bandeau": "DEMO MODE",
     "quitter": "Exit",
     "boutonTitre": "Try the demo",

@@ -1123,6 +1123,11 @@
     "staleNoticeOffline": "Offline: questi sono i sentieri che hai già scaricato. L’elenco completo si aggiornerà al ritorno della rete."
   },
   "demo": {
+    "matiereFabriquee": "Esempio inventato per la demo: questi numeri e queste note non sono i tuoi, e non viene salvato niente.",
+    "carnetNoteDepart": "Primo giorno: $nom. Lo zaino pesa, ma il sentiero è nostro.",
+    "carnetNoteMontee": "$nom. Lunga salita nel fresco del mattino, sosta a metà pendio.",
+    "carnetNoteVillage": "$nom. Arrivo nel primo pomeriggio, serata tranquilla alla tappa.",
+    "carnetNoteArrivee": "$nom. Ultima tappa, ed è fatta. Le gambe se la ricorderanno.",
     "bandeau": "MODALITÀ DEMO",
     "quitter": "Esci",
     "boutonTitre": "Prova la demo",

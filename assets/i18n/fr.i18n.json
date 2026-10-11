@@ -1123,6 +1123,11 @@
     "staleNoticeOffline": "Hors ligne : voici tes sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau."
   },
   "demo": {
+    "matiereFabriquee": "Exemple fabriqué pour la démonstration : ces chiffres et ces notes ne sont pas les tiens, et rien n'est enregistré.",
+    "carnetNoteDepart": "Premier jour : $nom. Sac un peu lourd, mais le sentier est à nous.",
+    "carnetNoteMontee": "$nom. Longue montée dans la fraîcheur du matin, pause à mi-pente.",
+    "carnetNoteVillage": "$nom. Arrivée en début d'après-midi, soirée tranquille à l'étape.",
+    "carnetNoteArrivee": "$nom. Dernière étape, et c'est bouclé. Les jambes s'en souviendront.",
     "bandeau": "MODE DÉMO",
     "quitter": "Quitter",
     "boutonTitre": "Essayer la démo",

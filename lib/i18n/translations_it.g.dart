@@ -869,6 +869,11 @@ class _Translations$demo$it extends Translations$demo$fr {
 	final TranslationsIt _root; // ignore: unused_field
 
 	// Translations
+	@override String get matiereFabriquee => 'Esempio inventato per la demo: questi numeri e queste note non sono i tuoi, e non viene salvato niente.';
+	@override String carnetNoteDepart({required Object nom}) => 'Primo giorno: ${nom}. Lo zaino pesa, ma il sentiero è nostro.';
+	@override String carnetNoteMontee({required Object nom}) => '${nom}. Lunga salita nel fresco del mattino, sosta a metà pendio.';
+	@override String carnetNoteVillage({required Object nom}) => '${nom}. Arrivo nel primo pomeriggio, serata tranquilla alla tappa.';
+	@override String carnetNoteArrivee({required Object nom}) => '${nom}. Ultima tappa, ed è fatta. Le gambe se la ricorderanno.';
 	@override String get bandeau => 'MODALITÀ DEMO';
 	@override String get quitter => 'Esci';
 	@override String get boutonTitre => 'Prova la demo';
@@ -5214,6 +5219,11 @@ extension on TranslationsIt {
 			'catalog.loadFailedSubtitle' => 'Non è stato possibile recuperare l’elenco dei sentieri in questo momento. I sentieri già scaricati restano disponibili offline.',
 			'catalog.loadFailedRetry' => 'Riprova',
 			'catalog.staleNoticeOffline' => 'Offline: questi sono i sentieri che hai già scaricato. L’elenco completo si aggiornerà al ritorno della rete.',
+			'demo.matiereFabriquee' => 'Esempio inventato per la demo: questi numeri e queste note non sono i tuoi, e non viene salvato niente.',
+			'demo.carnetNoteDepart' => ({required Object nom}) => 'Primo giorno: ${nom}. Lo zaino pesa, ma il sentiero è nostro.',
+			'demo.carnetNoteMontee' => ({required Object nom}) => '${nom}. Lunga salita nel fresco del mattino, sosta a metà pendio.',
+			'demo.carnetNoteVillage' => ({required Object nom}) => '${nom}. Arrivo nel primo pomeriggio, serata tranquilla alla tappa.',
+			'demo.carnetNoteArrivee' => ({required Object nom}) => '${nom}. Ultima tappa, ed è fatta. Le gambe se la ricorderanno.',
 			'demo.bandeau' => 'MODALITÀ DEMO',
 			'demo.quitter' => 'Esci',
 			'demo.boutonTitre' => 'Prova la demo',
@@ -5259,13 +5269,13 @@ extension on TranslationsIt {
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Link non valido',
 			'follow.invalidLinkHint' => 'Questo link di localizzazione non esiste o è scaduto.',
+			_ => null,
+		} ?? switch (path) {
 			'cloud.localModeTitle' => 'Modalità locale',
 			'cloud.localModeBody' => 'Questa installazione non è collegata a un servizio cloud: localizzazione in diretta, backup online e account sono disattivati. I tuoi dati restano sul dispositivo.',
 			'cloud.statusSection' => 'Cloud',
 			'cloud.statusActive' => 'Servizi online attivi',
 			'cloud.statusActiveDesc' => 'Backup e localizzazione in diretta disponibili.',
-			_ => null,
-		} ?? switch (path) {
 			'cloud.statusLocal' => 'Modalità locale (senza cloud)',
 			'cloud.statusLocalDesc' => 'Nessun dato viene inviato online. Configurazione cloud assente.',
 			'onboarding.skip' => 'Salta',
@@ -5773,13 +5783,13 @@ extension on TranslationsIt {
 			'recap.lockedTitle' => 'Disponibile alla fine del trek',
 			'recap.lockedMessage' => 'Termina o abbandona il tuo percorso per rivedere il riepilogo della tua avventura.',
 			'recap.finisherTitle' => 'Congratulazioni!',
+			_ => null,
+		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'Hai completato il tuo percorso',
 			'recap.partialTitle' => 'Il tuo percorso parziale',
 			'recap.partialSubtitle' => 'La tua avventura resta registrata',
 			'recap.statsSection' => 'Statistiche',
 			'recap.traceSection' => 'La tua traccia',
-			_ => null,
-		} ?? switch (path) {
 			'recap.noTrace' => 'Nessuna traccia GPS disponibile',
 			'recap.stages' => '{done} / {total} tappe percorse',
 			'recap.distance' => '{km} km percorsi',

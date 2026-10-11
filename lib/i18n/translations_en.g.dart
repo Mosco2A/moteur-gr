@@ -869,6 +869,11 @@ class _Translations$demo$en extends Translations$demo$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
+	@override String get matiereFabriquee => 'Made-up example for the demo: these figures and notes are not yours, and nothing is saved.';
+	@override String carnetNoteDepart({required Object nom}) => 'Day one: ${nom}. The pack feels heavy, but the trail is ours.';
+	@override String carnetNoteMontee({required Object nom}) => '${nom}. Long climb in the cool of the morning, a break halfway up.';
+	@override String carnetNoteVillage({required Object nom}) => '${nom}. Arrived in the early afternoon, a quiet evening at the stop.';
+	@override String carnetNoteArrivee({required Object nom}) => '${nom}. Last stage, and that is that. My legs will remember it.';
 	@override String get bandeau => 'DEMO MODE';
 	@override String get quitter => 'Exit';
 	@override String get boutonTitre => 'Try the demo';
@@ -5214,6 +5219,11 @@ extension on TranslationsEn {
 			'catalog.loadFailedSubtitle' => 'The trail list could not be retrieved right now. Trails you already downloaded remain available offline.',
 			'catalog.loadFailedRetry' => 'Try again',
 			'catalog.staleNoticeOffline' => 'Offline: these are the trails you already downloaded. The full list will refresh once you are back online.',
+			'demo.matiereFabriquee' => 'Made-up example for the demo: these figures and notes are not yours, and nothing is saved.',
+			'demo.carnetNoteDepart' => ({required Object nom}) => 'Day one: ${nom}. The pack feels heavy, but the trail is ours.',
+			'demo.carnetNoteMontee' => ({required Object nom}) => '${nom}. Long climb in the cool of the morning, a break halfway up.',
+			'demo.carnetNoteVillage' => ({required Object nom}) => '${nom}. Arrived in the early afternoon, a quiet evening at the stop.',
+			'demo.carnetNoteArrivee' => ({required Object nom}) => '${nom}. Last stage, and that is that. My legs will remember it.',
 			'demo.bandeau' => 'DEMO MODE',
 			'demo.quitter' => 'Exit',
 			'demo.boutonTitre' => 'Try the demo',
@@ -5259,13 +5269,13 @@ extension on TranslationsEn {
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Invalid link',
 			'follow.invalidLinkHint' => 'This tracking link does not exist or has expired.',
+			_ => null,
+		} ?? switch (path) {
 			'cloud.localModeTitle' => 'Local mode',
 			'cloud.localModeBody' => 'This installation is not connected to a cloud service: live tracking, online backup and account are disabled. Your data stays on this device.',
 			'cloud.statusSection' => 'Cloud',
 			'cloud.statusActive' => 'Online services active',
 			'cloud.statusActiveDesc' => 'Backup and live tracking available.',
-			_ => null,
-		} ?? switch (path) {
 			'cloud.statusLocal' => 'Local mode (no cloud)',
 			'cloud.statusLocalDesc' => 'No data is sent online. Cloud configuration absent.',
 			'onboarding.skip' => 'Skip',
@@ -5773,13 +5783,13 @@ extension on TranslationsEn {
 			'recap.lockedTitle' => 'Available at the end of the trek',
 			'recap.lockedMessage' => 'Finish or abandon your route to view your adventure recap.',
 			'recap.finisherTitle' => 'Congratulations!',
+			_ => null,
+		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'You completed your route',
 			'recap.partialTitle' => 'Your partial route',
 			'recap.partialSubtitle' => 'Your adventure is still saved',
 			'recap.statsSection' => 'Statistics',
 			'recap.traceSection' => 'Your track',
-			_ => null,
-		} ?? switch (path) {
 			'recap.noTrace' => 'No GPS track available',
 			'recap.stages' => '{done} / {total} stages walked',
 			'recap.distance' => '{km} km travelled',

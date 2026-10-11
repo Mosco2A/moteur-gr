@@ -19,6 +19,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/app_logo.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../journal/journal_facade.dart'
     show JournalEntryModel, journalScreenProvider;
 import '../../../domain/trek_session.dart';
@@ -196,29 +197,47 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
               _buildDiplomaPreview(Theme.of(context), session, realStats),
             const SizedBox(height: AppTheme.spacingLg),
 
-            // Bouton PDF
-            AppButton(
-              label: diplomaT.downloadPdf,
-              icon: StepwaysIcons.pdf,
-              onPressed: _diplomaData != null && !_isGeneratingPdf
-                  ? () => _generatePdf(config, realStats, session: session)
-                  : null,
+            // LES DEUX SORTIES DU DIPLOME ECRIVENT UN FICHIER, DONC ELLES SONT
+            // GRISEES EN DEMONSTRATION (tache 810).
+            //
+            // Le diplome s'OUVRE desormais en demonstration — il se lit, il
+            // s'admire, son apercu se dessine. Mais `_generatePdf` appelle
+            // `DiplomaPdfService.savePdf`, et le partage passe par le MEME
+            // chemin : les deux posent un PDF bien reel dans les fichiers du
+            // telephone, portant un nom de finisher qui n'a rien marche. C'est
+            // precisement ce que la demonstration promet de ne pas faire, et
+            // c'est le defaut qu'avait corrige la tache 760 sur les photos du
+            // carnet — on ne le rejoue pas ici.
+            //
+            // GRISEES, ET NON RETIREES : la regle de `GriseEnDemo` n'a que deux
+            // branches, active a l'identique ou visiblement indisponible. Un
+            // appui DIT pourquoi au lieu de ne rien faire.
+            GriseEnDemo(
+              child: AppButton(
+                label: diplomaT.downloadPdf,
+                icon: StepwaysIcons.pdf,
+                onPressed: _diplomaData != null && !_isGeneratingPdf
+                    ? () => _generatePdf(config, realStats, session: session)
+                    : null,
+              ),
             ),
             const SizedBox(height: AppTheme.spacingMd),
 
             // CORRECTIF L5-7 : le partage du diplome, absent cote StepWays —
             // l'ecran n'avait aucun bouton de partage, ni reel ni decoratif.
-            AppButton(
-              label: diplomaT.shareDiploma,
-              icon: StepwaysIcons.partager,
-              onPressed: _diplomaData != null && !_isGeneratingPdf
-                  ? () => _generatePdf(
-                      config,
-                      realStats,
-                      session: session,
-                      share: true,
-                    )
-                  : null,
+            GriseEnDemo(
+              child: AppButton(
+                label: diplomaT.shareDiploma,
+                icon: StepwaysIcons.partager,
+                onPressed: _diplomaData != null && !_isGeneratingPdf
+                    ? () => _generatePdf(
+                        config,
+                        realStats,
+                        session: session,
+                        share: true,
+                      )
+                    : null,
+              ),
             ),
           ],
         ),

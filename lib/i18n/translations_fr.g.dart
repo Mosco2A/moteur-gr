@@ -1791,6 +1791,21 @@ class Translations$demo$fr {
 
 	// Translations
 
+	/// fr: 'Exemple fabriqué pour la démonstration : ces chiffres et ces notes ne sont pas les tiens, et rien n'est enregistré.'
+	String get matiereFabriquee => 'Exemple fabriqué pour la démonstration : ces chiffres et ces notes ne sont pas les tiens, et rien n\'est enregistré.';
+
+	/// fr: 'Premier jour : $nom. Sac un peu lourd, mais le sentier est à nous.'
+	String carnetNoteDepart({required Object nom}) => 'Premier jour : ${nom}. Sac un peu lourd, mais le sentier est à nous.';
+
+	/// fr: '$nom. Longue montée dans la fraîcheur du matin, pause à mi-pente.'
+	String carnetNoteMontee({required Object nom}) => '${nom}. Longue montée dans la fraîcheur du matin, pause à mi-pente.';
+
+	/// fr: '$nom. Arrivée en début d'après-midi, soirée tranquille à l'étape.'
+	String carnetNoteVillage({required Object nom}) => '${nom}. Arrivée en début d\'après-midi, soirée tranquille à l\'étape.';
+
+	/// fr: '$nom. Dernière étape, et c'est bouclé. Les jambes s'en souviendront.'
+	String carnetNoteArrivee({required Object nom}) => '${nom}. Dernière étape, et c\'est bouclé. Les jambes s\'en souviendront.';
+
 	/// fr: 'MODE DÉMO'
 	String get bandeau => 'MODE DÉMO';
 
@@ -9353,6 +9368,11 @@ extension on Translations {
 			'catalog.loadFailedSubtitle' => 'Impossible de récupérer la liste des sentiers pour le moment. Tes sentiers déjà téléchargés restent accessibles hors ligne.',
 			'catalog.loadFailedRetry' => 'Réessayer',
 			'catalog.staleNoticeOffline' => 'Hors ligne : voici tes sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.',
+			'demo.matiereFabriquee' => 'Exemple fabriqué pour la démonstration : ces chiffres et ces notes ne sont pas les tiens, et rien n\'est enregistré.',
+			'demo.carnetNoteDepart' => ({required Object nom}) => 'Premier jour : ${nom}. Sac un peu lourd, mais le sentier est à nous.',
+			'demo.carnetNoteMontee' => ({required Object nom}) => '${nom}. Longue montée dans la fraîcheur du matin, pause à mi-pente.',
+			'demo.carnetNoteVillage' => ({required Object nom}) => '${nom}. Arrivée en début d\'après-midi, soirée tranquille à l\'étape.',
+			'demo.carnetNoteArrivee' => ({required Object nom}) => '${nom}. Dernière étape, et c\'est bouclé. Les jambes s\'en souviendront.',
 			'demo.bandeau' => 'MODE DÉMO',
 			'demo.quitter' => 'Quitter',
 			'demo.boutonTitre' => 'Essayer la démo',
@@ -9398,13 +9418,13 @@ extension on Translations {
 			'follow.offline' => 'Hors ligne',
 			'follow.invalidLink' => 'Lien invalide',
 			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
+			_ => null,
+		} ?? switch (path) {
 			'cloud.localModeTitle' => 'Mode local',
 			'cloud.localModeBody' => 'Cette installation n\'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Tes données restent sur l\'appareil.',
 			'cloud.statusSection' => 'Cloud',
 			'cloud.statusActive' => 'Services en ligne actifs',
 			'cloud.statusActiveDesc' => 'Sauvegarde et suivi en temps réel disponibles.',
-			_ => null,
-		} ?? switch (path) {
 			'cloud.statusLocal' => 'Mode local (sans cloud)',
 			'cloud.statusLocalDesc' => 'Aucune donnée n\'est envoyée en ligne. Configuration cloud absente.',
 			'onboarding.skip' => 'Passer',
@@ -9912,13 +9932,13 @@ extension on Translations {
 			'recap.lockedTitle' => 'Disponible à la fin du trek',
 			'recap.lockedMessage' => 'Termine ou abandonne ton parcours pour retrouver le récapitulatif de ton aventure.',
 			'recap.finisherTitle' => 'Félicitations !',
+			_ => null,
+		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'Tu as terminé ton parcours',
 			'recap.partialTitle' => 'Ton parcours partiel',
 			'recap.partialSubtitle' => 'Ton aventure reste enregistrée',
 			'recap.statsSection' => 'Statistiques',
 			'recap.traceSection' => 'Ta trace',
-			_ => null,
-		} ?? switch (path) {
 			'recap.noTrace' => 'Aucune trace GPS disponible',
 			'recap.stages' => '{done} / {total} étapes parcourues',
 			'recap.distance' => '{km} km parcourus',

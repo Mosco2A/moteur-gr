@@ -869,6 +869,11 @@ class _Translations$demo$es extends Translations$demo$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
+	@override String get matiereFabriquee => 'Ejemplo inventado para la demo: estas cifras y estas notas no son tuyas, y no se guarda nada.';
+	@override String carnetNoteDepart({required Object nom}) => 'Primer día: ${nom}. La mochila pesa, pero el sendero es nuestro.';
+	@override String carnetNoteMontee({required Object nom}) => '${nom}. Larga subida al frescor de la mañana, descanso a media ladera.';
+	@override String carnetNoteVillage({required Object nom}) => '${nom}. Llegada a primera hora de la tarde, velada tranquila en la etapa.';
+	@override String carnetNoteArrivee({required Object nom}) => '${nom}. Última etapa, y está hecho. Las piernas lo recordarán.';
 	@override String get bandeau => 'MODO DEMO';
 	@override String get quitter => 'Salir';
 	@override String get boutonTitre => 'Probar la demo';
@@ -5214,6 +5219,11 @@ extension on TranslationsEs {
 			'catalog.loadFailedSubtitle' => 'No se ha podido recuperar la lista de senderos ahora mismo. Los senderos ya descargados siguen disponibles sin conexión.',
 			'catalog.loadFailedRetry' => 'Reintentar',
 			'catalog.staleNoticeOffline' => 'Sin conexión: estos son los senderos que ya has descargado. La lista completa se actualizará cuando vuelvas a tener red.',
+			'demo.matiereFabriquee' => 'Ejemplo inventado para la demo: estas cifras y estas notas no son tuyas, y no se guarda nada.',
+			'demo.carnetNoteDepart' => ({required Object nom}) => 'Primer día: ${nom}. La mochila pesa, pero el sendero es nuestro.',
+			'demo.carnetNoteMontee' => ({required Object nom}) => '${nom}. Larga subida al frescor de la mañana, descanso a media ladera.',
+			'demo.carnetNoteVillage' => ({required Object nom}) => '${nom}. Llegada a primera hora de la tarde, velada tranquila en la etapa.',
+			'demo.carnetNoteArrivee' => ({required Object nom}) => '${nom}. Última etapa, y está hecho. Las piernas lo recordarán.',
 			'demo.bandeau' => 'MODO DEMO',
 			'demo.quitter' => 'Salir',
 			'demo.boutonTitre' => 'Probar la demo',
@@ -5259,13 +5269,13 @@ extension on TranslationsEs {
 			'follow.offline' => 'Sin conexión',
 			'follow.invalidLink' => 'Enlace no válido',
 			'follow.invalidLinkHint' => 'Este enlace de seguimiento no existe o ha caducado.',
+			_ => null,
+		} ?? switch (path) {
 			'cloud.localModeTitle' => 'Modo local',
 			'cloud.localModeBody' => 'Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Tus datos permanecen en el dispositivo.',
 			'cloud.statusSection' => 'Nube',
 			'cloud.statusActive' => 'Servicios en línea activos',
 			'cloud.statusActiveDesc' => 'Copia de seguridad y seguimiento en directo disponibles.',
-			_ => null,
-		} ?? switch (path) {
 			'cloud.statusLocal' => 'Modo local (sin nube)',
 			'cloud.statusLocalDesc' => 'No se envía ningún dato en línea. Falta la configuración de la nube.',
 			'onboarding.skip' => 'Saltar',
@@ -5773,13 +5783,13 @@ extension on TranslationsEs {
 			'recap.lockedTitle' => 'Disponible al final de la ruta',
 			'recap.lockedMessage' => 'Termina o abandona tu ruta para ver el resumen de tu aventura.',
 			'recap.finisherTitle' => 'Felicidades!',
+			_ => null,
+		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'Has completado tu ruta',
 			'recap.partialTitle' => 'Tu ruta parcial',
 			'recap.partialSubtitle' => 'Tu aventura queda registrada',
 			'recap.statsSection' => 'Estadísticas',
 			'recap.traceSection' => 'Tu trazado',
-			_ => null,
-		} ?? switch (path) {
 			'recap.noTrace' => 'No hay trazado GPS disponible',
 			'recap.stages' => '{done} / {total} etapas recorridas',
 			'recap.distance' => '{km} km recorridos',
