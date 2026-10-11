@@ -177,8 +177,27 @@ class MonetizationService {
   Future<void> load() async {
     await _deps.wallet.load();
     await migrateLegacyPurchases();
+    // LA CAGNOTTE DE L'ABONNE EST ARMEE AVEC LA BOUCLE QUI LA DECLENCHE
+    // (tache 813). Un recu d'abonnement ne peut pas arriver avant que sa
+    // consequence soit branchee : c'est le meme geste qui ouvre les deux.
+    _deps.iap.onSubscriptionDelivered = _subscription.grantSubscriberAllowance;
     _deps.iap.startListening();
     await _entitlements.syncFeatureFlags();
+    // ET LA REOUVERTURE RATTRAPE LA PERIODE COURANTE (tache 813).
+    //
+    // POURQUOI UN SECOND POINT, alors que la boucle de completion verse deja.
+    // Un recu n'arrive qu'au moment de l'achat ou du renouvellement ; entre
+    // les deux, l'application est reouverte des dizaines de fois. Trois
+    // situations ne produisent AUCUN recu et laisseraient l'abonne sans ses
+    // etapes : l'abonne deja en cours au moment ou ce lot est livre (il a
+    // paye des periodes entieres sans jamais etre credite), le renouvellement
+    // dont le recu n'est pas redescendu sur cet appareil, et la reinstallation.
+    //
+    // CE N'EST PAS UN SECOND VERSEMENT : la garde de periode de
+    // `grantSubscriberAllowance` rend `alreadyGranted` tant que la periode
+    // courante est payee, `notSubscriber` sans abonnement actif, et rien du
+    // tout en demo. Un non-abonne et un abonne a jour ne voient donc rien.
+    await _subscription.grantSubscriberAllowance();
     _loaded = true;
     _log.d(
       '[Monetization] Chargé (wallet=${_deps.wallet.balanceSteps} étapes)',

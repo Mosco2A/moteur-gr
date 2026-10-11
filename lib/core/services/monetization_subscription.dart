@@ -113,7 +113,7 @@ class SubscriptionLedger {
     }
   }
 
-  // --- Cagnotte de l'abonné (modèle éco §2 — MONTANT NON DÉCIDÉ) -----------
+  // --- Cagnotte de l'abonné (modèle éco §2) --------------------------------
 
   /// Verse la CAGNOTTE d'étapes de l'abonné pour la période courante (A5).
   ///
@@ -122,10 +122,32 @@ class SubscriptionLedger {
   /// [kSubscriberAllowanceGrantedAtPrefsKey] — une cagnotte versée deux fois
   /// dans la même période serait un crédit gratuit).
   ///
-  /// **LE MONTANT N'EST PAS DÉCIDÉ** : tant que [kSubscriberStepsAllowance]
-  /// vaut `null`, rien n'est versé et l'appel retourne
-  /// [SubscriberAllowanceOutcome.pendingDecision]. Voir la documentation de
-  /// cette constante : la valeur attend une décision de Christophe.
+  /// LE MONTANT EST DÉCIDÉ : [kSubscriberStepsAllowance] vaut 2 étapes par
+  /// mois (Christophe, 27/09). Le `null` reste un cas du mécanisme — il rend
+  /// [SubscriberAllowanceOutcome.pendingDecision] et ne verse rien — parce
+  /// qu'il est la seule façon qu'a ce code de dire « je ne sais pas encore »
+  /// au lieu d'inventer un chiffre. Il resservira au prochain montant en
+  /// attente.
+  ///
+  /// **QUI L'APPELLE, ET C'ÉTAIT TOUT LE DÉFAUT (tâche 813).** Ce mécanisme
+  /// était écrit en entier, juste, testé — et appelé par PERSONNE dans `lib/`.
+  /// L'abonné payait deux euros par mois, ne recevait jamais une étape, et
+  /// l'écran d'abonnement lui annonçait pourtant « 2 étapes créditées chaque
+  /// mois ». Il est désormais branché en DEUX points, et les deux sont
+  /// nécessaires :
+  ///
+  ///  1. `WalletIapService._applyDelivery`, par le crochet
+  ///     `onSubscriptionDelivered` : le versement IMMÉDIAT à la confirmation,
+  ///     et le même chemin couvre le renouvellement automatique de la boutique
+  ///     et la restauration d'achat, qui arrivent tous par un reçu ;
+  ///  2. `MonetizationService.load()`, à chaque ouverture : le RATTRAPAGE de
+  ///     la période courante, pour les cas qui ne produisent aucun reçu — un
+  ///     abonné déjà en cours, un renouvellement dont le reçu n'est pas
+  ///     redescendu, une réinstallation.
+  ///
+  /// La garde structurelle `aucun_versement_sans_appelant_813` refuse
+  /// désormais qu'un mécanisme de versement reparte sans appelant de
+  /// production : un test qui passe ne prouve jamais que l'application appelle.
   Future<SubscriberAllowanceOutcome> grantSubscriberAllowance() async {
     // DEMO : aucune cagnotte versee (tache 634).
     if (_deps.enDemo) return SubscriberAllowanceOutcome.notSubscriber;

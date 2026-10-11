@@ -25,10 +25,10 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// mode stub `purchaseStream` est vide et les achats sont court-circuites.
 ///
 /// Pour activer (decision produit + GO explicite + revue de code) :
-///  1. creer les produits [kWalletCredits11] / [kWalletCredits25] /
-///     [kWalletCredits50] (consommables) et [kWalletSubNoAdsMonthly] (abo)
-///     dans Play Console / App Store Connect (SANS prefixe `pack_`, deja pris
-///     par les packs de cartes) ;
+///  1. creer les produits [kWalletCredits11] / [kWalletCredits16] /
+///     [kWalletCredits25] / [kWalletCredits50] (consommables) et
+///     [kWalletSubNoAdsMonthly] (abo) dans Play Console / App Store Connect
+///     (SANS prefixe `pack_`, deja pris par les packs de cartes) ;
 ///  2. implementer la VERIFICATION reelle des recus dans [_verify] (Cloud
 ///     Function O1C, cf. point d'extension documente) ;
 ///  3. passer ce drapeau a `true`.
@@ -36,6 +36,18 @@ const bool kWalletIapRealModeEnabled = false;
 
 /// ProductId consommable : recharge de 11 etapes (SANS prefixe `pack_`).
 const kWalletCredits11 = 'stepways_credits_11';
+
+/// ProductId consommable : recharge de 16 etapes (tache 813).
+///
+/// LE PALIER QUI MANQUAIT : le trou de la grille etait entre onze et
+/// vingt-cinq, exactement la ou tombe le meilleur client — deux semaines de
+/// conges, et le GR20 integral qui fait seize etapes tout rond. Le prix et la
+/// pente sont justifies sur [kStepPacks].
+///
+/// A DECLARER DANS LES DEUX BOUTIQUES avant toute vente : sans le consommable
+/// en Play Console et en App Store Connect, le palier existe dans le code et
+/// pas a la caisse.
+const kWalletCredits16 = 'stepways_credits_16';
 
 /// ProductId consommable : recharge de 25 etapes.
 const kWalletCredits25 = 'stepways_credits_25';
@@ -59,6 +71,7 @@ const kWalletDeliveredPurchaseIdsPrefsKey = 'wallet.deliveredPurchaseIds';
 /// d'etapes, il pose une source sans-pub.
 const Map<String, int> kWalletCreditStepsByProduct = {
   kWalletCredits11: 11,
+  kWalletCredits16: 16,
   kWalletCredits25: 25,
   kWalletCredits50: 50,
 };
@@ -66,6 +79,7 @@ const Map<String, int> kWalletCreditStepsByProduct = {
 /// Tous les productIds StepWays connus (recharges + abo).
 const Set<String> kWalletProductIds = {
   kWalletCredits11,
+  kWalletCredits16,
   kWalletCredits25,
   kWalletCredits50,
   kWalletSubNoAdsMonthly,
@@ -177,6 +191,25 @@ class WalletIapService {
 
   /// Mode test (defaut true, F6) : aucun appel reel au store.
   final bool testMode;
+
+  /// CE QU'UN RECU D'ABONNEMENT DECLENCHE EN PLUS DU SANS-PUB (tache 813).
+  ///
+  /// LE TROU QUE CE CRANTAGE FERME. [_applyDelivery] posait la source sans-pub
+  /// et s'arretait la : la cagnotte de l'abonne n'avait AUCUN appelant dans
+  /// `lib/`, et l'abonne payait sans jamais recevoir une etape. Le recit
+  /// complet est sur `SubscriptionLedger.grantSubscriberAllowance`.
+  ///
+  /// POURQUOI UN CROCHET ET PAS UN APPEL DIRECT : la cagnotte vit dans
+  /// `SubscriptionLedger`, qui connait DEJA ce service — l'appeler d'ici
+  /// fermerait le cycle. Le crochet laisse la dependance dans son seul sens, et
+  /// garde la garde d'unicite par periode la ou elle est : rien n'est
+  /// reimplemente ici.
+  ///
+  /// ARME PAR `MonetizationService.load()`, dans la methode qui demarre
+  /// [startListening] : un recu ne peut pas arriver avant que sa consequence
+  /// soit branchee, puisque le meme geste ouvre les deux. `null` = construction
+  /// nue, livraison strictement identique a l'avant-813.
+  Future<void> Function()? onSubscriptionDelivered;
 
   StreamSubscription<List<PurchaseDetails>>? _sub;
 
@@ -395,6 +428,21 @@ class WalletIapService {
         '[WalletIap] Abo sans-pub pose jusqu au '
         '${now.add(kSubscriptionNoAdsWindow)} (${purchase.productID})',
       );
+      // LA CAGNOTTE DE L'ABONNE PART D'ICI (tache 813), ET APRES LA POSE.
+      //
+      // L'ORDRE EST LA CONDITION DU VERSEMENT : `grantSubscriberAllowance`
+      // n'accepte qu'un abonnement ACTIF, et il ne l'est qu'une fois la source
+      // ci-dessus ecrite. Verser avant de poser ne crediterait rien, en
+      // silence.
+      //
+      // CE SEUL POINT COUVRE LES TROIS CAS, parce que les trois arrivent par ce
+      // chemin : l'achat initial, le RENOUVELLEMENT automatique de la boutique
+      // et la RESTAURATION emettent tous un recu `purchased` ou `restored`. Le
+      // renouvellement ouvre une periode neuve, donc merite son versement ; la
+      // restauration retombe sur l'idempotence par `purchaseID` de [_deliver]
+      // et sur la garde de periode, qui refusent le doublon.
+      final versement = onSubscriptionDelivered;
+      if (versement != null) await versement();
       return true;
     }
     _log.w('[WalletIap] ProductId inconnu, rien livre: ${purchase.productID}');

@@ -19,7 +19,8 @@ import '../../../core/branding/stepways_icons.dart';
 /// ECRAN DE RECHARGE DU COMPTE-ETAPES (tache 594, A3).
 ///
 /// CE QUI MANQUAIT. La grille officielle du modele eco — 11 etapes = 9,99 EUR,
-/// 25 = 19,99, 50 = 34,99 — etait ecrite AU CENTIME dans [kStepPacks] depuis
+/// 16 = 13,99 (entre par la tache 813), 25 = 19,99, 50 = 34,99 — etait ecrite
+/// AU CENTIME dans [kStepPacks] depuis
 /// le LOT 1, et AFFICHEE NULLE PART (inventaire 593 §M1). Le seul prix qui
 /// sortait a l'ecran etait celui d'UN trek, dans le paywall. Il n'existait
 /// aucun chemin pour recharger : le portefeuille se vidait, rien ne le

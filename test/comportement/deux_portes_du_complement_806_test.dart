@@ -278,11 +278,17 @@ void main() {
         'puisse tenir', (tester) async {
       // Vendre exactement N etapes suppose un produit « une etape » achete en
       // QUANTITE, ou un produit par nombre d etapes. Aucun des deux n est
-      // declare : les seuls consommables connus sont les packs 11, 25 et 50
-      // (`kWalletCreditStepsByProduct`). La porte existe et elle le DIT.
+      // declare : les seuls consommables connus sont les packs 11, 16, 25 et
+      // 50 (`kWalletCreditStepsByProduct`, le palier de seize est entre par la
+      // tache 813). La porte existe et elle le DIT.
       expect(
         kWalletCreditStepsByProduct.keys.toSet(),
-        <String>{kWalletCredits11, kWalletCredits25, kWalletCredits50},
+        <String>{
+          kWalletCredits11,
+          kWalletCredits16,
+          kWalletCredits25,
+          kWalletCredits50,
+        },
         reason:
             'aucun produit « une etape » n est declare a ce jour : la porte 1 '
             'ne peut pas encore debiter',

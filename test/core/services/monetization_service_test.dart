@@ -158,14 +158,30 @@ void main() {
       expect(svc.eurPriceForSteps(1), closeTo(0.99, 1e-9));
     });
 
-    test('grille packs 11/25/50 + plus petit pack couvrant', () async {
+    test('grille packs 11/16/25/50 + plus petit pack couvrant', () async {
       final svc = await makeService();
-      expect(kStepPacks.map((p) => p.steps).toList(), [11, 25, 50]);
-      expect(kStepPacks.map((p) => p.priceEur).toList(), [9.99, 19.99, 34.99]);
+      expect(kStepPacks.map((p) => p.steps).toList(), [11, 16, 25, 50]);
+      expect(kStepPacks.map((p) => p.priceEur).toList(), [
+        9.99,
+        13.99,
+        19.99,
+        34.99,
+      ]);
       // Complement : plus petit pack couvrant le manque (reco §3.1).
       expect(svc.smallestPackCovering(3).steps, 11);
       expect(svc.smallestPackCovering(11).steps, 11);
-      expect(svc.smallestPackCovering(12).steps, 25);
+      // DOUZE NE RENVOIE PLUS VINGT-CINQ (tache 813) : le palier de seize
+      // couvre desormais le trou de la grille, et le randonneur qui a besoin
+      // de douze etapes n en paie plus vingt-cinq. TOUT le segment est
+      // verifie, pas seulement ses bords.
+      for (var besoin = 12; besoin <= 16; besoin++) {
+        expect(
+          svc.smallestPackCovering(besoin).steps,
+          16,
+          reason: 'besoin de $besoin etapes -> palier de seize',
+        );
+      }
+      expect(svc.smallestPackCovering(17).steps, 25);
       expect(svc.smallestPackCovering(40).steps, 50);
       // Au-dela du plus gros pack : retombe sur le plus gros.
       expect(svc.smallestPackCovering(999).steps, 50);

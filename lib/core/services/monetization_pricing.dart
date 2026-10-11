@@ -25,8 +25,33 @@ const double kStepTierEur = 0.99;
 /// `wallet_iap_service.dart`). Le complément d'un achat passe par le PLUS PETIT
 /// pack couvrant le manque (reco spec §3.1) : évite les SKU unitaires
 /// ingérables. Trié par nombre d'étapes croissant (contrat pour `packSteps`).
+///
+/// L'INVARIANT COMMERCIAL DE CETTE GRILLE EST LA PENTE DÉGRESSIVE : 0,91 puis
+/// 0,87 puis 0,80 puis 0,70 l'étape, chaque palier STRICTEMENT moins cher à
+/// l'étape que le précédent. Un palier qui casse la pente rend le pack du
+/// dessous plus avantageux que celui du dessus, et le randonneur qui prend le
+/// gros paie l'étape plus cher que celui qui prend le petit. La garde
+/// `la_pente_des_paliers_reste_degressive_813` le refuse par la machine, parce
+/// que c'est un chiffre qu'on ajuste sous pression commerciale.
+///
+/// LE PALIER DE SEIZE EST ENTRÉ LE 11/10/2026 (tâche 813, validé par
+/// Christophe à 13:32), SEUL AJOUT, les trois autres inchangés. Le trou de la
+/// grille était entre onze et vingt-cinq, exactement là où tombe le meilleur
+/// client : deux tronçons de cinq à six jours, donc deux semaines de congés, et
+/// le GR20 intégral qui fait seize étapes tout rond.
+///
+/// POURQUOI 13,99 ET PAS AUTRE CHOSE, et c'est la pente qui l'impose : à 14,99
+/// l'étape reviendrait à 0,94, donc PLUS CHER que le pack de onze, et la pente
+/// se casserait ; à 12,99 elle tomberait à 0,81 et mangerait le pack de
+/// vingt-cinq.
+///
+/// AUCUN PALIER SOUS ONZE, ET CE N'EST PAS UN OUBLI : le petit acheteur, celui
+/// du sentier corse à sept étapes, est servi par le COMPLÉMENT EXACT au tarif
+/// unité ([kStepTierEur]). Un palier de plus coûte des démarches dans les DEUX
+/// boutiques — on n'en ajoute qu'un.
 const List<StepPack> kStepPacks = <StepPack>[
   StepPack(steps: 11, priceEur: 9.99, productId: kWalletCredits11),
+  StepPack(steps: 16, priceEur: 13.99, productId: kWalletCredits16),
   StepPack(steps: 25, priceEur: 19.99, productId: kWalletCredits25),
   StepPack(steps: 50, priceEur: 34.99, productId: kWalletCredits50),
 ];
