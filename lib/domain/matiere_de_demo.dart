@@ -37,12 +37,25 @@
 ///    deux calendriers differents.
 ///
 /// 2. ELLE EST PLAUSIBLE PARCE QU'ELLE EST VRAIE. Pas un chiffre en dur : les
-///    etapes, leurs noms, leurs distances, leurs deniveles et leurs durees sont
-///    ceux du sentier charge. Sur le Mare a Mare Centre, les sept etapes
-///    fabriquent donc exactement les 87,3 km et les 4 274 m de denivele positif
-///    du sentier — non pas parce qu'on les a recopies, mais parce qu'on les
+///    etapes, leurs noms, leurs distances et leurs deniveles sont ceux du
+///    sentier charge. Sur le Mare a Mare Centre, les sept etapes fabriquent
+///    donc exactement les 87,3 km et les 4 274 m de denivele positif du
+///    sentier — non pas parce qu'on les a recopies, mais parce qu'on les
 ///    additionne. Changer le sentier change la matiere ; aucun sentier n'est
 ///    nomme ici, et le moteur reste generique.
+///
+///    DEUX CHOSES QUE LE SENTIER NE NOUS DONNE PAS, ET IL FAUT LE DIRE PLUTOT
+///    QUE DE LAISSER CROIRE LE CONTRAIRE. `domainStagesProvider`
+///    (`features/trek/providers/gps_providers.dart`) construit ses [Stage] sans
+///    recopier deux champs que la donnee du sentier porte pourtant :
+///      * `estimatedDurationSeconds` reste a zero, donc toute journee fabriquee
+///        dure [dureeDeRepli] — et non les 457, 380 ou 303 minutes que le
+///        Mare a Mare Centre declare pour ses trois premieres etapes ;
+///      * `nameEn`/`nameDe`/`nameIt`/`nameEs` restent vides, donc
+///        [Stage.nomLocalise] retombe sur le francais dans les cinq langues.
+///    Les deux sont ANTERIEURES a ce lot et hors de son perimetre : elles sont
+///    SIGNALEES, pas corrigees ici. Le jour ou ce mappeur recopiera ces champs,
+///    la matiere s'enrichira sans qu'une ligne de ce fichier change.
 ///
 /// 3. ELLE EST RECONNAISSABLE A L'OEIL ET A LA MACHINE. L'identifiant de la
 ///    session fabriquee est [idSessionFabriquee], et les entrees de carnet

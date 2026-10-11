@@ -66,14 +66,14 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 ## Arborescence mesurée
 
 `lib/` compte718<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-140 312<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+140 343<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
 | `lib/core/` |191 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |32 586<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` |471<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |97 629<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/features/` |471<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |97 647<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 31 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 5 375<!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
@@ -92,7 +92,7 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 | `safety` | 31 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> |7 068 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
 | `feasibility` | 31 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 736 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
 | `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 5 054 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
-| `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 935 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
+| `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 953 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
 
 `trek` reste la plus grosse feature, et de loin.
 
