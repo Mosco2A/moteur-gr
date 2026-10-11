@@ -370,7 +370,7 @@ String _messagePour(PurchaseOutcome outcome) {
     PurchaseStatusResult.owned => m.buyOutcomeOwned,
     PurchaseStatusResult.alreadyOwned => m.buyOutcomeAlreadyOwned,
     PurchaseStatusResult.offlineComplementRequired => m.buyOutcomeOffline(
-      steps: outcome.complementSteps,
+      n: outcome.complementSteps,
     ),
     PurchaseStatusResult.complementFailed => m.buyOutcomeFailed,
     PurchaseStatusResult.unknownPrice => m.buyOutcomeUnknownPrice,

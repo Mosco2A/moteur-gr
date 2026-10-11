@@ -73,16 +73,48 @@ const List<String> motsInterditsSurUnSentier = <String>[
   'montantEnEuros',
 ];
 
-/// Les cles i18n qui affichent un NOMBRE D'ETAPES au randonneur.
+/// Les SIX cles i18n qui affichent un NOMBRE D'ETAPES au randonneur.
 ///
-/// Toutes les trois doivent etre declarees en `(plural)` : elles accolent un
+/// Toutes les six doivent etre declarees en `(plural)` : elles accolent un
 /// nombre a un nom, et ce nom s'accorde. Le nom de la cle est donne SANS le
 /// modificateur `(plural)`, que le test ajoute lui-meme.
+///
+/// ELLES ETAIENT TROIS, ET C'ETAIT LA MOITIE DU TRAVAIL. Le libelle d'achat
+/// et les deux portes ont ete accordes d'abord ; les trois autres sont
+/// restees une passe de plus a dire « 1 etapes ». LA PIRE EST
+/// `buyOutcomeOffline`, parce qu'elle vit DANS le chemin du complement : un
+/// randonneur a qui il manque une etape et qui est hors ligne lisait « Il
+/// manque 1 etapes ». C'est pour cela que la liste est ici, en UN SEUL
+/// endroit : la prochaine cle qui comptera des etapes s'y ajoutera, et la
+/// garde la tiendra des le premier jour.
 const List<String> clesComptantDesEtapes = <String>[
+  // Le prix d'un sentier, et les deux portes du complement.
   'buyCtaWithSteps',
   'complementDoorExact',
   'complementDoorPack',
+  // Le comptoir : la grille des packs, la cagnotte de l'abonnement, et le
+  // refus hors-ligne qui annonce ce qui manque.
+  'packSteps',
+  'subscriptionIncludesAllowance',
+  'buyOutcomeOffline',
 ];
+
+/// Le faux ami de l'anglais : « stage » la ou le modele dit « step ».
+///
+/// En francais, la meme « etape » designe DEUX choses : la journee de marche
+/// et l'unite de la cagnotte. L'anglais les separe — « stage » pour la
+/// journee, « step » pour la monnaie — et trois chaines de la monetisation
+/// avaient pris le mauvais des deux : `subscriptionIncludesAllowance`
+/// (« $n stages credited every month »), `subscriptionAllowanceForLife` et
+/// `cancelExplains`. Un abonne anglophone lisait donc qu'on lui creditait des
+/// JOURNEES DE MARCHE, ce qui n'est pas ce qu'il achete.
+///
+/// LA GARDE NE REGARDE QUE LE BLOC `monetization`, et c'est mesure : ailleurs
+/// « stage » veut vraiment dire la journee de marche — 99 chaines anglaises
+/// l'emploient, a bon droit. `demo.rienNeCompte` (« No stages, no diploma, no
+/// purchase ») parle lui aussi des etapes PARCOURUES et non de la cagnotte :
+/// il voisine `simulerEtape` et le diplome. Il reste donc hors de la garde.
+final RegExp motStageEnAnglais = RegExp(r'\bstages?\b', caseSensitive: false);
 
 /// Les cinq langues du depot.
 const List<String> langues = <String>['fr', 'en', 'de', 'it', 'es'];
@@ -191,66 +223,73 @@ void main() {
       );
     });
 
-    test('les libelles comptes en etapes sont au PLURIEL, en 5 langues', () {
-      // CE QUE CETTE VERIFICATION FERME. Les trois libelles concatenaient le
-      // nombre et un « etapes » toujours au pluriel : un complement d UNE
-      // etape s ecrivait « Acheter le complement — 1 etapes ». Et le
-      // complement d une seule etape n est pas un cas limite, c est le cas le
-      // plus FREQUENT du modele — celui du randonneur a qui il manque juste
-      // de quoi finir.
-      //
-      // ELLE EXIGE LA FORME PLURIEL DE L OUTIL, pas une chaine. Chaque langue
-      // a sa regle (le francais met « 0 etape » au singulier, l anglais dit
-      // « 0 steps ») et slang la tient depuis la table CLDR ; une
-      // concatenation a la main ne le peut pas. La garde refuse donc une
-      // valeur qui serait redevenue une simple chaine.
-      final List<String> trouvailles = <String>[];
-      for (final String langue in langues) {
-        final Map<String, dynamic> bloc =
-            (jsonDecode(
-                      File('assets/i18n/$langue.i18n.json').readAsStringSync(),
-                    )
-                    as Map<String, dynamic>)['monetization']
-                as Map<String, dynamic>;
-        for (final String cle in clesComptantDesEtapes) {
-          final Object? valeur = bloc['$cle(plural)'];
-          if (valeur is! Map<String, dynamic>) {
-            trouvailles.add(
-              '$langue : $cle n est pas declaree en (plural) — '
-              'un nombre colle a un mot invariable dira « 1 etapes »',
-            );
-            continue;
-          }
-          final Object? singulier = valeur['one'];
-          final Object? pluriel = valeur['other'];
-          if (singulier is! String || pluriel is! String) {
-            trouvailles.add('$langue : $cle manque sa forme one ou other');
-            continue;
-          }
-          if (singulier == pluriel) {
-            trouvailles.add(
-              '$langue : $cle a le MEME texte au singulier et au pluriel '
-              '[$singulier] — la forme plurielle a ete recopiee',
-            );
-          }
-          for (final String forme in <String>[singulier, pluriel]) {
-            if (forme.contains(euro)) {
-              trouvailles.add('$langue : $cle [$forme] porte un symbole euro');
+    test(
+      'les SIX libelles comptes en etapes sont au PLURIEL, en 5 langues',
+      () {
+        // CE QUE CETTE VERIFICATION FERME. Les six libelles concatenaient le
+        // nombre et un « etapes » toujours au pluriel : un complement d UNE
+        // etape s ecrivait « Acheter le complement — 1 etapes », et un refus
+        // hors-ligne « Il manque 1 etapes ». Le complement d une seule etape
+        // n est pas un cas limite, c est le cas le plus FREQUENT du modele —
+        // celui du randonneur a qui il manque juste de quoi finir.
+        //
+        // ELLE EXIGE LA FORME PLURIEL DE L OUTIL, pas une chaine. Chaque langue
+        // a sa regle (le francais met « 0 etape » au singulier, l anglais dit
+        // « 0 steps ») et slang la tient depuis la table CLDR ; une
+        // concatenation a la main ne le peut pas. La garde refuse donc une
+        // valeur qui serait redevenue une simple chaine.
+        final List<String> trouvailles = <String>[];
+        for (final String langue in langues) {
+          final Map<String, dynamic> bloc =
+              (jsonDecode(
+                        File(
+                          'assets/i18n/$langue.i18n.json',
+                        ).readAsStringSync(),
+                      )
+                      as Map<String, dynamic>)['monetization']
+                  as Map<String, dynamic>;
+          for (final String cle in clesComptantDesEtapes) {
+            final Object? valeur = bloc['$cle(plural)'];
+            if (valeur is! Map<String, dynamic>) {
+              trouvailles.add(
+                '$langue : $cle n est pas declaree en (plural) — '
+                'un nombre colle a un mot invariable dira « 1 etapes »',
+              );
+              continue;
             }
-            if (!forme.contains(r'$n')) {
-              trouvailles.add('$langue : $cle [$forme] ne compte pas');
+            final Object? singulier = valeur['one'];
+            final Object? pluriel = valeur['other'];
+            if (singulier is! String || pluriel is! String) {
+              trouvailles.add('$langue : $cle manque sa forme one ou other');
+              continue;
+            }
+            if (singulier == pluriel) {
+              trouvailles.add(
+                '$langue : $cle a le MEME texte au singulier et au pluriel '
+                '[$singulier] — la forme plurielle a ete recopiee',
+              );
+            }
+            for (final String forme in <String>[singulier, pluriel]) {
+              if (forme.contains(euro)) {
+                trouvailles.add(
+                  '$langue : $cle [$forme] porte un symbole euro',
+                );
+              }
+              if (!forme.contains(r'$n')) {
+                trouvailles.add('$langue : $cle [$forme] ne compte pas');
+              }
             }
           }
         }
-      }
-      expect(
-        trouvailles,
-        isEmpty,
-        reason:
-            'Les libelles qui comptent des etapes annoncent des ETAPES, au '
-            'bon nombre, dans les cinq langues :\n${trouvailles.join('\n')}',
-      );
-    });
+        expect(
+          trouvailles,
+          isEmpty,
+          reason:
+              'Les libelles qui comptent des etapes annoncent des ETAPES, au '
+              'bon nombre, dans les cinq langues :\n${trouvailles.join('\n')}',
+        );
+      },
+    );
 
     test('la vitrine ne vend plus un « premium » qui n existe pas', () {
       // CE QUE LE TEXTE DISAIT, et il contredisait le modele de Christophe :
@@ -281,6 +320,38 @@ void main() {
             'Aucun texte lu par le randonneur ne nomme une offre « premium » : '
             'le modele est cagnotte, packs et abonnement.\n'
             '${trouvailles.join('\n')}',
+      );
+    });
+
+    test('en anglais la monnaie se dit « step », jamais « stage »', () {
+      // LE FAUX AMI, et il est couteux : l anglais separe la JOURNEE DE
+      // MARCHE (« stage ») de l UNITE DE LA CAGNOTTE (« step ») la ou le
+      // francais dit « etape » pour les deux. Trois chaines de la
+      // monetisation avaient pris le mauvais des deux, et un abonne
+      // anglophone lisait qu on lui creditait des journees de marche.
+      final Map<String, dynamic> bloc =
+          (jsonDecode(File('assets/i18n/en.i18n.json').readAsStringSync())
+                  as Map<String, dynamic>)['monetization']
+              as Map<String, dynamic>;
+      final List<String> trouvailles = <String>[];
+      void visiter(String cle, Object? valeur) {
+        if (valeur is String) {
+          if (motStageEnAnglais.hasMatch(valeur)) {
+            trouvailles.add('monetization.$cle | $valeur');
+          }
+        } else if (valeur is Map<String, dynamic>) {
+          valeur.forEach((String k, Object? v) => visiter('$cle.$k', v));
+        }
+      }
+
+      bloc.forEach(visiter);
+      expect(
+        trouvailles,
+        isEmpty,
+        reason:
+            'Dans la monetisation, l unite de compte se dit « step ». '
+            '« stage » y designerait une journee de marche, ce qui ne se '
+            'credite pas :\n${trouvailles.join('\n')}',
       );
     });
 

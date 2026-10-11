@@ -452,4 +452,145 @@ void main() {
       expect(tr.complementDoorPack(n: 11), 'Coger un pack — 11 etapas');
     });
   });
+
+  // ==========================================================================
+  // LE COMPTOIR ACCORDE SES NOMBRES LUI AUSSI
+  // ==========================================================================
+  //
+  // LES TROIS CLES QUE J AVAIS SIGNALEES SANS LES CORRIGER, et la premiere
+  // etait la plus genante parce qu elle vit DANS le chemin du complement :
+  // un randonneur a qui il manque UNE etape et qui est hors ligne lisait
+  // « Il manque 1 etapes ». Meme faute, meme endroit, meme jour.
+  //
+  // ET L ACCORD NE S ARRETE PAS AU NOM. Le verbe suit, et chaque langue a le
+  // sien : « Il manque » reste invariable en francais, mais l allemand passe
+  // de « Es fehlt » a « Es fehlen », l italien de « Manca » a « Mancano »,
+  // l espagnol de « Te falta » a « Te faltan ». Le participe aussi s accorde
+  // en francais (« creditee » / « creditees »), en italien (« accreditata » /
+  // « accreditate ») et en espagnol (« abonada » / « abonadas »). Une
+  // concatenation ne peut tenir aucun de ces trois accords a la fois.
+  group('Le comptoir accorde ses nombres (806)', () {
+    test('fr : le pack, la cagnotte et le refus hors-ligne', () {
+      final tr = AppLocale.fr.buildSync().monetization;
+      expect(tr.packSteps(n: 1), '1 étape');
+      expect(tr.packSteps(n: 11), '11 étapes');
+      expect(
+        tr.subscriptionIncludesAllowance(n: 1),
+        '1 étape créditée chaque mois',
+      );
+      expect(
+        tr.subscriptionIncludesAllowance(n: 2),
+        '2 étapes créditées chaque mois',
+      );
+      expect(
+        tr.buyOutcomeOffline(n: 1),
+        'Il manque 1 étape et le paiement exige une connexion. '
+        "Rien n'a été débité.",
+      );
+      expect(
+        tr.buyOutcomeOffline(n: 3),
+        'Il manque 3 étapes et le paiement exige une connexion. '
+        "Rien n'a été débité.",
+      );
+    });
+
+    test('en : the pack, the allowance and the offline refusal', () {
+      final tr = AppLocale.en.buildSync().monetization;
+      expect(tr.packSteps(n: 1), '1 step');
+      expect(tr.packSteps(n: 11), '11 steps');
+      // ET LE MOT EST « step », PAS « stage » : la cagnotte credite des
+      // unites de compte, pas des journees de marche.
+      expect(
+        tr.subscriptionIncludesAllowance(n: 1),
+        '1 step credited every month',
+      );
+      expect(
+        tr.subscriptionIncludesAllowance(n: 2),
+        '2 steps credited every month',
+      );
+      expect(
+        tr.buyOutcomeOffline(n: 1),
+        'You are 1 step short and payment requires a connection. '
+        'Nothing was charged.',
+      );
+      expect(
+        tr.buyOutcomeOffline(n: 3),
+        'You are 3 steps short and payment requires a connection. '
+        'Nothing was charged.',
+      );
+    });
+
+    test('de : das Paket, die Gutschrift und die Absage ohne Netz', () {
+      final tr = AppLocale.de.buildSync().monetization;
+      expect(tr.packSteps(n: 1), '1 Etappe');
+      expect(tr.packSteps(n: 11), '11 Etappen');
+      expect(
+        tr.subscriptionIncludesAllowance(n: 1),
+        '1 Etappe jeden Monat gutgeschrieben',
+      );
+      expect(
+        tr.subscriptionIncludesAllowance(n: 2),
+        '2 Etappen jeden Monat gutgeschrieben',
+      );
+      // LE VERBE SUIT : « Es fehlt » au singulier, « Es fehlen » au pluriel.
+      expect(
+        tr.buyOutcomeOffline(n: 1),
+        'Es fehlt 1 Etappe und die Zahlung erfordert eine Verbindung. '
+        'Es wurde nichts abgebucht.',
+      );
+      expect(
+        tr.buyOutcomeOffline(n: 3),
+        'Es fehlen 3 Etappen und die Zahlung erfordert eine Verbindung. '
+        'Es wurde nichts abgebucht.',
+      );
+    });
+
+    test('it : il pacchetto, l accredito e il rifiuto offline', () {
+      final tr = AppLocale.it.buildSync().monetization;
+      expect(tr.packSteps(n: 1), '1 tappa');
+      expect(tr.packSteps(n: 11), '11 tappe');
+      expect(
+        tr.subscriptionIncludesAllowance(n: 1),
+        '1 tappa accreditata ogni mese',
+      );
+      expect(
+        tr.subscriptionIncludesAllowance(n: 2),
+        '2 tappe accreditate ogni mese',
+      );
+      // « Manca » au singulier, « Mancano » au pluriel.
+      expect(
+        tr.buyOutcomeOffline(n: 1),
+        'Manca 1 tappa e il pagamento richiede una connessione. '
+        'Non è stato addebitato nulla.',
+      );
+      expect(
+        tr.buyOutcomeOffline(n: 3),
+        'Mancano 3 tappe e il pagamento richiede una connessione. '
+        'Non è stato addebitato nulla.',
+      );
+    });
+
+    test('es : el pack, el abono y el rechazo sin conexion', () {
+      final tr = AppLocale.es.buildSync().monetization;
+      expect(tr.packSteps(n: 1), '1 etapa');
+      expect(tr.packSteps(n: 11), '11 etapas');
+      expect(
+        tr.subscriptionIncludesAllowance(n: 1),
+        '1 etapa abonada cada mes',
+      );
+      expect(
+        tr.subscriptionIncludesAllowance(n: 2),
+        '2 etapas abonadas cada mes',
+      );
+      // « Te falta » au singulier, « Te faltan » au pluriel.
+      expect(
+        tr.buyOutcomeOffline(n: 1),
+        'Te falta 1 etapa y el pago exige conexión. No se ha cobrado nada.',
+      );
+      expect(
+        tr.buyOutcomeOffline(n: 3),
+        'Te faltan 3 etapas y el pago exige conexión. No se ha cobrado nada.',
+      );
+    });
+  });
 }

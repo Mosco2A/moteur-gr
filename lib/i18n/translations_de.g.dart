@@ -1013,12 +1013,18 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get rechargeTitle => 'Etappenkonto aufladen';
 	@override String get rechargeSubtitle => 'Etappen schalten Wanderungen frei. Sie gehören dir auf Dauer.';
 	@override String get rechargeBalance => 'Aktueller Stand';
-	@override String packSteps({required Object steps}) => '${steps} Etappen';
+	@override String packSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: '${n} Etappe',
+		other: '${n} Etappen',
+	);
 	@override String get rechargeCta => 'Aufladen';
 	@override String get subscriptionTitle => 'Werbefreies Abo';
 	@override String get subscriptionSubtitle => 'Keine Werbung, solange das Abo aktiv ist.';
 	@override String get subscriptionIncludesNoAds => 'Keine Werbung in der gesamten App';
-	@override String subscriptionIncludesAllowance({required Object steps}) => '${steps} Etappen jeden Monat gutgeschrieben';
+	@override String subscriptionIncludesAllowance({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: '${n} Etappe jeden Monat gutgeschrieben',
+		other: '${n} Etappen jeden Monat gutgeschrieben',
+	);
 	@override String get subscriptionExcludes => 'Das Abo schaltet weder die vollständigen Werkzeuge noch die Durchführung einer Wanderung frei: dafür muss die Wanderung gekauft werden.';
 	@override String get subscriptionCta => 'Abonnieren';
 	@override String get subscriptionActive => 'Abo aktiv';
@@ -1029,7 +1035,10 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get realizationLockedBody => 'Eine Wanderung durchzuführen setzt voraus, sie freigeschaltet zu haben. Die Vorbereitung bleibt kostenlos.';
 	@override String get buyOutcomeOwned => 'Wanderung freigeschaltet. Gute Tour!';
 	@override String get buyOutcomeAlreadyOwned => 'Diese Wanderung ist bereits freigeschaltet.';
-	@override String buyOutcomeOffline({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.';
+	@override String buyOutcomeOffline({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: 'Es fehlt ${n} Etappe und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.',
+		other: 'Es fehlen ${n} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.',
+	);
 	@override String get buyOutcomeFailed => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.';
 	@override String get buyOutcomeUnknownPrice => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.';
 	@override String get buyOutcomeDemo => 'Du bist im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.';
@@ -5295,12 +5304,12 @@ extension on TranslationsDe {
 			'monetization.rechargeTitle' => 'Etappenkonto aufladen',
 			'monetization.rechargeSubtitle' => 'Etappen schalten Wanderungen frei. Sie gehören dir auf Dauer.',
 			'monetization.rechargeBalance' => 'Aktueller Stand',
-			'monetization.packSteps' => ({required Object steps}) => '${steps} Etappen',
+			'monetization.packSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: '${n} Etappe', other: '${n} Etappen', ), 
 			'monetization.rechargeCta' => 'Aufladen',
 			'monetization.subscriptionTitle' => 'Werbefreies Abo',
 			'monetization.subscriptionSubtitle' => 'Keine Werbung, solange das Abo aktiv ist.',
 			'monetization.subscriptionIncludesNoAds' => 'Keine Werbung in der gesamten App',
-			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} Etappen jeden Monat gutgeschrieben',
+			'monetization.subscriptionIncludesAllowance' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: '${n} Etappe jeden Monat gutgeschrieben', other: '${n} Etappen jeden Monat gutgeschrieben', ), 
 			'monetization.subscriptionExcludes' => 'Das Abo schaltet weder die vollständigen Werkzeuge noch die Durchführung einer Wanderung frei: dafür muss die Wanderung gekauft werden.',
 			'monetization.subscriptionCta' => 'Abonnieren',
 			'monetization.subscriptionActive' => 'Abo aktiv',
@@ -5311,7 +5320,7 @@ extension on TranslationsDe {
 			'monetization.realizationLockedBody' => 'Eine Wanderung durchzuführen setzt voraus, sie freigeschaltet zu haben. Die Vorbereitung bleibt kostenlos.',
 			'monetization.buyOutcomeOwned' => 'Wanderung freigeschaltet. Gute Tour!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Diese Wanderung ist bereits freigeschaltet.',
-			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Es fehlen ${steps} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.',
+			'monetization.buyOutcomeOffline' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: 'Es fehlt ${n} Etappe und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.', other: 'Es fehlen ${n} Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.', ), 
 			'monetization.buyOutcomeFailed' => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.',
 			'monetization.buyOutcomeUnknownPrice' => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.',
 			'monetization.buyOutcomeDemo' => 'Du bist im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.',

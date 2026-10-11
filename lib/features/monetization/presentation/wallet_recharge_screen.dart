@@ -165,7 +165,7 @@ class _PackTileState extends ConsumerState<_PackTile> {
                 const SizedBox(width: AppTheme.spacingMd),
                 Expanded(
                   child: Text(
-                    t.monetization.packSteps(steps: pack.steps),
+                    t.monetization.packSteps(n: pack.steps),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),

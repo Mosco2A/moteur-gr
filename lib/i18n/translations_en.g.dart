@@ -1013,12 +1013,18 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get rechargeTitle => 'Top up my step account';
 	@override String get rechargeSubtitle => 'Steps unlock hikes. They are yours for life.';
 	@override String get rechargeBalance => 'Current balance';
-	@override String packSteps({required Object steps}) => '${steps} steps';
+	@override String packSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} step',
+		other: '${n} steps',
+	);
 	@override String get rechargeCta => 'Top up';
 	@override String get subscriptionTitle => 'Ad-free subscription';
 	@override String get subscriptionSubtitle => 'No ads anywhere, as long as the subscription is active.';
 	@override String get subscriptionIncludesNoAds => 'No ads, across the whole app';
-	@override String subscriptionIncludesAllowance({required Object steps}) => '${steps} stages credited every month';
+	@override String subscriptionIncludesAllowance({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} step credited every month',
+		other: '${n} steps credited every month',
+	);
 	@override String get subscriptionExcludes => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.';
 	@override String get subscriptionCta => 'Subscribe';
 	@override String get subscriptionActive => 'Subscription active';
@@ -1029,14 +1035,17 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get realizationLockedBody => 'Hiking a route requires unlocking it first. Preparing stays free.';
 	@override String get buyOutcomeOwned => 'Hike unlocked. Enjoy the trail!';
 	@override String get buyOutcomeAlreadyOwned => 'This hike is already unlocked.';
-	@override String buyOutcomeOffline({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.';
+	@override String buyOutcomeOffline({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'You are ${n} step short and payment requires a connection. Nothing was charged.',
+		other: 'You are ${n} steps short and payment requires a connection. Nothing was charged.',
+	);
 	@override String get buyOutcomeFailed => 'The payment did not go through. Nothing was charged.';
 	@override String get buyOutcomeUnknownPrice => 'This trail is not on sale right now. Nothing was charged.';
 	@override String get buyOutcomeDemo => 'You are in demo mode: no purchase is possible, and nothing was charged.';
 	@override String subscriptionPrice({required Object price}) => '${price} per month';
-	@override String get subscriptionAllowanceForLife => 'Credited stages are yours for life, even if you stop the subscription.';
+	@override String get subscriptionAllowanceForLife => 'Credited steps are yours for life, even if you stop the subscription.';
 	@override String get cancelCta => 'Stop my subscription';
-	@override String get cancelExplains => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.';
+	@override String get cancelExplains => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited steps stay yours.';
 	@override String get cancelStoreUnavailable => 'The store could not be opened. Open it yourself, then go to Subscriptions.';
 	@override String get adsBadgePub => 'With ads';
 	@override String get adsBadgeAbonne => 'Subscriber — ad-free';
@@ -5295,12 +5304,12 @@ extension on TranslationsEn {
 			'monetization.rechargeTitle' => 'Top up my step account',
 			'monetization.rechargeSubtitle' => 'Steps unlock hikes. They are yours for life.',
 			'monetization.rechargeBalance' => 'Current balance',
-			'monetization.packSteps' => ({required Object steps}) => '${steps} steps',
+			'monetization.packSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: '${n} step', other: '${n} steps', ), 
 			'monetization.rechargeCta' => 'Top up',
 			'monetization.subscriptionTitle' => 'Ad-free subscription',
 			'monetization.subscriptionSubtitle' => 'No ads anywhere, as long as the subscription is active.',
 			'monetization.subscriptionIncludesNoAds' => 'No ads, across the whole app',
-			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} stages credited every month',
+			'monetization.subscriptionIncludesAllowance' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: '${n} step credited every month', other: '${n} steps credited every month', ), 
 			'monetization.subscriptionExcludes' => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.',
 			'monetization.subscriptionCta' => 'Subscribe',
 			'monetization.subscriptionActive' => 'Subscription active',
@@ -5311,14 +5320,14 @@ extension on TranslationsEn {
 			'monetization.realizationLockedBody' => 'Hiking a route requires unlocking it first. Preparing stays free.',
 			'monetization.buyOutcomeOwned' => 'Hike unlocked. Enjoy the trail!',
 			'monetization.buyOutcomeAlreadyOwned' => 'This hike is already unlocked.',
-			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.',
+			'monetization.buyOutcomeOffline' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'You are ${n} step short and payment requires a connection. Nothing was charged.', other: 'You are ${n} steps short and payment requires a connection. Nothing was charged.', ), 
 			'monetization.buyOutcomeFailed' => 'The payment did not go through. Nothing was charged.',
 			'monetization.buyOutcomeUnknownPrice' => 'This trail is not on sale right now. Nothing was charged.',
 			'monetization.buyOutcomeDemo' => 'You are in demo mode: no purchase is possible, and nothing was charged.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} per month',
-			'monetization.subscriptionAllowanceForLife' => 'Credited stages are yours for life, even if you stop the subscription.',
+			'monetization.subscriptionAllowanceForLife' => 'Credited steps are yours for life, even if you stop the subscription.',
 			'monetization.cancelCta' => 'Stop my subscription',
-			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.',
+			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited steps stay yours.',
 			'monetization.cancelStoreUnavailable' => 'The store could not be opened. Open it yourself, then go to Subscriptions.',
 			'monetization.adsBadgePub' => 'With ads',
 			'monetization.adsBadgeAbonne' => 'Subscriber — ad-free',

@@ -236,7 +236,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                 key: const ValueKey('abo-cagnotte'),
                 icon: StepwaysIcons.portefeuille,
                 label: t.monetization.subscriptionIncludesAllowance(
-                  steps: cagnotte,
+                  n: cagnotte,
                 ),
               ),
               // LE POINT QUI DECIDE UN DESABONNEMENT : les etapes creditees

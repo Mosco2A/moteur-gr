@@ -1232,12 +1232,18 @@
     "rechargeTitle": "Recharger mon compte-étapes",
     "rechargeSubtitle": "Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.",
     "rechargeBalance": "Solde actuel",
-    "packSteps": "$steps étapes",
+    "packSteps(plural)": {
+      "one": "$n étape",
+      "other": "$n étapes"
+    },
     "rechargeCta": "Recharger",
     "subscriptionTitle": "Abonnement sans publicité",
     "subscriptionSubtitle": "Sans publicité partout, tant que l'abonnement est actif.",
     "subscriptionIncludesNoAds": "Aucune publicité, sur toute l'application",
-    "subscriptionIncludesAllowance": "$steps étapes créditées chaque mois",
+    "subscriptionIncludesAllowance(plural)": {
+      "one": "$n étape créditée chaque mois",
+      "other": "$n étapes créditées chaque mois"
+    },
     "subscriptionExcludes": "L'abonnement ne débloque ni les outils complets ni la réalisation d'une randonnée : pour cela, il faut acheter la randonnée.",
     "subscriptionCta": "S'abonner",
     "subscriptionActive": "Abonnement actif",
@@ -1248,7 +1254,10 @@
     "realizationLockedBody": "Réaliser une randonnée demande de l'avoir débloquée. La préparation reste gratuite.",
     "buyOutcomeOwned": "Randonnée débloquée. Bonne route !",
     "buyOutcomeAlreadyOwned": "Cette randonnée est déjà débloquée.",
-    "buyOutcomeOffline": "Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.",
+    "buyOutcomeOffline(plural)": {
+      "one": "Il manque $n étape et le paiement exige une connexion. Rien n'a été débité.",
+      "other": "Il manque $n étapes et le paiement exige une connexion. Rien n'a été débité."
+    },
     "buyOutcomeFailed": "Le paiement n'a pas abouti. Rien n'a été débité.",
     "buyOutcomeUnknownPrice": "Ce sentier n'est pas en vente pour le moment. Rien n'a été débité.",
     "buyOutcomeDemo": "Tu es en démo : aucun achat n'est possible, et rien n'a été débité.",

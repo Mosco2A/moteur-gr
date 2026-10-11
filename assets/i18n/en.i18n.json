@@ -1232,12 +1232,18 @@
     "rechargeTitle": "Top up my step account",
     "rechargeSubtitle": "Steps unlock hikes. They are yours for life.",
     "rechargeBalance": "Current balance",
-    "packSteps": "$steps steps",
+    "packSteps(plural)": {
+      "one": "$n step",
+      "other": "$n steps"
+    },
     "rechargeCta": "Top up",
     "subscriptionTitle": "Ad-free subscription",
     "subscriptionSubtitle": "No ads anywhere, as long as the subscription is active.",
     "subscriptionIncludesNoAds": "No ads, across the whole app",
-    "subscriptionIncludesAllowance": "$steps stages credited every month",
+    "subscriptionIncludesAllowance(plural)": {
+      "one": "$n step credited every month",
+      "other": "$n steps credited every month"
+    },
     "subscriptionExcludes": "The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.",
     "subscriptionCta": "Subscribe",
     "subscriptionActive": "Subscription active",
@@ -1248,14 +1254,17 @@
     "realizationLockedBody": "Hiking a route requires unlocking it first. Preparing stays free.",
     "buyOutcomeOwned": "Hike unlocked. Enjoy the trail!",
     "buyOutcomeAlreadyOwned": "This hike is already unlocked.",
-    "buyOutcomeOffline": "You are $steps steps short and payment requires a connection. Nothing was charged.",
+    "buyOutcomeOffline(plural)": {
+      "one": "You are $n step short and payment requires a connection. Nothing was charged.",
+      "other": "You are $n steps short and payment requires a connection. Nothing was charged."
+    },
     "buyOutcomeFailed": "The payment did not go through. Nothing was charged.",
     "buyOutcomeUnknownPrice": "This trail is not on sale right now. Nothing was charged.",
     "buyOutcomeDemo": "You are in demo mode: no purchase is possible, and nothing was charged.",
     "subscriptionPrice": "$price per month",
-    "subscriptionAllowanceForLife": "Credited stages are yours for life, even if you stop the subscription.",
+    "subscriptionAllowanceForLife": "Credited steps are yours for life, even if you stop the subscription.",
     "cancelCta": "Stop my subscription",
-    "cancelExplains": "Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.",
+    "cancelExplains": "Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited steps stay yours.",
     "cancelStoreUnavailable": "The store could not be opened. Open it yourself, then go to Subscriptions.",
     "adsBadgePub": "With ads",
     "adsBadgeAbonne": "Subscriber — ad-free",

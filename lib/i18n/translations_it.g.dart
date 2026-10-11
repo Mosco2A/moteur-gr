@@ -1013,12 +1013,18 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get rechargeTitle => 'Ricarica il mio conto tappe';
 	@override String get rechargeSubtitle => 'Le tappe servono a sbloccare le escursioni. Sono tue per sempre.';
 	@override String get rechargeBalance => 'Saldo attuale';
-	@override String packSteps({required Object steps}) => '${steps} tappe';
+	@override String packSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: '${n} tappa',
+		other: '${n} tappe',
+	);
 	@override String get rechargeCta => 'Ricarica';
 	@override String get subscriptionTitle => 'Abbonamento senza pubblicità';
 	@override String get subscriptionSubtitle => 'Nessuna pubblicità ovunque, finché l\'abbonamento è attivo.';
 	@override String get subscriptionIncludesNoAds => 'Nessuna pubblicità in tutta l\'app';
-	@override String subscriptionIncludesAllowance({required Object steps}) => '${steps} tappe accreditate ogni mese';
+	@override String subscriptionIncludesAllowance({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: '${n} tappa accreditata ogni mese',
+		other: '${n} tappe accreditate ogni mese',
+	);
 	@override String get subscriptionExcludes => 'L\'abbonamento non sblocca né gli strumenti completi né la realizzazione di un\'escursione: per questo bisogna acquistare l\'escursione.';
 	@override String get subscriptionCta => 'Abbonati';
 	@override String get subscriptionActive => 'Abbonamento attivo';
@@ -1029,7 +1035,10 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get realizationLockedBody => 'Per realizzare un\'escursione bisogna averla sbloccata. La preparazione resta gratuita.';
 	@override String get buyOutcomeOwned => 'Escursione sbloccata. Buon cammino!';
 	@override String get buyOutcomeAlreadyOwned => 'Questa escursione è già sbloccata.';
-	@override String buyOutcomeOffline({required Object steps}) => 'Mancano ${steps} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.';
+	@override String buyOutcomeOffline({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: 'Manca ${n} tappa e il pagamento richiede una connessione. Non è stato addebitato nulla.',
+		other: 'Mancano ${n} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.',
+	);
 	@override String get buyOutcomeFailed => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.';
 	@override String get buyOutcomeUnknownPrice => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.';
 	@override String get buyOutcomeDemo => 'Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.';
@@ -5295,12 +5304,12 @@ extension on TranslationsIt {
 			'monetization.rechargeTitle' => 'Ricarica il mio conto tappe',
 			'monetization.rechargeSubtitle' => 'Le tappe servono a sbloccare le escursioni. Sono tue per sempre.',
 			'monetization.rechargeBalance' => 'Saldo attuale',
-			'monetization.packSteps' => ({required Object steps}) => '${steps} tappe',
+			'monetization.packSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: '${n} tappa', other: '${n} tappe', ), 
 			'monetization.rechargeCta' => 'Ricarica',
 			'monetization.subscriptionTitle' => 'Abbonamento senza pubblicità',
 			'monetization.subscriptionSubtitle' => 'Nessuna pubblicità ovunque, finché l\'abbonamento è attivo.',
 			'monetization.subscriptionIncludesNoAds' => 'Nessuna pubblicità in tutta l\'app',
-			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} tappe accreditate ogni mese',
+			'monetization.subscriptionIncludesAllowance' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: '${n} tappa accreditata ogni mese', other: '${n} tappe accreditate ogni mese', ), 
 			'monetization.subscriptionExcludes' => 'L\'abbonamento non sblocca né gli strumenti completi né la realizzazione di un\'escursione: per questo bisogna acquistare l\'escursione.',
 			'monetization.subscriptionCta' => 'Abbonati',
 			'monetization.subscriptionActive' => 'Abbonamento attivo',
@@ -5311,7 +5320,7 @@ extension on TranslationsIt {
 			'monetization.realizationLockedBody' => 'Per realizzare un\'escursione bisogna averla sbloccata. La preparazione resta gratuita.',
 			'monetization.buyOutcomeOwned' => 'Escursione sbloccata. Buon cammino!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Questa escursione è già sbloccata.',
-			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Mancano ${steps} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.',
+			'monetization.buyOutcomeOffline' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: 'Manca ${n} tappa e il pagamento richiede una connessione. Non è stato addebitato nulla.', other: 'Mancano ${n} tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.', ), 
 			'monetization.buyOutcomeFailed' => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.',
 			'monetization.buyOutcomeUnknownPrice' => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.',
 			'monetization.buyOutcomeDemo' => 'Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.',

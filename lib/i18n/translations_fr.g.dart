@@ -2115,8 +2115,11 @@ class Translations$monetization$fr {
 	/// fr: 'Solde actuel'
 	String get rechargeBalance => 'Solde actuel';
 
-	/// fr: '$steps étapes'
-	String packSteps({required Object steps}) => '${steps} étapes';
+	/// fr: '(one) {$n étape} (other) {$n étapes}'
+	String packSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: '${n} étape',
+		other: '${n} étapes',
+	);
 
 	/// fr: 'Recharger'
 	String get rechargeCta => 'Recharger';
@@ -2130,8 +2133,11 @@ class Translations$monetization$fr {
 	/// fr: 'Aucune publicité, sur toute l'application'
 	String get subscriptionIncludesNoAds => 'Aucune publicité, sur toute l\'application';
 
-	/// fr: '$steps étapes créditées chaque mois'
-	String subscriptionIncludesAllowance({required Object steps}) => '${steps} étapes créditées chaque mois';
+	/// fr: '(one) {$n étape créditée chaque mois} (other) {$n étapes créditées chaque mois}'
+	String subscriptionIncludesAllowance({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: '${n} étape créditée chaque mois',
+		other: '${n} étapes créditées chaque mois',
+	);
 
 	/// fr: 'L'abonnement ne débloque ni les outils complets ni la réalisation d'une randonnée : pour cela, il faut acheter la randonnée.'
 	String get subscriptionExcludes => 'L\'abonnement ne débloque ni les outils complets ni la réalisation d\'une randonnée : pour cela, il faut acheter la randonnée.';
@@ -2163,8 +2169,11 @@ class Translations$monetization$fr {
 	/// fr: 'Cette randonnée est déjà débloquée.'
 	String get buyOutcomeAlreadyOwned => 'Cette randonnée est déjà débloquée.';
 
-	/// fr: 'Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.'
-	String buyOutcomeOffline({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.';
+	/// fr: '(one) {Il manque $n étape et le paiement exige une connexion. Rien n'a été débité.} (other) {Il manque $n étapes et le paiement exige une connexion. Rien n'a été débité.}'
+	String buyOutcomeOffline({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: 'Il manque ${n} étape et le paiement exige une connexion. Rien n\'a été débité.',
+		other: 'Il manque ${n} étapes et le paiement exige une connexion. Rien n\'a été débité.',
+	);
 
 	/// fr: 'Le paiement n'a pas abouti. Rien n'a été débité.'
 	String get buyOutcomeFailed => 'Le paiement n\'a pas abouti. Rien n\'a été débité.';
@@ -9430,12 +9439,12 @@ extension on Translations {
 			'monetization.rechargeTitle' => 'Recharger mon compte-étapes',
 			'monetization.rechargeSubtitle' => 'Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.',
 			'monetization.rechargeBalance' => 'Solde actuel',
-			'monetization.packSteps' => ({required Object steps}) => '${steps} étapes',
+			'monetization.packSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} étape', other: '${n} étapes', ), 
 			'monetization.rechargeCta' => 'Recharger',
 			'monetization.subscriptionTitle' => 'Abonnement sans publicité',
 			'monetization.subscriptionSubtitle' => 'Sans publicité partout, tant que l\'abonnement est actif.',
 			'monetization.subscriptionIncludesNoAds' => 'Aucune publicité, sur toute l\'application',
-			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} étapes créditées chaque mois',
+			'monetization.subscriptionIncludesAllowance' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} étape créditée chaque mois', other: '${n} étapes créditées chaque mois', ), 
 			'monetization.subscriptionExcludes' => 'L\'abonnement ne débloque ni les outils complets ni la réalisation d\'une randonnée : pour cela, il faut acheter la randonnée.',
 			'monetization.subscriptionCta' => 'S\'abonner',
 			'monetization.subscriptionActive' => 'Abonnement actif',
@@ -9446,7 +9455,7 @@ extension on Translations {
 			'monetization.realizationLockedBody' => 'Réaliser une randonnée demande de l\'avoir débloquée. La préparation reste gratuite.',
 			'monetization.buyOutcomeOwned' => 'Randonnée débloquée. Bonne route !',
 			'monetization.buyOutcomeAlreadyOwned' => 'Cette randonnée est déjà débloquée.',
-			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.',
+			'monetization.buyOutcomeOffline' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: 'Il manque ${n} étape et le paiement exige une connexion. Rien n\'a été débité.', other: 'Il manque ${n} étapes et le paiement exige une connexion. Rien n\'a été débité.', ), 
 			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
 			'monetization.buyOutcomeUnknownPrice' => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.',
 			'monetization.buyOutcomeDemo' => 'Tu es en démo : aucun achat n\'est possible, et rien n\'a été débité.',

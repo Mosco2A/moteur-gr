@@ -132,7 +132,7 @@ void main() {
       expect(
         find.text(
           t.monetization.subscriptionIncludesAllowance(
-            steps: kSubscriberStepsAllowance!,
+            n: kSubscriberStepsAllowance!,
           ),
         ),
         findsOneWidget,

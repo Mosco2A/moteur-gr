@@ -1232,12 +1232,18 @@
     "rechargeTitle": "Recargar mi cuenta de etapas",
     "rechargeSubtitle": "Las etapas sirven para desbloquear rutas. Son tuyas de por vida.",
     "rechargeBalance": "Saldo actual",
-    "packSteps": "$steps etapas",
+    "packSteps(plural)": {
+      "one": "$n etapa",
+      "other": "$n etapas"
+    },
     "rechargeCta": "Recargar",
     "subscriptionTitle": "Suscripción sin publicidad",
     "subscriptionSubtitle": "Sin publicidad en ningún sitio, mientras la suscripción esté activa.",
     "subscriptionIncludesNoAds": "Sin publicidad en toda la aplicación",
-    "subscriptionIncludesAllowance": "$steps etapas abonadas cada mes",
+    "subscriptionIncludesAllowance(plural)": {
+      "one": "$n etapa abonada cada mes",
+      "other": "$n etapas abonadas cada mes"
+    },
     "subscriptionExcludes": "La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.",
     "subscriptionCta": "Suscribirse",
     "subscriptionActive": "Suscripción activa",
@@ -1248,7 +1254,10 @@
     "realizationLockedBody": "Realizar una ruta exige haberla desbloqueado. La preparación sigue siendo gratuita.",
     "buyOutcomeOwned": "Ruta desbloqueada. ¡Buen camino!",
     "buyOutcomeAlreadyOwned": "Esta ruta ya está desbloqueada.",
-    "buyOutcomeOffline": "Te faltan $steps etapas y el pago exige conexión. No se ha cobrado nada.",
+    "buyOutcomeOffline(plural)": {
+      "one": "Te falta $n etapa y el pago exige conexión. No se ha cobrado nada.",
+      "other": "Te faltan $n etapas y el pago exige conexión. No se ha cobrado nada."
+    },
     "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada.",
     "buyOutcomeUnknownPrice": "Esta ruta no está en venta ahora mismo. No se ha cobrado nada.",
     "buyOutcomeDemo": "Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.",

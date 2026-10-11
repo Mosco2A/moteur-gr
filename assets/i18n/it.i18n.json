@@ -1232,12 +1232,18 @@
     "rechargeTitle": "Ricarica il mio conto tappe",
     "rechargeSubtitle": "Le tappe servono a sbloccare le escursioni. Sono tue per sempre.",
     "rechargeBalance": "Saldo attuale",
-    "packSteps": "$steps tappe",
+    "packSteps(plural)": {
+      "one": "$n tappa",
+      "other": "$n tappe"
+    },
     "rechargeCta": "Ricarica",
     "subscriptionTitle": "Abbonamento senza pubblicità",
     "subscriptionSubtitle": "Nessuna pubblicità ovunque, finché l'abbonamento è attivo.",
     "subscriptionIncludesNoAds": "Nessuna pubblicità in tutta l'app",
-    "subscriptionIncludesAllowance": "$steps tappe accreditate ogni mese",
+    "subscriptionIncludesAllowance(plural)": {
+      "one": "$n tappa accreditata ogni mese",
+      "other": "$n tappe accreditate ogni mese"
+    },
     "subscriptionExcludes": "L'abbonamento non sblocca né gli strumenti completi né la realizzazione di un'escursione: per questo bisogna acquistare l'escursione.",
     "subscriptionCta": "Abbonati",
     "subscriptionActive": "Abbonamento attivo",
@@ -1248,7 +1254,10 @@
     "realizationLockedBody": "Per realizzare un'escursione bisogna averla sbloccata. La preparazione resta gratuita.",
     "buyOutcomeOwned": "Escursione sbloccata. Buon cammino!",
     "buyOutcomeAlreadyOwned": "Questa escursione è già sbloccata.",
-    "buyOutcomeOffline": "Mancano $steps tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.",
+    "buyOutcomeOffline(plural)": {
+      "one": "Manca $n tappa e il pagamento richiede una connessione. Non è stato addebitato nulla.",
+      "other": "Mancano $n tappe e il pagamento richiede una connessione. Non è stato addebitato nulla."
+    },
     "buyOutcomeFailed": "Il pagamento non è andato a buon fine. Non è stato addebitato nulla.",
     "buyOutcomeUnknownPrice": "Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.",
     "buyOutcomeDemo": "Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.",

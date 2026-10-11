@@ -1013,12 +1013,18 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get rechargeTitle => 'Recargar mi cuenta de etapas';
 	@override String get rechargeSubtitle => 'Las etapas sirven para desbloquear rutas. Son tuyas de por vida.';
 	@override String get rechargeBalance => 'Saldo actual';
-	@override String packSteps({required Object steps}) => '${steps} etapas';
+	@override String packSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(n,
+		one: '${n} etapa',
+		other: '${n} etapas',
+	);
 	@override String get rechargeCta => 'Recargar';
 	@override String get subscriptionTitle => 'Suscripción sin publicidad';
 	@override String get subscriptionSubtitle => 'Sin publicidad en ningún sitio, mientras la suscripción esté activa.';
 	@override String get subscriptionIncludesNoAds => 'Sin publicidad en toda la aplicación';
-	@override String subscriptionIncludesAllowance({required Object steps}) => '${steps} etapas abonadas cada mes';
+	@override String subscriptionIncludesAllowance({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(n,
+		one: '${n} etapa abonada cada mes',
+		other: '${n} etapas abonadas cada mes',
+	);
 	@override String get subscriptionExcludes => 'La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.';
 	@override String get subscriptionCta => 'Suscribirse';
 	@override String get subscriptionActive => 'Suscripción activa';
@@ -1029,7 +1035,10 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get realizationLockedBody => 'Realizar una ruta exige haberla desbloqueado. La preparación sigue siendo gratuita.';
 	@override String get buyOutcomeOwned => 'Ruta desbloqueada. ¡Buen camino!';
 	@override String get buyOutcomeAlreadyOwned => 'Esta ruta ya está desbloqueada.';
-	@override String buyOutcomeOffline({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.';
+	@override String buyOutcomeOffline({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(n,
+		one: 'Te falta ${n} etapa y el pago exige conexión. No se ha cobrado nada.',
+		other: 'Te faltan ${n} etapas y el pago exige conexión. No se ha cobrado nada.',
+	);
 	@override String get buyOutcomeFailed => 'El pago no se ha completado. No se ha cobrado nada.';
 	@override String get buyOutcomeUnknownPrice => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.';
 	@override String get buyOutcomeDemo => 'Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.';
@@ -5295,12 +5304,12 @@ extension on TranslationsEs {
 			'monetization.rechargeTitle' => 'Recargar mi cuenta de etapas',
 			'monetization.rechargeSubtitle' => 'Las etapas sirven para desbloquear rutas. Son tuyas de por vida.',
 			'monetization.rechargeBalance' => 'Saldo actual',
-			'monetization.packSteps' => ({required Object steps}) => '${steps} etapas',
+			'monetization.packSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(n, one: '${n} etapa', other: '${n} etapas', ), 
 			'monetization.rechargeCta' => 'Recargar',
 			'monetization.subscriptionTitle' => 'Suscripción sin publicidad',
 			'monetization.subscriptionSubtitle' => 'Sin publicidad en ningún sitio, mientras la suscripción esté activa.',
 			'monetization.subscriptionIncludesNoAds' => 'Sin publicidad en toda la aplicación',
-			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} etapas abonadas cada mes',
+			'monetization.subscriptionIncludesAllowance' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(n, one: '${n} etapa abonada cada mes', other: '${n} etapas abonadas cada mes', ), 
 			'monetization.subscriptionExcludes' => 'La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.',
 			'monetization.subscriptionCta' => 'Suscribirse',
 			'monetization.subscriptionActive' => 'Suscripción activa',
@@ -5311,7 +5320,7 @@ extension on TranslationsEs {
 			'monetization.realizationLockedBody' => 'Realizar una ruta exige haberla desbloqueado. La preparación sigue siendo gratuita.',
 			'monetization.buyOutcomeOwned' => 'Ruta desbloqueada. ¡Buen camino!',
 			'monetization.buyOutcomeAlreadyOwned' => 'Esta ruta ya está desbloqueada.',
-			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.',
+			'monetization.buyOutcomeOffline' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('es'))(n, one: 'Te falta ${n} etapa y el pago exige conexión. No se ha cobrado nada.', other: 'Te faltan ${n} etapas y el pago exige conexión. No se ha cobrado nada.', ), 
 			'monetization.buyOutcomeFailed' => 'El pago no se ha completado. No se ha cobrado nada.',
 			'monetization.buyOutcomeUnknownPrice' => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.',
 			'monetization.buyOutcomeDemo' => 'Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.',
