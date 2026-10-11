@@ -237,14 +237,16 @@ void main() {
       await tester.tap(find.text(t.monetization.demoBanner));
       await tester.pumpAndSettle();
 
-      // Ecran paywall affiche : titre + avantages + prix EUR (12 x 0,99).
+      // Ecran paywall affiche : titre + avantages + PRIX EN ETAPES.
+      //
+      // TACHE 806 — IL DISAIT « 11.88 € », soit douze etapes au tarif unite.
+      // Ce montant supposait que tout le monde achete au prix le plus fort :
+      // il decrivait l acheteur, pas le sentier. Le prix du sentier est son
+      // nombre d etapes, et il ne bouge pas.
       expect(find.byType(PaywallSheet), findsOneWidget);
       expect(find.text(t.monetization.paywallTitle), findsOneWidget);
       expect(find.text(t.monetization.featureNoAds), findsOneWidget);
-      expect(
-        find.text(t.monetization.buyCtaWithPrice(price: '11.88')),
-        findsOneWidget,
-      );
+      expect(find.text(t.monetization.buyCtaWithSteps(n: 12)), findsOneWidget);
 
       // Achat via le compte-etapes (wallet suffisant).
       await tester.tap(find.byKey(const Key('paywall-buy-button')));

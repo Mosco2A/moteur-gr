@@ -1198,14 +1198,28 @@
   "monetization": {
     "demoBanner": "Demo-Modus — zum Freischalten tippen",
     "paywallTitle": "Diesen Trek freischalten",
-    "paywallBody": "Im Gratis-Modus planst du deinen Trek mit Werbung. Premium schaltet alles frei, werbefrei.",
+    "paywallBody": "Die Vorbereitung ist kostenlos, mit Werbung. Diese Wanderung zu gehen kostet Etappen von deinem Konto. Dein Konto füllst du einzeln, mit einem Paket oder mit dem Abo.",
     "featureMap": "Offline-Karte + GPS + Live-Tracking",
     "featureJournal": "Vollständiges Trek-Tagebuch",
     "featureDiploma": "Trek-Abschlussdiplom",
     "featureFollowers": "2 kostenlose Follower",
     "featureNoAds": "Keine Werbung",
     "buyCta": "Kaufen",
-    "buyCtaWithPrice": "Kaufen — $price €",
+    "buyCtaWithSteps(plural)": {
+      "one": "Kaufen — $n Etappe",
+      "other": "Kaufen — $n Etappen"
+    },
+    "complementTitle": "Dir fehlen Etappen",
+    "complementBody": "Du hast nicht genug Etappen auf deinem Konto, um diese Wanderung zu kaufen. Kaufe die fehlenden Etappen, oder nimm ein Paket.",
+    "complementDoorExact(plural)": {
+      "one": "Fehlende Etappe kaufen — $n Etappe",
+      "other": "Fehlende Etappen kaufen — $n Etappen"
+    },
+    "complementDoorPack(plural)": {
+      "one": "Ein Paket nehmen — $n Etappe",
+      "other": "Ein Paket nehmen — $n Etappen"
+    },
+    "complementExactPending": "Der Kauf einzelner Etappen ist im Store noch nicht freigegeben. Ein Paket geht weiterhin, und die übrigen Etappen bleiben auf deinem Etappenkonto.",
     "rewardedCta": "Ein Tag ohne Werbung — Video ansehen",
     "rewardedEarned": "Danke! 24 h werbefrei.",
     "rewardedUnavailable": "Derzeit kein Video verfügbar.",
@@ -1220,13 +1234,18 @@
     "rechargeTitle": "Etappenkonto aufladen",
     "rechargeSubtitle": "Etappen schalten Wanderungen frei. Sie gehören dir auf Dauer.",
     "rechargeBalance": "Aktueller Stand",
-    "packSteps": "$steps Etappen",
-    "packPrice": "$price €",
+    "packSteps(plural)": {
+      "one": "$n Etappe",
+      "other": "$n Etappen"
+    },
     "rechargeCta": "Aufladen",
     "subscriptionTitle": "Werbefreies Abo",
     "subscriptionSubtitle": "Keine Werbung, solange das Abo aktiv ist.",
     "subscriptionIncludesNoAds": "Keine Werbung in der gesamten App",
-    "subscriptionIncludesAllowance": "$steps Etappen jeden Monat gutgeschrieben",
+    "subscriptionIncludesAllowance(plural)": {
+      "one": "$n Etappe jeden Monat gutgeschrieben",
+      "other": "$n Etappen jeden Monat gutgeschrieben"
+    },
     "subscriptionExcludes": "Das Abo schaltet weder die vollständigen Werkzeuge noch die Durchführung einer Wanderung frei: dafür muss die Wanderung gekauft werden.",
     "subscriptionCta": "Abonnieren",
     "subscriptionActive": "Abo aktiv",
@@ -1237,7 +1256,10 @@
     "realizationLockedBody": "Eine Wanderung durchzuführen setzt voraus, sie freigeschaltet zu haben. Die Vorbereitung bleibt kostenlos.",
     "buyOutcomeOwned": "Wanderung freigeschaltet. Gute Tour!",
     "buyOutcomeAlreadyOwned": "Diese Wanderung ist bereits freigeschaltet.",
-    "buyOutcomeOffline": "Es fehlen $steps Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.",
+    "buyOutcomeOffline(plural)": {
+      "one": "Es fehlt $n Etappe und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.",
+      "other": "Es fehlen $n Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht."
+    },
     "buyOutcomeFailed": "Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.",
     "buyOutcomeUnknownPrice": "Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.",
     "buyOutcomeDemo": "Du bist im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.",

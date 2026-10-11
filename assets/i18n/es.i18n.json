@@ -1198,14 +1198,28 @@
   "monetization": {
     "demoBanner": "Modo demo — toca para desbloquear",
     "paywallTitle": "Desbloquea este trek",
-    "paywallBody": "El modo gratuito permite preparar tu trek con publicidad. El premium lo desbloquea todo, sin anuncios.",
+    "paywallBody": "La preparación es gratuita, con publicidad. Hacer esta ruta se paga en etapas, tomadas de tu cuenta. Llenas tu cuenta por unidades, con un pack o con la suscripción.",
     "featureMap": "Mapa sin conexión + GPS + seguimiento en directo",
     "featureJournal": "Diario de ruta completo",
     "featureDiploma": "Diploma de fin de trek",
     "featureFollowers": "2 seguidores gratuitos",
     "featureNoAds": "Cero publicidad",
     "buyCta": "Comprar",
-    "buyCtaWithPrice": "Comprar — $price €",
+    "buyCtaWithSteps(plural)": {
+      "one": "Comprar — $n etapa",
+      "other": "Comprar — $n etapas"
+    },
+    "complementTitle": "Te faltan etapas",
+    "complementBody": "No tienes suficientes etapas en tu cuenta para comprar esta ruta. Compra el complemento, o coge un pack.",
+    "complementDoorExact(plural)": {
+      "one": "Comprar el complemento — $n etapa",
+      "other": "Comprar el complemento — $n etapas"
+    },
+    "complementDoorPack(plural)": {
+      "one": "Coger un pack — $n etapa",
+      "other": "Coger un pack — $n etapas"
+    },
+    "complementExactPending": "La compra etapa a etapa todavía no está abierta en la tienda. Un pack sigue siendo posible, y las etapas de más se quedan en tu cuenta de etapas.",
     "rewardedCta": "Un día sin anuncios — ver un vídeo",
     "rewardedEarned": "¡Gracias! Sin publicidad durante 24 h.",
     "rewardedUnavailable": "No hay vídeo disponible ahora mismo.",
@@ -1220,13 +1234,18 @@
     "rechargeTitle": "Recargar mi cuenta de etapas",
     "rechargeSubtitle": "Las etapas sirven para desbloquear rutas. Son tuyas de por vida.",
     "rechargeBalance": "Saldo actual",
-    "packSteps": "$steps etapas",
-    "packPrice": "$price €",
+    "packSteps(plural)": {
+      "one": "$n etapa",
+      "other": "$n etapas"
+    },
     "rechargeCta": "Recargar",
     "subscriptionTitle": "Suscripción sin publicidad",
     "subscriptionSubtitle": "Sin publicidad en ningún sitio, mientras la suscripción esté activa.",
     "subscriptionIncludesNoAds": "Sin publicidad en toda la aplicación",
-    "subscriptionIncludesAllowance": "$steps etapas abonadas cada mes",
+    "subscriptionIncludesAllowance(plural)": {
+      "one": "$n etapa abonada cada mes",
+      "other": "$n etapas abonadas cada mes"
+    },
     "subscriptionExcludes": "La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.",
     "subscriptionCta": "Suscribirse",
     "subscriptionActive": "Suscripción activa",
@@ -1237,7 +1256,10 @@
     "realizationLockedBody": "Realizar una ruta exige haberla desbloqueado. La preparación sigue siendo gratuita.",
     "buyOutcomeOwned": "Ruta desbloqueada. ¡Buen camino!",
     "buyOutcomeAlreadyOwned": "Esta ruta ya está desbloqueada.",
-    "buyOutcomeOffline": "Te faltan $steps etapas y el pago exige conexión. No se ha cobrado nada.",
+    "buyOutcomeOffline(plural)": {
+      "one": "Te falta $n etapa y el pago exige conexión. No se ha cobrado nada.",
+      "other": "Te faltan $n etapas y el pago exige conexión. No se ha cobrado nada."
+    },
     "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada.",
     "buyOutcomeUnknownPrice": "Esta ruta no está en venta ahora mismo. No se ha cobrado nada.",
     "buyOutcomeDemo": "Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.",

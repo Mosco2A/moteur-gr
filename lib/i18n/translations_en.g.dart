@@ -979,14 +979,28 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	// Translations
 	@override String get demoBanner => 'Demo mode — tap to unlock';
 	@override String get paywallTitle => 'Unlock this trek';
-	@override String get paywallBody => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.';
+	@override String get paywallBody => 'Planning is free, with ads. Walking this trek is paid in steps, taken from your account. You fill your account one step at a time, with a pack, or with the subscription.';
 	@override String get featureMap => 'Offline map + GPS + live tracking';
 	@override String get featureJournal => 'Full trek journal';
 	@override String get featureDiploma => 'End-of-trek diploma';
 	@override String get featureFollowers => '2 free followers';
 	@override String get featureNoAds => 'Zero ads';
 	@override String get buyCta => 'Buy';
-	@override String buyCtaWithPrice({required Object price}) => 'Buy — €${price}';
+	@override String buyCtaWithSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'Buy — ${n} step',
+		other: 'Buy — ${n} steps',
+	);
+	@override String get complementTitle => 'You are short of steps';
+	@override String get complementBody => 'You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.';
+	@override String complementDoorExact({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'Buy the complement — ${n} step',
+		other: 'Buy the complement — ${n} steps',
+	);
+	@override String complementDoorPack({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'Get a pack — ${n} step',
+		other: 'Get a pack — ${n} steps',
+	);
+	@override String get complementExactPending => 'Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.';
 	@override String get rewardedCta => 'A day without ads — watch a video';
 	@override String get rewardedEarned => 'Thanks! Ad-free for 24 h.';
 	@override String get rewardedUnavailable => 'No video available right now.';
@@ -1001,13 +1015,18 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get rechargeTitle => 'Top up my step account';
 	@override String get rechargeSubtitle => 'Steps unlock hikes. They are yours for life.';
 	@override String get rechargeBalance => 'Current balance';
-	@override String packSteps({required Object steps}) => '${steps} steps';
-	@override String packPrice({required Object price}) => '€${price}';
+	@override String packSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} step',
+		other: '${n} steps',
+	);
 	@override String get rechargeCta => 'Top up';
 	@override String get subscriptionTitle => 'Ad-free subscription';
 	@override String get subscriptionSubtitle => 'No ads anywhere, as long as the subscription is active.';
 	@override String get subscriptionIncludesNoAds => 'No ads, across the whole app';
-	@override String subscriptionIncludesAllowance({required Object steps}) => '${steps} stages credited every month';
+	@override String subscriptionIncludesAllowance({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} step credited every month',
+		other: '${n} steps credited every month',
+	);
 	@override String get subscriptionExcludes => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.';
 	@override String get subscriptionCta => 'Subscribe';
 	@override String get subscriptionActive => 'Subscription active';
@@ -1018,14 +1037,17 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get realizationLockedBody => 'Hiking a route requires unlocking it first. Preparing stays free.';
 	@override String get buyOutcomeOwned => 'Hike unlocked. Enjoy the trail!';
 	@override String get buyOutcomeAlreadyOwned => 'This hike is already unlocked.';
-	@override String buyOutcomeOffline({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.';
+	@override String buyOutcomeOffline({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'You are ${n} step short and payment requires a connection. Nothing was charged.',
+		other: 'You are ${n} steps short and payment requires a connection. Nothing was charged.',
+	);
 	@override String get buyOutcomeFailed => 'The payment did not go through. Nothing was charged.';
 	@override String get buyOutcomeUnknownPrice => 'This trail is not on sale right now. Nothing was charged.';
 	@override String get buyOutcomeDemo => 'You are in demo mode: no purchase is possible, and nothing was charged.';
 	@override String subscriptionPrice({required Object price}) => '${price} per month';
-	@override String get subscriptionAllowanceForLife => 'Credited stages are yours for life, even if you stop the subscription.';
+	@override String get subscriptionAllowanceForLife => 'Credited steps are yours for life, even if you stop the subscription.';
 	@override String get cancelCta => 'Stop my subscription';
-	@override String get cancelExplains => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.';
+	@override String get cancelExplains => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited steps stay yours.';
 	@override String get cancelStoreUnavailable => 'The store could not be opened. Open it yourself, then go to Subscriptions.';
 	@override String get adsBadgePub => 'With ads';
 	@override String get adsBadgeAbonne => 'Subscriber — ad-free';
@@ -5259,14 +5281,19 @@ extension on TranslationsEn {
 			'onboarding.recoveryNudge' => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.',
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
-			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
+			'monetization.paywallBody' => 'Planning is free, with ads. Walking this trek is paid in steps, taken from your account. You fill your account one step at a time, with a pack, or with the subscription.',
 			'monetization.featureMap' => 'Offline map + GPS + live tracking',
 			'monetization.featureJournal' => 'Full trek journal',
 			'monetization.featureDiploma' => 'End-of-trek diploma',
 			'monetization.featureFollowers' => '2 free followers',
 			'monetization.featureNoAds' => 'Zero ads',
 			'monetization.buyCta' => 'Buy',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Buy — €${price}',
+			'monetization.buyCtaWithSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'Buy — ${n} step', other: 'Buy — ${n} steps', ), 
+			'monetization.complementTitle' => 'You are short of steps',
+			'monetization.complementBody' => 'You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.',
+			'monetization.complementDoorExact' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'Buy the complement — ${n} step', other: 'Buy the complement — ${n} steps', ), 
+			'monetization.complementDoorPack' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'Get a pack — ${n} step', other: 'Get a pack — ${n} steps', ), 
+			'monetization.complementExactPending' => 'Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.',
 			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
 			'monetization.rewardedUnavailable' => 'No video available right now.',
@@ -5281,13 +5308,12 @@ extension on TranslationsEn {
 			'monetization.rechargeTitle' => 'Top up my step account',
 			'monetization.rechargeSubtitle' => 'Steps unlock hikes. They are yours for life.',
 			'monetization.rechargeBalance' => 'Current balance',
-			'monetization.packSteps' => ({required Object steps}) => '${steps} steps',
-			'monetization.packPrice' => ({required Object price}) => '€${price}',
+			'monetization.packSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: '${n} step', other: '${n} steps', ), 
 			'monetization.rechargeCta' => 'Top up',
 			'monetization.subscriptionTitle' => 'Ad-free subscription',
 			'monetization.subscriptionSubtitle' => 'No ads anywhere, as long as the subscription is active.',
 			'monetization.subscriptionIncludesNoAds' => 'No ads, across the whole app',
-			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} stages credited every month',
+			'monetization.subscriptionIncludesAllowance' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: '${n} step credited every month', other: '${n} steps credited every month', ), 
 			'monetization.subscriptionExcludes' => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.',
 			'monetization.subscriptionCta' => 'Subscribe',
 			'monetization.subscriptionActive' => 'Subscription active',
@@ -5298,14 +5324,14 @@ extension on TranslationsEn {
 			'monetization.realizationLockedBody' => 'Hiking a route requires unlocking it first. Preparing stays free.',
 			'monetization.buyOutcomeOwned' => 'Hike unlocked. Enjoy the trail!',
 			'monetization.buyOutcomeAlreadyOwned' => 'This hike is already unlocked.',
-			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.',
+			'monetization.buyOutcomeOffline' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'You are ${n} step short and payment requires a connection. Nothing was charged.', other: 'You are ${n} steps short and payment requires a connection. Nothing was charged.', ), 
 			'monetization.buyOutcomeFailed' => 'The payment did not go through. Nothing was charged.',
 			'monetization.buyOutcomeUnknownPrice' => 'This trail is not on sale right now. Nothing was charged.',
 			'monetization.buyOutcomeDemo' => 'You are in demo mode: no purchase is possible, and nothing was charged.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} per month',
-			'monetization.subscriptionAllowanceForLife' => 'Credited stages are yours for life, even if you stop the subscription.',
+			'monetization.subscriptionAllowanceForLife' => 'Credited steps are yours for life, even if you stop the subscription.',
 			'monetization.cancelCta' => 'Stop my subscription',
-			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.',
+			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited steps stay yours.',
 			'monetization.cancelStoreUnavailable' => 'The store could not be opened. Open it yourself, then go to Subscriptions.',
 			'monetization.adsBadgePub' => 'With ads',
 			'monetization.adsBadgeAbonne' => 'Subscriber — ad-free',
@@ -5752,12 +5778,12 @@ extension on TranslationsEn {
 			'recap.partialSubtitle' => 'Your adventure is still saved',
 			'recap.statsSection' => 'Statistics',
 			'recap.traceSection' => 'Your track',
+			_ => null,
+		} ?? switch (path) {
 			'recap.noTrace' => 'No GPS track available',
 			'recap.stages' => '{done} / {total} stages walked',
 			'recap.distance' => '{km} km travelled',
 			'recap.elevation' => '{meters} m of elevation gain',
-			_ => null,
-		} ?? switch (path) {
 			'recap.duration' => '{days} days in total, walking and rest included',
 			'recap.dates' => 'From {start} to {end}',
 			'recap.viewDiploma' => 'View my diploma',

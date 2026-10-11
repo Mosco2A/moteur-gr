@@ -10,6 +10,7 @@ import '../../../core/config/store_subscription_links.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../../core/services/wallet_iap_service.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/montant_en_euros.dart';
 import '../../../i18n/translations.g.dart';
 import '../../booking/booking_facade.dart' show deeplinkLauncherProvider;
 import '../../../shared/widgets/app_button.dart';
@@ -199,9 +200,13 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                   const SizedBox(width: AppTheme.spacingMd),
                   Expanded(
                     child: Text(
+                      // L EURO EST CHEZ LUI ICI AUSSI (tache 806) :
+                      // l'abonnement se paye en argent, et c'est la deuxieme
+                      // des deux sources qui alimentent la cagnotte en etapes.
                       t.monetization.subscriptionPrice(
-                        price: t.monetization.packPrice(
-                          price: _euros(kSubscriptionPriceEur),
+                        price: montantEnEuros(
+                          kSubscriptionPriceEur,
+                          LocaleSettings.currentLocale.languageCode,
                         ),
                       ),
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -231,7 +236,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                 key: const ValueKey('abo-cagnotte'),
                 icon: StepwaysIcons.portefeuille,
                 label: t.monetization.subscriptionIncludesAllowance(
-                  steps: cagnotte,
+                  n: cagnotte,
                 ),
               ),
               // LE POINT QUI DECIDE UN DESABONNEMENT : les etapes creditees
@@ -343,14 +348,11 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     );
   }
 
-  /// Montant en euros, sans decimale inutile (« 2 » et non « 2.0 »).
-  ///
-  /// Meme regle d'ecriture que la grille des packs : le symbole monetaire est
-  /// porte par la traduction (`monetization.packPrice`), qui le place du bon cote
-  /// selon la langue.
-  static String _euros(double montant) => montant == montant.roundToDouble()
-      ? montant.toStringAsFixed(0)
-      : montant.toStringAsFixed(2);
+  // `_euros` A QUITTE CE FICHIER (tache 806). Il etait la TROISIEME ecriture
+  // d'un montant dans le depot, apres le `toStringAsFixed(2)` nu des cartes de
+  // sentier et le `replaceAll('.', ',')` de l'ecran de recharge. Sa seule regle
+  // utile — un montant rond n'affiche pas ses centimes — est reprise telle
+  // quelle par `montantEnEuros`, qui la tient maintenant pour tout le depot.
 
   /// Date courte, sans dependance a une locale de formatage.
   String _jour(DateTime d) =>

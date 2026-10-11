@@ -23,6 +23,7 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
+import 'package:moteur_gr/core/utils/montant_en_euros.dart';
 import 'package:moteur_gr/features/monetization/presentation/subscription_screen.dart';
 import 'package:moteur_gr/features/monetization/presentation/wallet_recharge_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
@@ -79,11 +80,20 @@ void main() {
         );
       }
       // Les prix EXACTS, pas un fragment : « 19,99 » contient « 9,99 ».
-      for (final prix in <String>['9,99', '19,99', '34,99']) {
+      //
+      // TACHE 806 — LE MONTANT N EST PLUS ASSEMBLE ICI. Il l etait de trois
+      // facons differentes dans le depot ; il passe maintenant par le
+      // formateur unique, qui prend le montant et la LANGUE et pose lui-meme
+      // le separateur et la place du symbole. Le test lit donc la grille et
+      // demande au formateur de l ecrire, au lieu de recopier « 9,99 » a la
+      // main : si le formateur se trompe, c est ici que cela se voit.
+      for (final pack in kStepPacks) {
         expect(
-          find.text(t.monetization.packPrice(price: prix)),
+          find.text(montantEnEuros(pack.priceEur, 'fr')),
           findsOneWidget,
-          reason: 'le prix $prix EUR de la grille doit etre affiche tel quel',
+          reason:
+              'le prix ${pack.priceEur} EUR de la grille doit etre affiche '
+              'tel quel',
         );
       }
     });
@@ -122,7 +132,7 @@ void main() {
       expect(
         find.text(
           t.monetization.subscriptionIncludesAllowance(
-            steps: kSubscriberStepsAllowance!,
+            n: kSubscriberStepsAllowance!,
           ),
         ),
         findsOneWidget,

@@ -78,13 +78,28 @@ class TrailPricing {
       TrailCatalog.byId(trailId)?.totalStages ??
       0;
 
-  /// Prix EUR du sentier [trailId], lu depuis le catalogue (affichage).
-  ///
-  /// Point d'entrée UNIQUE du prix affiché : la vitrine, le catalogue et le
-  /// cockpit l'appellent, et il repose sur la même lecture que le débit. Le
-  /// montant montré et le montant prélevé ne peuvent donc plus diverger.
-  double eurPriceForTrail(String trailId) =>
-      eurPriceForSteps(stagesOfTrail(trailId));
+  // `eurPriceForTrail` A ÉTÉ RETIRÉE (tâche 806), ET C'EST LE FOND DU LOT.
+  //
+  // Elle rendait le prix d'un SENTIER en euros, et elle était le « point
+  // d'entrée unique du prix affiché » : la vitrine, le catalogue et le cockpit
+  // l'appelaient tous les trois. C'est elle qui mettait « Acheter — 6.93 € »
+  // sur la carte du Mare a Mare Centre.
+  //
+  // POURQUOI CE MONTANT EST FAUX PAR CONSTRUCTION, et pas seulement mal écrit.
+  // Il vaut `nombre d'étapes × kStepTierEur`, donc il suppose que le randonneur
+  // achète ses étapes À L'UNITÉ — le tarif le plus DÉFAVORABLE de la grille.
+  // Or le prix d'une étape en euros n'existe pas dans l'absolu : il dépend de
+  // la façon dont CHAQUE randonneur a rempli sa cagnotte. À l'unité, 0,99 € ;
+  // par pack, 0,91 puis 0,80 puis 0,70 selon la taille ; par cagnotage de
+  // l'abonnement, autre chose encore. Un prix en euros affiché sur un sentier
+  // décrit donc l'ACHETEUR et non le sentier — et il annonce à tout le monde
+  // le tarif de celui qui paie le plus cher.
+  //
+  // CE QUI RESTE, ET QUI EST LE VRAI PRIX : [stagesOfTrail]. Le Mare a Mare
+  // Centre coûte SEPT ÉTAPES, ce nombre est une propriété de la donnée du
+  // catalogue, et il ne bouge jamais. [eurPriceForSteps] reste lui aussi, mais
+  // pour le COMPTOIR : il chiffre le complément exact au tarif unité, au moment
+  // où l'on paie vraiment avec de l'argent.
 
   // --- Grille de prix -------------------------------------------------------
 

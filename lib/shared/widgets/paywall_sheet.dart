@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/services/monetization_service.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/montant_en_euros.dart';
 import '../../features/ads/presentation/rewarded_no_ads_button.dart';
 import '../../i18n/translations.g.dart';
 import 'app_button.dart';
@@ -75,19 +76,38 @@ Future<void> _ouvrirLaVitrine(BuildContext context, {required String trailId}) {
 /// service, qui le lit au catalogue. C'est la meme lecture que celle du debit —
 /// une vitrine qui affiche un montant et un service qui en preleve un autre
 /// etait mecaniquement possible tant que les deux etaient passes separement.
-class PaywallSheet extends ConsumerWidget {
+class PaywallSheet extends ConsumerStatefulWidget {
   const PaywallSheet({super.key, required this.trailId});
 
   /// Trek a debloquer.
   final String trailId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PaywallSheet> createState() => _PaywallSheetState();
+}
+
+class _PaywallSheetState extends ConsumerState<PaywallSheet> {
+  /// Le devis qui MANQUE D'ETAPES, quand le randonneur a demande a acheter.
+  ///
+  /// `null` tant qu'il n'a rien demande, ou tant que sa cagnotte suffit : la
+  /// vitrine montre alors son bouton d'achat habituel. Des qu'il bute, ce champ
+  /// porte le devis et la vitrine montre LES DEUX PORTES a la place du bouton.
+  ///
+  /// POURQUOI CE N'EST PAS AFFICHE D'EMBLEE. Une cagnotte vide est le cas du
+  /// premier jour : annoncer « il te manque sept etapes » avant meme que le
+  /// randonneur ait dit qu'il voulait acheter transformerait la vitrine en
+  /// reproche. Le constat arrive quand il compte, c'est-a-dire quand il appuie.
+  TrailQuote? _rupture;
+
+  String get trailId => widget.trailId;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final monetization = ref.watch(monetizationServiceProvider);
-    // Prix EUR indicatif, lu au catalogue par la SOURCE UNIQUE du prix.
+    // LE PRIX EST EN ETAPES (tache 806) — il ne depend que du sentier. Le prix
+    // en euros, lui, depend de la facon dont la cagnotte a ete remplie.
     final totalStages = monetization.stagesOfTrail(trailId);
-    final price = monetization.eurPriceForTrail(trailId);
 
     return SafeArea(
       child: Padding(
@@ -144,29 +164,17 @@ class PaywallSheet extends ConsumerWidget {
             // ferme la feuille QUE sur un succes — un echec laisse le chemin
             // d'achat ouvert plutot que de renvoyer l'utilisateur d'ou il
             // vient sans explication.
-            AppButton(
-              key: const Key('paywall-buy-button'),
-              icon: StepwaysIcons.cadenasOuvert,
-              label: totalStages > 0
-                  ? t.monetization.buyCtaWithPrice(
-                      price: price.toStringAsFixed(2),
-                    )
-                  : t.monetization.buyCta,
-              onPressed: () async {
-                final messenger = ScaffoldMessenger.of(context);
-                final outcome = await ref
-                    .read(monetizationServiceProvider)
-                    .buyTrail(trailId);
-                if (!context.mounted) return;
-                messenger.showSnackBar(
-                  SnackBar(content: Text(_messagePour(outcome))),
-                );
-                if (outcome.isOwned ||
-                    outcome.status == PurchaseStatusResult.alreadyOwned) {
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
+            if (_rupture != null)
+              _LesDeuxPortes(devis: _rupture!)
+            else
+              AppButton(
+                key: const Key('paywall-buy-button'),
+                icon: StepwaysIcons.cadenasOuvert,
+                label: totalStages > 0
+                    ? t.monetization.buyCtaWithSteps(n: totalStages)
+                    : t.monetization.buyCta,
+                onPressed: _acheter,
+              ),
             // StepWays L6/A6 : voie sans-pub 24 h par pub RECOMPENSEE (rewarded).
             // Affichee seulement si le consentement pub est obtenu (adsReady) —
             // formats autorises = banniere + rewarded, PAS d'interstitiel.
@@ -180,6 +188,166 @@ class PaywallSheet extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// Le geste d'achat : il COMPTE d'abord, et il ne choisit plus a la place du
+  /// randonneur quand il manque des etapes (tache 806).
+  ///
+  /// CE QUI SE PASSAIT. Le bouton appelait `buyTrail`, qui, le compte-etapes
+  /// insuffisant, prenait D'AUTORITE le plus petit pack couvrant le manque
+  /// (`smallestPackCovering`). Pour sept etapes et une cagnotte vide, cela
+  /// voulait dire le pack de 11 a 9,99 EUR — alors que le manque exact, sept
+  /// etapes au tarif unite, vaut 6,93 EUR. L'application engageait donc la
+  /// depense la plus grosse sans le demander, et sans jamais montrer l'autre
+  /// terme de l'arbitrage.
+  ///
+  /// CE QUI SE PASSE. On demande un DEVIS, qui n'engage rien. S'il manque des
+  /// etapes, on s'arrete et on montre les DEUX PORTES. Le choix revient au
+  /// randonneur : le complement exact au tarif unite, ou un pack au tarif
+  /// degressif. L'abonnement n'est PAS propose ici — decision de Christophe du
+  /// 11/10 : il cagnotte des etapes chaque MOIS, il n'en depose pas a
+  /// l'instant, donc il ne repond pas au besoin de celui a qui il manque trois
+  /// etapes tout de suite. Sa place est le bloc de tarification.
+  ///
+  /// LA DEMO ET LES SENTIERS GRATUITS PASSENT DEVANT, inchanges : ils ont leurs
+  /// propres refus, qui se disent, et un devis n'a rien a leur apprendre.
+  Future<void> _acheter() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final service = ref.read(monetizationServiceProvider);
+
+    if (!service.enDemo && !service.isFreeTrail(trailId)) {
+      final devis = await service.quoteTrail(trailId);
+      if (!mounted) return;
+      if (devis.complementSteps > 0) {
+        setState(() => _rupture = devis);
+        return;
+      }
+    }
+
+    final outcome = await service.buyTrail(trailId);
+    if (!mounted) return;
+    messenger.showSnackBar(SnackBar(content: Text(_messagePour(outcome))));
+    if (outcome.isOwned ||
+        outcome.status == PurchaseStatusResult.alreadyOwned) {
+      Navigator.of(context).pop();
+    }
+  }
+}
+
+/// LES DEUX PORTES, et deux seulement (tache 806).
+///
+/// LE TEXTE EST CELUI DE CHRISTOPHE, du 11/10, a deux mots pres : « vous n avez
+/// pas assez d etapes cagnottees pour acheter ce circuit. acheter le complement
+/// ou achetez un pack ». Il est passe au TUTOIEMENT, parce que l'application
+/// tutoie dans les cinq langues depuis le lot 757 et que le vouvoiement n'est
+/// garde que sur les ecrans legaux ; et « circuit » est devenu « sentier »,
+/// qui est le mot partout ailleurs dans l'application.
+///
+/// POURQUOI DEUX ET PAS TROIS. L'abonnement est ecarte NOMMEMENT par
+/// Christophe : « on ne propose pas l abonnement pour le complement ». Il
+/// cagnotte des etapes chaque mois, il n'en depose pas a l'instant — le
+/// proposer a quelqu'un a qui il manque trois etapes maintenant serait une
+/// reponse qui ne resout pas son probleme.
+///
+/// CHAQUE PORTE DIT SON PRIX EN EUROS, ET C'EST VOULU. C'est ici, et seulement
+/// ici, que l'on paye avec de l'argent : le comptoir. Les deux montants cote a
+/// cote sont exactement l'arbitrage — le tarif unite contre le tarif degressif
+/// du pack, avec les etapes en trop qui restent acquises.
+class _LesDeuxPortes extends ConsumerWidget {
+  const _LesDeuxPortes({required this.devis});
+
+  /// Le devis qui manque d'etapes : il porte le complement et le pack.
+  final TrailQuote devis;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final service = ref.watch(monetizationServiceProvider);
+    final langue = LocaleSettings.currentLocale.languageCode;
+    final pack = devis.complementPack;
+
+    return Column(
+      key: const Key('paywall-deux-portes'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          t.monetization.complementTitle,
+          style: theme.textTheme.titleMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AppTheme.spacingXs),
+        Text(
+          t.monetization.complementBody,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: AppTheme.grisTexteSecondaire,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+
+        // --- PORTE 1 : LE COMPLEMENT EXACT, au tarif unite ------------------
+        AppButton(
+          key: const Key('paywall-porte-complement'),
+          variant: AppButtonVariant.outline,
+          icon: StepwaysIcons.plus,
+          label: t.monetization.complementDoorExact(n: devis.complementSteps),
+          onPressed: () {
+            // ON NE PROMET PAS CE QUE LA BOUTIQUE NE SAIT PAS ENCORE FAIRE.
+            // Vendre exactement N etapes suppose un produit « une etape »
+            // achete en quantite, ou un produit par nombre d'etapes ; aucun des
+            // deux n'est declare a ce jour (les seuls consommables connus sont
+            // les packs 11, 25 et 50). La porte existe, elle est honnete sur ce
+            // qui lui manque, et elle ne debite rien.
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(t.monetization.complementExactPending)),
+            );
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+          child: Text(
+            montantEnEuros(
+              service.eurPriceForSteps(devis.complementSteps),
+              langue,
+            ),
+            style: theme.textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+        ),
+
+        // --- PORTE 2 : LE PACK, au tarif degressif --------------------------
+        if (pack != null) ...[
+          const SizedBox(height: AppTheme.spacingBase),
+          AppButton(
+            key: const Key('paywall-porte-pack'),
+            icon: StepwaysIcons.panier,
+            label: t.monetization.complementDoorPack(n: pack.steps),
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              final ok = await service.rechargeWallet(pack);
+              if (!context.mounted) return;
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    ok
+                        ? t.monetization.rechargeTitle
+                        : t.monetization.storeUnavailable,
+                  ),
+                ),
+              );
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+            child: Text(
+              montantEnEuros(pack.priceEur, langue),
+              style: theme.textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -202,7 +370,7 @@ String _messagePour(PurchaseOutcome outcome) {
     PurchaseStatusResult.owned => m.buyOutcomeOwned,
     PurchaseStatusResult.alreadyOwned => m.buyOutcomeAlreadyOwned,
     PurchaseStatusResult.offlineComplementRequired => m.buyOutcomeOffline(
-      steps: outcome.complementSteps,
+      n: outcome.complementSteps,
     ),
     PurchaseStatusResult.complementFailed => m.buyOutcomeFailed,
     PurchaseStatusResult.unknownPrice => m.buyOutcomeUnknownPrice,

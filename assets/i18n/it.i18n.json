@@ -1198,14 +1198,28 @@
   "monetization": {
     "demoBanner": "Modalità demo — tocca per sbloccare",
     "paywallTitle": "Sblocca questo trek",
-    "paywallBody": "La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.",
+    "paywallBody": "La preparazione è gratuita, con pubblicità. Fare questa escursione si paga in tappe, prese dal tuo conto. Riempi il tuo conto a unità, con un pacchetto o con l'abbonamento.",
     "featureMap": "Mappa offline + GPS + localizzazione in diretta",
     "featureJournal": "Diario di viaggio completo",
     "featureDiploma": "Diploma di fine trek",
     "featureFollowers": "2 follower gratuiti",
     "featureNoAds": "Zero pubblicità",
     "buyCta": "Acquista",
-    "buyCtaWithPrice": "Acquista — $price €",
+    "buyCtaWithSteps(plural)": {
+      "one": "Acquista — $n tappa",
+      "other": "Acquista — $n tappe"
+    },
+    "complementTitle": "Ti mancano delle tappe",
+    "complementBody": "Non hai abbastanza tappe sul tuo conto per acquistare questo sentiero. Acquista il complemento, oppure prendi un pacchetto.",
+    "complementDoorExact(plural)": {
+      "one": "Acquista il complemento — $n tappa",
+      "other": "Acquista il complemento — $n tappe"
+    },
+    "complementDoorPack(plural)": {
+      "one": "Prendi un pacchetto — $n tappa",
+      "other": "Prendi un pacchetto — $n tappe"
+    },
+    "complementExactPending": "L'acquisto a singola tappa non è ancora aperto dallo store. Un pacchetto resta possibile, e le tappe in più restano sul tuo conto tappe.",
     "rewardedCta": "Un giorno senza pubblicità — guarda un video",
     "rewardedEarned": "Grazie! Senza pubblicità per 24 h.",
     "rewardedUnavailable": "Nessun video disponibile al momento.",
@@ -1220,13 +1234,18 @@
     "rechargeTitle": "Ricarica il mio conto tappe",
     "rechargeSubtitle": "Le tappe servono a sbloccare le escursioni. Sono tue per sempre.",
     "rechargeBalance": "Saldo attuale",
-    "packSteps": "$steps tappe",
-    "packPrice": "$price €",
+    "packSteps(plural)": {
+      "one": "$n tappa",
+      "other": "$n tappe"
+    },
     "rechargeCta": "Ricarica",
     "subscriptionTitle": "Abbonamento senza pubblicità",
     "subscriptionSubtitle": "Nessuna pubblicità ovunque, finché l'abbonamento è attivo.",
     "subscriptionIncludesNoAds": "Nessuna pubblicità in tutta l'app",
-    "subscriptionIncludesAllowance": "$steps tappe accreditate ogni mese",
+    "subscriptionIncludesAllowance(plural)": {
+      "one": "$n tappa accreditata ogni mese",
+      "other": "$n tappe accreditate ogni mese"
+    },
     "subscriptionExcludes": "L'abbonamento non sblocca né gli strumenti completi né la realizzazione di un'escursione: per questo bisogna acquistare l'escursione.",
     "subscriptionCta": "Abbonati",
     "subscriptionActive": "Abbonamento attivo",
@@ -1237,7 +1256,10 @@
     "realizationLockedBody": "Per realizzare un'escursione bisogna averla sbloccata. La preparazione resta gratuita.",
     "buyOutcomeOwned": "Escursione sbloccata. Buon cammino!",
     "buyOutcomeAlreadyOwned": "Questa escursione è già sbloccata.",
-    "buyOutcomeOffline": "Mancano $steps tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.",
+    "buyOutcomeOffline(plural)": {
+      "one": "Manca $n tappa e il pagamento richiede una connessione. Non è stato addebitato nulla.",
+      "other": "Mancano $n tappe e il pagamento richiede una connessione. Non è stato addebitato nulla."
+    },
     "buyOutcomeFailed": "Il pagamento non è andato a buon fine. Non è stato addebitato nulla.",
     "buyOutcomeUnknownPrice": "Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.",
     "buyOutcomeDemo": "Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.",

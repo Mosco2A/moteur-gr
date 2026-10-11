@@ -1198,14 +1198,28 @@
   "monetization": {
     "demoBanner": "Mode démo — touche pour débloquer",
     "paywallTitle": "Débloque cette randonnée",
-    "paywallBody": "Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.",
+    "paywallBody": "La préparation est gratuite, avec publicité. Réaliser cette randonnée se paye en étapes, prises sur ta cagnotte. Tu remplis ta cagnotte à l'unité, par pack, ou avec l'abonnement.",
     "featureMap": "Carte hors ligne + GPS + suivi en direct",
     "featureJournal": "Journal de bord complet",
     "featureDiploma": "Diplôme de fin de randonnée",
     "featureFollowers": "2 suiveurs gratuits",
     "featureNoAds": "Zéro publicité",
     "buyCta": "Acheter",
-    "buyCtaWithPrice": "Acheter — $price €",
+    "buyCtaWithSteps(plural)": {
+      "one": "Acheter — $n étape",
+      "other": "Acheter — $n étapes"
+    },
+    "complementTitle": "Il te manque des étapes",
+    "complementBody": "Tu n'as pas assez d'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.",
+    "complementDoorExact(plural)": {
+      "one": "Acheter le complément — $n étape",
+      "other": "Acheter le complément — $n étapes"
+    },
+    "complementDoorPack(plural)": {
+      "one": "Prendre un pack — $n étape",
+      "other": "Prendre un pack — $n étapes"
+    },
+    "complementExactPending": "L'achat à l'étape près n'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.",
     "rewardedCta": "Un jour sans publicité — regarder une vidéo",
     "rewardedEarned": "Merci ! Sans publicité pendant 24 h.",
     "rewardedUnavailable": "Aucune vidéo disponible pour le moment.",
@@ -1220,13 +1234,18 @@
     "rechargeTitle": "Recharger mon compte-étapes",
     "rechargeSubtitle": "Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.",
     "rechargeBalance": "Solde actuel",
-    "packSteps": "$steps étapes",
-    "packPrice": "$price €",
+    "packSteps(plural)": {
+      "one": "$n étape",
+      "other": "$n étapes"
+    },
     "rechargeCta": "Recharger",
     "subscriptionTitle": "Abonnement sans publicité",
     "subscriptionSubtitle": "Sans publicité partout, tant que l'abonnement est actif.",
     "subscriptionIncludesNoAds": "Aucune publicité, sur toute l'application",
-    "subscriptionIncludesAllowance": "$steps étapes créditées chaque mois",
+    "subscriptionIncludesAllowance(plural)": {
+      "one": "$n étape créditée chaque mois",
+      "other": "$n étapes créditées chaque mois"
+    },
     "subscriptionExcludes": "L'abonnement ne débloque ni les outils complets ni la réalisation d'une randonnée : pour cela, il faut acheter la randonnée.",
     "subscriptionCta": "S'abonner",
     "subscriptionActive": "Abonnement actif",
@@ -1237,7 +1256,10 @@
     "realizationLockedBody": "Réaliser une randonnée demande de l'avoir débloquée. La préparation reste gratuite.",
     "buyOutcomeOwned": "Randonnée débloquée. Bonne route !",
     "buyOutcomeAlreadyOwned": "Cette randonnée est déjà débloquée.",
-    "buyOutcomeOffline": "Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.",
+    "buyOutcomeOffline(plural)": {
+      "one": "Il manque $n étape et le paiement exige une connexion. Rien n'a été débité.",
+      "other": "Il manque $n étapes et le paiement exige une connexion. Rien n'a été débité."
+    },
     "buyOutcomeFailed": "Le paiement n'a pas abouti. Rien n'a été débité.",
     "buyOutcomeUnknownPrice": "Ce sentier n'est pas en vente pour le moment. Rien n'a été débité.",
     "buyOutcomeDemo": "Tu es en démo : aucun achat n'est possible, et rien n'a été débité.",

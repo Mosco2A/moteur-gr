@@ -224,7 +224,10 @@ void main() {
         tr.catalog.a11y.prepareButton(nom: 'X'),
         tr.catalog.a11y.buyButton(nom: 'X'),
         tr.monetization.buyCta,
-        tr.monetization.buyCtaWithPrice(price: '4,99'),
+        // TACHE 806 — LE PRIX D UN SENTIER EST EN ETAPES. La cle portait un
+        // montant en euros ; elle compte desormais des etapes, et ce test
+        // continue de verifier que son libelle ne dit pas « debloquer ».
+        tr.monetization.buyCtaWithSteps(n: 5),
         tr.checklist.demoUnlockCta,
         tr.checklist.demoLockedCategory,
         tr.journal.lockedUnlock,

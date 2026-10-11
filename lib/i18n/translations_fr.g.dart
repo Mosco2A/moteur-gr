@@ -2031,8 +2031,8 @@ class Translations$monetization$fr {
 	/// fr: 'Débloque cette randonnée'
 	String get paywallTitle => 'Débloque cette randonnée';
 
-	/// fr: 'Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.'
-	String get paywallBody => 'Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.';
+	/// fr: 'La préparation est gratuite, avec publicité. Réaliser cette randonnée se paye en étapes, prises sur ta cagnotte. Tu remplis ta cagnotte à l'unité, par pack, ou avec l'abonnement.'
+	String get paywallBody => 'La préparation est gratuite, avec publicité. Réaliser cette randonnée se paye en étapes, prises sur ta cagnotte. Tu remplis ta cagnotte à l\'unité, par pack, ou avec l\'abonnement.';
 
 	/// fr: 'Carte hors ligne + GPS + suivi en direct'
 	String get featureMap => 'Carte hors ligne + GPS + suivi en direct';
@@ -2052,8 +2052,32 @@ class Translations$monetization$fr {
 	/// fr: 'Acheter'
 	String get buyCta => 'Acheter';
 
-	/// fr: 'Acheter — $price €'
-	String buyCtaWithPrice({required Object price}) => 'Acheter — ${price} €';
+	/// fr: '(one) {Acheter — $n étape} (other) {Acheter — $n étapes}'
+	String buyCtaWithSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: 'Acheter — ${n} étape',
+		other: 'Acheter — ${n} étapes',
+	);
+
+	/// fr: 'Il te manque des étapes'
+	String get complementTitle => 'Il te manque des étapes';
+
+	/// fr: 'Tu n'as pas assez d'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.'
+	String get complementBody => 'Tu n\'as pas assez d\'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.';
+
+	/// fr: '(one) {Acheter le complément — $n étape} (other) {Acheter le complément — $n étapes}'
+	String complementDoorExact({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: 'Acheter le complément — ${n} étape',
+		other: 'Acheter le complément — ${n} étapes',
+	);
+
+	/// fr: '(one) {Prendre un pack — $n étape} (other) {Prendre un pack — $n étapes}'
+	String complementDoorPack({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: 'Prendre un pack — ${n} étape',
+		other: 'Prendre un pack — ${n} étapes',
+	);
+
+	/// fr: 'L'achat à l'étape près n'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.'
+	String get complementExactPending => 'L\'achat à l\'étape près n\'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.';
 
 	/// fr: 'Un jour sans publicité — regarder une vidéo'
 	String get rewardedCta => 'Un jour sans publicité — regarder une vidéo';
@@ -2097,11 +2121,11 @@ class Translations$monetization$fr {
 	/// fr: 'Solde actuel'
 	String get rechargeBalance => 'Solde actuel';
 
-	/// fr: '$steps étapes'
-	String packSteps({required Object steps}) => '${steps} étapes';
-
-	/// fr: '$price €'
-	String packPrice({required Object price}) => '${price} €';
+	/// fr: '(one) {$n étape} (other) {$n étapes}'
+	String packSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: '${n} étape',
+		other: '${n} étapes',
+	);
 
 	/// fr: 'Recharger'
 	String get rechargeCta => 'Recharger';
@@ -2115,8 +2139,11 @@ class Translations$monetization$fr {
 	/// fr: 'Aucune publicité, sur toute l'application'
 	String get subscriptionIncludesNoAds => 'Aucune publicité, sur toute l\'application';
 
-	/// fr: '$steps étapes créditées chaque mois'
-	String subscriptionIncludesAllowance({required Object steps}) => '${steps} étapes créditées chaque mois';
+	/// fr: '(one) {$n étape créditée chaque mois} (other) {$n étapes créditées chaque mois}'
+	String subscriptionIncludesAllowance({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: '${n} étape créditée chaque mois',
+		other: '${n} étapes créditées chaque mois',
+	);
 
 	/// fr: 'L'abonnement ne débloque ni les outils complets ni la réalisation d'une randonnée : pour cela, il faut acheter la randonnée.'
 	String get subscriptionExcludes => 'L\'abonnement ne débloque ni les outils complets ni la réalisation d\'une randonnée : pour cela, il faut acheter la randonnée.';
@@ -2148,8 +2175,11 @@ class Translations$monetization$fr {
 	/// fr: 'Cette randonnée est déjà débloquée.'
 	String get buyOutcomeAlreadyOwned => 'Cette randonnée est déjà débloquée.';
 
-	/// fr: 'Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.'
-	String buyOutcomeOffline({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.';
+	/// fr: '(one) {Il manque $n étape et le paiement exige une connexion. Rien n'a été débité.} (other) {Il manque $n étapes et le paiement exige une connexion. Rien n'a été débité.}'
+	String buyOutcomeOffline({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: 'Il manque ${n} étape et le paiement exige une connexion. Rien n\'a été débité.',
+		other: 'Il manque ${n} étapes et le paiement exige une connexion. Rien n\'a été débité.',
+	);
 
 	/// fr: 'Le paiement n'a pas abouti. Rien n'a été débité.'
 	String get buyOutcomeFailed => 'Le paiement n\'a pas abouti. Rien n\'a été débité.';
@@ -9390,14 +9420,19 @@ extension on Translations {
 			'onboarding.recoveryNudge' => 'Pense à noter ton code de reconnexion (dans les réglages) : il ouvre tes données sur un autre téléphone.',
 			'monetization.demoBanner' => 'Mode démo — touche pour débloquer',
 			'monetization.paywallTitle' => 'Débloque cette randonnée',
-			'monetization.paywallBody' => 'Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.',
+			'monetization.paywallBody' => 'La préparation est gratuite, avec publicité. Réaliser cette randonnée se paye en étapes, prises sur ta cagnotte. Tu remplis ta cagnotte à l\'unité, par pack, ou avec l\'abonnement.',
 			'monetization.featureMap' => 'Carte hors ligne + GPS + suivi en direct',
 			'monetization.featureJournal' => 'Journal de bord complet',
 			'monetization.featureDiploma' => 'Diplôme de fin de randonnée',
 			'monetization.featureFollowers' => '2 suiveurs gratuits',
 			'monetization.featureNoAds' => 'Zéro publicité',
 			'monetization.buyCta' => 'Acheter',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Acheter — ${price} €',
+			'monetization.buyCtaWithSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: 'Acheter — ${n} étape', other: 'Acheter — ${n} étapes', ), 
+			'monetization.complementTitle' => 'Il te manque des étapes',
+			'monetization.complementBody' => 'Tu n\'as pas assez d\'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.',
+			'monetization.complementDoorExact' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: 'Acheter le complément — ${n} étape', other: 'Acheter le complément — ${n} étapes', ), 
+			'monetization.complementDoorPack' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: 'Prendre un pack — ${n} étape', other: 'Prendre un pack — ${n} étapes', ), 
+			'monetization.complementExactPending' => 'L\'achat à l\'étape près n\'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.',
 			'monetization.rewardedCta' => 'Un jour sans publicité — regarder une vidéo',
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
 			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
@@ -9412,13 +9447,12 @@ extension on Translations {
 			'monetization.rechargeTitle' => 'Recharger mon compte-étapes',
 			'monetization.rechargeSubtitle' => 'Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.',
 			'monetization.rechargeBalance' => 'Solde actuel',
-			'monetization.packSteps' => ({required Object steps}) => '${steps} étapes',
-			'monetization.packPrice' => ({required Object price}) => '${price} €',
+			'monetization.packSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} étape', other: '${n} étapes', ), 
 			'monetization.rechargeCta' => 'Recharger',
 			'monetization.subscriptionTitle' => 'Abonnement sans publicité',
 			'monetization.subscriptionSubtitle' => 'Sans publicité partout, tant que l\'abonnement est actif.',
 			'monetization.subscriptionIncludesNoAds' => 'Aucune publicité, sur toute l\'application',
-			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} étapes créditées chaque mois',
+			'monetization.subscriptionIncludesAllowance' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} étape créditée chaque mois', other: '${n} étapes créditées chaque mois', ), 
 			'monetization.subscriptionExcludes' => 'L\'abonnement ne débloque ni les outils complets ni la réalisation d\'une randonnée : pour cela, il faut acheter la randonnée.',
 			'monetization.subscriptionCta' => 'S\'abonner',
 			'monetization.subscriptionActive' => 'Abonnement actif',
@@ -9429,7 +9463,7 @@ extension on Translations {
 			'monetization.realizationLockedBody' => 'Réaliser une randonnée demande de l\'avoir débloquée. La préparation reste gratuite.',
 			'monetization.buyOutcomeOwned' => 'Randonnée débloquée. Bonne route !',
 			'monetization.buyOutcomeAlreadyOwned' => 'Cette randonnée est déjà débloquée.',
-			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.',
+			'monetization.buyOutcomeOffline' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: 'Il manque ${n} étape et le paiement exige une connexion. Rien n\'a été débité.', other: 'Il manque ${n} étapes et le paiement exige une connexion. Rien n\'a été débité.', ), 
 			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
 			'monetization.buyOutcomeUnknownPrice' => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.',
 			'monetization.buyOutcomeDemo' => 'Tu es en démo : aucun achat n\'est possible, et rien n\'a été débité.',
@@ -9883,12 +9917,12 @@ extension on Translations {
 			'recap.partialSubtitle' => 'Ton aventure reste enregistrée',
 			'recap.statsSection' => 'Statistiques',
 			'recap.traceSection' => 'Ta trace',
+			_ => null,
+		} ?? switch (path) {
 			'recap.noTrace' => 'Aucune trace GPS disponible',
 			'recap.stages' => '{done} / {total} étapes parcourues',
 			'recap.distance' => '{km} km parcourus',
 			'recap.elevation' => '{meters} m de dénivelé positif',
-			_ => null,
-		} ?? switch (path) {
 			'recap.duration' => '{days} jours au total, marche et repos compris',
 			'recap.dates' => 'Du {start} au {end}',
 			'recap.viewDiploma' => 'Voir mon diplôme',

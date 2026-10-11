@@ -9,6 +9,7 @@ import '../../../core/analytics/screen_entry.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/category_icon_colors.dart';
+import '../../../core/utils/montant_en_euros.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -164,17 +165,27 @@ class _PackTileState extends ConsumerState<_PackTile> {
                 const SizedBox(width: AppTheme.spacingMd),
                 Expanded(
                   child: Text(
-                    t.monetization.packSteps(steps: pack.steps),
+                    t.monetization.packSteps(n: pack.steps),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
+                // L EURO EST CHEZ LUI ICI (tache 806) : le comptoir de la
+                // cagnotte est l'endroit ou l'on paye avec de l'argent. Un
+                // SENTIER, lui, se paye en etapes et n'affiche plus de prix en
+                // euros : son prix en argent depend de la facon dont le
+                // randonneur a rempli sa cagnotte, donc de l'acheteur et non
+                // du sentier.
+                //
+                // ET LE SEPARATEUR N'EST PLUS CHOISI PAR CET ECRAN. Il imposait
+                // la virgule francaise a tout le monde (`replaceAll('.', ',')`)
+                // : juste pour quatre langues sur cinq, faux pour l'anglais, et
+                // faux d'avance pour toute langue qu'on ajouterait.
                 Text(
-                  t.monetization.packPrice(
-                    price: pack.priceEur
-                        .toStringAsFixed(2)
-                        .replaceAll('.', ','),
+                  montantEnEuros(
+                    pack.priceEur,
+                    LocaleSettings.currentLocale.languageCode,
                   ),
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
