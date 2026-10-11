@@ -713,10 +713,10 @@ void main() {
       expect(journal.dy, greaterThan(hike.dy));
       // ET PLUS JAMAIS AU-DESSUS DE LA PREPARATION — autrement dit, en rando,
       // plus de preparation du tout (tache 809, « preparer devrait disparaitre
-      // quand tu es en cours de trek »). Le retour de Christophe qui a fonde cette
-      // assertion — « pourquoi journe est en haut de preparer ??????? » — est
-      // donc tenu par une ABSENCE, qui est plus forte qu'un ordre : il n'y a
-      // plus rien a depasser.
+      // quand tu es en cours de trek »). Le retour de Christophe qui a
+      // fonde cette assertion — « pourquoi journe est en haut de
+      // preparer ??????? » — est donc tenu par une ABSENCE, qui est plus
+      // forte qu'un ordre : il n'y a plus rien a depasser.
       expect(find.text(t.hub.sections.prepare), findsNothing);
       // Toujours au-dessus d'« Informations » : ce n'est pas une rubrique de
       // lecture, c'est un carnet qu'on ecrit.

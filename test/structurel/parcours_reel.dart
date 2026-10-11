@@ -248,9 +248,9 @@ void brancherLesPlugins() {
   // `MissingPluginException(... listen on channel
   // flutter.baseflow.com/geolocator_updates)`.
   //
-  // POURQUOI CA N'APPARAISSAIT PAS AVANT, ET CE QUI L'A REVEILLE. Aucun parcours
-  // reel n'allait jusqu'a s'abonner au flux : le seul widget du cockpit qui le
-  // demande est le bandeau des conditions du terrain
+  // POURQUOI CA N'APPARAISSAIT PAS AVANT, ET CE QUI L'A REVEILLE. Aucun
+  // parcours reel n'allait jusqu'a s'abonner au flux : le seul widget du
+  // cockpit qui le demande est le bandeau des conditions du terrain
   // ([LocalizedConditionsBanner], via `localizedStageNumberProvider`), et il
   // restait SOUS la ligne de flottaison de la liste — donc jamais construit. La
   // tache 809 a retire la section « Préparer » pendant la marche, sur la
@@ -330,10 +330,11 @@ void brancherLesPlugins() {
   brancherAucuneRegiePub();
 }
 
-/// Le canal d'evenements du `geolocator` sur un appareil sans GPS : l'abonnement
-/// reussit, et aucune position n'arrive jamais. C'est ce qu'il faut pour que le
-/// code sous test s'abonne sans lever, et reste honnetement sans position — le
-/// meme appareil demuni que decrivent les trois canaux de methode ci-dessus.
+/// Le canal d'evenements du `geolocator` sur un appareil sans GPS :
+/// l'abonnement reussit, et aucune position n'arrive jamais. C'est ce qu'il
+/// faut pour que le code sous test s'abonne sans lever, et reste honnetement
+/// sans position — le meme appareil demuni que decrivent les trois canaux de
+/// methode ci-dessus.
 class _AucuneMiseAJourDePosition extends MockStreamHandler {
   @override
   void onListen(Object? arguments, MockStreamHandlerEventSink sink) {
