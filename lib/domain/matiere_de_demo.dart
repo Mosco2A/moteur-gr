@@ -44,17 +44,23 @@
 ///    additionne. Changer le sentier change la matiere ; aucun sentier n'est
 ///    nomme ici, et le moteur reste generique.
 ///
-///    DEUX CHOSES QUE LE SENTIER NE NOUS DONNE PAS, ET IL FAUT LE DIRE PLUTOT
-///    QUE DE LAISSER CROIRE LE CONTRAIRE. `domainStagesProvider`
+///    DEUX CHAMPS QUE LE MAPPEUR DU DEPOT NE RECOPIE PAS, ET IL FAUT LE DIRE
+///    PLUTOT QUE DE LAISSER CROIRE LE CONTRAIRE. `domainStagesProvider`
 ///    (`features/trek/providers/gps_providers.dart`) construit ses [Stage] sans
-///    recopier deux champs que la donnee du sentier porte pourtant :
-///      * `estimatedDurationSeconds` reste a zero, donc toute journee fabriquee
-///        dure [dureeDeRepli] — et non les 457, 380 ou 303 minutes que le
-///        Mare a Mare Centre declare pour ses trois premieres etapes ;
+///    reprendre deux champs que la donnee du sentier porte pourtant :
+///      * `estimatedDurationSeconds` reste a zero. CE N'EST PAS GRAVE ICI, et
+///        c'est mesure : [dureeDeLaJournee] retombe sur la regle de marche du
+///        depot, qui rend pour ces etapes-la EXACTEMENT les durees que le
+///        sentier declare (457 min pour 19,9 km et 1 058 m de D+, 175 min pour
+///        11,1 km et 54 m). La duree fabriquee est donc celle du sentier, par
+///        le calcul plutot que par la lecture ;
 ///      * `nameEn`/`nameDe`/`nameIt`/`nameEs` restent vides, donc
-///        [Stage.nomLocalise] retombe sur le francais dans les cinq langues.
-///    Les deux sont ANTERIEURES a ce lot et hors de son perimetre : elles sont
-///    SIGNALEES, pas corrigees ici. Le jour ou ce mappeur recopiera ces champs,
+///        [Stage.nomLocalise] retombe sur le francais dans les cinq langues. Un
+///        nom de lieu en francais vaut mieux qu'un nom vide, mais un visiteur
+///        anglophone lira « Ghisonaccia - Catastaghju » la ou le sentier sait
+///        dire « Ghisonaccia to Catastaghju ».
+///    Les deux sont ANTERIEURS a ce lot et hors de son perimetre : ils sont
+///    SIGNALES, pas corriges ici. Le jour ou ce mappeur reprendra ces champs,
 ///    la matiere s'enrichira sans qu'une ligne de ce fichier change.
 ///
 /// 3. ELLE EST RECONNAISSABLE A L'OEIL ET A LA MACHINE. L'identifiant de la
@@ -71,6 +77,12 @@
 /// rempart, et elle doit survivre a un ecran qui oublierait de griser.
 library;
 
+// LA REGLE DE MARCHE DU DEPOT, ET NON UNE SECONDE (tache 810).
+// `estimatedStageDurationMinutes` est la Naismith simplifiee que l'itineraire
+// et le planning emploient deja (15 min par km a plat, 15 min par 100 m de
+// montee). Le metier a le droit de lire le socle — c'est l'inverse qui est
+// interdit (regle 11, plafond a zero).
+import '../core/models/stage_duration.dart';
 import 'stage.dart';
 import 'trek_session.dart';
 
@@ -140,13 +152,32 @@ class MatiereDeDemo {
   /// carnet affichent des heures, elles doivent avoir l'air d'heures.
   static const Duration heureDeDepart = Duration(hours: 7, minutes: 30);
 
-  /// Duree de repli quand le sentier ne declare pas la duree d'une etape.
+  /// Duree de marche d'une journee, en secondes.
   ///
-  /// `Stage.estimatedDurationSeconds` vaut 0 par defaut : sans repli, une
-  /// journee durerait zero minute et la vitesse moyenne du recapitulatif
-  /// deviendrait absurde (ou disparaitrait). Cinq heures est une journee de
-  /// marche ordinaire ; elle ne sert que faute de donnee.
-  static const Duration dureeDeRepli = Duration(hours: 5);
+  /// LA DUREE DECLAREE PAR L'ETAPE SI ELLE EXISTE, SINON LA REGLE DE MARCHE DU
+  /// DEPOT. `Stage.estimatedDurationSeconds` vaut 0 par defaut, et il vaut
+  /// TOUJOURS zero en pratique : `domainStagesProvider` ne recopie pas ce champ
+  /// depuis la donnee du sentier (defaut anterieur a ce lot, signale et non
+  /// corrige ici). Sans repli, une journee durerait zero minute et la vitesse
+  /// moyenne du recapitulatif serait absurde — ou disparaitrait.
+  ///
+  /// LE REPLI N'EST PAS UNE CONSTANTE FORFAITAIRE, ET C'EST CE QUI REND LA
+  /// MATIERE JUSTE. On appelle [estimatedStageDurationMinutes], la Naismith
+  /// simplifiee que l'itineraire et le planning emploient deja. Elle calcule la
+  /// duree depuis la distance et le denivele positif de l'etape, donc chaque
+  /// journee a SA duree. Verifie sur le Mare a Mare Centre : la formule rend
+  /// 457 minutes pour 19,9 km et 1 058 m de D+, 175 pour 11,1 km et 54 m — soit
+  /// EXACTEMENT les durees que la donnee du sentier declare pour ces etapes.
+  /// Les durees fabriquees sont donc celles du sentier, par le calcul.
+  static Duration dureeDeLaJournee(Stage etape) {
+    if (etape.estimatedDurationSeconds > 0) return etape.estimatedDuration;
+    return Duration(
+      minutes: estimatedStageDurationMinutes(
+        distanceKm: etape.distance,
+        elevationGainM: etape.elevationGain,
+      ),
+    );
+  }
 
   /// L'identifiant fabrique de la n-ieme entree de carnet (toujours NEGATIF).
   ///
@@ -205,9 +236,7 @@ class MatiereDeDemo {
       final etape = ordonnees[i];
       final jour = _jourDe(premier.add(Duration(days: i)));
       final depart = jour.add(heureDeDepart);
-      final duree = etape.estimatedDurationSeconds > 0
-          ? etape.estimatedDuration
-          : dureeDeRepli;
+      final duree = dureeDeLaJournee(etape);
       journees.add(
         JourneeFabriquee(
           numero: i + 1,

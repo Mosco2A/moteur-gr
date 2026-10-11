@@ -30,6 +30,7 @@ import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 // `adventure_recap_provider.dart`).
 import 'package:moteur_gr/core/data/database.dart' hide Stage;
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/core/models/stage_duration.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/providers/service_providers.dart';
 import 'package:moteur_gr/core/services/demo_mode_service.dart';
@@ -128,8 +129,36 @@ void main() {
       final premiere = m.journees.first;
       expect(premiere.depart, DateTime(2026, 10, 5, 7, 30));
       expect(premiere.arrivee.isAfter(premiere.depart), isTrue);
-      // Sans duree declaree par le sentier, le repli s applique.
-      expect(premiere.duree, MatiereDeDemo.dureeDeRepli);
+      // Sans duree declaree par l etape, la REGLE DE MARCHE DU DEPOT decide :
+      // 10 km / 4 km/h + 500 m / 400 m/h = 2 h 30 + 1 h 15 = 3 h 45.
+      expect(premiere.duree, const Duration(hours: 3, minutes: 45));
+      expect(
+        premiere.duree,
+        Duration(
+          minutes: estimatedStageDurationMinutes(
+            distanceKm: premiere.etape.distance,
+            elevationGainM: premiere.etape.elevationGain,
+          ),
+        ),
+      );
+    });
+
+    test('la regle de marche rend les durees declarees par le sentier', () {
+      // CE QUI REND LA DUREE FABRIQUEE JUSTE, ET NON FORFAITAIRE. Le mappeur du
+      // depot ne recopie pas la duree des etapes, donc la matiere la recalcule.
+      // Ce cas verifie que le recalcul retombe sur la donnee REELLE du Mare a
+      // Mare Centre : 457 minutes pour sa premiere etape (19,9 km, 1 058 m de
+      // D+), 175 pour sa derniere (11,1 km, 54 m). Si la regle de marche du
+      // depot changeait, les durees de la demonstration cesseraient de coller
+      // au sentier, et ce cas le dirait.
+      expect(
+        estimatedStageDurationMinutes(distanceKm: 19.9, elevationGainM: 1058),
+        457,
+      );
+      expect(
+        estimatedStageDurationMinutes(distanceKm: 11.1, elevationGainM: 54),
+        175,
+      );
     });
 
     test('deux fabrications du meme jour sont identiques', () {
