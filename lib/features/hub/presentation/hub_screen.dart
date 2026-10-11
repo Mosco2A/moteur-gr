@@ -214,12 +214,17 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             // (`/health`) n'a plus alors que CETTE section pour porte dans tout
             // le cockpit — la retirer ici l'enfermerait. Repliee, donc
             // discrete, mais atteignable.
-            if (!showHike)
+            // SON ESPACEMENT PART AVEC ELLE. Un blanc de la taille d'une
+            // section absente est le defaut que la porte d'achat documente
+            // deja quelques lignes plus bas : ce qui s'efface doit emporter
+            // la place qu'il occupait.
+            if (!showHike) ...[
               HubPrepareSection(
                 trailId: trailId,
                 initiallyExpanded: !showAfter,
               ),
-            const SizedBox(height: AppTheme.spacingLg),
+              const SizedBox(height: AppTheme.spacingLg),
+            ],
             if (showHike) ...[
               LocalizedConditionsBanner(trailId: trailId),
               const SizedBox(height: AppTheme.spacingBase),
