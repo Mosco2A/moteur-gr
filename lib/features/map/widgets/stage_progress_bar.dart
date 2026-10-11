@@ -85,6 +85,16 @@ class StageProgressBar extends StatelessWidget {
   /// definition, pas deux chaines a garder d'accord.
   static const String pendingValueLabel = ChiffresDeLaBarre.pendingValueLabel;
 
+  /// La part de la ligne du titre que les marqueurs de droite — pastille et
+  /// puce hors-trace — ne depassent jamais (tache 808).
+  ///
+  /// CE QU'ELLE GARANTIT : le nom de l'etape conserve toujours au moins le
+  /// tiers restant de la ligne. Au-dela, les marqueurs se reduisent d'un bloc
+  /// plutot que de pousser le nom a zero — ce qui est exactement ce qui
+  /// arrivait, mesure au banc, avec une police large ou un reglage
+  /// d'agrandissement des textes.
+  static const double _partDesMarqueurs = 0.62;
+
   /// Nom de l'étape courante
   final String stageName;
 
@@ -276,64 +286,96 @@ class StageProgressBar extends StatelessWidget {
           // seul — jamais sous 14, la taille qu'il avait avant ce lot. Le
           // bandeau ne peut donc pas devenir moins lisible qu'il ne l'etait,
           // et aucun mot n'est coupe (c'est la regle de la tache 634).
-          // UN [Wrap] ET NON UNE [Row], ET C'EST UNE MESURE QUI L'A IMPOSE.
+          // LA LIGNE DU TITRE TIENT SUR UNE LIGNE, QUOI QU'ON Y METTE.
           //
-          // Cette ligne porte desormais TROIS choses quand le marcheur sort du
-          // trace : le nom, la pastille devenue plus large (elle a pris le
-          // total), et la puce « Hors trace » devenue plus grande. Mesure
-          // faite au banc : avec une police dont chaque glyphe occupe un
-          // cadratin — le cas des tests, mais AUSSI celui de l'allemand
-          // « Abseits der Route » sur un vrai telephone — la rangee debordait
-          // de 2,1 points et le nom de l'etape etait comprime a ZERO de large.
-          // Une [Row] ne sait pas faire autrement : elle distribue ce qui
-          // reste, et quand il ne reste rien elle deborde.
+          // CE QU'ELLE PORTE DESORMAIS : le nom, la pastille elargie par le
+          // total, et — quand le marcheur sort du trace — la puce
+          // « Hors trace », elle aussi agrandie. Trois choses sur 360,7 points
+          // utiles (mesure faite sur la capture de Christophe : 1080 pixels,
+          // rapport 2,75, moins deux fois la marge de 16).
           //
-          // LE [Wrap], LUI, NE DEBORDE JAMAIS : si les trois ne tiennent pas
-          // sur une ligne, les marqueurs passent a la suivante. Sur un
-          // telephone francais ils tiennent, et l'aspect est celui d'avant.
-          // C'est la meme regle que la tache 749 — aucun texte coupe — et
-          // elle vaut dans les cinq langues, pas seulement dans la plus
-          // courte.
-          Wrap(
-            spacing: AppTheme.spacingSm,
-            runSpacing: AppTheme.spacingXs,
-            alignment: WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              TexteAjuste(
-                stageName,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
-                tailleMin: 14,
-                textAlign: TextAlign.start,
-              ),
-              // LA PASTILLE DIT LE PERIMETRE **ET SA LONGUEUR** (tache 808).
-              //
-              // Le total a quitte le tableau pour venir ici : il ne bouge pas
-              // de toute la marche, et il n'a de sens que rapporte a ce dont
-              // on parle. « Etape 8,1 km » se lit d'un bloc ; les memes deux
-              // informations separees de dix centimetres d'ecran ne se lisent
-              // pas. La pastille reste le mot qui porte le sens pour qui
-              // distingue mal les couleurs (tache 747) — elle en porte juste
-              // la mesure en plus.
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (perimetreLabel != null || totalDistanceKm != null)
-                    PastilleDuPerimetre(
-                      perimetre: perimetreLabel,
-                      totalDistanceKm: totalDistanceKm,
-                      teinte: primaryColor,
+          // LE DEBORDEMENT EST REEL, IL A ETE MESURE. Avec une police dont
+          // chaque glyphe occupe un cadratin — le cas du banc de test, mais
+          // AUSSI le cas d'un randonneur qui a grossi les textes de son
+          // telephone, ce que ce public fait — la rangee debordait de 2,1
+          // points et le nom de l'etape etait comprime a ZERO de large. Une
+          // [Row] nue ne sait pas faire autrement : elle donne ce qui reste,
+          // et quand il ne reste rien, elle deborde.
+          //
+          // LES DEUX PARADES, ET ELLES SE COMPLETENT :
+          //   * LE NOM SE REDUIT PLUTOT QUE DE SE COUPER ([TexteAjuste],
+          //     tache 634) : 18 points s'il tient, jamais moins de 14 — la
+          //     taille qu'il avait avant ce lot. Sur la capture il demande
+          //     245,9 points a 18, et les marqueurs 95,6 : les deux tiennent.
+          //   * LES MARQUEURS NE PRENNENT JAMAIS PLUS DE [_partDesMarqueurs]
+          //     de la ligne, et se reduisent d'un bloc au-dela. Le nom garde
+          //     donc toujours sa part, et plus rien ne peut deborder.
+          //
+          // UN [Wrap] AURAIT AUSSI EMPECHE LE DEBORDEMENT, et il a ete essaye.
+          // Il a ete rejete : il fait TOMBER la pastille a la ligne suivante
+          // des que la marge de 15 points manque — or Christophe a demande
+          // « passer total AVEC le titre », pas sous le titre.
+          LayoutBuilder(
+            builder: (context, contraintes) => Row(
+              children: [
+                Expanded(
+                  child: TexteAjuste(
+                    stageName,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                  if (isOffTrack) ...[
-                    const SizedBox(width: AppTheme.spacingXs),
-                    const PuceHorsTrace(),
-                  ],
-                ],
-              ),
-            ],
+                    maxLines: 1,
+                    tailleMin: 14,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                const SizedBox(width: AppTheme.spacingXs),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: contraintes.maxWidth * _partDesMarqueurs,
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // LA PASTILLE DIT LE PERIMETRE **ET SA LONGUEUR**
+                        // (tache 808). Le total a quitte le tableau pour venir
+                        // ici : il ne bouge pas de toute la marche, et il n'a
+                        // de sens que rapporte a ce dont on parle.
+                        // « Etape 8,1 km » se lit d'un bloc ; les memes deux
+                        // informations separees de dix centimetres d'ecran ne
+                        // se lisent pas. La pastille reste le mot qui porte le
+                        // sens pour qui distingue mal les couleurs (tache
+                        // 747) — elle en porte juste la mesure en plus.
+                        if (perimetreLabel != null || totalDistanceKm != null)
+                          PastilleDuPerimetre(
+                            perimetre: perimetreLabel,
+                            // HORS TRACE, LE TOTAL CEDE LA PLACE, et c'est un
+                            // arbitrage, pas un oubli. Les trois ne tiennent
+                            // pas ensemble sur 360 points : le nom long
+                            // s'abregerait. Ordre de ce dont un marcheur a
+                            // besoin quand il a quitte le sentier : d'abord
+                            // l'avertissement, ensuite le nom du lieu ou il
+                            // se trouve, et en dernier une longueur d'etape
+                            // qui ne bouge pas et qu'il a deja lue. Le total
+                            // revient des qu'il est de nouveau sur la trace.
+                            totalDistanceKm: isOffTrack
+                                ? null
+                                : totalDistanceKm,
+                            teinte: primaryColor,
+                          ),
+                        if (isOffTrack) ...[
+                          const SizedBox(width: AppTheme.spacingXs),
+                          const PuceHorsTrace(),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
 
           const SizedBox(height: AppTheme.spacingSm),

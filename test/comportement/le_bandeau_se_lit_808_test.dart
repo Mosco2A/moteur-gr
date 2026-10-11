@@ -235,6 +235,15 @@ void main() {
         isNull,
         reason: 'aucun debordement de rangee a 390 points de large',
       );
+      // HORS TRACE, LE TOTAL CEDE LA PLACE — arbitrage assume : sur 360
+      // points, le nom du lieu et l avertissement priment sur une longueur
+      // d etape qui ne bouge pas.
+      expect(
+        find.text('8.1 km'),
+        findsNothing,
+        reason: 'le total s efface tant que le marcheur est hors trace',
+      );
+      expect(find.text(t.map.offTrackChip), findsOneWidget);
       // Le nom tient encore, et les six libelles sont tous la.
       expect(find.text('Quasquara - Santa-Maria-Siche'), findsOneWidget);
       for (final libelle in [
