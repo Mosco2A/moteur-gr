@@ -7,7 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/daos/journal_dao.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../domain/matiere_de_demo.dart';
+import '../../../i18n/translations.g.dart';
 import '../../trail/trail_facade.dart' show stagesProvider;
+// LA MEME SOURCE D'ETAPES QUE LE RECAPITULATIF (tache 810).
+// `domainStagesProvider` est le derive SYNCHRONE des etapes du sentier ACTIF,
+// en modele de domaine : c'est celui que lit `adventureStatsProvider`.
+// Fabriquer le carnet et le recapitulatif sur deux listes differentes aurait
+// permis a l'un de nommer une etape que l'autre ignore.
+import '../../trek/trek_facade.dart' show domainStagesProvider;
 import '../data/journal_repository.dart';
 import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
@@ -94,6 +102,64 @@ class JournalScreenState {
   }
 }
 
+/// LES PAGES FABRIQUEES DU CARNET, POUR LA DEMONSTRATION (tache 810).
+///
+/// LA LOI, POSEE PAR CHRISTOPHE LE 11/10/2026 A 09:27, verbatim : « tu rends
+/// accessible le faux journal er le faux recap oui . Demo = toutes les
+/// fonctionalite visible mais bouchonnees ». EN DEMO, TOUT SE VOIT, RIEN NE
+/// S'ECRIT.
+///
+/// CE QUI ETAIT VIDE, ET POURQUOI. Le carnet n'etait pas FERME en demonstration
+/// — il s'ouvrait deja en lecture (cf. [JournalScreen], tache 638). Il etait
+/// VIDE, et pour une raison mecanique : ses quatre gestes d'ecriture sont
+/// barres en demonstration, donc aucune entree ne nait, donc
+/// `_EmptyJournalView` s'affichait. « Ton journal est vide » n'apprend rien a
+/// qui veut voir a quoi sert un journal.
+///
+/// UNE PAGE PAR JOUR DE MARCHE, et le texte de chaque page nomme l'etape
+/// REELLEMENT marchee ce jour-la, dans la langue de l'application. Les quatre
+/// modeles de note tournent — depart, montee, village, arrivee — pour qu'un
+/// carnet de sept jours ne lise pas sept fois la meme phrase.
+///
+/// AUCUNE PHOTO N'EST FABRIQUEE, et c'est delibere. Une entree de carnet avec
+/// photo porte un CHEMIN DE FICHIER ([JournalEntryModel.photoPath]) : fabriquer
+/// la ligne obligerait a fabriquer le fichier, c'est-a-dire a ECRIRE sur le
+/// telephone — exactement ce que la demonstration promet de ne pas faire, et
+/// exactement le defaut que la tache 760 a corrige sur ce meme ecran. Les pages
+/// fabriquees sont donc des notes, et le bouton photo reste grise.
+List<JournalEntryModel> pagesFabriqueesDuCarnet(
+  MatiereDeDemo matiere, {
+  required String langue,
+}) {
+  final pages = <JournalEntryModel>[];
+  final journees = matiere.journees;
+  for (var i = 0; i < journees.length; i++) {
+    final journee = journees[i];
+    final etape = journee.etape.nomLocalise(langue);
+    final texte = switch (i) {
+      0 => t.demo.carnetNoteDepart(nom: etape),
+      _ when i == journees.length - 1 => t.demo.carnetNoteArrivee(nom: etape),
+      _ when i.isOdd => t.demo.carnetNoteMontee(nom: etape),
+      _ => t.demo.carnetNoteVillage(nom: etape),
+    };
+    pages.add(
+      JournalEntryModel(
+        // NEGATIF, DONC RECONNAISSABLE. Une cle Drift auto-incrementee vaut 1
+        // ou plus : cet identifiant ne peut designer qu'une page fabriquee, et
+        // il n'entrera jamais en collision avec une page du randonneur.
+        id: MatiereDeDemo.idEntreeFabriquee(i + 1),
+        trailId: matiere.session.trailId,
+        stageNumber: journee.etape.orderIndex,
+        text: texte,
+        // L'heure d'ARRIVEE de la journee : on ecrit son carnet le soir, et
+        // c'est cette date qui range la page dans sa journee.
+        createdAt: journee.arrivee,
+      ),
+    );
+  }
+  return pages;
+}
+
 /// Notifier Riverpod 3 pour le journal de trek.
 ///
 /// Charge les entrees depuis le repository, gere les CRUD notes/photos,
@@ -102,6 +168,28 @@ class JournalScreenNotifier extends Notifier<JournalScreenState> {
   late JournalRepository _repo;
   late PhotoService _photoService;
   late String _trailId;
+
+  /// La matiere fabriquee de la demonstration, ou `null` hors demonstration.
+  MatiereDeDemo? _matiere;
+
+  /// NUMERO DE LA CONSTRUCTION EN COURS — IL REND CADUQUE UN CHARGEMENT PARTI
+  /// TROP TOT (tache 810).
+  ///
+  /// LE DEFAUT QU'IL CORRIGE, ET IL ETAIT MESURABLE. Riverpod REUTILISE
+  /// l'instance d'un [Notifier] quand il le reconstruit : `build()` est rappele
+  /// sur le MEME objet. Un [_loadEntries] parti a la construction precedente
+  /// continuait donc de tourner et, en revenant, ecrivait son resultat dans
+  /// l'etat COURANT. Scenario reel : le randonneur a son carnet ouvert, hors
+  /// demonstration (un chargement de base part) ; il entre en demonstration (le
+  /// notifier se reconstruit et pose les pages fabriquees) ; le chargement
+  /// d'avant revient et REMPLACE les pages fabriquees par ce qu'il a lu. Un
+  /// test du lot l'a attrape — le carnet rendait zero page en demonstration
+  /// alors qu'il venait d'en poser quatre.
+  ///
+  /// Le meme defaut joue dans l'autre sens, et il est pire : a la sortie de
+  /// demonstration, un chargement parti PENDANT la demonstration pourrait
+  /// reposer un etat de demonstration sur le carnet reel.
+  int _construction = 0;
 
   @override
   JournalScreenState build() {
@@ -115,14 +203,111 @@ class JournalScreenNotifier extends Notifier<JournalScreenState> {
     _repo = ref.watch(journalRepositoryProvider);
     _photoService = ref.read(photoServiceProvider);
     _trailId = ref.read(trailIdProvider);
+    // TACHE 810 — LA MATIERE FABRIQUEE, RECONSTRUITE A CHAQUE ENTREE EN DEMO.
+    //
+    // `watch` et non `read` sur les trois : entrer ou sortir de la
+    // demonstration doit RECONSTRUIRE ce notifier, sinon le carnet garderait
+    // les pages fabriquees apres la sortie — le defaut meme que ce lot doit
+    // rendre impossible. `generationDeDemoProvider` couvre le cas « sortir
+    // puis rentrer » : Riverpod ne recalcule pas un provider dont la
+    // dependance a retrouve sa valeur precedente (cf. `session_demo.dart`).
+    // Toute construction rend caduc un chargement parti a la precedente.
+    _construction++;
+    final enDemo = ref.watch(enDemoProvider);
+    ref.watch(generationDeDemoProvider);
+    final etapes = enDemo ? ref.watch(domainStagesProvider) : null;
+    _matiere = etapes == null || etapes.isEmpty
+        ? null
+        : MatiereDeDemo.pourSentier(
+            trailId: _trailId,
+            etapes: etapes,
+            arriveeLe: DateTime.now(),
+          );
+    // EN DEMONSTRATION, [_loadEntries] N'EST MEME PAS APPELE, ET C'EST LE
+    // POINT LE PLUS IMPORTANT DE CETTE METHODE.
+    //
+    // CE QUE LA PREMIERE VERSION DE CE LOT FAISAIT, ET POURQUOI C'ETAIT GRAVE.
+    // Elle ne sortait ici que si la matiere etait DEJA prete, et retombait
+    // sinon sur le chargeur de la base. Or la matiere nait des etapes du
+    // sentier, qui se chargent de facon ASYNCHRONE : pendant ce court instant,
+    // `enDemo` valait deja vrai et le carnet lisait la base. Il affichait donc
+    // les VRAIES pages du randonneur, les siennes, a l'interieur d'une
+    // demonstration — l'inverse exact de la promesse. Un test du lot l'a
+    // attrape (« une page par etape seedee » rendait zero page).
+    //
+    // La regle est donc SANS CONDITION : en demonstration, la base n'est pas
+    // lue. Tant que les etapes ne sont pas la, le carnet se dit en chargement —
+    // un instant de roue tournante, jamais une page qui n'est pas a nous.
+    //
+    // Les pages fabriquees, elles, sont rendues ICI plutot que par le chargeur
+    // asynchrone : elles sont disponibles SANS attendre, et passer par
+    // [_loadEntries] poserait l'etat PENDANT le `build()`, ce que Riverpod
+    // refuse.
+    if (enDemo) {
+      final fabriquee = _matiere;
+      return JournalScreenState(
+        entries: fabriquee == null
+            ? const <JournalEntryModel>[]
+            : pagesFabriqueesDuCarnet(
+                fabriquee,
+                langue: LocaleSettings.currentLocale.languageCode,
+              ),
+        // Les etapes du sentier se chargent encore : on attend la matiere, on
+        // ne va pas chercher autre chose a montrer.
+        isLoading: fabriquee == null,
+        canAddPhoto: false,
+      );
+    }
     _loadEntries();
     return const JournalScreenState(isLoading: true);
   }
 
   /// Charge les entrees du sentier actif depuis la base.
+  ///
+  /// EN DEMONSTRATION, LA BASE N'EST PAS LUE DU TOUT. Deux raisons, et la
+  /// seconde est la plus importante : les pages fabriquees remplaceraient de
+  /// toute facon ce qu'on y lirait, et surtout une demonstration n'a RIEN a
+  /// montrer des vraies pages du randonneur sur ce sentier. Le carnet de
+  /// demonstration est une vitrine, pas une fenetre sur les souvenirs de
+  /// quelqu'un.
   Future<void> _loadEntries() async {
+    final construction = _construction;
+    final enDemoAuDepart = ref.read(enDemoProvider);
+    final matiere = _matiere;
+    if (matiere != null) {
+      state = state.copyWith(
+        entries: pagesFabriqueesDuCarnet(
+          matiere,
+          langue: LocaleSettings.currentLocale.languageCode,
+        ),
+        isLoading: false,
+        // L'ajout de photo est grise en demonstration : le compteur du jour
+        // n'a personne a renseigner, et l'interroger lirait la base.
+        canAddPhoto: false,
+        photosToday: 0,
+      );
+      return;
+    }
     final entries = await _repo.getByTrailId(_trailId);
     final photosToday = await _photoService.photosToday(_trailId);
+    // CE RESULTAT PARLE-T-IL ENCORE DU MONDE OU IL EST PARTI ? Deux facons d'en
+    // sortir, et il faut les DEUX.
+    //
+    //  1. LE NOTIFIER A ETE RECONSTRUIT (cf. [_construction]).
+    //  2. LA DEMONSTRATION A BASCULE SANS RECONSTRUCTION, et c'est le cas
+    //     retors — celui qu'un test de ce lot a mis a jour. Entrer en
+    //     demonstration marque bien ce notifier a refaire, mais la
+    //     reconstruction est PARESSEUSE : elle n'a lieu qu'a la prochaine
+    //     lecture. Si ce chargement-ci revient avant, son `state =` pose une
+    //     valeur FRAICHE et annule la reconstruction en attente. Le carnet
+    //     restait alors sur ce que la base avait rendu — les vraies pages du
+    //     randonneur — pour tout le reste de la demonstration.
+    //
+    // On ne se contente donc pas de jeter le resultat : en ne touchant PAS a
+    // l'etat, on laisse vivre la reconstruction en attente, qui posera les
+    // pages fabriquees.
+    if (construction != _construction) return;
+    if (ref.read(enDemoProvider) != enDemoAuDepart) return;
     final canAdd = photosToday < PhotoService.maxPhotosPerDay;
     state = state.copyWith(
       entries: entries,

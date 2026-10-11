@@ -15,6 +15,8 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/bandeau_matiere_fabriquee.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../diploma/diploma_facade.dart' show SessionTracePainter;
 import '../data/gpx_export_service.dart';
@@ -87,6 +89,14 @@ class _RecapBody extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // EN DEMONSTRATION, L'ECRAN DIT LUI-MEME QUE SA MATIERE EST FABRIQUEE
+          // (tache 810). Le bandeau orange du haut dit qu'on est en demo ; il
+          // ne dit pas que CES chiffres-la sont inventes. Un recapitulatif qui
+          // annonce « 87 km, 7 etapes sur 7 » avec de vraies dates se laisse
+          // prendre pour une vraie randonnee des qu'on le photographie — et la
+          // loi de Christophe veut qu'on voie tout, pas qu'on s'y trompe.
+          const BandeauMatiereFabriquee(),
+
           // Bandeau finisher vs parcours partiel (ton distinct, parite GR20).
           _CongratsBanner(fullyWalked: stats.fullyWalked),
           const SizedBox(height: AppTheme.spacingLg),
@@ -148,7 +158,15 @@ class _RecapBody extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingMd),
 
           // CORRECTIF L5-4 : l'export GPX, qui n'existait pas.
-          _ExportGpxButton(stats: stats),
+          //
+          // GRISE EN DEMONSTRATION (tache 810) : il ECRIT un fichier GPX dans
+          // les documents du telephone avant de le proposer au partage. Le
+          // recapitulatif s'ouvre desormais en demo avec une trace fabriquee —
+          // laisser ce bouton actif y deposerait un GPX bien reel, d'une
+          // randonnee qui n'a pas eu lieu, a l'endroit meme ou l'application
+          // promet que rien n'est enregistre. Le PARTAGE, juste au-dessus,
+          // reste ACTIF : il n'ecrit rien, il envoie du texte.
+          GriseEnDemo(child: _ExportGpxButton(stats: stats)),
         ],
       ),
     );

@@ -1121,6 +1121,11 @@
     "staleNoticeOffline": "Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist."
   },
   "demo": {
+    "matiereFabriquee": "Erfundenes Beispiel für die Demo: Diese Zahlen und Notizen sind nicht deine, und nichts wird gespeichert.",
+    "carnetNoteDepart": "Erster Tag: $nom. Der Rucksack ist schwer, aber der Weg gehört uns.",
+    "carnetNoteMontee": "$nom. Langer Aufstieg in der Morgenkühle, Pause auf halber Höhe.",
+    "carnetNoteVillage": "$nom. Ankunft am frühen Nachmittag, ruhiger Abend am Etappenziel.",
+    "carnetNoteArrivee": "$nom. Letzte Etappe, und sie ist geschafft. Die Beine werden sich erinnern.",
     "bandeau": "DEMO-MODUS",
     "quitter": "Beenden",
     "boutonTitre": "Demo ausprobieren",

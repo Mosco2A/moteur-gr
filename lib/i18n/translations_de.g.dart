@@ -867,6 +867,11 @@ class _Translations$demo$de extends Translations$demo$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
+	@override String get matiereFabriquee => 'Erfundenes Beispiel für die Demo: Diese Zahlen und Notizen sind nicht deine, und nichts wird gespeichert.';
+	@override String carnetNoteDepart({required Object nom}) => 'Erster Tag: ${nom}. Der Rucksack ist schwer, aber der Weg gehört uns.';
+	@override String carnetNoteMontee({required Object nom}) => '${nom}. Langer Aufstieg in der Morgenkühle, Pause auf halber Höhe.';
+	@override String carnetNoteVillage({required Object nom}) => '${nom}. Ankunft am frühen Nachmittag, ruhiger Abend am Etappenziel.';
+	@override String carnetNoteArrivee({required Object nom}) => '${nom}. Letzte Etappe, und sie ist geschafft. Die Beine werden sich erinnern.';
 	@override String get bandeau => 'DEMO-MODUS';
 	@override String get quitter => 'Beenden';
 	@override String get boutonTitre => 'Demo ausprobieren';
@@ -5188,6 +5193,11 @@ extension on TranslationsDe {
 			'catalog.loadFailedSubtitle' => 'Die Wegeliste konnte derzeit nicht geladen werden. Bereits heruntergeladene Wege bleiben offline verfügbar.',
 			'catalog.loadFailedRetry' => 'Erneut versuchen',
 			'catalog.staleNoticeOffline' => 'Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist.',
+			'demo.matiereFabriquee' => 'Erfundenes Beispiel für die Demo: Diese Zahlen und Notizen sind nicht deine, und nichts wird gespeichert.',
+			'demo.carnetNoteDepart' => ({required Object nom}) => 'Erster Tag: ${nom}. Der Rucksack ist schwer, aber der Weg gehört uns.',
+			'demo.carnetNoteMontee' => ({required Object nom}) => '${nom}. Langer Aufstieg in der Morgenkühle, Pause auf halber Höhe.',
+			'demo.carnetNoteVillage' => ({required Object nom}) => '${nom}. Ankunft am frühen Nachmittag, ruhiger Abend am Etappenziel.',
+			'demo.carnetNoteArrivee' => ({required Object nom}) => '${nom}. Letzte Etappe, und sie ist geschafft. Die Beine werden sich erinnern.',
 			'demo.bandeau' => 'DEMO-MODUS',
 			'demo.quitter' => 'Beenden',
 			'demo.boutonTitre' => 'Demo ausprobieren',
@@ -5235,13 +5245,13 @@ extension on TranslationsDe {
 			'follow.invalidLinkHint' => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.',
 			'cloud.localModeTitle' => 'Lokaler Modus',
 			'cloud.localModeBody' => 'Diese Installation ist mit keinem Cloud-Dienst verbunden: Live-Verfolgung, Online-Sicherung und Konto sind deaktiviert. Deine Daten bleiben auf dem Gerät.',
+			_ => null,
+		} ?? switch (path) {
 			'cloud.statusSection' => 'Cloud',
 			'cloud.statusActive' => 'Online-Dienste aktiv',
 			'cloud.statusActiveDesc' => 'Sicherung und Live-Verfolgung verfügbar.',
 			'cloud.statusLocal' => 'Lokaler Modus (ohne Cloud)',
 			'cloud.statusLocalDesc' => 'Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden.',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.skip' => 'Überspringen',
 			'onboarding.next' => 'Weiter',
 			'onboarding.getStarted' => 'Los geht\'s',
@@ -5749,13 +5759,13 @@ extension on TranslationsDe {
 			'recap.statsSection' => 'Statistiken',
 			'recap.traceSection' => 'Deine Spur',
 			'recap.noTrace' => 'Keine GPS-Spur verfügbar',
+			_ => null,
+		} ?? switch (path) {
 			'recap.stages' => '{done} / {total} Etappen gelaufen',
 			'recap.distance' => '{km} km zurückgelegt',
 			'recap.elevation' => '{meters} m Höhenmeter',
 			'recap.duration' => '{days} Tage insgesamt, Wandern und Ruhe inklusive',
 			'recap.dates' => 'Vom {start} bis {end}',
-			_ => null,
-		} ?? switch (path) {
 			'recap.viewDiploma' => 'Mein Diplom ansehen',
 			'recap.viewJournal' => 'Mein Tagebuch ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',

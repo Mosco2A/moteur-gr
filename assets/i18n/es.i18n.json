@@ -1121,6 +1121,11 @@
     "staleNoticeOffline": "Sin conexión: estos son los senderos que ya has descargado. La lista completa se actualizará cuando vuelvas a tener red."
   },
   "demo": {
+    "matiereFabriquee": "Ejemplo inventado para la demo: estas cifras y estas notas no son tuyas, y no se guarda nada.",
+    "carnetNoteDepart": "Primer día: $nom. La mochila pesa, pero el sendero es nuestro.",
+    "carnetNoteMontee": "$nom. Larga subida al frescor de la mañana, descanso a media ladera.",
+    "carnetNoteVillage": "$nom. Llegada a primera hora de la tarde, velada tranquila en la etapa.",
+    "carnetNoteArrivee": "$nom. Última etapa, y está hecho. Las piernas lo recordarán.",
     "bandeau": "MODO DEMO",
     "quitter": "Salir",
     "boutonTitre": "Probar la demo",

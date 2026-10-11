@@ -23,6 +23,7 @@ import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/bandeau_matiere_fabriquee.dart';
 import '../../../shared/widgets/paywall_sheet.dart';
 import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
@@ -332,11 +333,32 @@ class _UnlockedJournal extends ConsumerWidget {
             ),
         ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : entryCount == 0
-          ? _EmptyJournalView(journalT: journalT)
-          : const _JournalDayView(),
+      // EN DEMONSTRATION, LE CARNET DIT QUE SES PAGES SONT FABRIQUEES
+      // (tache 810). Le bandeau est posé ICI, au-dessus du corps, et non dans
+      // [_JournalDayView] : la vue par jour est partagee avec l'etat verrouille
+      // en lecture seule (`_LockedJournalView`), qui montre les VRAIES pages du
+      // randonneur — y glisser l'avertissement l'aurait fait mentir.
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(
+              AppTheme.spacingBase,
+              AppTheme.spacingBase,
+              AppTheme.spacingBase,
+              0,
+            ),
+            child: BandeauMatiereFabriquee(),
+          ),
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : entryCount == 0
+                ? _EmptyJournalView(journalT: journalT)
+                : const _JournalDayView(),
+          ),
+        ],
+      ),
       // GRISE EN DEMO (tache 638, bug 14) : une note de journal s'ecrit en base.
       // Le journal se LIT en demo, il ne s'ecrit pas — et le bouton le montre.
       floatingActionButton: GriseEnDemo(
