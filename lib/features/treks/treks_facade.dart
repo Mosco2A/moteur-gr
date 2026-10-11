@@ -25,6 +25,13 @@
 library;
 
 export 'domain/trek_lifecycle_state.dart' show TrekLifecycleState;
+// LE NOM DU STATUT « TERMINE », ET NON SA CHAINE RECOPIEE (tache 809). La phase
+// du cockpit doit reconnaitre une randonnee finie sur la session VIVANTE, pas
+// seulement sur la ligne en base — en demonstration, cette ligne n'existe
+// jamais. Elle lit donc la MEME constante que `deriveState`, au lieu d'ecrire
+// `'completed'` une troisieme fois dans le depot : deux verdicts de fin qui ne
+// partagent pas leur vocabulaire finissent par diverger d'une lettre.
+export 'domain/trek_state_deriver.dart' show kSessionStatusCompleted;
 export 'presentation/widgets/active_trek_conflict_dialog.dart'
     show showActiveTrekConflictDialog;
 export 'providers/entitlements_provider.dart' show ownedTrailIdsProvider;

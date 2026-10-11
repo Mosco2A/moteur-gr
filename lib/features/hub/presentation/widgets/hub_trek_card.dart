@@ -14,65 +14,62 @@ import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../map/map_facade.dart' show stageDistanceCoveredProvider;
-import '../../../treks/treks_facade.dart'
-    show TrekLifecycleState, currentTrailSummaryProvider;
 import '../../../trek/trek_facade.dart'
-    show
-        TrackingSessionState,
-        TrackingSessionStatus,
-        trekSessionManagerProvider;
+    show TrackingSessionState, trekSessionManagerProvider;
 import '../../../../core/branding/stepways_icons.dart';
+import '../cockpit_phase.dart';
 
 /// Carte principale du trek (RF-4 / #ET-1 / #ET-2), enrichie du cycle de vie
 /// multi-trek (StepWays LOT 2, Phase 5).
 ///
-/// Reflete l'[TrekLifecycleState] DERIVE du sentier actif
-/// ([currentTrailSummaryProvider]) — plus seulement l'etat en memoire du
-/// tracking :
-///   * inProgress (session `active`|`paused`) : carte « en cours » avec stats
-///     temps reel du jour + CTA « Reprendre la navigation » (#R08) ;
-///   * completed (finisher legitime) : carte de fin avec « Revoir »
-///     (`/trail/:id/recap`) + « Diplôme » (`/trail/:id/diploma`) ;
-///   * owned / prepared : CTA « Démarrer » qui passe par la GARDE d'unicite C4
-///     ([TrekSessionManagerNotifier.ensureSingleActiveThenStart]) — un dialog
-///     Terminer/Abandonner s'interpose si un AUTRE trek est deja en cours.
+/// Elle a TROIS VISAGES, et c'est [CockpitPhase] qui choisit lequel — la meme
+/// source que « Préparer », « Démarrer » et « Acheter » depuis la tache 809 :
+///   * [CockpitPhase.hike] : carte « en cours » avec stats temps reel du jour
+///     + CTA « Reprendre la navigation » (#R08) ;
+///   * [CockpitPhase.after] : carte de fin, porte unique « Mon aventure »
+///     (`/trail/:id/recap`), qui ouvre elle-meme le diplome et le journal ;
+///   * [CockpitPhase.prepare] : carte d'invite. Le CTA « Démarrer » a QUITTE
+///     cette carte (retour Christophe #3) et vit en bas du cockpit.
 ///
-/// La bascule inProgress prend en compte L'ETAT VIVANT du tracking en priorite
-/// (stats du jour disponibles) et RETOMBE sur l'etat derive (session persistee
-/// non encore reprise en memoire, ex. apres redemarrage). D1 (arbitrage
-/// #94902) : le mode demo reste masque — la carte ne connait que le trek reel.
+/// ELLE CONNAIT DESORMAIS LA DEMONSTRATION, ET C'EST UN CHANGEMENT ASSUME. Son
+/// en-tete disait « le mode demo reste masque — la carte ne connait que le trek
+/// reel » (D1, arbitrage #94902) : vrai tant qu'elle lisait la base, que
+/// la demo n'ecrit pas. En lisant la phase, elle voit l'arrivee d'une marche
+/// simulee et pose sa carte de fin. D1 parlait de ne pas inventer un trek de
+/// demonstration a cote du vrai ; ici le trek EST le vrai Mare a Mare, et c'est
+/// sa marche qui est simulee. Rien n'est acquis pour autant : aucun droit n'est
+/// accorde, et la porte qu'elle ouvre reste celle de l'apres-randonnee reelle.
 class HubTrekCard extends ConsumerWidget {
   const HubTrekCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tracking = ref.watch(trekSessionManagerProvider);
-    final liveActive =
-        tracking.status == TrackingSessionStatus.recording ||
-        tracking.status == TrackingSessionStatus.paused;
-
-    // Une session vivante prime : stats du jour disponibles -> carte active.
-    if (liveActive) {
-      return _ActiveTrekCard(tracking: tracking);
-    }
-
-    // Sinon on suit l'etat DERIVE du sentier actif (session persistee /
-    // progression). Pendant le calcul ou en erreur, on retombe sur la carte
-    // « aucun trek » (invite a demarrer) — jamais d'ecran casse.
-    final summaryAsync = ref.watch(currentTrailSummaryProvider);
-    final state = summaryAsync.asData?.value?.state;
-
-    switch (state) {
-      case TrekLifecycleState.inProgress:
-        // Session persistee en cours mais tracking en memoire pas (encore)
-        // repris : on montre la carte active avec l'etat courant (stats a 0
-        // jusqu'a reprise de la navigation).
-        return _ActiveTrekCard(tracking: tracking);
-      case TrekLifecycleState.completed:
+    // CETTE CARTE NE DERIVE PLUS SON ETAT, ELLE LIT LA PHASE (tache 809).
+    //
+    // Elle melangeait elle-meme l'etat vivant du suivi et l'etat derive de la
+    // base — le MEME melange que faisait l'ecran du cockpit, et qu'un troisieme
+    // widget faisait encore ailleurs. Trois recalculs du meme fait, avec trois
+    // chances de ne pas tomber d'accord. Le melange est desormais fait UNE
+    // fois, dans [cockpitPhaseProvider].
+    //
+    // CE QUE CE SEUL CHANGEMENT REPARE, ET C'EST LE DEFAUT (b) DE CHRISTOPHE :
+    // « demarrer la randonne, le bouton aparait encore une fois la randonnee
+    // finie au lieu d acceder a la post rando ». En demonstration, la base ne
+    // voyait jamais l'arrivee, donc cette carte retombait sur [_StartTrekCard]
+    // (« prêt à partir ») et la porte « Mon aventure » de [_CompletedTrekCard]
+    // ne s'ouvrait JAMAIS. La phase connaissant maintenant l'arrivee sans la
+    // base, c'est bien la carte de fin qui se pose, avec sa porte.
+    switch (ref.watch(cockpitPhaseProvider)) {
+      case CockpitPhase.hike:
+        // Rando active : stats du jour + reprise de la navigation. Couvre aussi
+        // la session persistee pas (encore) reprise en memoire apres un
+        // redemarrage — les stats valent alors 0 jusqu'a la reprise.
+        return _ActiveTrekCard(tracking: ref.watch(trekSessionManagerProvider));
+      case CockpitPhase.after:
         return const _CompletedTrekCard();
-      case TrekLifecycleState.owned:
-      case TrekLifecycleState.prepared:
-      case null:
+      case CockpitPhase.prepare:
+        // Pendant le calcul, en erreur, ou sans aucun trek : la carte d'invite
+        // a demarrer — jamais d'ecran casse.
         return const _StartTrekCard();
     }
   }

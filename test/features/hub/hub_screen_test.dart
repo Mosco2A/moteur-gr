@@ -590,24 +590,35 @@ void main() {
       expect(find.text(t.hub.prepareExpand), findsNothing);
     });
 
-    testWidgets('accordéon Préparer (D3, R13) : REPLIÉ en rando, dépliable au '
-        'tap', (tester) async {
-      // Phase rando active -> accordeon Préparer REPLIÉ par defaut (cartes de
-      // prépa masquees, en-tete propose « Voir la préparation »). R13 : jamais
-      // masqué -> un tap le déplie et révèle les cartes.
+    testWidgets('« Préparer » DISPARAIT en rando — plus repliée, ABSENTE '
+        '(tâche 809)', (tester) async {
+      // CE TEST DISAIT L'INVERSE JUSQU'AU 11/10, ET C'EST CHRISTOPHE QUI A
+      // TRANCHÉ. Il verrouillait l'arbitrage R13 — « jamais masqué, juste
+      // replié : un tap le déplie et révèle les cartes » — et il avait raison
+      // de le verrouiller tant que c'était la décision. Christophe a vu le
+      // résultat sur le téléphone le 10/10 et a dit, verbatim : « meme en mode
+      // demo preparer devrait disparaitre quand tu es en cours de trek ».
+      //
+      // « Disparaître », pas « replier » : en pleine marche, les douze cartes
+      // de la préparation n'ont plus rien à préparer, et leur en-tête mange le
+      // haut du cockpit au moment où tout ce qui compte est la trace. La
+      // section entière — en-tête comprise — quitte donc le scroll.
+      //
+      // ELLE REVIENT APRÈS L'ARRIVÉE : voir
+      // `test/features/hub/portes_sans_entree_568_test.dart`, qui vérifie que
+      // la fiche médicale reste atteignable en phase « après ».
       await pumpTallHub(tester, status: TrackingSessionStatus.recording);
 
-      // Replié : le titre reste (en-tete), mais les cartes de prépa sont absentes.
-      expect(find.text(t.hub.sections.prepare), findsOneWidget);
-      expect(find.text(t.hub.cards.feasibility), findsNothing);
-      expect(find.text(t.hub.prepareExpand), findsOneWidget);
+      // L'en-tête lui-meme n'est plus là : ni titre, ni action de pliage.
+      expect(find.text(t.hub.sections.prepare), findsNothing);
+      expect(find.text(t.hub.prepareExpand), findsNothing);
       expect(find.text(t.hub.prepareCollapse), findsNothing);
+      // Et donc aucune carte de préparation, evidemment.
+      expect(find.text(t.hub.cards.feasibility), findsNothing);
+      expect(find.text(t.hub.cards.programme), findsNothing);
 
-      // R13 : tap sur l'en-tete -> deplie -> les cartes de prépa apparaissent.
-      await tester.tap(find.text(t.hub.prepareExpand));
-      await tester.pumpAndSettle();
-      expect(find.text(t.hub.cards.feasibility), findsOneWidget);
-      expect(find.text(t.hub.prepareCollapse), findsOneWidget);
+      // CE QUI PREND SA PLACE EST CE QUI SERT : la section « Randonner ».
+      expect(find.text(t.hub.sections.hike), findsOneWidget);
     });
 
     testWidgets('rend un echantillon de cartes cablees (S8)', (tester) async {
@@ -696,14 +707,17 @@ void main() {
 
       final journal = tester.getTopLeft(find.text(t.hub.cards.journal));
       final hike = tester.getTopLeft(find.text(t.hub.sections.hike));
-      final prepare = tester.getTopLeft(find.text(t.hub.sections.prepare));
       final info = tester.getTopLeft(find.text(t.hub.sections.info));
 
       // Place de la reference : dans la section terrain, donc APRES son titre.
       expect(journal.dy, greaterThan(hike.dy));
-      // Et plus jamais au-dessus de la preparation (retour Chris : « pourquoi
-      // journe est en haut de preparer ??????? »).
-      expect(journal.dy, greaterThan(prepare.dy));
+      // ET PLUS JAMAIS AU-DESSUS DE LA PREPARATION — autrement dit, en rando,
+      // plus de preparation du tout (tache 809, « preparer devrait disparaitre
+      // quand tu es en cours de trek »). Le retour de Christophe qui a fonde cette
+      // assertion — « pourquoi journe est en haut de preparer ??????? » — est
+      // donc tenu par une ABSENCE, qui est plus forte qu'un ordre : il n'y a
+      // plus rien a depasser.
+      expect(find.text(t.hub.sections.prepare), findsNothing);
       // Toujours au-dessus d'« Informations » : ce n'est pas une rubrique de
       // lecture, c'est un carnet qu'on ecrit.
       expect(journal.dy, lessThan(info.dy));
