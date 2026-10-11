@@ -984,7 +984,12 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get featureFollowers => '2 follower gratuiti';
 	@override String get featureNoAds => 'Zero pubblicità';
 	@override String get buyCta => 'Acquista';
-	@override String buyCtaWithPrice({required Object price}) => 'Acquista — ${price} €';
+	@override String buyCtaWithSteps({required Object steps}) => 'Acquista — ${steps} tappe';
+	@override String get complementTitle => 'Ti mancano delle tappe';
+	@override String get complementBody => 'Non hai abbastanza tappe sul tuo conto per acquistare questo sentiero. Acquista il complemento, oppure prendi un pacchetto.';
+	@override String complementDoorExact({required Object steps}) => 'Acquista il complemento — ${steps} tappe';
+	@override String complementDoorPack({required Object steps}) => 'Prendi un pacchetto — ${steps} tappe';
+	@override String get complementExactPending => 'L\'acquisto a singola tappa non è ancora aperto dallo store. Un pacchetto resta possibile, e le tappe in più restano sul tuo conto tappe.';
 	@override String get rewardedCta => 'Un giorno senza pubblicità — guarda un video';
 	@override String get rewardedEarned => 'Grazie! Senza pubblicità per 24 h.';
 	@override String get rewardedUnavailable => 'Nessun video disponibile al momento.';
@@ -1000,7 +1005,6 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get rechargeSubtitle => 'Le tappe servono a sbloccare le escursioni. Sono tue per sempre.';
 	@override String get rechargeBalance => 'Saldo attuale';
 	@override String packSteps({required Object steps}) => '${steps} tappe';
-	@override String packPrice({required Object price}) => '${price} €';
 	@override String get rechargeCta => 'Ricarica';
 	@override String get subscriptionTitle => 'Abbonamento senza pubblicità';
 	@override String get subscriptionSubtitle => 'Nessuna pubblicità ovunque, finché l\'abbonamento è attivo.';
@@ -5262,7 +5266,12 @@ extension on TranslationsIt {
 			'monetization.featureFollowers' => '2 follower gratuiti',
 			'monetization.featureNoAds' => 'Zero pubblicità',
 			'monetization.buyCta' => 'Acquista',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Acquista — ${price} €',
+			'monetization.buyCtaWithSteps' => ({required Object steps}) => 'Acquista — ${steps} tappe',
+			'monetization.complementTitle' => 'Ti mancano delle tappe',
+			'monetization.complementBody' => 'Non hai abbastanza tappe sul tuo conto per acquistare questo sentiero. Acquista il complemento, oppure prendi un pacchetto.',
+			'monetization.complementDoorExact' => ({required Object steps}) => 'Acquista il complemento — ${steps} tappe',
+			'monetization.complementDoorPack' => ({required Object steps}) => 'Prendi un pacchetto — ${steps} tappe',
+			'monetization.complementExactPending' => 'L\'acquisto a singola tappa non è ancora aperto dallo store. Un pacchetto resta possibile, e le tappe in più restano sul tuo conto tappe.',
 			'monetization.rewardedCta' => 'Un giorno senza pubblicità — guarda un video',
 			'monetization.rewardedEarned' => 'Grazie! Senza pubblicità per 24 h.',
 			'monetization.rewardedUnavailable' => 'Nessun video disponibile al momento.',
@@ -5278,7 +5287,6 @@ extension on TranslationsIt {
 			'monetization.rechargeSubtitle' => 'Le tappe servono a sbloccare le escursioni. Sono tue per sempre.',
 			'monetization.rechargeBalance' => 'Saldo attuale',
 			'monetization.packSteps' => ({required Object steps}) => '${steps} tappe',
-			'monetization.packPrice' => ({required Object price}) => '${price} €',
 			'monetization.rechargeCta' => 'Ricarica',
 			'monetization.subscriptionTitle' => 'Abbonamento senza pubblicità',
 			'monetization.subscriptionSubtitle' => 'Nessuna pubblicità ovunque, finché l\'abbonamento è attivo.',
@@ -5750,12 +5758,12 @@ extension on TranslationsIt {
 			'recap.traceSection' => 'La tua traccia',
 			'recap.noTrace' => 'Nessuna traccia GPS disponibile',
 			'recap.stages' => '{done} / {total} tappe percorse',
+			_ => null,
+		} ?? switch (path) {
 			'recap.distance' => '{km} km percorsi',
 			'recap.elevation' => '{meters} m di dislivello positivo',
 			'recap.duration' => '{days} giorni in totale, cammino e riposo compresi',
 			'recap.dates' => 'Dal {start} al {end}',
-			_ => null,
-		} ?? switch (path) {
 			'recap.viewDiploma' => 'Vedi il mio diploma',
 			'recap.viewJournal' => 'Vedi il mio diario',
 			'recap.noData' => 'Nessun dato di percorso da mostrare al momento.',

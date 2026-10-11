@@ -2046,8 +2046,23 @@ class Translations$monetization$fr {
 	/// fr: 'Acheter'
 	String get buyCta => 'Acheter';
 
-	/// fr: 'Acheter — $price €'
-	String buyCtaWithPrice({required Object price}) => 'Acheter — ${price} €';
+	/// fr: 'Acheter — $steps étapes'
+	String buyCtaWithSteps({required Object steps}) => 'Acheter — ${steps} étapes';
+
+	/// fr: 'Il te manque des étapes'
+	String get complementTitle => 'Il te manque des étapes';
+
+	/// fr: 'Tu n'as pas assez d'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.'
+	String get complementBody => 'Tu n\'as pas assez d\'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.';
+
+	/// fr: 'Acheter le complément — $steps étapes'
+	String complementDoorExact({required Object steps}) => 'Acheter le complément — ${steps} étapes';
+
+	/// fr: 'Prendre un pack — $steps étapes'
+	String complementDoorPack({required Object steps}) => 'Prendre un pack — ${steps} étapes';
+
+	/// fr: 'L'achat à l'étape près n'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.'
+	String get complementExactPending => 'L\'achat à l\'étape près n\'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.';
 
 	/// fr: 'Un jour sans publicité — regarder une vidéo'
 	String get rewardedCta => 'Un jour sans publicité — regarder une vidéo';
@@ -2093,9 +2108,6 @@ class Translations$monetization$fr {
 
 	/// fr: '$steps étapes'
 	String packSteps({required Object steps}) => '${steps} étapes';
-
-	/// fr: '$price €'
-	String packPrice({required Object price}) => '${price} €';
 
 	/// fr: 'Recharger'
 	String get rechargeCta => 'Recharger';
@@ -9389,7 +9401,12 @@ extension on Translations {
 			'monetization.featureFollowers' => '2 suiveurs gratuits',
 			'monetization.featureNoAds' => 'Zéro publicité',
 			'monetization.buyCta' => 'Acheter',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Acheter — ${price} €',
+			'monetization.buyCtaWithSteps' => ({required Object steps}) => 'Acheter — ${steps} étapes',
+			'monetization.complementTitle' => 'Il te manque des étapes',
+			'monetization.complementBody' => 'Tu n\'as pas assez d\'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.',
+			'monetization.complementDoorExact' => ({required Object steps}) => 'Acheter le complément — ${steps} étapes',
+			'monetization.complementDoorPack' => ({required Object steps}) => 'Prendre un pack — ${steps} étapes',
+			'monetization.complementExactPending' => 'L\'achat à l\'étape près n\'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.',
 			'monetization.rewardedCta' => 'Un jour sans publicité — regarder une vidéo',
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
 			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
@@ -9405,7 +9422,6 @@ extension on Translations {
 			'monetization.rechargeSubtitle' => 'Les étapes servent à débloquer les randonnées. Elles sont acquises à vie.',
 			'monetization.rechargeBalance' => 'Solde actuel',
 			'monetization.packSteps' => ({required Object steps}) => '${steps} étapes',
-			'monetization.packPrice' => ({required Object price}) => '${price} €',
 			'monetization.rechargeCta' => 'Recharger',
 			'monetization.subscriptionTitle' => 'Abonnement sans publicité',
 			'monetization.subscriptionSubtitle' => 'Sans publicité partout, tant que l\'abonnement est actif.',
@@ -9877,12 +9893,12 @@ extension on Translations {
 			'recap.traceSection' => 'Ta trace',
 			'recap.noTrace' => 'Aucune trace GPS disponible',
 			'recap.stages' => '{done} / {total} étapes parcourues',
+			_ => null,
+		} ?? switch (path) {
 			'recap.distance' => '{km} km parcourus',
 			'recap.elevation' => '{meters} m de dénivelé positif',
 			'recap.duration' => '{days} jours au total, marche et repos compris',
 			'recap.dates' => 'Du {start} au {end}',
-			_ => null,
-		} ?? switch (path) {
 			'recap.viewDiploma' => 'Voir mon diplôme',
 			'recap.viewJournal' => 'Voir mon journal',
 			'recap.noData' => 'Aucune donnée de parcours à afficher pour le moment.',

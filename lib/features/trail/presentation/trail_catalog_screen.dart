@@ -568,10 +568,26 @@ class _AvailableTrailCard extends ConsumerWidget {
                     key: ValueKey('catalog-buy-${trail.id}'),
                     variant: AppButtonVariant.outline,
                     icon: StepwaysIcons.panier,
-                    label: t.monetization.buyCtaWithPrice(
-                      price: monetisation
-                          .eurPriceForTrail(trail.id)
-                          .toStringAsFixed(2),
+                    // LE PRIX D'UN SENTIER EST EN ETAPES (tache 806).
+                    //
+                    // CE QUE CETTE CARTE DISAIT, ET QUI ETAIT FAUX PAR
+                    // CONSTRUCTION : « Acheter — 6.93 € ». Ce montant est le
+                    // nombre d'etapes multiplie par le tarif le plus
+                    // DEFAVORABLE, celui de l'achat a l'unite. Il suppose donc
+                    // que tout le monde achete au prix fort. Or le prix d'une
+                    // etape en euros N'EXISTE PAS dans l'absolu : il depend de
+                    // la facon dont le randonneur a rempli sa cagnotte — a
+                    // l'unite, par pack degressif, ou par le cagnotage de
+                    // l'abonnement. Un prix en euros sur une carte de sentier
+                    // decrit donc l'ACHETEUR, pas le sentier.
+                    //
+                    // CE QU'ELLE DIT : sept etapes. Le nombre, lui, est une
+                    // propriete du sentier et il ne bouge jamais. Il etait
+                    // DEJA affiche juste au-dessus, dans la pastille au
+                    // drapeau — la carte annoncait donc les deux a la fois,
+                    // « 7 » et « 6.93 € », sans dire que c'etait le meme prix.
+                    label: t.monetization.buyCtaWithSteps(
+                      steps: monetisation.stagesOfTrail(trail.id),
                     ),
                     onPressed: () => buyTrail(context, ref, trailId: trail.id),
                   ),

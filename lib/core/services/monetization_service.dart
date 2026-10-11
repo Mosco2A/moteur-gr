@@ -142,8 +142,11 @@ class MonetizationService {
   /// Nombre d'étapes du sentier [trailId] — SOURCE UNIQUE DU PRIX.
   int stagesOfTrail(String trailId) => _pricing.stagesOfTrail(trailId);
 
-  /// Prix EUR du sentier [trailId], lu depuis le catalogue (affichage).
-  double eurPriceForTrail(String trailId) => _pricing.eurPriceForTrail(trailId);
+  // `eurPriceForTrail` A ÉTÉ RETIRÉE (tâche 806) : un sentier n'a pas de prix
+  // en euros, il a un prix en ÉTAPES ([stagesOfTrail]). Le montant en euros
+  // dépend de la façon dont l'acheteur a rempli sa cagnotte, donc de
+  // l'acheteur et non du sentier. Voir `monetization_pricing.dart` pour la
+  // mesure complète.
 
   /// Prix « catalogue » d'un trek EN ÉTAPES = son nombre d'étapes.
   int stepPriceForTrail({required int totalStages}) =>

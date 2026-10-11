@@ -984,7 +984,12 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get featureFollowers => '2 free followers';
 	@override String get featureNoAds => 'Zero ads';
 	@override String get buyCta => 'Buy';
-	@override String buyCtaWithPrice({required Object price}) => 'Buy — €${price}';
+	@override String buyCtaWithSteps({required Object steps}) => 'Buy — ${steps} steps';
+	@override String get complementTitle => 'You are short of steps';
+	@override String get complementBody => 'You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.';
+	@override String complementDoorExact({required Object steps}) => 'Buy the complement — ${steps} steps';
+	@override String complementDoorPack({required Object steps}) => 'Get a pack — ${steps} steps';
+	@override String get complementExactPending => 'Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.';
 	@override String get rewardedCta => 'A day without ads — watch a video';
 	@override String get rewardedEarned => 'Thanks! Ad-free for 24 h.';
 	@override String get rewardedUnavailable => 'No video available right now.';
@@ -1000,7 +1005,6 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get rechargeSubtitle => 'Steps unlock hikes. They are yours for life.';
 	@override String get rechargeBalance => 'Current balance';
 	@override String packSteps({required Object steps}) => '${steps} steps';
-	@override String packPrice({required Object price}) => '€${price}';
 	@override String get rechargeCta => 'Top up';
 	@override String get subscriptionTitle => 'Ad-free subscription';
 	@override String get subscriptionSubtitle => 'No ads anywhere, as long as the subscription is active.';
@@ -5262,7 +5266,12 @@ extension on TranslationsEn {
 			'monetization.featureFollowers' => '2 free followers',
 			'monetization.featureNoAds' => 'Zero ads',
 			'monetization.buyCta' => 'Buy',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Buy — €${price}',
+			'monetization.buyCtaWithSteps' => ({required Object steps}) => 'Buy — ${steps} steps',
+			'monetization.complementTitle' => 'You are short of steps',
+			'monetization.complementBody' => 'You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.',
+			'monetization.complementDoorExact' => ({required Object steps}) => 'Buy the complement — ${steps} steps',
+			'monetization.complementDoorPack' => ({required Object steps}) => 'Get a pack — ${steps} steps',
+			'monetization.complementExactPending' => 'Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.',
 			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
 			'monetization.rewardedUnavailable' => 'No video available right now.',
@@ -5278,7 +5287,6 @@ extension on TranslationsEn {
 			'monetization.rechargeSubtitle' => 'Steps unlock hikes. They are yours for life.',
 			'monetization.rechargeBalance' => 'Current balance',
 			'monetization.packSteps' => ({required Object steps}) => '${steps} steps',
-			'monetization.packPrice' => ({required Object price}) => '€${price}',
 			'monetization.rechargeCta' => 'Top up',
 			'monetization.subscriptionTitle' => 'Ad-free subscription',
 			'monetization.subscriptionSubtitle' => 'No ads anywhere, as long as the subscription is active.',
@@ -5750,12 +5758,12 @@ extension on TranslationsEn {
 			'recap.traceSection' => 'Your track',
 			'recap.noTrace' => 'No GPS track available',
 			'recap.stages' => '{done} / {total} stages walked',
+			_ => null,
+		} ?? switch (path) {
 			'recap.distance' => '{km} km travelled',
 			'recap.elevation' => '{meters} m of elevation gain',
 			'recap.duration' => '{days} days in total, walking and rest included',
 			'recap.dates' => 'From {start} to {end}',
-			_ => null,
-		} ?? switch (path) {
 			'recap.viewDiploma' => 'View my diploma',
 			'recap.viewJournal' => 'View my journal',
 			'recap.noData' => 'No route data to display yet.',

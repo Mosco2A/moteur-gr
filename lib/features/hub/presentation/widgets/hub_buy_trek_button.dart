@@ -46,7 +46,6 @@ class HubBuyTrekButton extends ConsumerWidget {
     // connaitre : c'est celui qui debite qui compte, une seule fois.
     final monetisation = ref.watch(monetizationServiceProvider);
     final stages = monetisation.stagesOfTrail(trailId);
-    final prix = monetisation.eurPriceForTrail(trailId);
 
     // L'ESPACEMENT EST PORTE PAR L'ECRAN, pas par le bouton : quand il
     // s'efface, le cockpit ne doit pas garder un blanc de la taille d'un
@@ -56,8 +55,12 @@ class HubBuyTrekButton extends ConsumerWidget {
       key: const Key('hub-buy-trek-button'),
       variant: AppButtonVariant.outline,
       icon: StepwaysIcons.cadenasOuvert,
+      // EN ETAPES, PAS EN EUROS (tache 806). Le nombre d'etapes est le prix du
+      // sentier et il ne depend pas de l'acheteur ; le montant en euros, lui,
+      // depend de la facon dont la cagnotte a ete remplie, et ne peut donc pas
+      // s'ecrire sur un sentier.
       label: stages > 0
-          ? t.monetization.buyCtaWithPrice(price: prix.toStringAsFixed(2))
+          ? t.monetization.buyCtaWithSteps(steps: stages)
           : t.monetization.buyCta,
       onPressed: () => buyTrail(context, ref, trailId: trailId),
     );

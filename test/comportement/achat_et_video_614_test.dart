@@ -461,11 +461,13 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final attendu = monetisation
-          .eurPriceForTrail(_sentierPayant.id)
-          .toStringAsFixed(2);
+      // TACHE 806 — LE PRIX EST EN ETAPES. Le test garde son intention d
+      // origine (l ecran ne recalcule pas le prix dans son coin) et change d
+      // unite : le montant en euros a disparu des sentiers, parce qu il
+      // dependait de l acheteur et non du sentier.
+      final attendu = monetisation.stagesOfTrail(_sentierPayant.id);
       expect(
-        find.text(t.monetization.buyCtaWithPrice(price: attendu)),
+        find.text(t.monetization.buyCtaWithSteps(steps: attendu)),
         findsOneWidget,
         reason:
             'un second calcul de prix dans un ecran est la meme faute que '
@@ -854,9 +856,12 @@ void main() {
       final etapesAffichees = monetisation.stagesOfTrail(_sentierPayant.id);
       await portefeuille.credit(etapesAffichees);
 
+      // TACHE 806 — LA MEME LECTURE, MAIS EN ETAPES. L egalite portait sur deux
+      // montants en euros derives du meme nombre d etapes ; elle porte
+      // desormais sur ce nombre lui-meme, qui est le prix.
       expect(
-        monetisation.eurPriceForTrail(_sentierPayant.id),
-        monetisation.eurPriceForSteps(etapesAffichees),
+        monetisation.stagesOfTrail(_sentierPayant.id),
+        etapesAffichees,
         reason: 'le prix affiche derive de la meme lecture que le debit',
       );
       expect((await monetisation.buyTrail(_sentierPayant.id)).isOwned, isTrue);

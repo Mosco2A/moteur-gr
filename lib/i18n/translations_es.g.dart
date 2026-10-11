@@ -984,7 +984,12 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get featureFollowers => '2 seguidores gratuitos';
 	@override String get featureNoAds => 'Cero publicidad';
 	@override String get buyCta => 'Comprar';
-	@override String buyCtaWithPrice({required Object price}) => 'Comprar — ${price} €';
+	@override String buyCtaWithSteps({required Object steps}) => 'Comprar — ${steps} etapas';
+	@override String get complementTitle => 'Te faltan etapas';
+	@override String get complementBody => 'No tienes suficientes etapas en tu cuenta para comprar esta ruta. Compra el complemento, o coge un pack.';
+	@override String complementDoorExact({required Object steps}) => 'Comprar el complemento — ${steps} etapas';
+	@override String complementDoorPack({required Object steps}) => 'Coger un pack — ${steps} etapas';
+	@override String get complementExactPending => 'La compra etapa a etapa todavía no está abierta en la tienda. Un pack sigue siendo posible, y las etapas de más se quedan en tu cuenta de etapas.';
 	@override String get rewardedCta => 'Un día sin anuncios — ver un vídeo';
 	@override String get rewardedEarned => '¡Gracias! Sin publicidad durante 24 h.';
 	@override String get rewardedUnavailable => 'No hay vídeo disponible ahora mismo.';
@@ -1000,7 +1005,6 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get rechargeSubtitle => 'Las etapas sirven para desbloquear rutas. Son tuyas de por vida.';
 	@override String get rechargeBalance => 'Saldo actual';
 	@override String packSteps({required Object steps}) => '${steps} etapas';
-	@override String packPrice({required Object price}) => '${price} €';
 	@override String get rechargeCta => 'Recargar';
 	@override String get subscriptionTitle => 'Suscripción sin publicidad';
 	@override String get subscriptionSubtitle => 'Sin publicidad en ningún sitio, mientras la suscripción esté activa.';
@@ -5262,7 +5266,12 @@ extension on TranslationsEs {
 			'monetization.featureFollowers' => '2 seguidores gratuitos',
 			'monetization.featureNoAds' => 'Cero publicidad',
 			'monetization.buyCta' => 'Comprar',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Comprar — ${price} €',
+			'monetization.buyCtaWithSteps' => ({required Object steps}) => 'Comprar — ${steps} etapas',
+			'monetization.complementTitle' => 'Te faltan etapas',
+			'monetization.complementBody' => 'No tienes suficientes etapas en tu cuenta para comprar esta ruta. Compra el complemento, o coge un pack.',
+			'monetization.complementDoorExact' => ({required Object steps}) => 'Comprar el complemento — ${steps} etapas',
+			'monetization.complementDoorPack' => ({required Object steps}) => 'Coger un pack — ${steps} etapas',
+			'monetization.complementExactPending' => 'La compra etapa a etapa todavía no está abierta en la tienda. Un pack sigue siendo posible, y las etapas de más se quedan en tu cuenta de etapas.',
 			'monetization.rewardedCta' => 'Un día sin anuncios — ver un vídeo',
 			'monetization.rewardedEarned' => '¡Gracias! Sin publicidad durante 24 h.',
 			'monetization.rewardedUnavailable' => 'No hay vídeo disponible ahora mismo.',
@@ -5278,7 +5287,6 @@ extension on TranslationsEs {
 			'monetization.rechargeSubtitle' => 'Las etapas sirven para desbloquear rutas. Son tuyas de por vida.',
 			'monetization.rechargeBalance' => 'Saldo actual',
 			'monetization.packSteps' => ({required Object steps}) => '${steps} etapas',
-			'monetization.packPrice' => ({required Object price}) => '${price} €',
 			'monetization.rechargeCta' => 'Recargar',
 			'monetization.subscriptionTitle' => 'Suscripción sin publicidad',
 			'monetization.subscriptionSubtitle' => 'Sin publicidad en ningún sitio, mientras la suscripción esté activa.',
@@ -5750,12 +5758,12 @@ extension on TranslationsEs {
 			'recap.traceSection' => 'Tu trazado',
 			'recap.noTrace' => 'No hay trazado GPS disponible',
 			'recap.stages' => '{done} / {total} etapas recorridas',
+			_ => null,
+		} ?? switch (path) {
 			'recap.distance' => '{km} km recorridos',
 			'recap.elevation' => '{meters} m de desnivel positivo',
 			'recap.duration' => '{days} días en total, marcha y descanso incluidos',
 			'recap.dates' => 'Del {start} al {end}',
-			_ => null,
-		} ?? switch (path) {
 			'recap.viewDiploma' => 'Ver mi diploma',
 			'recap.viewJournal' => 'Ver mi diario',
 			'recap.noData' => 'Aún no hay datos de ruta para mostrar.',

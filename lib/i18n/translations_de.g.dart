@@ -984,7 +984,12 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get featureFollowers => '2 kostenlose Follower';
 	@override String get featureNoAds => 'Keine Werbung';
 	@override String get buyCta => 'Kaufen';
-	@override String buyCtaWithPrice({required Object price}) => 'Kaufen — ${price} €';
+	@override String buyCtaWithSteps({required Object steps}) => 'Kaufen — ${steps} Etappen';
+	@override String get complementTitle => 'Dir fehlen Etappen';
+	@override String get complementBody => 'Du hast nicht genug Etappen auf deinem Konto, um diese Wanderung zu kaufen. Kaufe die fehlenden Etappen, oder nimm ein Paket.';
+	@override String complementDoorExact({required Object steps}) => 'Fehlende Etappen kaufen — ${steps} Etappen';
+	@override String complementDoorPack({required Object steps}) => 'Ein Paket nehmen — ${steps} Etappen';
+	@override String get complementExactPending => 'Der Kauf einzelner Etappen ist im Store noch nicht freigegeben. Ein Paket geht weiterhin, und die übrigen Etappen bleiben auf deinem Etappenkonto.';
 	@override String get rewardedCta => 'Ein Tag ohne Werbung — Video ansehen';
 	@override String get rewardedEarned => 'Danke! 24 h werbefrei.';
 	@override String get rewardedUnavailable => 'Derzeit kein Video verfügbar.';
@@ -1000,7 +1005,6 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get rechargeSubtitle => 'Etappen schalten Wanderungen frei. Sie gehören dir auf Dauer.';
 	@override String get rechargeBalance => 'Aktueller Stand';
 	@override String packSteps({required Object steps}) => '${steps} Etappen';
-	@override String packPrice({required Object price}) => '${price} €';
 	@override String get rechargeCta => 'Aufladen';
 	@override String get subscriptionTitle => 'Werbefreies Abo';
 	@override String get subscriptionSubtitle => 'Keine Werbung, solange das Abo aktiv ist.';
@@ -5262,7 +5266,12 @@ extension on TranslationsDe {
 			'monetization.featureFollowers' => '2 kostenlose Follower',
 			'monetization.featureNoAds' => 'Keine Werbung',
 			'monetization.buyCta' => 'Kaufen',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Kaufen — ${price} €',
+			'monetization.buyCtaWithSteps' => ({required Object steps}) => 'Kaufen — ${steps} Etappen',
+			'monetization.complementTitle' => 'Dir fehlen Etappen',
+			'monetization.complementBody' => 'Du hast nicht genug Etappen auf deinem Konto, um diese Wanderung zu kaufen. Kaufe die fehlenden Etappen, oder nimm ein Paket.',
+			'monetization.complementDoorExact' => ({required Object steps}) => 'Fehlende Etappen kaufen — ${steps} Etappen',
+			'monetization.complementDoorPack' => ({required Object steps}) => 'Ein Paket nehmen — ${steps} Etappen',
+			'monetization.complementExactPending' => 'Der Kauf einzelner Etappen ist im Store noch nicht freigegeben. Ein Paket geht weiterhin, und die übrigen Etappen bleiben auf deinem Etappenkonto.',
 			'monetization.rewardedCta' => 'Ein Tag ohne Werbung — Video ansehen',
 			'monetization.rewardedEarned' => 'Danke! 24 h werbefrei.',
 			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
@@ -5278,7 +5287,6 @@ extension on TranslationsDe {
 			'monetization.rechargeSubtitle' => 'Etappen schalten Wanderungen frei. Sie gehören dir auf Dauer.',
 			'monetization.rechargeBalance' => 'Aktueller Stand',
 			'monetization.packSteps' => ({required Object steps}) => '${steps} Etappen',
-			'monetization.packPrice' => ({required Object price}) => '${price} €',
 			'monetization.rechargeCta' => 'Aufladen',
 			'monetization.subscriptionTitle' => 'Werbefreies Abo',
 			'monetization.subscriptionSubtitle' => 'Keine Werbung, solange das Abo aktiv ist.',
@@ -5750,12 +5758,12 @@ extension on TranslationsDe {
 			'recap.traceSection' => 'Deine Spur',
 			'recap.noTrace' => 'Keine GPS-Spur verfügbar',
 			'recap.stages' => '{done} / {total} Etappen gelaufen',
+			_ => null,
+		} ?? switch (path) {
 			'recap.distance' => '{km} km zurückgelegt',
 			'recap.elevation' => '{meters} m Höhenmeter',
 			'recap.duration' => '{days} Tage insgesamt, Wandern und Ruhe inklusive',
 			'recap.dates' => 'Vom {start} bis {end}',
-			_ => null,
-		} ?? switch (path) {
 			'recap.viewDiploma' => 'Mein Diplom ansehen',
 			'recap.viewJournal' => 'Mein Tagebuch ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
