@@ -276,38 +276,63 @@ class StageProgressBar extends StatelessWidget {
           // seul — jamais sous 14, la taille qu'il avait avant ce lot. Le
           // bandeau ne peut donc pas devenir moins lisible qu'il ne l'etait,
           // et aucun mot n'est coupe (c'est la regle de la tache 634).
-          Row(
+          // UN [Wrap] ET NON UNE [Row], ET C'EST UNE MESURE QUI L'A IMPOSE.
+          //
+          // Cette ligne porte desormais TROIS choses quand le marcheur sort du
+          // trace : le nom, la pastille devenue plus large (elle a pris le
+          // total), et la puce « Hors trace » devenue plus grande. Mesure
+          // faite au banc : avec une police dont chaque glyphe occupe un
+          // cadratin — le cas des tests, mais AUSSI celui de l'allemand
+          // « Abseits der Route » sur un vrai telephone — la rangee debordait
+          // de 2,1 points et le nom de l'etape etait comprime a ZERO de large.
+          // Une [Row] ne sait pas faire autrement : elle distribue ce qui
+          // reste, et quand il ne reste rien elle deborde.
+          //
+          // LE [Wrap], LUI, NE DEBORDE JAMAIS : si les trois ne tiennent pas
+          // sur une ligne, les marqueurs passent a la suivante. Sur un
+          // telephone francais ils tiennent, et l'aspect est celui d'avant.
+          // C'est la meme regle que la tache 749 — aucun texte coupe — et
+          // elle vaut dans les cinq langues, pas seulement dans la plus
+          // courte.
+          Wrap(
+            spacing: AppTheme.spacingSm,
+            runSpacing: AppTheme.spacingXs,
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Expanded(
-                child: TexteAjuste(
-                  stageName,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  tailleMin: 14,
-                  textAlign: TextAlign.start,
+              TexteAjuste(
+                stageName,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
+                maxLines: 1,
+                tailleMin: 14,
+                textAlign: TextAlign.start,
               ),
-              const SizedBox(width: AppTheme.spacingXs),
               // LA PASTILLE DIT LE PERIMETRE **ET SA LONGUEUR** (tache 808).
               //
               // Le total a quitte le tableau pour venir ici : il ne bouge pas
               // de toute la marche, et il n'a de sens que rapporte a ce dont
-              // on parle. « Etape · 8,1 km » se lit d'un bloc ; les memes deux
+              // on parle. « Etape 8,1 km » se lit d'un bloc ; les memes deux
               // informations separees de dix centimetres d'ecran ne se lisent
               // pas. La pastille reste le mot qui porte le sens pour qui
               // distingue mal les couleurs (tache 747) — elle en porte juste
               // la mesure en plus.
-              if (perimetreLabel != null || totalDistanceKm != null) ...[
-                PastilleDuPerimetre(
-                  perimetre: perimetreLabel,
-                  totalDistanceKm: totalDistanceKm,
-                  teinte: primaryColor,
-                ),
-                const SizedBox(width: AppTheme.spacingXs),
-              ],
-              if (isOffTrack) const PuceHorsTrace(),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (perimetreLabel != null || totalDistanceKm != null)
+                    PastilleDuPerimetre(
+                      perimetre: perimetreLabel,
+                      totalDistanceKm: totalDistanceKm,
+                      teinte: primaryColor,
+                    ),
+                  if (isOffTrack) ...[
+                    const SizedBox(width: AppTheme.spacingXs),
+                    const PuceHorsTrace(),
+                  ],
+                ],
+              ),
             ],
           ),
 
