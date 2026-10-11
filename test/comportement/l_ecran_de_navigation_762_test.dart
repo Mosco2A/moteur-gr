@@ -42,6 +42,7 @@ import 'package:moteur_gr/features/map/domain/jalons_des_etapes.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
+import 'package:moteur_gr/features/map/widgets/entete_de_la_barre.dart';
 import 'package:moteur_gr/features/map/widgets/stage_progress_bar.dart';
 import 'package:moteur_gr/features/safety/presentation/sos_button.dart';
 import 'package:moteur_gr/features/settings/providers/settings_provider.dart';
@@ -339,6 +340,31 @@ void main() {
       expect(find.byType(StageProgressBar), findsOneWidget);
       expect(find.text('Etape 1'), findsOneWidget);
       expect(find.text(StageProgressBar.pendingValueLabel), findsWidgets);
+    });
+
+    testWidgets('AVANT LE DEPART, LA PASTILLE « Etape » PORTE LA LONGUEUR DE '
+        'L ETAPE, pas celle du sentier (tache 808)', (tester) async {
+      await tester.pumpWidget(banc(TrackingSessionStatus.idle, 0));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // LE DERNIER RESTE DU DEFAUT DE LA 747, debusque en collant le total
+      // au mot du perimetre : cette barre annoncait « Etape », un restant
+      // mesure sur la TRANCHE (10 km) et un total mesure sur le SENTIER
+      // ENTIER (20 km). Deux perimetres dans la meme barre.
+      expect(
+        find.descendant(
+          of: find.byType(PastilleDuPerimetre),
+          matching: find.text('10.0 km'),
+        ),
+        findsOneWidget,
+        reason: 'la pastille dit « Etape » : son total est celui de l etape',
+      );
+      expect(
+        find.text('20.0 km'),
+        findsNothing,
+        reason: 'la longueur du sentier n a rien a faire sous le mot Etape',
+      );
     });
   });
 
@@ -693,7 +719,11 @@ void main() {
             etapesTotal: vueSentier ? 7 : null,
           ),
         );
-        expect(find.text(t.tracking.total), findsOneWidget);
+        // TACHE 808 — LE TOTAL N'EST PLUS UNE CASE, le restant l'est, ET
+        // CELA VAUT DANS LES DEUX PERIMETRES : Christophe a ecrit « (pour
+        // sentier et etape) », cette boucle est ce qui le verifie.
+        expect(find.text(t.tracking.remaining), findsOneWidget);
+        expect(find.text(t.tracking.total), findsNothing);
         expect(find.text(t.tracking.covered), findsOneWidget);
         expect(find.text(t.tracking.avgSpeed), findsOneWidget);
         expect(find.text(t.tracking.dPlus), findsOneWidget);

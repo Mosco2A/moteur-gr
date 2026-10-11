@@ -30,6 +30,7 @@ import '../../../../core/branding/stepways_icons.dart';
 import 'map_controller.dart';
 import 'map_photo_button.dart';
 import 'barre_d_etape.dart';
+import 'felicitations_d_etape.dart';
 import 'sos_du_cote_de_la_main.dart';
 
 /// Le bas de la carte : les boutons flottants et la barre d'etape.
@@ -253,6 +254,15 @@ class MapTopBanners extends StatelessWidget {
         ),
         // Alerte ravitaillement (correctif L6-1).
         const _SupplyAlertBanner(),
+        // LA FIN D'UNE ETAPE SE DIT (tache 808, retour de Christophe du
+        // 10/10 : « un petit message quand tu finis une etape ca serait
+        // bien »).
+        //
+        // APRES LES DEUX ALERTES, ET C'EST L'ORDRE QUI COMPTE : une sortie de
+        // trace ou un ravitaillement qui manque sont des choses a FAIRE ; une
+        // etape finie est une chose a SAVOIR. Ce qui engage la securite se lit
+        // d'abord.
+        const FelicitationsDEtape(),
         // LE SOS (747), degage du trace — et depuis la tache 762 du COTE DE LA
         // MAIN DOMINANTE, droitier par defaut.
         const SosDuCoteDeLaMain(),

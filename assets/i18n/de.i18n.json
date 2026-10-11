@@ -192,6 +192,7 @@
     "perimetreSentier": "Weg",
     "basculerVersSentier": "Gesamten Weg anzeigen",
     "basculerVersEtape": "Etappe anzeigen",
+    "etapeFinie": "Stark, Etappe geschafft!",
     "guide": {
       "buttonsTitle": "Schaltflächen",
       "position": "Deine GPS-Position, beim Gehen aktualisiert. Verschwindet der Punkt, prüfe die Ortungsberechtigung.",
@@ -369,6 +370,7 @@
     "avgSpeed": "Ø Geschw.",
     "altitude": "Höhe",
     "total": "Gesamt",
+    "remaining": "Verbleibend",
     "covered": "Zurückgelegt",
     "stagesDone": "Etappen",
     "backgroundRationale": {

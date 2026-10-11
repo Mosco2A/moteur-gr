@@ -263,6 +263,7 @@ class _Translations$map$es extends Translations$map$fr {
 	@override String get perimetreSentier => 'Sendero';
 	@override String get basculerVersSentier => 'Ver sendero completo';
 	@override String get basculerVersEtape => 'Ver etapa';
+	@override String get etapeFinie => '¡Bien hecho, etapa terminada!';
 	@override late final _Translations$map$guide$es guide = _Translations$map$guide$es._(_root);
 	@override String get supplyDismiss => 'Ocultar el aviso';
 	@override String get pinMergedTitle => 'Varios puntos en el mismo lugar';
@@ -446,6 +447,7 @@ class _Translations$tracking$es extends Translations$tracking$fr {
 	@override String get avgSpeed => 'Vel. media';
 	@override String get altitude => 'Altitud';
 	@override String get total => 'Total';
+	@override String get remaining => 'Restante';
 	@override String get covered => 'Recorrido';
 	@override String get stagesDone => 'Etapas';
 	@override late final _Translations$tracking$backgroundRationale$es backgroundRationale = _Translations$tracking$backgroundRationale$es._(_root);
@@ -4384,6 +4386,7 @@ extension on TranslationsEs {
 			'map.perimetreSentier' => 'Sendero',
 			'map.basculerVersSentier' => 'Ver sendero completo',
 			'map.basculerVersEtape' => 'Ver etapa',
+			'map.etapeFinie' => '¡Bien hecho, etapa terminada!',
 			'map.guide.buttonsTitle' => 'Botones',
 			'map.guide.position' => 'Tu posición GPS, actualizada al caminar. Si el punto desaparece, comprueba el permiso de localización.',
 			'map.guide.track' => 'El trazado del sendero. El aviso de salida de ruta se refiere a él.',
@@ -4522,6 +4525,7 @@ extension on TranslationsEs {
 			'tracking.avgSpeed' => 'Vel. media',
 			'tracking.altitude' => 'Altitud',
 			'tracking.total' => 'Total',
+			'tracking.remaining' => 'Restante',
 			'tracking.covered' => 'Recorrido',
 			'tracking.stagesDone' => 'Etapas',
 			'tracking.backgroundRationale.title' => 'Registrar tu recorrido con la pantalla apagada',
@@ -4724,10 +4728,10 @@ extension on TranslationsEs {
 			'checklist.ui.infoCheckTitle' => 'Marca los artículos',
 			'checklist.ui.infoCheckBody' => 'Marca lo que llevas — el peso se recalcula arriba.',
 			'checklist.ui.infoRequiredTitle' => 'Obligatorios',
-			'checklist.ui.infoRequiredBody' => 'Artículos con candado = reglamento (silbato, linterna, manta de supervivencia).',
-			'checklist.ui.infoGaugeTitle' => 'Indicador de peso',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoRequiredBody' => 'Artículos con candado = reglamento (silbato, linterna, manta de supervivencia).',
+			'checklist.ui.infoGaugeTitle' => 'Indicador de peso',
 			'checklist.ui.infoGaugeBody' => 'Objetivo: mochila < 15% de tu peso. Verde = OK, Naranja = cuidado, Rojo = demasiado pesado.',
 			'checklist.ui.infoAddTitle' => 'Añadir',
 			'checklist.ui.infoAddBody' => 'El botón + al final de cada categoría para tus propios artículos.',
@@ -5238,10 +5242,10 @@ extension on TranslationsEs {
 			'cloud.statusSection' => 'Nube',
 			'cloud.statusActive' => 'Servicios en línea activos',
 			'cloud.statusActiveDesc' => 'Copia de seguridad y seguimiento en directo disponibles.',
-			'cloud.statusLocal' => 'Modo local (sin nube)',
-			'cloud.statusLocalDesc' => 'No se envía ningún dato en línea. Falta la configuración de la nube.',
 			_ => null,
 		} ?? switch (path) {
+			'cloud.statusLocal' => 'Modo local (sin nube)',
+			'cloud.statusLocalDesc' => 'No se envía ningún dato en línea. Falta la configuración de la nube.',
 			'onboarding.skip' => 'Saltar',
 			'onboarding.next' => 'Siguiente',
 			'onboarding.getStarted' => 'Empezar',
@@ -5752,10 +5756,10 @@ extension on TranslationsEs {
 			'recap.stages' => '{done} / {total} etapas recorridas',
 			'recap.distance' => '{km} km recorridos',
 			'recap.elevation' => '{meters} m de desnivel positivo',
-			'recap.duration' => '{days} días en total, marcha y descanso incluidos',
-			'recap.dates' => 'Del {start} al {end}',
 			_ => null,
 		} ?? switch (path) {
+			'recap.duration' => '{days} días en total, marcha y descanso incluidos',
+			'recap.dates' => 'Del {start} al {end}',
 			'recap.viewDiploma' => 'Ver mi diploma',
 			'recap.viewJournal' => 'Ver mi diario',
 			'recap.noData' => 'Aún no hay datos de ruta para mostrar.',

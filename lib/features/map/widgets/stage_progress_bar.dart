@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/texte_ajuste.dart';
 import 'chiffres_de_la_barre.dart';
+import 'entete_de_la_barre.dart';
 
 /// Barre de progression d'étape affichée en bas de la carte.
 ///
@@ -83,6 +84,16 @@ class StageProgressBar extends StatelessWidget {
   /// repris ici que pour les appelants qui le nommaient deja : UNE seule
   /// definition, pas deux chaines a garder d'accord.
   static const String pendingValueLabel = ChiffresDeLaBarre.pendingValueLabel;
+
+  /// La part de la ligne du titre que les marqueurs de droite — pastille et
+  /// puce hors-trace — ne depassent jamais (tache 808).
+  ///
+  /// CE QU'ELLE GARANTIT : le nom de l'etape conserve toujours au moins le
+  /// tiers restant de la ligne. Au-dela, les marqueurs se reduisent d'un bloc
+  /// plutot que de pousser le nom a zero — ce qui est exactement ce qui
+  /// arrivait, mesure au banc, avec une police large ou un reglage
+  /// d'agrandissement des textes.
+  static const double _partDesMarqueurs = 0.62;
 
   /// Nom de l'étape courante
   final String stageName;
@@ -200,7 +211,7 @@ class StageProgressBar extends StatelessWidget {
   ChiffresDeLaBarre _chiffresAvec(Color accent) => ChiffresDeLaBarre(
     accent: accent,
     showPendingValues: showPendingValues,
-    totalDistanceKm: totalDistanceKm,
+    distanceRemainingKm: distanceRemainingKm,
     distanceCoveredKm: distanceCoveredKm,
     avgSpeedKmh: avgSpeedKmh,
     elevationGainM: elevationGainM,
@@ -267,102 +278,138 @@ class StageProgressBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ligne titre + indicateur hors tracé
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  stageName,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              // LE MOT DU PERIMETRE, avant la pastille hors-trace : il dit DE
-              // QUOI parlent les cinq chiffres qui suivent.
-              if (perimetreLabel != null) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm,
-                    vertical: AppTheme.spacingXs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: primaryColor.withAlpha(30),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                  ),
-                  child: Text(
-                    perimetreLabel!,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: primaryColor,
-                      fontWeight: FontWeight.w600,
+          // LIGNE DU TITRE — ET DESORMAIS CE QUI NE BOUGE PAS (tache 808).
+          //
+          // LE NOM EST RENDU PAR [TexteAjuste] ET NON PAR UN [Text] NU, et
+          // c'est ce qui autorise a le grossir sans risque : il passe de 14 a
+          // 18 points, et SI un nom long ne tenait plus, il redescend tout
+          // seul — jamais sous 14, la taille qu'il avait avant ce lot. Le
+          // bandeau ne peut donc pas devenir moins lisible qu'il ne l'etait,
+          // et aucun mot n'est coupe (c'est la regle de la tache 634).
+          // LA LIGNE DU TITRE TIENT SUR UNE LIGNE, QUOI QU'ON Y METTE.
+          //
+          // CE QU'ELLE PORTE DESORMAIS : le nom, la pastille elargie par le
+          // total, et — quand le marcheur sort du trace — la puce
+          // « Hors trace », elle aussi agrandie. Trois choses sur 360,7 points
+          // utiles (mesure faite sur la capture de Christophe : 1080 pixels,
+          // rapport 2,75, moins deux fois la marge de 16).
+          //
+          // LE DEBORDEMENT EST REEL, IL A ETE MESURE. Avec une police dont
+          // chaque glyphe occupe un cadratin — le cas du banc de test, mais
+          // AUSSI le cas d'un randonneur qui a grossi les textes de son
+          // telephone, ce que ce public fait — la rangee debordait de 2,1
+          // points et le nom de l'etape etait comprime a ZERO de large. Une
+          // [Row] nue ne sait pas faire autrement : elle donne ce qui reste,
+          // et quand il ne reste rien, elle deborde.
+          //
+          // LES DEUX PARADES, ET ELLES SE COMPLETENT :
+          //   * LE NOM SE REDUIT PLUTOT QUE DE SE COUPER ([TexteAjuste],
+          //     tache 634) : 18 points s'il tient, jamais moins de 14 — la
+          //     taille qu'il avait avant ce lot. Sur la capture il demande
+          //     245,9 points a 18, et les marqueurs 95,6 : les deux tiennent.
+          //   * LES MARQUEURS NE PRENNENT JAMAIS PLUS DE [_partDesMarqueurs]
+          //     de la ligne, et se reduisent d'un bloc au-dela. Le nom garde
+          //     donc toujours sa part, et plus rien ne peut deborder.
+          //
+          // UN [Wrap] AURAIT AUSSI EMPECHE LE DEBORDEMENT, et il a ete essaye.
+          // Il a ete rejete : il fait TOMBER la pastille a la ligne suivante
+          // des que la marge de 15 points manque — or Christophe a demande
+          // « passer total AVEC le titre », pas sous le titre.
+          LayoutBuilder(
+            builder: (context, contraintes) => Row(
+              children: [
+                Expanded(
+                  child: TexteAjuste(
+                    stageName,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 1,
+                    tailleMin: 14,
+                    textAlign: TextAlign.start,
                   ),
                 ),
                 const SizedBox(width: AppTheme.spacingXs),
-              ],
-              if (isOffTrack)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm,
-                    vertical: AppTheme.spacingXs,
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: contraintes.maxWidth * _partDesMarqueurs,
                   ),
-                  decoration: BoxDecoration(
-                    color: AppTheme.emergencyRed.withAlpha(30),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const StepIcon(
-                        StepwaysIcons.danger,
-                        size: 14,
-                        color: AppTheme.emergencyRed,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        t.map.offTrackChip,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppTheme.emergencyRed,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // LA PASTILLE DIT LE PERIMETRE **ET SA LONGUEUR**
+                        // (tache 808). Le total a quitte le tableau pour venir
+                        // ici : il ne bouge pas de toute la marche, et il n'a
+                        // de sens que rapporte a ce dont on parle.
+                        // « Etape 8,1 km » se lit d'un bloc ; les memes deux
+                        // informations separees de dix centimetres d'ecran ne
+                        // se lisent pas. La pastille reste le mot qui porte le
+                        // sens pour qui distingue mal les couleurs (tache
+                        // 747) — elle en porte juste la mesure en plus.
+                        if (perimetreLabel != null || totalDistanceKm != null)
+                          PastilleDuPerimetre(
+                            perimetre: perimetreLabel,
+                            // HORS TRACE, LE TOTAL CEDE LA PLACE, et c'est un
+                            // arbitrage, pas un oubli. Les trois ne tiennent
+                            // pas ensemble sur 360 points : le nom long
+                            // s'abregerait. Ordre de ce dont un marcheur a
+                            // besoin quand il a quitte le sentier : d'abord
+                            // l'avertissement, ensuite le nom du lieu ou il
+                            // se trouve, et en dernier une longueur d'etape
+                            // qui ne bouge pas et qu'il a deja lue. Le total
+                            // revient des qu'il est de nouveau sur la trace.
+                            totalDistanceKm: isOffTrack
+                                ? null
+                                : totalDistanceKm,
+                            teinte: primaryColor,
+                          ),
+                        if (isOffTrack) ...[
+                          const SizedBox(width: AppTheme.spacingXs),
+                          const PuceHorsTrace(),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
-            ],
-          ),
-
-          const SizedBox(height: AppTheme.spacingSm),
-
-          // Barre de progression
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progressRatio.clamp(0.0, 1.0),
-              minHeight: 6,
-              backgroundColor: AppTheme.grisClair,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                isOffTrack ? AppTheme.emergencyRed : primaryColor,
-              ),
+              ],
             ),
           ),
 
           const SizedBox(height: AppTheme.spacingSm),
 
-          // Ligne distance + pourcentage
+          // LA BARRE ET SON POURCENTAGE SUR LA MEME LIGNE (tache 808).
+          //
+          // Le pourcentage BOUGE, et la regle de Christophe voudrait donc le
+          // mettre au tableau. Il reste ici, et voici pourquoi : il n'est pas
+          // une septieme mesure, il est LA LEGENDE DE LA BARRE qu'il touche —
+          // les separer rendrait la barre muette et le tableau bavard. Et le
+          // tableau doit rester a SIX cases : c'est la forme de la navigation
+          // de reference, tranchee par Chris a la tache 558.
+          //
+          // CE QUE CETTE FUSION RAPPORTE EN PLACE : la ligne « X km restants /
+          // Y % » disparait entierement, soit une ligne de texte et son
+          // interligne rendus a la carte. En demo, deux bandeaux mangent deja
+          // le haut de l'ecran ; cette ligne de moins est ce qui permet au
+          // bandeau de tenir sans deborder.
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                t.map.stageRemaining(
-                  km: distanceRemainingKm.toStringAsFixed(1),
-                ),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.grisTexteSecondaire,
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progressRatio.clamp(0.0, 1.0),
+                    minHeight: 6,
+                    backgroundColor: AppTheme.grisClair,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      isOffTrack ? AppTheme.emergencyRed : primaryColor,
+                    ),
+                  ),
                 ),
               ),
+              const SizedBox(width: AppTheme.spacingSm),
               Text(
                 '$progressPercent%',
                 style: theme.textTheme.bodySmall?.copyWith(

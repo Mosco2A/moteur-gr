@@ -192,6 +192,7 @@
     "perimetreSentier": "Trail",
     "basculerVersSentier": "View whole trail",
     "basculerVersEtape": "View stage",
+    "etapeFinie": "Well done, stage complete!",
     "guide": {
       "buttonsTitle": "Buttons",
       "position": "Your GPS position, updated as you walk. If the dot disappears, check the location permission.",
@@ -369,6 +370,7 @@
     "avgSpeed": "Avg speed",
     "altitude": "Altitude",
     "total": "Total",
+    "remaining": "Remaining",
     "covered": "Covered",
     "stagesDone": "Stages",
     "backgroundRationale": {

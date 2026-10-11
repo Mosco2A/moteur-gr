@@ -321,9 +321,28 @@ class _PlannedStageBar extends ConsumerWidget {
       distanceRemainingKm: (jalon?.longueurM ?? longueurDuSentierM) / 1000,
       progressRatio: 0,
       isOffTrack: false,
-      totalDistanceKm: longueurDuSentierM > 0
-          ? longueurDuSentierM / 1000
-          : null,
+      // LE TOTAL EST CELUI DE L'ETAPE, PAS DU SENTIER (tache 808).
+      //
+      // CE QUI ETAIT LA, ET QUI EST LE DERNIER RESTE DU DEFAUT DE LA TACHE
+      // 747 : cette barre annonce « Etape » en pastille, un restant mesure
+      // sur la TRANCHE de l'etape... et un total mesure sur le SENTIER
+      // ENTIER. Soit, de nouveau, DEUX PERIMETRES DANS LA MEME BARRE — le
+      // defaut que la 747 avait corrige dans la barre ACTIVE sans toucher a
+      // celle-ci.
+      //
+      // IL ETAIT DISCRET TANT QUE LE TOTAL VIVAIT DANS LE TABLEAU, a dix
+      // centimetres du mot « Etape ». Depuis que la tache 808 le colle a ce
+      // mot, il forme une phrase, et cette phrase est fausse : « Etape
+      // 87,3 km » pour une etape qui en fait 19,9. On ne colle pas deux
+      // informations l'une a l'autre sans verifier qu'elles parlent de la
+      // meme chose.
+      //
+      // SANS JALON — trace pas encore chargee — on retombe sur la longueur
+      // du sentier, qui est alors le seul perimetre connu, et le titre porte
+      // deja le nom du sentier.
+      totalDistanceKm: jalon != null
+          ? jalon.longueurM / 1000
+          : (longueurDuSentierM > 0 ? longueurDuSentierM / 1000 : null),
       // Rien de marche : tiret, jamais « 0.0 km ».
       distanceCoveredKm: null,
       elevationGainM: stage?.elevationGainM,
