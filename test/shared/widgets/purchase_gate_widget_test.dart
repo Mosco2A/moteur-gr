@@ -246,10 +246,7 @@ void main() {
       expect(find.byType(PaywallSheet), findsOneWidget);
       expect(find.text(t.monetization.paywallTitle), findsOneWidget);
       expect(find.text(t.monetization.featureNoAds), findsOneWidget);
-      expect(
-        find.text(t.monetization.buyCtaWithSteps(steps: 12)),
-        findsOneWidget,
-      );
+      expect(find.text(t.monetization.buyCtaWithSteps(n: 12)), findsOneWidget);
 
       // Achat via le compte-etapes (wallet suffisant).
       await tester.tap(find.byKey(const Key('paywall-buy-button')));

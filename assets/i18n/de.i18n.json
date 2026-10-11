@@ -1196,18 +1196,27 @@
   "monetization": {
     "demoBanner": "Demo-Modus — zum Freischalten tippen",
     "paywallTitle": "Diesen Trek freischalten",
-    "paywallBody": "Im Gratis-Modus planst du deinen Trek mit Werbung. Premium schaltet alles frei, werbefrei.",
+    "paywallBody": "Die Vorbereitung ist kostenlos, mit Werbung. Diese Wanderung zu gehen kostet Etappen von deinem Konto. Dein Konto füllst du einzeln, mit einem Paket oder mit dem Abo.",
     "featureMap": "Offline-Karte + GPS + Live-Tracking",
     "featureJournal": "Vollständiges Trek-Tagebuch",
     "featureDiploma": "Trek-Abschlussdiplom",
     "featureFollowers": "2 kostenlose Follower",
     "featureNoAds": "Keine Werbung",
     "buyCta": "Kaufen",
-    "buyCtaWithSteps": "Kaufen — $steps Etappen",
+    "buyCtaWithSteps(plural)": {
+      "one": "Kaufen — $n Etappe",
+      "other": "Kaufen — $n Etappen"
+    },
     "complementTitle": "Dir fehlen Etappen",
     "complementBody": "Du hast nicht genug Etappen auf deinem Konto, um diese Wanderung zu kaufen. Kaufe die fehlenden Etappen, oder nimm ein Paket.",
-    "complementDoorExact": "Fehlende Etappen kaufen — $steps Etappen",
-    "complementDoorPack": "Ein Paket nehmen — $steps Etappen",
+    "complementDoorExact(plural)": {
+      "one": "Fehlende Etappe kaufen — $n Etappe",
+      "other": "Fehlende Etappen kaufen — $n Etappen"
+    },
+    "complementDoorPack(plural)": {
+      "one": "Ein Paket nehmen — $n Etappe",
+      "other": "Ein Paket nehmen — $n Etappen"
+    },
     "complementExactPending": "Der Kauf einzelner Etappen ist im Store noch nicht freigegeben. Ein Paket geht weiterhin, und die übrigen Etappen bleiben auf deinem Etappenkonto.",
     "rewardedCta": "Ein Tag ohne Werbung — Video ansehen",
     "rewardedEarned": "Danke! 24 h werbefrei.",

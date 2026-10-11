@@ -977,18 +977,27 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	// Translations
 	@override String get demoBanner => 'Demo mode — tap to unlock';
 	@override String get paywallTitle => 'Unlock this trek';
-	@override String get paywallBody => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.';
+	@override String get paywallBody => 'Planning is free, with ads. Walking this trek is paid in steps, taken from your account. You fill your account one step at a time, with a pack, or with the subscription.';
 	@override String get featureMap => 'Offline map + GPS + live tracking';
 	@override String get featureJournal => 'Full trek journal';
 	@override String get featureDiploma => 'End-of-trek diploma';
 	@override String get featureFollowers => '2 free followers';
 	@override String get featureNoAds => 'Zero ads';
 	@override String get buyCta => 'Buy';
-	@override String buyCtaWithSteps({required Object steps}) => 'Buy — ${steps} steps';
+	@override String buyCtaWithSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'Buy — ${n} step',
+		other: 'Buy — ${n} steps',
+	);
 	@override String get complementTitle => 'You are short of steps';
 	@override String get complementBody => 'You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.';
-	@override String complementDoorExact({required Object steps}) => 'Buy the complement — ${steps} steps';
-	@override String complementDoorPack({required Object steps}) => 'Get a pack — ${steps} steps';
+	@override String complementDoorExact({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'Buy the complement — ${n} step',
+		other: 'Buy the complement — ${n} steps',
+	);
+	@override String complementDoorPack({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'Get a pack — ${n} step',
+		other: 'Get a pack — ${n} steps',
+	);
 	@override String get complementExactPending => 'Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.';
 	@override String get rewardedCta => 'A day without ads — watch a video';
 	@override String get rewardedEarned => 'Thanks! Ad-free for 24 h.';
@@ -5259,18 +5268,18 @@ extension on TranslationsEn {
 			'onboarding.recoveryNudge' => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.',
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
-			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
+			'monetization.paywallBody' => 'Planning is free, with ads. Walking this trek is paid in steps, taken from your account. You fill your account one step at a time, with a pack, or with the subscription.',
 			'monetization.featureMap' => 'Offline map + GPS + live tracking',
 			'monetization.featureJournal' => 'Full trek journal',
 			'monetization.featureDiploma' => 'End-of-trek diploma',
 			'monetization.featureFollowers' => '2 free followers',
 			'monetization.featureNoAds' => 'Zero ads',
 			'monetization.buyCta' => 'Buy',
-			'monetization.buyCtaWithSteps' => ({required Object steps}) => 'Buy — ${steps} steps',
+			'monetization.buyCtaWithSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'Buy — ${n} step', other: 'Buy — ${n} steps', ), 
 			'monetization.complementTitle' => 'You are short of steps',
 			'monetization.complementBody' => 'You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.',
-			'monetization.complementDoorExact' => ({required Object steps}) => 'Buy the complement — ${steps} steps',
-			'monetization.complementDoorPack' => ({required Object steps}) => 'Get a pack — ${steps} steps',
+			'monetization.complementDoorExact' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'Buy the complement — ${n} step', other: 'Buy the complement — ${n} steps', ), 
+			'monetization.complementDoorPack' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'Get a pack — ${n} step', other: 'Get a pack — ${n} steps', ), 
 			'monetization.complementExactPending' => 'Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.',
 			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',

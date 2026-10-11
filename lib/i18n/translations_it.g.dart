@@ -977,18 +977,27 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	// Translations
 	@override String get demoBanner => 'Modalità demo — tocca per sbloccare';
 	@override String get paywallTitle => 'Sblocca questo trek';
-	@override String get paywallBody => 'La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.';
+	@override String get paywallBody => 'La preparazione è gratuita, con pubblicità. Fare questa escursione si paga in tappe, prese dal tuo conto. Riempi il tuo conto a unità, con un pacchetto o con l\'abbonamento.';
 	@override String get featureMap => 'Mappa offline + GPS + localizzazione in diretta';
 	@override String get featureJournal => 'Diario di viaggio completo';
 	@override String get featureDiploma => 'Diploma di fine trek';
 	@override String get featureFollowers => '2 follower gratuiti';
 	@override String get featureNoAds => 'Zero pubblicità';
 	@override String get buyCta => 'Acquista';
-	@override String buyCtaWithSteps({required Object steps}) => 'Acquista — ${steps} tappe';
+	@override String buyCtaWithSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: 'Acquista — ${n} tappa',
+		other: 'Acquista — ${n} tappe',
+	);
 	@override String get complementTitle => 'Ti mancano delle tappe';
 	@override String get complementBody => 'Non hai abbastanza tappe sul tuo conto per acquistare questo sentiero. Acquista il complemento, oppure prendi un pacchetto.';
-	@override String complementDoorExact({required Object steps}) => 'Acquista il complemento — ${steps} tappe';
-	@override String complementDoorPack({required Object steps}) => 'Prendi un pacchetto — ${steps} tappe';
+	@override String complementDoorExact({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: 'Acquista il complemento — ${n} tappa',
+		other: 'Acquista il complemento — ${n} tappe',
+	);
+	@override String complementDoorPack({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: 'Prendi un pacchetto — ${n} tappa',
+		other: 'Prendi un pacchetto — ${n} tappe',
+	);
 	@override String get complementExactPending => 'L\'acquisto a singola tappa non è ancora aperto dallo store. Un pacchetto resta possibile, e le tappe in più restano sul tuo conto tappe.';
 	@override String get rewardedCta => 'Un giorno senza pubblicità — guarda un video';
 	@override String get rewardedEarned => 'Grazie! Senza pubblicità per 24 h.';
@@ -5259,18 +5268,18 @@ extension on TranslationsIt {
 			'onboarding.recoveryNudge' => 'Ricordati di annotare il tuo codice di ripristino (nelle impostazioni): apre i tuoi dati su un altro telefono.',
 			'monetization.demoBanner' => 'Modalità demo — tocca per sbloccare',
 			'monetization.paywallTitle' => 'Sblocca questo trek',
-			'monetization.paywallBody' => 'La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.',
+			'monetization.paywallBody' => 'La preparazione è gratuita, con pubblicità. Fare questa escursione si paga in tappe, prese dal tuo conto. Riempi il tuo conto a unità, con un pacchetto o con l\'abbonamento.',
 			'monetization.featureMap' => 'Mappa offline + GPS + localizzazione in diretta',
 			'monetization.featureJournal' => 'Diario di viaggio completo',
 			'monetization.featureDiploma' => 'Diploma di fine trek',
 			'monetization.featureFollowers' => '2 follower gratuiti',
 			'monetization.featureNoAds' => 'Zero pubblicità',
 			'monetization.buyCta' => 'Acquista',
-			'monetization.buyCtaWithSteps' => ({required Object steps}) => 'Acquista — ${steps} tappe',
+			'monetization.buyCtaWithSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: 'Acquista — ${n} tappa', other: 'Acquista — ${n} tappe', ), 
 			'monetization.complementTitle' => 'Ti mancano delle tappe',
 			'monetization.complementBody' => 'Non hai abbastanza tappe sul tuo conto per acquistare questo sentiero. Acquista il complemento, oppure prendi un pacchetto.',
-			'monetization.complementDoorExact' => ({required Object steps}) => 'Acquista il complemento — ${steps} tappe',
-			'monetization.complementDoorPack' => ({required Object steps}) => 'Prendi un pacchetto — ${steps} tappe',
+			'monetization.complementDoorExact' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: 'Acquista il complemento — ${n} tappa', other: 'Acquista il complemento — ${n} tappe', ), 
+			'monetization.complementDoorPack' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: 'Prendi un pacchetto — ${n} tappa', other: 'Prendi un pacchetto — ${n} tappe', ), 
 			'monetization.complementExactPending' => 'L\'acquisto a singola tappa non è ancora aperto dallo store. Un pacchetto resta possibile, e le tappe in più restano sul tuo conto tappe.',
 			'monetization.rewardedCta' => 'Un giorno senza pubblicità — guarda un video',
 			'monetization.rewardedEarned' => 'Grazie! Senza pubblicità per 24 h.',

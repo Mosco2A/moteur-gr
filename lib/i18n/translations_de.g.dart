@@ -977,18 +977,27 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	// Translations
 	@override String get demoBanner => 'Demo-Modus — zum Freischalten tippen';
 	@override String get paywallTitle => 'Diesen Trek freischalten';
-	@override String get paywallBody => 'Im Gratis-Modus planst du deinen Trek mit Werbung. Premium schaltet alles frei, werbefrei.';
+	@override String get paywallBody => 'Die Vorbereitung ist kostenlos, mit Werbung. Diese Wanderung zu gehen kostet Etappen von deinem Konto. Dein Konto füllst du einzeln, mit einem Paket oder mit dem Abo.';
 	@override String get featureMap => 'Offline-Karte + GPS + Live-Tracking';
 	@override String get featureJournal => 'Vollständiges Trek-Tagebuch';
 	@override String get featureDiploma => 'Trek-Abschlussdiplom';
 	@override String get featureFollowers => '2 kostenlose Follower';
 	@override String get featureNoAds => 'Keine Werbung';
 	@override String get buyCta => 'Kaufen';
-	@override String buyCtaWithSteps({required Object steps}) => 'Kaufen — ${steps} Etappen';
+	@override String buyCtaWithSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: 'Kaufen — ${n} Etappe',
+		other: 'Kaufen — ${n} Etappen',
+	);
 	@override String get complementTitle => 'Dir fehlen Etappen';
 	@override String get complementBody => 'Du hast nicht genug Etappen auf deinem Konto, um diese Wanderung zu kaufen. Kaufe die fehlenden Etappen, oder nimm ein Paket.';
-	@override String complementDoorExact({required Object steps}) => 'Fehlende Etappen kaufen — ${steps} Etappen';
-	@override String complementDoorPack({required Object steps}) => 'Ein Paket nehmen — ${steps} Etappen';
+	@override String complementDoorExact({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: 'Fehlende Etappe kaufen — ${n} Etappe',
+		other: 'Fehlende Etappen kaufen — ${n} Etappen',
+	);
+	@override String complementDoorPack({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: 'Ein Paket nehmen — ${n} Etappe',
+		other: 'Ein Paket nehmen — ${n} Etappen',
+	);
 	@override String get complementExactPending => 'Der Kauf einzelner Etappen ist im Store noch nicht freigegeben. Ein Paket geht weiterhin, und die übrigen Etappen bleiben auf deinem Etappenkonto.';
 	@override String get rewardedCta => 'Ein Tag ohne Werbung — Video ansehen';
 	@override String get rewardedEarned => 'Danke! 24 h werbefrei.';
@@ -5259,18 +5268,18 @@ extension on TranslationsDe {
 			'onboarding.recoveryNudge' => 'Denke daran, deinen Wiederherstellungscode zu notieren (in den Einstellungen): Er öffnet deine Daten auf einem anderen Telefon.',
 			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
 			'monetization.paywallTitle' => 'Diesen Trek freischalten',
-			'monetization.paywallBody' => 'Im Gratis-Modus planst du deinen Trek mit Werbung. Premium schaltet alles frei, werbefrei.',
+			'monetization.paywallBody' => 'Die Vorbereitung ist kostenlos, mit Werbung. Diese Wanderung zu gehen kostet Etappen von deinem Konto. Dein Konto füllst du einzeln, mit einem Paket oder mit dem Abo.',
 			'monetization.featureMap' => 'Offline-Karte + GPS + Live-Tracking',
 			'monetization.featureJournal' => 'Vollständiges Trek-Tagebuch',
 			'monetization.featureDiploma' => 'Trek-Abschlussdiplom',
 			'monetization.featureFollowers' => '2 kostenlose Follower',
 			'monetization.featureNoAds' => 'Keine Werbung',
 			'monetization.buyCta' => 'Kaufen',
-			'monetization.buyCtaWithSteps' => ({required Object steps}) => 'Kaufen — ${steps} Etappen',
+			'monetization.buyCtaWithSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: 'Kaufen — ${n} Etappe', other: 'Kaufen — ${n} Etappen', ), 
 			'monetization.complementTitle' => 'Dir fehlen Etappen',
 			'monetization.complementBody' => 'Du hast nicht genug Etappen auf deinem Konto, um diese Wanderung zu kaufen. Kaufe die fehlenden Etappen, oder nimm ein Paket.',
-			'monetization.complementDoorExact' => ({required Object steps}) => 'Fehlende Etappen kaufen — ${steps} Etappen',
-			'monetization.complementDoorPack' => ({required Object steps}) => 'Ein Paket nehmen — ${steps} Etappen',
+			'monetization.complementDoorExact' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: 'Fehlende Etappe kaufen — ${n} Etappe', other: 'Fehlende Etappen kaufen — ${n} Etappen', ), 
+			'monetization.complementDoorPack' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: 'Ein Paket nehmen — ${n} Etappe', other: 'Ein Paket nehmen — ${n} Etappen', ), 
 			'monetization.complementExactPending' => 'Der Kauf einzelner Etappen ist im Store noch nicht freigegeben. Ein Paket geht weiterhin, und die übrigen Etappen bleiben auf deinem Etappenkonto.',
 			'monetization.rewardedCta' => 'Ein Tag ohne Werbung — Video ansehen',
 			'monetization.rewardedEarned' => 'Danke! 24 h werbefrei.',

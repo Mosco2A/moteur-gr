@@ -48,7 +48,7 @@ const String euro = '€';
 ///
 /// La vitrine (`paywall_sheet.dart`) n'est PAS dans cette liste : elle porte
 /// aussi le comptoir des deux portes, ou l'euro est legitime. Son bouton
-/// d'achat est tenu autrement, par [cleDuPrixDUnSentier].
+/// d'achat est tenu autrement, par [clesComptantDesEtapes].
 const List<String> cartesDeSentier = <String>[
   'lib/features/trail/presentation/trail_catalog_screen.dart',
   'lib/features/hub/presentation/widgets/hub_buy_trek_button.dart',
@@ -73,8 +73,16 @@ const List<String> motsInterditsSurUnSentier = <String>[
   'montantEnEuros',
 ];
 
-/// La cle i18n qui porte le prix d'un sentier, dans les cinq langues.
-const String cleDuPrixDUnSentier = 'buyCtaWithSteps';
+/// Les cles i18n qui affichent un NOMBRE D'ETAPES au randonneur.
+///
+/// Toutes les trois doivent etre declarees en `(plural)` : elles accolent un
+/// nombre a un nom, et ce nom s'accorde. Le nom de la cle est donne SANS le
+/// modificateur `(plural)`, que le test ajoute lui-meme.
+const List<String> clesComptantDesEtapes = <String>[
+  'buyCtaWithSteps',
+  'complementDoorExact',
+  'complementDoorPack',
+];
 
 /// Les cinq langues du depot.
 const List<String> langues = <String>['fr', 'en', 'de', 'it', 'es'];
@@ -183,32 +191,96 @@ void main() {
       );
     });
 
-    test('la cle du prix d un sentier compte des etapes en 5 langues', () {
+    test('les libelles comptes en etapes sont au PLURIEL, en 5 langues', () {
+      // CE QUE CETTE VERIFICATION FERME. Les trois libelles concatenaient le
+      // nombre et un « etapes » toujours au pluriel : un complement d UNE
+      // etape s ecrivait « Acheter le complement — 1 etapes ». Et le
+      // complement d une seule etape n est pas un cas limite, c est le cas le
+      // plus FREQUENT du modele — celui du randonneur a qui il manque juste
+      // de quoi finir.
+      //
+      // ELLE EXIGE LA FORME PLURIEL DE L OUTIL, pas une chaine. Chaque langue
+      // a sa regle (le francais met « 0 etape » au singulier, l anglais dit
+      // « 0 steps ») et slang la tient depuis la table CLDR ; une
+      // concatenation a la main ne le peut pas. La garde refuse donc une
+      // valeur qui serait redevenue une simple chaine.
       final List<String> trouvailles = <String>[];
       for (final String langue in langues) {
-        final File fichier = File('assets/i18n/$langue.i18n.json');
-        final Map<String, dynamic> racine =
-            jsonDecode(fichier.readAsStringSync()) as Map<String, dynamic>;
         final Map<String, dynamic> bloc =
-            racine['monetization'] as Map<String, dynamic>;
-        final Object? valeur = bloc[cleDuPrixDUnSentier];
-        if (valeur is! String) {
-          trouvailles.add('$langue : $cleDuPrixDUnSentier absente');
-          continue;
-        }
-        if (valeur.contains(euro)) {
-          trouvailles.add('$langue : [$valeur] porte un symbole euro');
-        }
-        if (!valeur.contains(r'$steps')) {
-          trouvailles.add('$langue : [$valeur] ne compte pas en etapes');
+            (jsonDecode(
+                      File('assets/i18n/$langue.i18n.json').readAsStringSync(),
+                    )
+                    as Map<String, dynamic>)['monetization']
+                as Map<String, dynamic>;
+        for (final String cle in clesComptantDesEtapes) {
+          final Object? valeur = bloc['$cle(plural)'];
+          if (valeur is! Map<String, dynamic>) {
+            trouvailles.add(
+              '$langue : $cle n est pas declaree en (plural) — '
+              'un nombre colle a un mot invariable dira « 1 etapes »',
+            );
+            continue;
+          }
+          final Object? singulier = valeur['one'];
+          final Object? pluriel = valeur['other'];
+          if (singulier is! String || pluriel is! String) {
+            trouvailles.add('$langue : $cle manque sa forme one ou other');
+            continue;
+          }
+          if (singulier == pluriel) {
+            trouvailles.add(
+              '$langue : $cle a le MEME texte au singulier et au pluriel '
+              '[$singulier] — la forme plurielle a ete recopiee',
+            );
+          }
+          for (final String forme in <String>[singulier, pluriel]) {
+            if (forme.contains(euro)) {
+              trouvailles.add('$langue : $cle [$forme] porte un symbole euro');
+            }
+            if (!forme.contains(r'$n')) {
+              trouvailles.add('$langue : $cle [$forme] ne compte pas');
+            }
+          }
         }
       }
       expect(
         trouvailles,
         isEmpty,
         reason:
-            'Le libelle d achat d un sentier annonce des ETAPES, dans les cinq '
-            'langues :\n${trouvailles.join('\n')}',
+            'Les libelles qui comptent des etapes annoncent des ETAPES, au '
+            'bon nombre, dans les cinq langues :\n${trouvailles.join('\n')}',
+      );
+    });
+
+    test('la vitrine ne vend plus un « premium » qui n existe pas', () {
+      // CE QUE LE TEXTE DISAIT, et il contredisait le modele de Christophe :
+      // « Le mode gratuit permet de preparer ta randonnee avec publicite. Le
+      // premium debloque tout, sans pub. » IL N Y A PAS DE PREMIUM. Il y a la
+      // cagnotte, les packs et l abonnement — et c est en ETAPES que l on
+      // paye. Vendre une offre qui n existe pas est pire qu un mot mal
+      // choisi : le randonneur cherche un bouton qu il ne trouvera jamais.
+      //
+      // `premium` RESTE UN NOM DE CODE INTERNE (`hasPremium`,
+      // `getPremiumFeatures`) et ce n est pas vise ici : la garde ne regarde
+      // que ce que le randonneur LIT.
+      final List<String> trouvailles = <String>[];
+      for (final String langue in langues) {
+        final List<String> lignes = File(
+          'assets/i18n/$langue.i18n.json',
+        ).readAsLinesSync();
+        for (int i = 0; i < lignes.length; i++) {
+          if (lignes[i].toLowerCase().contains('premium')) {
+            trouvailles.add('$langue.i18n.json:${i + 1} | ${lignes[i].trim()}');
+          }
+        }
+      }
+      expect(
+        trouvailles,
+        isEmpty,
+        reason:
+            'Aucun texte lu par le randonneur ne nomme une offre « premium » : '
+            'le modele est cagnotte, packs et abonnement.\n'
+            '${trouvailles.join('\n')}',
       );
     });
 

@@ -1196,18 +1196,27 @@
   "monetization": {
     "demoBanner": "Mode démo — touche pour débloquer",
     "paywallTitle": "Débloque cette randonnée",
-    "paywallBody": "Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.",
+    "paywallBody": "La préparation est gratuite, avec publicité. Réaliser cette randonnée se paye en étapes, prises sur ta cagnotte. Tu remplis ta cagnotte à l'unité, par pack, ou avec l'abonnement.",
     "featureMap": "Carte hors ligne + GPS + suivi en direct",
     "featureJournal": "Journal de bord complet",
     "featureDiploma": "Diplôme de fin de randonnée",
     "featureFollowers": "2 suiveurs gratuits",
     "featureNoAds": "Zéro publicité",
     "buyCta": "Acheter",
-    "buyCtaWithSteps": "Acheter — $steps étapes",
+    "buyCtaWithSteps(plural)": {
+      "one": "Acheter — $n étape",
+      "other": "Acheter — $n étapes"
+    },
     "complementTitle": "Il te manque des étapes",
     "complementBody": "Tu n'as pas assez d'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.",
-    "complementDoorExact": "Acheter le complément — $steps étapes",
-    "complementDoorPack": "Prendre un pack — $steps étapes",
+    "complementDoorExact(plural)": {
+      "one": "Acheter le complément — $n étape",
+      "other": "Acheter le complément — $n étapes"
+    },
+    "complementDoorPack(plural)": {
+      "one": "Prendre un pack — $n étape",
+      "other": "Prendre un pack — $n étapes"
+    },
     "complementExactPending": "L'achat à l'étape près n'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.",
     "rewardedCta": "Un jour sans publicité — regarder une vidéo",
     "rewardedEarned": "Merci ! Sans publicité pendant 24 h.",

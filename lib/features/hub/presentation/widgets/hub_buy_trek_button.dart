@@ -60,7 +60,7 @@ class HubBuyTrekButton extends ConsumerWidget {
       // depend de la facon dont la cagnotte a ete remplie, et ne peut donc pas
       // s'ecrire sur un sentier.
       label: stages > 0
-          ? t.monetization.buyCtaWithSteps(steps: stages)
+          ? t.monetization.buyCtaWithSteps(n: stages)
           : t.monetization.buyCta,
       onPressed: () => buyTrail(context, ref, trailId: trailId),
     );

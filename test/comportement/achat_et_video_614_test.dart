@@ -467,7 +467,7 @@ void main() {
       // dependait de l acheteur et non du sentier.
       final attendu = monetisation.stagesOfTrail(_sentierPayant.id);
       expect(
-        find.text(t.monetization.buyCtaWithSteps(steps: attendu)),
+        find.text(t.monetization.buyCtaWithSteps(n: attendu)),
         findsOneWidget,
         reason:
             'un second calcul de prix dans un ecran est la meme faute que '

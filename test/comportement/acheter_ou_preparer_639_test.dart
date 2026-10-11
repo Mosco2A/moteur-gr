@@ -227,7 +227,7 @@ void main() {
         // TACHE 806 — LE PRIX D UN SENTIER EST EN ETAPES. La cle portait un
         // montant en euros ; elle compte desormais des etapes, et ce test
         // continue de verifier que son libelle ne dit pas « debloquer ».
-        tr.monetization.buyCtaWithSteps(steps: 5),
+        tr.monetization.buyCtaWithSteps(n: 5),
         tr.checklist.demoUnlockCta,
         tr.checklist.demoLockedCategory,
         tr.journal.lockedUnlock,

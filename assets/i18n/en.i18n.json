@@ -1196,18 +1196,27 @@
   "monetization": {
     "demoBanner": "Demo mode — tap to unlock",
     "paywallTitle": "Unlock this trek",
-    "paywallBody": "Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.",
+    "paywallBody": "Planning is free, with ads. Walking this trek is paid in steps, taken from your account. You fill your account one step at a time, with a pack, or with the subscription.",
     "featureMap": "Offline map + GPS + live tracking",
     "featureJournal": "Full trek journal",
     "featureDiploma": "End-of-trek diploma",
     "featureFollowers": "2 free followers",
     "featureNoAds": "Zero ads",
     "buyCta": "Buy",
-    "buyCtaWithSteps": "Buy — $steps steps",
+    "buyCtaWithSteps(plural)": {
+      "one": "Buy — $n step",
+      "other": "Buy — $n steps"
+    },
     "complementTitle": "You are short of steps",
     "complementBody": "You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.",
-    "complementDoorExact": "Buy the complement — $steps steps",
-    "complementDoorPack": "Get a pack — $steps steps",
+    "complementDoorExact(plural)": {
+      "one": "Buy the complement — $n step",
+      "other": "Buy the complement — $n steps"
+    },
+    "complementDoorPack(plural)": {
+      "one": "Get a pack — $n step",
+      "other": "Get a pack — $n steps"
+    },
     "complementExactPending": "Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.",
     "rewardedCta": "A day without ads — watch a video",
     "rewardedEarned": "Thanks! Ad-free for 24 h.",

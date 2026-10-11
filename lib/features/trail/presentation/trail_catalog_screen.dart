@@ -587,7 +587,7 @@ class _AvailableTrailCard extends ConsumerWidget {
                     // drapeau — la carte annoncait donc les deux a la fois,
                     // « 7 » et « 6.93 € », sans dire que c'etait le meme prix.
                     label: t.monetization.buyCtaWithSteps(
-                      steps: monetisation.stagesOfTrail(trail.id),
+                      n: monetisation.stagesOfTrail(trail.id),
                     ),
                     onPressed: () => buyTrail(context, ref, trailId: trail.id),
                   ),

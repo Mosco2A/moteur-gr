@@ -2025,8 +2025,8 @@ class Translations$monetization$fr {
 	/// fr: 'Débloque cette randonnée'
 	String get paywallTitle => 'Débloque cette randonnée';
 
-	/// fr: 'Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.'
-	String get paywallBody => 'Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.';
+	/// fr: 'La préparation est gratuite, avec publicité. Réaliser cette randonnée se paye en étapes, prises sur ta cagnotte. Tu remplis ta cagnotte à l'unité, par pack, ou avec l'abonnement.'
+	String get paywallBody => 'La préparation est gratuite, avec publicité. Réaliser cette randonnée se paye en étapes, prises sur ta cagnotte. Tu remplis ta cagnotte à l\'unité, par pack, ou avec l\'abonnement.';
 
 	/// fr: 'Carte hors ligne + GPS + suivi en direct'
 	String get featureMap => 'Carte hors ligne + GPS + suivi en direct';
@@ -2046,8 +2046,11 @@ class Translations$monetization$fr {
 	/// fr: 'Acheter'
 	String get buyCta => 'Acheter';
 
-	/// fr: 'Acheter — $steps étapes'
-	String buyCtaWithSteps({required Object steps}) => 'Acheter — ${steps} étapes';
+	/// fr: '(one) {Acheter — $n étape} (other) {Acheter — $n étapes}'
+	String buyCtaWithSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: 'Acheter — ${n} étape',
+		other: 'Acheter — ${n} étapes',
+	);
 
 	/// fr: 'Il te manque des étapes'
 	String get complementTitle => 'Il te manque des étapes';
@@ -2055,11 +2058,17 @@ class Translations$monetization$fr {
 	/// fr: 'Tu n'as pas assez d'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.'
 	String get complementBody => 'Tu n\'as pas assez d\'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.';
 
-	/// fr: 'Acheter le complément — $steps étapes'
-	String complementDoorExact({required Object steps}) => 'Acheter le complément — ${steps} étapes';
+	/// fr: '(one) {Acheter le complément — $n étape} (other) {Acheter le complément — $n étapes}'
+	String complementDoorExact({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: 'Acheter le complément — ${n} étape',
+		other: 'Acheter le complément — ${n} étapes',
+	);
 
-	/// fr: 'Prendre un pack — $steps étapes'
-	String complementDoorPack({required Object steps}) => 'Prendre un pack — ${steps} étapes';
+	/// fr: '(one) {Prendre un pack — $n étape} (other) {Prendre un pack — $n étapes}'
+	String complementDoorPack({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: 'Prendre un pack — ${n} étape',
+		other: 'Prendre un pack — ${n} étapes',
+	);
 
 	/// fr: 'L'achat à l'étape près n'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.'
 	String get complementExactPending => 'L\'achat à l\'étape près n\'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.';
@@ -9394,18 +9403,18 @@ extension on Translations {
 			'onboarding.recoveryNudge' => 'Pense à noter ton code de reconnexion (dans les réglages) : il ouvre tes données sur un autre téléphone.',
 			'monetization.demoBanner' => 'Mode démo — touche pour débloquer',
 			'monetization.paywallTitle' => 'Débloque cette randonnée',
-			'monetization.paywallBody' => 'Le mode gratuit permet de préparer ta randonnée avec publicité. Le premium débloque tout, sans pub.',
+			'monetization.paywallBody' => 'La préparation est gratuite, avec publicité. Réaliser cette randonnée se paye en étapes, prises sur ta cagnotte. Tu remplis ta cagnotte à l\'unité, par pack, ou avec l\'abonnement.',
 			'monetization.featureMap' => 'Carte hors ligne + GPS + suivi en direct',
 			'monetization.featureJournal' => 'Journal de bord complet',
 			'monetization.featureDiploma' => 'Diplôme de fin de randonnée',
 			'monetization.featureFollowers' => '2 suiveurs gratuits',
 			'monetization.featureNoAds' => 'Zéro publicité',
 			'monetization.buyCta' => 'Acheter',
-			'monetization.buyCtaWithSteps' => ({required Object steps}) => 'Acheter — ${steps} étapes',
+			'monetization.buyCtaWithSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: 'Acheter — ${n} étape', other: 'Acheter — ${n} étapes', ), 
 			'monetization.complementTitle' => 'Il te manque des étapes',
 			'monetization.complementBody' => 'Tu n\'as pas assez d\'étapes cagnottées pour acheter ce sentier. Achète le complément, ou prends un pack.',
-			'monetization.complementDoorExact' => ({required Object steps}) => 'Acheter le complément — ${steps} étapes',
-			'monetization.complementDoorPack' => ({required Object steps}) => 'Prendre un pack — ${steps} étapes',
+			'monetization.complementDoorExact' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: 'Acheter le complément — ${n} étape', other: 'Acheter le complément — ${n} étapes', ), 
+			'monetization.complementDoorPack' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: 'Prendre un pack — ${n} étape', other: 'Prendre un pack — ${n} étapes', ), 
 			'monetization.complementExactPending' => 'L\'achat à l\'étape près n\'est pas encore ouvert par la boutique. Un pack reste possible, et les étapes en trop restent sur ton compte-étapes.',
 			'monetization.rewardedCta' => 'Un jour sans publicité — regarder une vidéo',
 			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',

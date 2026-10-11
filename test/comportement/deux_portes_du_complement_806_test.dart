@@ -175,7 +175,7 @@ void main() {
       await ouvrirLaVitrine(tester);
 
       expect(
-        find.text(t.monetization.buyCtaWithSteps(steps: 7)),
+        find.text(t.monetization.buyCtaWithSteps(n: 7)),
         findsOneWidget,
         reason: 'le prix du sentier est son nombre d etapes',
       );
@@ -344,15 +344,17 @@ void main() {
 
   group('Le message de rupture existe dans les CINQ langues (806)', () {
     const List<String> langues = <String>['fr', 'en', 'de', 'it', 'es'];
-    const List<String> cles = <String>[
+
+    // LES TROIS CLES EN TEXTE SIMPLE. Les trois autres (les deux portes et le
+    // libelle d achat) comptent des etapes : elles sont declarees en
+    // `(plural)` et se verifient sur leur RENDU, plus bas.
+    const List<String> clesDeTexte = <String>[
       'complementTitle',
       'complementBody',
-      'complementDoorExact',
-      'complementDoorPack',
       'complementExactPending',
     ];
 
-    test('chaque langue porte les cinq cles, et aucune ne parle d euros', () {
+    test('chaque langue porte les trois textes, sans parler d euros', () {
       final List<String> trouvailles = <String>[];
       for (final String langue in langues) {
         final Map<String, dynamic> bloc =
@@ -361,7 +363,7 @@ void main() {
                     )
                     as Map<String, dynamic>)['monetization']
                 as Map<String, dynamic>;
-        for (final String cle in cles) {
+        for (final String cle in clesDeTexte) {
           final Object? valeur = bloc[cle];
           if (valeur is! String || valeur.trim().isEmpty) {
             trouvailles.add('$langue : $cle manquante');
@@ -374,27 +376,80 @@ void main() {
       }
       expect(trouvailles, isEmpty, reason: trouvailles.join('\n'));
     });
+  });
 
-    test('les deux portes comptent en etapes dans les cinq langues', () {
-      final List<String> trouvailles = <String>[];
-      for (final String langue in langues) {
-        final Map<String, dynamic> bloc =
-            (jsonDecode(
-                      File('assets/i18n/$langue.i18n.json').readAsStringSync(),
-                    )
-                    as Map<String, dynamic>)['monetization']
-                as Map<String, dynamic>;
-        for (final String cle in <String>[
-          'complementDoorExact',
-          'complementDoorPack',
-        ]) {
-          final String valeur = bloc[cle]! as String;
-          if (!valeur.contains(r'$steps')) {
-            trouvailles.add('$langue.$cle = [$valeur] ne compte pas d etapes');
-          }
-        }
-      }
-      expect(trouvailles, isEmpty, reason: trouvailles.join('\n'));
+  // ==========================================================================
+  // LE PLURIEL, LANGUE PAR LANGUE
+  // ==========================================================================
+  //
+  // CE QUI ETAIT FAUX. Les trois libelles collaient le nombre a un mot
+  // toujours au pluriel : « Acheter le complement — 1 etapes ». Et le
+  // complement d UNE etape est le cas le plus FREQUENT du modele, celui du
+  // randonneur a qui il manque juste de quoi finir — pas un cas limite.
+  //
+  // POURQUOI UN TEST PAR LANGUE, ET PAS UNE BOUCLE. Chaque langue a sa regle,
+  // et c est precisement ce qu une concatenation a la main ne peut pas tenir.
+  // Les ecrire une par une les rend LISIBLES : on voit « etape » devenir
+  // « etapes », « Etappe » devenir « Etappen », « tappa » devenir « tappe ».
+  // Une boucle generique aurait verifie que le code tourne, pas que le
+  // francais est juste.
+  group('Un nombre s accorde avec son nom (806)', () {
+    test('fr : une etape, plusieurs etapes', () {
+      final tr = AppLocale.fr.buildSync().monetization;
+      expect(tr.buyCtaWithSteps(n: 1), 'Acheter — 1 étape');
+      expect(tr.buyCtaWithSteps(n: 7), 'Acheter — 7 étapes');
+      expect(tr.complementDoorExact(n: 1), 'Acheter le complément — 1 étape');
+      expect(tr.complementDoorExact(n: 3), 'Acheter le complément — 3 étapes');
+      expect(tr.complementDoorPack(n: 1), 'Prendre un pack — 1 étape');
+      expect(tr.complementDoorPack(n: 11), 'Prendre un pack — 11 étapes');
+      // LE FRANCAIS MET ZERO AU SINGULIER, et c est la regle CLDR, pas un
+      // choix : la preuve que l accord vient de la LANGUE et non du code.
+      expect(tr.buyCtaWithSteps(n: 0), 'Acheter — 0 étape');
+    });
+
+    test('en : one step, several steps', () {
+      final tr = AppLocale.en.buildSync().monetization;
+      expect(tr.buyCtaWithSteps(n: 1), 'Buy — 1 step');
+      expect(tr.buyCtaWithSteps(n: 7), 'Buy — 7 steps');
+      expect(tr.complementDoorExact(n: 1), 'Buy the complement — 1 step');
+      expect(tr.complementDoorExact(n: 3), 'Buy the complement — 3 steps');
+      expect(tr.complementDoorPack(n: 1), 'Get a pack — 1 step');
+      expect(tr.complementDoorPack(n: 11), 'Get a pack — 11 steps');
+      // ET L ANGLAIS MET ZERO AU PLURIEL, a l inverse du francais.
+      expect(tr.buyCtaWithSteps(n: 0), 'Buy — 0 steps');
+    });
+
+    test('de : eine Etappe, mehrere Etappen', () {
+      final tr = AppLocale.de.buildSync().monetization;
+      expect(tr.buyCtaWithSteps(n: 1), 'Kaufen — 1 Etappe');
+      expect(tr.buyCtaWithSteps(n: 7), 'Kaufen — 7 Etappen');
+      expect(tr.complementDoorExact(n: 1), 'Fehlende Etappe kaufen — 1 Etappe');
+      expect(
+        tr.complementDoorExact(n: 3),
+        'Fehlende Etappen kaufen — 3 Etappen',
+      );
+      expect(tr.complementDoorPack(n: 1), 'Ein Paket nehmen — 1 Etappe');
+      expect(tr.complementDoorPack(n: 11), 'Ein Paket nehmen — 11 Etappen');
+    });
+
+    test('it : una tappa, piu tappe', () {
+      final tr = AppLocale.it.buildSync().monetization;
+      expect(tr.buyCtaWithSteps(n: 1), 'Acquista — 1 tappa');
+      expect(tr.buyCtaWithSteps(n: 7), 'Acquista — 7 tappe');
+      expect(tr.complementDoorExact(n: 1), 'Acquista il complemento — 1 tappa');
+      expect(tr.complementDoorExact(n: 3), 'Acquista il complemento — 3 tappe');
+      expect(tr.complementDoorPack(n: 1), 'Prendi un pacchetto — 1 tappa');
+      expect(tr.complementDoorPack(n: 11), 'Prendi un pacchetto — 11 tappe');
+    });
+
+    test('es : una etapa, varias etapas', () {
+      final tr = AppLocale.es.buildSync().monetization;
+      expect(tr.buyCtaWithSteps(n: 1), 'Comprar — 1 etapa');
+      expect(tr.buyCtaWithSteps(n: 7), 'Comprar — 7 etapas');
+      expect(tr.complementDoorExact(n: 1), 'Comprar el complemento — 1 etapa');
+      expect(tr.complementDoorExact(n: 3), 'Comprar el complemento — 3 etapas');
+      expect(tr.complementDoorPack(n: 1), 'Coger un pack — 1 etapa');
+      expect(tr.complementDoorPack(n: 11), 'Coger un pack — 11 etapas');
     });
   });
 }

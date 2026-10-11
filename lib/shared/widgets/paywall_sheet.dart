@@ -171,7 +171,7 @@ class _PaywallSheetState extends ConsumerState<PaywallSheet> {
                 key: const Key('paywall-buy-button'),
                 icon: StepwaysIcons.cadenasOuvert,
                 label: totalStages > 0
-                    ? t.monetization.buyCtaWithSteps(steps: totalStages)
+                    ? t.monetization.buyCtaWithSteps(n: totalStages)
                     : t.monetization.buyCta,
                 onPressed: _acheter,
               ),
@@ -291,9 +291,7 @@ class _LesDeuxPortes extends ConsumerWidget {
           key: const Key('paywall-porte-complement'),
           variant: AppButtonVariant.outline,
           icon: StepwaysIcons.plus,
-          label: t.monetization.complementDoorExact(
-            steps: devis.complementSteps,
-          ),
+          label: t.monetization.complementDoorExact(n: devis.complementSteps),
           onPressed: () {
             // ON NE PROMET PAS CE QUE LA BOUTIQUE NE SAIT PAS ENCORE FAIRE.
             // Vendre exactement N etapes suppose un produit « une etape »
@@ -324,7 +322,7 @@ class _LesDeuxPortes extends ConsumerWidget {
           AppButton(
             key: const Key('paywall-porte-pack'),
             icon: StepwaysIcons.panier,
-            label: t.monetization.complementDoorPack(steps: pack.steps),
+            label: t.monetization.complementDoorPack(n: pack.steps),
             onPressed: () async {
               final messenger = ScaffoldMessenger.of(context);
               final ok = await service.rechargeWallet(pack);

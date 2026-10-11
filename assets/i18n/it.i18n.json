@@ -1196,18 +1196,27 @@
   "monetization": {
     "demoBanner": "Modalità demo — tocca per sbloccare",
     "paywallTitle": "Sblocca questo trek",
-    "paywallBody": "La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.",
+    "paywallBody": "La preparazione è gratuita, con pubblicità. Fare questa escursione si paga in tappe, prese dal tuo conto. Riempi il tuo conto a unità, con un pacchetto o con l'abbonamento.",
     "featureMap": "Mappa offline + GPS + localizzazione in diretta",
     "featureJournal": "Diario di viaggio completo",
     "featureDiploma": "Diploma di fine trek",
     "featureFollowers": "2 follower gratuiti",
     "featureNoAds": "Zero pubblicità",
     "buyCta": "Acquista",
-    "buyCtaWithSteps": "Acquista — $steps tappe",
+    "buyCtaWithSteps(plural)": {
+      "one": "Acquista — $n tappa",
+      "other": "Acquista — $n tappe"
+    },
     "complementTitle": "Ti mancano delle tappe",
     "complementBody": "Non hai abbastanza tappe sul tuo conto per acquistare questo sentiero. Acquista il complemento, oppure prendi un pacchetto.",
-    "complementDoorExact": "Acquista il complemento — $steps tappe",
-    "complementDoorPack": "Prendi un pacchetto — $steps tappe",
+    "complementDoorExact(plural)": {
+      "one": "Acquista il complemento — $n tappa",
+      "other": "Acquista il complemento — $n tappe"
+    },
+    "complementDoorPack(plural)": {
+      "one": "Prendi un pacchetto — $n tappa",
+      "other": "Prendi un pacchetto — $n tappe"
+    },
     "complementExactPending": "L'acquisto a singola tappa non è ancora aperto dallo store. Un pacchetto resta possibile, e le tappe in più restano sul tuo conto tappe.",
     "rewardedCta": "Un giorno senza pubblicità — guarda un video",
     "rewardedEarned": "Grazie! Senza pubblicità per 24 h.",
