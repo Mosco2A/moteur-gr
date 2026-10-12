@@ -14,7 +14,7 @@
         "titleDe": "Grundlage",
         "titleIt": "Fondazione",
         "titleEs": "Base",
-        "subtitleFr": "Cardio et marche reguliere",
+        "subtitleFr": "Cardio et marche régulière",
         "subtitleEn": "Cardio and regular walking",
         "subtitleDe": "Ausdauer und regelmassiges Gehen",
         "subtitleIt": "Cardio e camminata regolare",
@@ -22,7 +22,7 @@
         "sessions": [
           {
             "id": "foundation-s1",
-            "labelFr": "Cardio 1 h (velo, course ou natation)",
+            "labelFr": "Cardio 1 h (vélo, course ou natation)",
             "labelEn": "1 h cardio (bike, run or swim)",
             "labelDe": "1 Std. Ausdauer (Rad, Laufen oder Schwimmen)",
             "labelIt": "Cardio 1 h (bici, corsa o nuoto)",
@@ -42,7 +42,7 @@
           },
           {
             "id": "foundation-s3",
-            "labelFr": "Marche reguliere 1 h 30 sur terrain vallonne",
+            "labelFr": "Marche régulière 1 h 30 sur terrain vallonné",
             "labelEn": "Regular walk 1 h 30 on rolling terrain",
             "labelDe": "Regelmassiges Gehen 1,5 Std. in hugeligem Gelande",
             "labelIt": "Camminata regolare 1 h 30 su terreno ondulato",
@@ -57,12 +57,12 @@
         "weekStart": 3,
         "weekEnd": 5,
         "icon": "terrain",
-        "titleFr": "Denivele",
+        "titleFr": "Dénivelé",
         "titleEn": "Elevation",
         "titleDe": "Hohenmeter",
         "titleIt": "Dislivello",
         "titleEs": "Desnivel",
-        "subtitleFr": "Cotes et sac charge, travail de la descente",
+        "subtitleFr": "Côtes et sac chargé, travail de la descente",
         "subtitleEn": "Hills with a loaded pack, downhill work",
         "subtitleDe": "Anstiege mit Rucksack, Abstiegstraining",
         "subtitleIt": "Salite con zaino carico, lavoro in discesa",
@@ -70,7 +70,7 @@
         "sessions": [
           {
             "id": "elevation-s1",
-            "labelFr": "4 a 6 montees de 7 a 10 min en cote (80-85 % FC max)",
+            "labelFr": "4 à 6 montées de 7 à 10 min en côte (80-85 % FC max)",
             "labelEn": "4-6 uphill reps of 7-10 min (80-85% max HR)",
             "labelDe": "4-6 Bergaufintervalle 7-10 min (80-85% max HF)",
             "labelIt": "4-6 salite di 7-10 min (80-85% FC max)",
@@ -80,7 +80,7 @@
           },
           {
             "id": "elevation-s2",
-            "labelFr": "Sortie longue 3 h avec sac charge (~50 % du poids vise)",
+            "labelFr": "Sortie longue 3 h avec sac chargé (~50 % du poids visé)",
             "labelEn": "3 h long walk with loaded pack (~50% target weight)",
             "labelDe": "3 Std. lange Tour mit Rucksack (~50% Zielgewicht)",
             "labelIt": "Uscita lunga 3 h con zaino (~50% peso previsto)",
@@ -90,7 +90,7 @@
           },
           {
             "id": "elevation-s3",
-            "labelFr": "Renforcement + descente en excentrique (protege les genoux)",
+            "labelFr": "Renforcement + descente en excentrique (protège les genoux)",
             "labelEn": "Strength + eccentric downhill work (protects knees)",
             "labelDe": "Kraft + exzentrisches Bergab (schutzt die Knie)",
             "labelIt": "Rinforzo + discesa eccentrica (protegge le ginocchia)",
@@ -110,7 +110,7 @@
         "titleDe": "Ausdauer",
         "titleIt": "Resistenza",
         "titleEs": "Resistencia",
-        "subtitleFr": "Sorties longues et jours enchaines",
+        "subtitleFr": "Sorties longues et jours enchaînés",
         "subtitleEn": "Long outings and back-to-back days",
         "subtitleDe": "Lange Touren und aufeinanderfolgende Tage",
         "subtitleIt": "Uscite lunghe e giorni consecutivi",
@@ -118,7 +118,7 @@
         "sessions": [
           {
             "id": "endurance-s1",
-            "labelFr": "Sortie longue qui simule une journee de trek (sac complet)",
+            "labelFr": "Sortie longue qui simule une journée de trek (sac complet)",
             "labelEn": "Long outing simulating a trek day (full pack)",
             "labelDe": "Lange Tour wie ein Trekkingtag (voller Rucksack)",
             "labelIt": "Uscita lunga come una giornata di trek (zaino pieno)",
@@ -128,7 +128,7 @@
           },
           {
             "id": "endurance-s2",
-            "labelFr": "Deux jours enchaines avec nuit (test du materiel)",
+            "labelFr": "Deux jours enchaînés avec nuit (test du matériel)",
             "labelEn": "Two back-to-back days with an overnight (gear test)",
             "labelDe": "Zwei Tage hintereinander mit Ubernachtung (Materialtest)",
             "labelIt": "Due giorni consecutivi con pernottamento (test materiale)",
@@ -138,7 +138,7 @@
           },
           {
             "id": "endurance-s3",
-            "labelFr": "Affutage : volume reduit, repos 48 h avant le depart",
+            "labelFr": "Affûtage : volume réduit, repos 48 h avant le départ",
             "labelEn": "Taper: reduced volume, 48 h rest before departure",
             "labelDe": "Tapering: weniger Umfang, 48 Std. Ruhe vor dem Start",
             "labelIt": "Scarico: volume ridotto, riposo 48 h prima della partenza",
@@ -150,7 +150,7 @@
       }
     ],
     "objective": {
-      "labelFr": "Tenir une longue journee de marche avec le denivele de l'etape la plus dure de votre sentier, sac sur le dos.",
+      "labelFr": "Tenir une longue journée de marche avec le dénivelé de l'étape la plus dure de votre sentier, sac sur le dos.",
       "labelEn": "Sustain a long walking day with the elevation of your trail's hardest stage, pack on.",
       "labelDe": "Einen langen Wandertag mit den Hohenmetern der schwersten Etappe Ihres Weges meistern, mit Rucksack.",
       "labelIt": "Reggere una lunga giornata di cammino con il dislivello della tappa piu dura del tuo sentiero, con lo zaino.",
@@ -172,7 +172,7 @@
           "titleDe": "Grundlage",
           "titleIt": "Fondazione",
           "titleEs": "Base",
-          "subtitleFr": "Cardio et marche reguliere",
+          "subtitleFr": "Cardio et marche régulière",
           "subtitleEn": "Cardio and regular walking",
           "subtitleDe": "Ausdauer und regelmassiges Gehen",
           "subtitleIt": "Cardio e camminata regolare",
@@ -180,7 +180,7 @@
           "sessions": [
             {
               "id": "foundation-s1",
-              "labelFr": "Cardio 1 h (velo, course ou natation)",
+              "labelFr": "Cardio 1 h (vélo, course ou natation)",
               "labelEn": "1 h cardio (bike, run or swim)",
               "labelDe": "1 Std. Ausdauer (Rad, Laufen oder Schwimmen)",
               "labelIt": "Cardio 1 h (bici, corsa o nuoto)",
@@ -200,7 +200,7 @@
             },
             {
               "id": "foundation-s3",
-              "labelFr": "Marche reguliere 1 h 30 pour s'habituer aux zones seches",
+              "labelFr": "Marche régulière 1 h 30 pour s'habituer aux zones sèches",
               "labelEn": "Regular walk 1 h 30 to get used to the dry zones",
               "labelDe": "Regelmassiges Gehen 1,5 Std., um sich an die trockenen Zonen zu gewohnen",
               "labelIt": "Camminata regolare 1 h 30 per abituarsi alle zone aride",
@@ -215,12 +215,12 @@
           "weekStart": 3,
           "weekEnd": 5,
           "icon": "terrain",
-          "titleFr": "Denivele",
+          "titleFr": "Dénivelé",
           "titleEn": "Elevation",
           "titleDe": "Hohenmeter",
           "titleIt": "Dislivello",
           "titleEs": "Desnivel",
-          "subtitleFr": "Cotes et sac charge, travail de la descente",
+          "subtitleFr": "Côtes et sac chargé, travail de la descente",
           "subtitleEn": "Hills with a loaded pack, downhill work",
           "subtitleDe": "Anstiege mit Rucksack, Abstiegstraining",
           "subtitleIt": "Salite con zaino carico, lavoro in discesa",
@@ -228,7 +228,7 @@
           "sessions": [
             {
               "id": "elevation-s1",
-              "labelFr": "4 a 6 montees de 7 a 10 min en cote (viser 850 m D+ cumule)",
+              "labelFr": "4 à 6 montées de 7 à 10 min en côte (viser 850 m D+ cumulé)",
               "labelEn": "4-6 uphill reps of 7-10 min (aim for 850 m total climb)",
               "labelDe": "4-6 Bergaufintervalle 7-10 min (Ziel 850 m Anstieg)",
               "labelIt": "4-6 salite di 7-10 min (obiettivo 850 m D+ totale)",
@@ -238,7 +238,7 @@
             },
             {
               "id": "elevation-s2",
-              "labelFr": "Sortie longue 3 h avec sac charge (~50 % du poids vise)",
+              "labelFr": "Sortie longue 3 h avec sac chargé (~50 % du poids visé)",
               "labelEn": "3 h long walk with loaded pack (~50% target weight)",
               "labelDe": "3 Std. lange Tour mit Rucksack (~50% Zielgewicht)",
               "labelIt": "Uscita lunga 3 h con zaino (~50% peso previsto)",
@@ -248,7 +248,7 @@
             },
             {
               "id": "elevation-s3",
-              "labelFr": "Renforcement + descente en excentrique (protege les genoux)",
+              "labelFr": "Renforcement + descente en excentrique (protège les genoux)",
               "labelEn": "Strength + eccentric downhill work (protects knees)",
               "labelDe": "Kraft + exzentrisches Bergab (schutzt die Knie)",
               "labelIt": "Rinforzo + discesa eccentrica (protegge le ginocchia)",
@@ -268,7 +268,7 @@
           "titleDe": "Ausdauer",
           "titleIt": "Resistenza",
           "titleEs": "Resistencia",
-          "subtitleFr": "Sorties longues et jours enchaines",
+          "subtitleFr": "Sorties longues et jours enchaînés",
           "subtitleEn": "Long outings and back-to-back days",
           "subtitleDe": "Lange Touren und aufeinanderfolgende Tage",
           "subtitleIt": "Uscite lunghe e giorni consecutivi",
@@ -276,7 +276,7 @@
           "sessions": [
             {
               "id": "endurance-s1",
-              "labelFr": "Sortie longue qui simule une etape (15 km, sac complet)",
+              "labelFr": "Sortie longue qui simule une étape (15 km, sac complet)",
               "labelEn": "Long outing simulating a stage (15 km, full pack)",
               "labelDe": "Lange Tour wie eine Etappe (15 km, voller Rucksack)",
               "labelIt": "Uscita lunga come una tappa (15 km, zaino pieno)",
@@ -286,7 +286,7 @@
             },
             {
               "id": "endurance-s2",
-              "labelFr": "Deux jours enchaines avec nuit en gite (test du materiel)",
+              "labelFr": "Deux jours enchaînés avec nuit en gîte (test du matériel)",
               "labelEn": "Two back-to-back days with a lodge night (gear test)",
               "labelDe": "Zwei Tage hintereinander mit Hutten-Ubernachtung (Materialtest)",
               "labelIt": "Due giorni consecutivi con notte in rifugio (test materiale)",
@@ -296,7 +296,7 @@
             },
             {
               "id": "endurance-s3",
-              "labelFr": "Affutage : volume reduit, repos 48 h avant le depart",
+              "labelFr": "Affûtage : volume réduit, repos 48 h avant le départ",
               "labelEn": "Taper: reduced volume, 48 h rest before departure",
               "labelDe": "Tapering: weniger Umfang, 48 Std. Ruhe vor dem Start",
               "labelIt": "Scarico: volume ridotto, riposo 48 h prima della partenza",
@@ -308,7 +308,7 @@
         }
       ],
       "objective": {
-        "labelFr": "Tenir 6 h de marche avec 850 m de montee, comme l'etape Ghisonaccia - Catastaghju.",
+        "labelFr": "Tenir 6 h de marche avec 850 m de montée, comme l'étape Ghisonaccia - Catastaghju.",
         "labelEn": "Sustain 6 h of walking with 850 m of climb, like the Ghisonaccia - Catastaghju stage.",
         "labelDe": "6 Std. Gehen mit 850 m Anstieg durchhalten, wie die Etappe Ghisonaccia - Catastaghju.",
         "labelIt": "Reggere 6 h di cammino con 850 m di salita, come la tappa Ghisonaccia - Catastaghju.",
