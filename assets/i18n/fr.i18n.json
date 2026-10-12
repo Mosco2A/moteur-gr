@@ -795,6 +795,7 @@
     "title": "Diplôme de randonnée",
     "yourName": "Ton nom",
     "namePlaceholder": "Entre ton nom...",
+    "namePending": "Ton nom apparaîtra ici",
     "generatePdf": "Générer le PDF",
     "certifies": "Certifie que",
     "completed": "a parcouru le",

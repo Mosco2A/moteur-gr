@@ -611,6 +611,7 @@ class _Translations$diploma$de extends Translations$diploma$fr {
 	@override String get title => 'Wanderdiplom';
 	@override String get yourName => 'Dein Name';
 	@override String get namePlaceholder => 'Gib deinen Namen ein...';
+	@override String get namePending => 'Dein Name erscheint hier';
 	@override String get generatePdf => 'PDF erstellen';
 	@override String get certifies => 'Bestätigt, dass';
 	@override String get completed => 'den Weg abgeschlossen hat';
@@ -4931,6 +4932,7 @@ extension on TranslationsDe {
 			'diploma.title' => 'Wanderdiplom',
 			'diploma.yourName' => 'Dein Name',
 			'diploma.namePlaceholder' => 'Gib deinen Namen ein...',
+			'diploma.namePending' => 'Dein Name erscheint hier',
 			'diploma.generatePdf' => 'PDF erstellen',
 			'diploma.certifies' => 'Bestätigt, dass',
 			'diploma.completed' => 'den Weg abgeschlossen hat',
@@ -5268,9 +5270,9 @@ extension on TranslationsDe {
 			'follow.live' => 'Live',
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Ungültiger Link',
-			'follow.invalidLinkHint' => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.',
 			_ => null,
 		} ?? switch (path) {
+			'follow.invalidLinkHint' => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.',
 			'cloud.localModeTitle' => 'Lokaler Modus',
 			'cloud.localModeBody' => 'Diese Installation ist mit keinem Cloud-Dienst verbunden: Live-Verfolgung, Online-Sicherung und Konto sind deaktiviert. Deine Daten bleiben auf dem Gerät.',
 			'cloud.statusSection' => 'Cloud',
@@ -5782,9 +5784,9 @@ extension on TranslationsDe {
 			'recap.title' => 'Mein Abenteuer',
 			'recap.lockedTitle' => 'Verfügbar am Ende der Tour',
 			'recap.lockedMessage' => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.',
-			'recap.finisherTitle' => 'Glückwunsch!',
 			_ => null,
 		} ?? switch (path) {
+			'recap.finisherTitle' => 'Glückwunsch!',
 			'recap.finisherSubtitle' => 'Du hast deine Route abgeschlossen',
 			'recap.partialTitle' => 'Deine Teilroute',
 			'recap.partialSubtitle' => 'Dein Abenteuer bleibt gespeichert',

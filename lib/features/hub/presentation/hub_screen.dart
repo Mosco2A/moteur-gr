@@ -14,7 +14,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/quick_access_card.dart';
 import '../../ads/ads_facade.dart' show BannerAdSlot;
-import '../../safety/safety_facade.dart' show SosButton;
+import '../../safety/safety_facade.dart'
+    show SosQuiReserveSaPlace, reserveSousLeSosProvider;
 import 'cockpit_phase.dart';
 import 'widgets/hub_app_bar.dart';
 import 'widgets/hub_cockpit_scroll.dart';
@@ -180,17 +181,32 @@ class _HubScreenState extends ConsumerState<HubScreen> {
     final showHike = phase == CockpitPhase.hike;
     final showAfter = phase == CockpitPhase.after;
 
+    // LA BANDE QUE LA PASTILLE SOS RECOUVRE, MESUREE SUR LE BOUTON RENDU
+    // (tache 836). Un `floatingActionButton` FLOTTE : il est peint par-dessus
+    // le `body` et ne retire rien a la place que le `body` croit avoir. Le
+    // sous-titre de « Adapter l'itineraire », le bouton « Terminer le trek » et
+    // le titre « Informations » finissaient donc SOUS le disque rouge. La
+    // reserve vaut 0 quand le bouton est masque, et le cockpit retrouve alors
+    // exactement son padding d'avant. Voir `reserve_sous_le_sos.dart` pour la
+    // raison de ne PAS deplacer le bouton.
+    final reserveDuSos = ref.watch(reserveSousLeSosProvider);
+
     return Scaffold(
       appBar: HubAppBar(
         trailTitle: trailTitle,
         onInfoTap: () => _showInfoSheet(context, trailTitle),
       ),
-      floatingActionButton: const SosButton(),
+      floatingActionButton: const SosQuiReserveSaPlace(),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       bottomNavigationBar: showHike ? null : BannerAdSlot(trailId: trailId),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(AppTheme.spacingBase),
+          padding: EdgeInsets.fromLTRB(
+            AppTheme.spacingBase,
+            AppTheme.spacingBase,
+            AppTheme.spacingBase,
+            AppTheme.spacingBase + reserveDuSos,
+          ),
           children: [
             HubCockpitTop(trailId: trailId),
             // --- « PRÉPARER » DISPARAIT PENDANT LA MARCHE (tache 809) ---

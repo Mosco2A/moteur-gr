@@ -12,6 +12,7 @@ import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/mesure_de_texte.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/fire_risk.dart';
 import '../providers/current_stage_provider.dart';
@@ -676,34 +677,180 @@ class _StageFireCard extends StatelessWidget {
           ),
           const SizedBox(height: AppTheme.spacingSm),
           // Detail par jour (parite GR20 : rangee de jours).
-          Row(
-            children: stage.days.map((d) {
-              final dColor = fireRiskColor(d.level);
-              return Expanded(
-                child: Column(
-                  children: [
-                    Text(
-                      _dayLabel(d.dayIndex, t),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    StepIcon(StepwaysIcons.incendie, size: 20, color: dColor),
-                    Text(
-                      t.fireRisk.dayLevel(level: d.level),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: dColor,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
+          _RangeeDesJours(stage: stage),
         ],
       ),
+    );
+  }
+}
+
+/// LA RANGEE DES JOURS D'UNE ETAPE, QUI NE COUPE PLUS LES MOTS (tache 836).
+///
+/// ---------------------------------------------------------------------------
+/// CE QUI ETAIT CASSE, ET LA SOUSTRACTION QUI L'EXPLIQUE
+/// ---------------------------------------------------------------------------
+///
+/// Cette rangee etait un `Row` de `Expanded`, un par jour de prevision. L'
+/// horizon demande au fournisseur est de dix jours (`forecastHorizonDays`), et
+/// dix colonnes a egalite dans une carte de 360 points font 29,6 points
+/// chacune. « Demain » en reclame une quarantaine. Un `Text` sans bornes ne
+/// s'arrete pas a la fin d'un mot quand la place manque : il coupe DEDANS. D'ou
+/// « De », « mai », « n » sur trois lignes.
+///
+/// ET LE DESALIGNEMENT EN DECOULAIT, il n'etait pas un second defaut. Les
+/// libelles courts — « Auj. », « J+3 » — tenaient sur une ligne, « Demain » sur
+/// trois : les colonnes n'avaient plus la meme hauteur de titre, donc les
+/// pastilles « Niv. 0 » placees dessous ne tombaient plus sur la meme ligne.
+///
+/// ---------------------------------------------------------------------------
+/// LA REGLE APPLIQUEE : LA COLONNE S'ADAPTE AU MOT, PAS LE MOT A LA COLONNE
+/// ---------------------------------------------------------------------------
+///
+/// C'est le premier des trois moyens du lot 749, transpose a l'horizontale : le
+/// contenu passe a la ligne et son conteneur grandit. Ici ce n'est pas le TEXTE
+/// qui passe a la ligne mais la RANGEE : on mesure la largeur dont le libelle
+/// le plus exigeant a besoin pour tenir sur une seule ligne
+/// ([largeurDUneLigne]), on en deduit combien de colonnes de cette largeur
+/// tiennent cote a cote, et les jours en trop vont a la rangee suivante. Rien
+/// n'est coupe, rien n'est reduit, rien ne defile.
+///
+/// POURQUOI PAS UN DEFILEMENT HORIZONTAL : il aurait cache des jours derriere
+/// un geste, dans une page qui defile DEJA verticalement — deux defilements
+/// imbriques sous le meme doigt. Et pourquoi pas une police reduite : a 29
+/// points, « Demain » tomberait sous les sept pixels.
+///
+/// LES COLONNES REMPLISSENT LA LARGEUR. On ne pose pas la largeur mesuree
+/// telle quelle : on divise la place disponible par le nombre de colonnes
+/// retenues. La rangee garde ainsi l'allure reguliere d'un tableau, et chaque
+/// colonne a au moins ce que son libelle reclame.
+class _RangeeDesJours extends StatelessWidget {
+  const _RangeeDesJours({required this.stage});
+
+  final StageFireRisk stage;
+
+  /// L'air autour du libelle dans sa colonne, en points.
+  ///
+  /// Deux colonnes dont les textes se touchent se lisent comme un seul mot.
+  static const double _airAutourDuLibelle = 6;
+
+  @override
+  Widget build(BuildContext context) {
+    if (stage.days.isEmpty) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    final traductions = t;
+    final echelle = MediaQuery.textScalerOf(context);
+
+    // ON MESURE LE STYLE EFFECTIF, PAS CELUI DU THEME SEUL. Un `Text` FUSIONNE
+    // le style recu avec le [DefaultTextStyle] ambiant : mesurer le style du
+    // theme tout nu donnerait une largeur plus petite que celle du texte
+    // reellement peint, donc des colonnes trop etroites — le defaut qu'on
+    // corrige.
+    final ambiant = DefaultTextStyle.of(context).style;
+    final styleDuJour = ambiant.merge(
+      theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+    );
+    final styleDuNiveau = ambiant.merge(
+      theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
+    );
+
+    // LA COLONNE LA PLUS EXIGEANTE DECIDE POUR TOUTES. Dans un tableau, toutes
+    // les colonnes ont la meme largeur : c'est le libelle le plus large — quel
+    // que soit le jour, quelle que soit la langue — qui la fixe.
+    var largeurRequise = 0.0;
+    for (final jour in stage.days) {
+      final duJour = largeurDUneLigne(
+        texte: _dayLabel(jour.dayIndex, traductions),
+        style: styleDuJour,
+        echelle: echelle,
+      );
+      final duNiveau = largeurDUneLigne(
+        texte: traductions.fireRisk.dayLevel(level: jour.level),
+        style: styleDuNiveau,
+        echelle: echelle,
+      );
+      largeurRequise = [
+        largeurRequise,
+        duJour,
+        duNiveau,
+      ].reduce((a, b) => a > b ? a : b);
+    }
+    largeurRequise += _airAutourDuLibelle;
+
+    return LayoutBuilder(
+      builder: (context, contraintes) {
+        final disponible = contraintes.maxWidth;
+        // Une largeur non bornee ne permet aucun calcul : on retombe sur la
+        // largeur mesuree, qui tient toujours le libelle entier.
+        final parRangee = (!disponible.isFinite || disponible <= 0)
+            ? stage.days.length
+            : (disponible / largeurRequise).floor().clamp(1, stage.days.length);
+        final largeurDeColonne = (!disponible.isFinite || disponible <= 0)
+            ? largeurRequise
+            : disponible / parRangee;
+
+        return Wrap(
+          runSpacing: AppTheme.spacingSm,
+          children: [
+            for (final jour in stage.days)
+              SizedBox(
+                width: largeurDeColonne,
+                child: _ColonneDuJour(
+                  libelle: _dayLabel(jour.dayIndex, traductions),
+                  niveau: traductions.fireRisk.dayLevel(level: jour.level),
+                  couleur: fireRiskColor(jour.level),
+                  styleDuJour: styleDuJour,
+                  styleDuNiveau: styleDuNiveau,
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// UNE COLONNE DE LA RANGEE DES JOURS : le jour, l'icone, le niveau.
+///
+/// AUCUN PLAFOND DE LIGNES ICI, ET C'EST VOLONTAIRE. La tentation etait de
+/// borner les deux textes a une ligne « pour etre sur » : c'est inutile, parce
+/// que la largeur de la colonne a ete MESUREE pour qu'ils y tiennent entiers,
+/// et c'est surtout interdit — la regle du lot 749 est qu'un texte passe a la
+/// ligne, rapetisse ou defile, jamais qu'il se coupe, et ce fichier est l'un de
+/// ceux que ce lot a nettoyes (`aucun_texte_coupe_749_test.dart` le verifie
+/// ligne a ligne).
+///
+/// SI LA MESURE SE TROMPAIT UN JOUR, le texte passerait donc a la ligne au lieu
+/// d'etre rogne, et la garde de ce lot le verrait : elle exige que tous les
+/// titres de colonnes aient la MEME hauteur, ce qui cesserait d'etre vrai.
+class _ColonneDuJour extends StatelessWidget {
+  const _ColonneDuJour({
+    required this.libelle,
+    required this.niveau,
+    required this.couleur,
+    required this.styleDuJour,
+    required this.styleDuNiveau,
+  });
+
+  final String libelle;
+  final String niveau;
+  final Color couleur;
+  final TextStyle styleDuJour;
+  final TextStyle styleDuNiveau;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(libelle, style: styleDuJour, textAlign: TextAlign.center),
+        const SizedBox(height: 4),
+        StepIcon(StepwaysIcons.incendie, size: 20, color: couleur),
+        Text(
+          niveau,
+          style: styleDuNiveau.copyWith(color: couleur),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

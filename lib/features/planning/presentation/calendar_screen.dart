@@ -145,9 +145,31 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     if (startDate != null) ...[
                       _buildMonthHeader(theme),
                       const SizedBox(height: AppTheme.spacingSm),
-                      _buildCalendarGrid(theme, startDate, days),
-                      const SizedBox(height: AppTheme.spacingBase),
+                      // LA LEGENDE PASSE AVANT LA GRILLE (tache 836).
+                      //
+                      // CE QUE CHRISTOPHE A VU : la legende de couleurs
+                      // « cachee derriere le bouton VALIDER LES DATES ». Il n'y
+                      // a pourtant AUCUN empilement ici — le bouton est un
+                      // FRERE de la zone de defilement, pas une couche
+                      // par-dessus. La mesure a dit mieux que le soupcon : sur
+                      // un ecran de 360 x 844, la legende tombait entre 753 et
+                      // 795 points alors que la fenetre de defilement s'arrete
+                      // a 748. Elle etait donc ENTIEREMENT sous la pliure, et
+                      // ce qui occupait cette bande de l'ecran, c'etait le
+                      // bouton. « Derriere le bouton » decrivait exactement ce
+                      // qu'on voyait.
+                      //
+                      // POURQUOI LA DEPLACER PLUTOT QUE RESERVER DE LA PLACE :
+                      // reserver une marge basse n'aurait rien change, puisque
+                      // le probleme n'est pas un recouvrement mais une
+                      // POSITION — la legende arrivait apres une grille
+                      // mensuelle de six rangees, donc toujours hors de la
+                      // premiere vue. Et une legende explique des couleurs : sa
+                      // place est AVANT ce qu'elle explique, pas apres. On la
+                      // lit, puis on lit la grille.
                       _buildCalendarLegend(theme),
+                      const SizedBox(height: AppTheme.spacingBase),
+                      _buildCalendarGrid(theme, startDate, days),
                       const SizedBox(height: AppTheme.spacingLg),
 
                       // --- Liste des jours avec boutons separer / grouper ---
@@ -240,9 +262,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             });
           },
         ),
-        Text(
-          monthLabel.toUpperCase(),
-          style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 1.0),
+        // LE NOM DU MOIS EST `Expanded` (tache 836). Il etait nu entre deux
+        // `IconButton` de 48 points : sur un ecran de 320, il restait 192
+        // points pour un nom de mois en capitales interlettrees, et le `Row`
+        // debordait de 15 points — mesure en banc. Borne, le texte passe a la
+        // ligne au lieu de pousser hors cadre.
+        Expanded(
+          child: Text(
+            monthLabel.toUpperCase(),
+            style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 1.0),
+            textAlign: TextAlign.center,
+          ),
         ),
         IconButton(
           icon: const StepIcon(StepwaysIcons.chevronDroite),
@@ -631,12 +661,16 @@ class _DatePickerSection extends StatelessWidget {
                         color: scheme.primary,
                       ),
                       const SizedBox(width: 6),
-                      Text(
-                        t.calendar.departure,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: scheme.primary,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.5,
+                      // `Expanded` : le libelle en capitales interlettrees
+                      // debordait de 4 points sur un ecran de 320 (tache 836).
+                      Expanded(
+                        child: Text(
+                          t.calendar.departure,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: scheme.primary,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.5,
+                          ),
                         ),
                       ),
                     ],
@@ -682,12 +716,16 @@ class _DatePickerSection extends StatelessWidget {
                       color: AppTheme.orangeDifficile,
                     ),
                     const SizedBox(width: 6),
-                    Text(
-                      t.calendar.arrival,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: AppTheme.orangeDifficile,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.5,
+                    // `Expanded` : meme cause que « DEPART », 17 points de
+                    // debordement sur un ecran de 320 (tache 836).
+                    Expanded(
+                      child: Text(
+                        t.calendar.arrival,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: AppTheme.orangeDifficile,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.5,
+                        ),
                       ),
                     ),
                   ],

@@ -31,4 +31,12 @@ export 'providers/adventure_recap_provider.dart'
         adventureStatsProvider,
         isDiplomaUnlockedProvider,
         latestTrekSessionProvider;
+// LA TRACE FABRIQUEE DE LA DEMONSTRATION EST PUBLIQUE (tache 836). Le diplome
+// affichait « Trace non disponible » alors que le carnet, au meme instant,
+// dessinait une trace : en demonstration la base reste VIDE par promesse
+// (tache 634) et le recapitulatif etait le seul a le savoir. Cette ligne donne
+// au diplome la MEME source, au lieu d'une deuxieme facon de fabriquer une
+// trace.
+export 'providers/aventure_de_demo_provider.dart'
+    show traceFabriqueeDeDemoProvider;
 export 'providers/in_app_review_provider.dart' show inAppReviewServiceProvider;

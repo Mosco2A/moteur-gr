@@ -611,6 +611,7 @@ class _Translations$diploma$it extends Translations$diploma$fr {
 	@override String get title => 'Diploma di trekking';
 	@override String get yourName => 'Il tuo nome';
 	@override String get namePlaceholder => 'Inserisci il tuo nome...';
+	@override String get namePending => 'Il tuo nome apparirà qui';
 	@override String get generatePdf => 'Genera PDF';
 	@override String get certifies => 'Certifica che';
 	@override String get completed => 'ha percorso il';
@@ -4931,6 +4932,7 @@ extension on TranslationsIt {
 			'diploma.title' => 'Diploma di trekking',
 			'diploma.yourName' => 'Il tuo nome',
 			'diploma.namePlaceholder' => 'Inserisci il tuo nome...',
+			'diploma.namePending' => 'Il tuo nome apparirà qui',
 			'diploma.generatePdf' => 'Genera PDF',
 			'diploma.certifies' => 'Certifica che',
 			'diploma.completed' => 'ha percorso il',
@@ -5268,9 +5270,9 @@ extension on TranslationsIt {
 			'follow.live' => 'In diretta',
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Link non valido',
-			'follow.invalidLinkHint' => 'Questo link di localizzazione non esiste o è scaduto.',
 			_ => null,
 		} ?? switch (path) {
+			'follow.invalidLinkHint' => 'Questo link di localizzazione non esiste o è scaduto.',
 			'cloud.localModeTitle' => 'Modalità locale',
 			'cloud.localModeBody' => 'Questa installazione non è collegata a un servizio cloud: localizzazione in diretta, backup online e account sono disattivati. I tuoi dati restano sul dispositivo.',
 			'cloud.statusSection' => 'Cloud',
@@ -5782,9 +5784,9 @@ extension on TranslationsIt {
 			'recap.title' => 'La mia avventura',
 			'recap.lockedTitle' => 'Disponibile alla fine del trek',
 			'recap.lockedMessage' => 'Termina o abbandona il tuo percorso per rivedere il riepilogo della tua avventura.',
-			'recap.finisherTitle' => 'Congratulazioni!',
 			_ => null,
 		} ?? switch (path) {
+			'recap.finisherTitle' => 'Congratulazioni!',
 			'recap.finisherSubtitle' => 'Hai completato il tuo percorso',
 			'recap.partialTitle' => 'Il tuo percorso parziale',
 			'recap.partialSubtitle' => 'La tua avventura resta registrata',

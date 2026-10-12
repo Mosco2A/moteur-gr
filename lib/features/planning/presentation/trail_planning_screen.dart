@@ -12,6 +12,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/mesure_de_texte.dart';
 import '../../feasibility/feasibility_facade.dart'
     show feasibilityAssessmentProvider;
 import '../../hub/hub_facade.dart' show PrepCoreStep, prepareCoreStepsProvider;
@@ -669,11 +670,61 @@ class _LegendItem extends StatelessWidget {
 
 /// Profil altimetrique simplifie par jour (parite GR20 `_ElevationProfile`).
 /// Barre par jour, hauteur ~ D+, couleur ~ difficulte ; repos = barre basse
-/// "R".
+/// etiquetee "R".
+///
+/// ---------------------------------------------------------------------------
+/// L'ETIQUETTE EST SORTIE DE LA BARRE (tache 836)
+/// ---------------------------------------------------------------------------
+///
+/// CE QUI ETAIT COUPE, ET POURQUOI C'ETAIT INEVITABLE. Le "R" des jours de
+/// repos etait ecrit DANS sa barre, et la barre d'un jour de repos ne fait
+/// qu'une fraction de la hauteur du cadre ([_fractionDuJourDeRepos], 0,18).
+/// Dans un cadre de 60 points dont 16 de marges, cela donnait une barre de
+/// huit points de haut pour un texte de douze : le "R" etait rogne par le bas
+/// a chaque affichage. Le plancher des jours de marche sans D+ ([_plancher],
+/// 0,1) etait encore plus bas.
+///
+/// AUCUNE HAUTEUR DE BARRE NE POUVAIT CORRIGER CA. Monter la fraction du jour
+/// de repos aurait menti sur le graphe — une barre dit un denivele, et un jour
+/// de repos n'en a pas. L'etiquette n'avait simplement rien a faire a
+/// l'interieur d'une boite dont la hauteur represente une DONNEE.
+///
+/// LA MISE EN PAGE RETENUE : deux bandes empilees. En haut les barres, qui
+/// gardent exactement la hauteur utile d'avant ([_hauteurDesBarres]) et dont
+/// les fractions ne changent pas ; en dessous une bande d'etiquettes qui a sa
+/// PROPRE hauteur, MESUREE sur le texte reel a l'echelle de police du
+/// randonneur ([hauteurDesTextes]). Une etiquette ne peut donc plus etre
+/// rognee : elle n'est plus enfermee dans la barre.
+///
+/// LA MARGE DU HAUT PAYE LA BANDE DU BAS. Les huit points de marge haute du
+/// cadre d'origine etaient de l'air au-dessus de la barre la plus haute : ils
+/// sont rendus a la bande d'etiquettes, ce qui laisse l'ensemble a peu pres a
+/// la hauteur qu'il occupait — la colonne de l'ecran ne porte pas de
+/// defilement, et ce qu'on prend ici est pris a la liste des jours.
+///
+/// CE QUE CE LOT N'A PAS FAIT, ET IL FAUT LE DIRE : les jours de MARCHE n'ont
+/// jamais eu d'etiquette (`child: null` dans le code d'origine), et ils n'en
+/// ont toujours pas. Leur en donner demanderait un libelle traduit en cinq
+/// langues qui n'existe pas dans `t.programme`, et un arbitrage sur ce qu'on
+/// ecrit quand il y a vingt jours a nommer dans la largeur d'un telephone.
 class _ElevationProfile extends StatelessWidget {
   const _ElevationProfile({required this.days});
 
   final List<PlannedDay> days;
+
+  /// La hauteur de la bande des barres, en points : la hauteur UTILE du cadre
+  /// d'origine (60 moins ses deux marges de 8), pour que les barres gardent
+  /// l'allure qu'elles avaient.
+  static const double _hauteurDesBarres = 44;
+
+  /// La fraction de la bande qu'occupe la barre d'un jour de repos.
+  static const double _fractionDuJourDeRepos = 0.18;
+
+  /// La fraction plancher d'un jour de marche sans denivele connu.
+  static const double _plancher = 0.1;
+
+  /// L'ecart entre les barres et leurs etiquettes, en points.
+  static const double _ecartSousLesBarres = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -695,68 +746,121 @@ class _ElevationProfile extends StatelessWidget {
     }
     if (maxElevation == 0) maxElevation = 1;
 
-    return Container(
-      height: 60,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingBase,
-        vertical: AppTheme.spacingSm,
+    // L'ETIQUETTE EST MESUREE, PAS DEVINEE. Elle est ecrite en dehors de la
+    // barre, donc sa bande doit avoir sa propre hauteur : celle du texte reel,
+    // a l'echelle de police du telephone.
+    //
+    // ON MESURE LE STYLE EFFECTIF, PAS LE STYLE ECRIT ICI — et c'est un piege
+    // qui a d'abord fait rougir le banc de ce lot. Un `Text` FUSIONNE le style
+    // qu'on lui passe avec le [DefaultTextStyle] ambiant : la famille de
+    // police et la hauteur de ligne viennent du theme, pas de ces trois
+    // lignes. Mesurer un `TextStyle(fontSize: 12)` tout nu rend une hauteur
+    // PLUS PETITE que celle du texte reellement peint — donc une bande trop
+    // courte, c'est-a-dire le rognage meme qu'on corrige ici.
+    final styleDeLEtiquette = DefaultTextStyle.of(
+      context,
+    ).style.merge(const TextStyle(fontSize: 12, fontWeight: FontWeight.w700));
+    final hauteurDesEtiquettes = hauteurDesTextes(
+      blocs: [
+        (
+          texte: t.programme.restDayLabel,
+          style: styleDeLEtiquette,
+          maxLignes: 1,
+        ),
+      ],
+      largeurTexte: double.maxFinite,
+      echelle: MediaQuery.textScalerOf(context),
+      alignement: TextAlign.center,
+    );
+
+    return Padding(
+      // La marge basse revient a la bande d'etiquettes, la marge haute etait
+      // de l'air au-dessus de la plus haute barre.
+      padding: const EdgeInsets.only(
+        left: AppTheme.spacingBase,
+        right: AppTheme.spacingBase,
+        top: AppTheme.spacingXs,
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: List.generate(dayElevations.length, (i) {
-          final elevation = dayElevations[i];
-          final difficulty = dayDifficulties[i];
-          final heightRatio = elevation / maxElevation;
-          final isRestDay = days[i].isRestDay;
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: _hauteurDesBarres,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: List.generate(dayElevations.length, (i) {
+                final elevation = dayElevations[i];
+                final difficulty = dayDifficulties[i];
+                final heightRatio = elevation / maxElevation;
+                final isRestDay = days[i].isRestDay;
 
-          Color barColor;
-          if (isRestDay) {
-            // Jour de repos = bleu semantique (parite GR20), jamais la couleur
-            // primaire du sentier (qui teinte les jours de marche).
-            barColor = AppTheme.bleuRepos;
-          } else if (elevation == 0) {
-            barColor = AppTheme.grisGranite.withAlpha(30);
-          } else if (difficulty <= 1) {
-            barColor = AppTheme.vertFacile;
-          } else if (difficulty <= 2) {
-            barColor = AppTheme.jauneModere;
-          } else if (difficulty <= 3) {
-            barColor = AppTheme.orangeDifficile;
-          } else {
-            barColor = AppTheme.rougeExtreme;
-          }
+                Color barColor;
+                if (isRestDay) {
+                  // Jour de repos = bleu semantique (parite GR20), jamais la
+                  // couleur primaire du sentier (qui teinte la marche).
+                  barColor = AppTheme.bleuRepos;
+                } else if (elevation == 0) {
+                  barColor = AppTheme.grisGranite.withAlpha(30);
+                } else if (difficulty <= 1) {
+                  barColor = AppTheme.vertFacile;
+                } else if (difficulty <= 2) {
+                  barColor = AppTheme.jauneModere;
+                } else if (difficulty <= 3) {
+                  barColor = AppTheme.orangeDifficile;
+                } else {
+                  barColor = AppTheme.rougeExtreme;
+                }
 
-          return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 1),
-              child: FractionallySizedBox(
-                heightFactor: isRestDay
-                    ? 0.18
-                    : (elevation == 0 ? 0.1 : heightRatio.clamp(0.1, 1.0)),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: barColor,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(2),
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 1),
+                    child: FractionallySizedBox(
+                      heightFactor: isRestDay
+                          ? _fractionDuJourDeRepos
+                          : (elevation == 0
+                                ? _plancher
+                                : heightRatio.clamp(_plancher, 1.0)),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: barColor,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(2),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  child: isRestDay
-                      ? Center(
-                          child: Text(
-                            t.programme.restDayLabel,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
-                      : null,
-                ),
-              ),
+                );
+              }),
             ),
-          );
-        }),
+          ),
+          const SizedBox(height: _ecartSousLesBarres),
+          // LA BANDE DES ETIQUETTES. Meme decoupage en `Expanded` que les
+          // barres, et le meme retrait de 1 point : chaque etiquette tombe
+          // exactement sous sa barre.
+          SizedBox(
+            height: hauteurDesEtiquettes,
+            child: Row(
+              children: List.generate(days.length, (i) {
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 1),
+                    child: days[i].isRestDay
+                        ? Text(
+                            t.programme.restDayLabel,
+                            style: styleDeLEtiquette.copyWith(
+                              color: AppTheme.bleuRepos,
+                            ),
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
       ),
     );
   }

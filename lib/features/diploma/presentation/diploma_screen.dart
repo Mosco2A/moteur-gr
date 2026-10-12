@@ -5,13 +5,16 @@ library;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/analytics/screen_entry.dart';
 import '../../../core/branding/app_branding.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/map/fond_de_carte.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
@@ -19,16 +22,17 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/app_logo.dart';
+import '../../../shared/widgets/attribution_osm.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
 import '../../journal/journal_facade.dart'
     show JournalEntryModel, journalScreenProvider;
+import '../../trek/trek_facade.dart' show cadrageDOuverture;
 import '../../../domain/trek_session.dart';
 import '../../../domain/trek_completion.dart';
 import '../domain/diploma_generator.dart';
 import '../domain/diploma_pdf_service.dart';
 import '../domain/finisher_number.dart';
 import '../providers/session_trace_provider.dart';
-import 'widgets/session_trace_painter.dart';
 import '../../after/after_facade.dart'
     show
         AdventureStats,
@@ -55,8 +59,14 @@ class DiplomaScreen extends ConsumerStatefulWidget {
 
 class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   final _nameController = TextEditingController();
-  DiplomaData? _diplomaData;
   bool _isGeneratingPdf = false;
+
+  /// LE NOM TAPE PAR LE RANDONNEUR, vide tant qu'il n'a rien tape.
+  ///
+  /// A ne PAS confondre avec le nom qu'on ECRIT sur l'apercu : celui-la a un
+  /// repli en attente, pour que le certificat existe des l'ouverture. C'est
+  /// celui-ci, et lui seul, qui autorise a fabriquer un fichier.
+  String get _nomSaisi => _nameController.text.trim();
 
   @override
   void initState() {
@@ -144,6 +154,15 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
     // branche sur [TrekCongratulations] du parcours reel.
     final congrats = ref.watch(adventureCongratulationsProvider);
 
+    // LE CERTIFICAT, RECALCULE A CHAQUE IMAGE (tache 836). Tant qu'aucun nom
+    // n'est tape, il porte le nom EN ATTENTE : l'ecran de la recompense montre
+    // alors le diplome qu'on vient de gagner, pas deux messages de manque.
+    final apercu = _construireLeDiplome(
+      config,
+      realStats,
+      nom: _nomSaisi.isEmpty ? diplomaT.namePending : _nomSaisi,
+    );
+
     return Scaffold(
       // Ph5 (L6d) : AppHeader universel (diplome deverrouille).
       appBar: AppHeader(title: diplomaT.title),
@@ -160,23 +179,22 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             _ParcoursLabel(congrats: congrats, stats: realStats),
             const SizedBox(height: AppTheme.spacingLg),
 
-            // Section photos journal
-            _JournalPhotosSection(
-              photoEntries: photoEntries,
-              isLoading: isJournalLoading,
-            ),
-            const SizedBox(height: AppTheme.spacingLg),
-
-            // Section statistiques REELLES de la session (fallback config).
-            _StatsSection(config: config, stats: realStats),
-            const SizedBox(height: AppTheme.spacingLg),
-
-            // Section carte trace (trace GPS reel de la session — F3)
-            const _MapTraceSection(),
-            const SizedBox(height: AppTheme.spacingLg),
-
-            // Section journal count
-            _JournalCountSection(count: journalEntries.length),
+            // LE DIPLOME PASSE DEVANT SON RECAPITULATIF (tache 836).
+            //
+            // CE QUE LA MESURE A DIT, ET POURQUOI RENDRE LE CERTIFICAT NE
+            // SUFFISAIT PAS. Une fois l'apercu sorti de son `if`, il existait
+            // des l'ouverture — mais il tombait a 1 182 points du haut sur un
+            // ecran de 844, soit 338 points SOUS LA PLIURE : trois blocs de
+            // recapitulatif le precedaient. Christophe aurait donc toujours
+            // ouvert l'ecran sur « Aucune photo dans le journal », et le defaut
+            // qu'il a decrit — « a l'ouverture on ne voit que... » — serait
+            // reste entier.
+            //
+            // L'ORDRE SUIT DONC CE QUE L'ECRAN EST : d'abord la recompense (le
+            // certificat, le nom a y porter, les deux sorties), ensuite
+            // l'aventure en details (photos, chiffres, trace, notes). Le
+            // recapitulatif n'a pas disparu d'un pixel, il est dessous.
+            _buildDiplomaPreview(Theme.of(context), session, realStats, apercu),
             const SizedBox(height: AppTheme.spacingLg),
 
             // Saisie du nom
@@ -188,13 +206,13 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             TextField(
               controller: _nameController,
               decoration: InputDecoration(hintText: diplomaT.namePlaceholder),
-              onChanged: (_) => _generateDiploma(config, realStats),
+              // L'APERCU EST DERIVE, PLUS STOCKE (tache 836). La frappe n'a
+              // plus qu'a demander une reconstruction : le certificat se
+              // recalcule a chaque image a partir du champ, de la config et des
+              // chiffres. Il n'y a donc plus d'etat a oublier de remplir — ce
+              // qui etait exactement le defaut.
+              onChanged: (_) => setState(() {}),
             ),
-            const SizedBox(height: AppTheme.spacingLg),
-
-            // Apercu du diplome
-            if (_diplomaData != null)
-              _buildDiplomaPreview(Theme.of(context), session, realStats),
             const SizedBox(height: AppTheme.spacingLg),
 
             // LES DEUX SORTIES DU DIPLOME ECRIVENT UN FICHIER, DONC ELLES SONT
@@ -216,8 +234,13 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
               child: AppButton(
                 label: diplomaT.downloadPdf,
                 icon: StepwaysIcons.pdf,
-                onPressed: _diplomaData != null && !_isGeneratingPdf
-                    ? () => _generatePdf(config, realStats, session: session)
+                onPressed: _nomSaisi.isNotEmpty && !_isGeneratingPdf
+                    ? () => _generatePdf(
+                        config,
+                        realStats,
+                        session: session,
+                        donnees: apercu,
+                      )
                     : null,
               ),
             ),
@@ -229,16 +252,42 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
               child: AppButton(
                 label: diplomaT.shareDiploma,
                 icon: StepwaysIcons.partager,
-                onPressed: _diplomaData != null && !_isGeneratingPdf
+                onPressed: _nomSaisi.isNotEmpty && !_isGeneratingPdf
                     ? () => _generatePdf(
                         config,
                         realStats,
                         session: session,
+                        donnees: apercu,
                         share: true,
                       )
                     : null,
               ),
             ),
+            const SizedBox(height: AppTheme.spacingLg),
+
+            // --- L'AVENTURE EN DETAILS, SOUS LA RECOMPENSE (tache 836) ---
+            //
+            // Ces quatre sections n'ont pas change d'un pixel : elles ont
+            // seulement cesse de passer DEVANT le diplome. Voir la raison
+            // mesuree au-dessus de l'apercu.
+
+            // Section photos journal
+            _JournalPhotosSection(
+              photoEntries: photoEntries,
+              isLoading: isJournalLoading,
+            ),
+            const SizedBox(height: AppTheme.spacingLg),
+
+            // Section statistiques REELLES de la session (fallback config).
+            _StatsSection(config: config, stats: realStats),
+            const SizedBox(height: AppTheme.spacingLg),
+
+            // Section carte trace (trace GPS reel de la session — F3)
+            const _MapTraceSection(),
+            const SizedBox(height: AppTheme.spacingLg),
+
+            // Section journal count
+            _JournalCountSection(count: journalEntries.length),
           ],
         ),
       ),
@@ -258,42 +307,48 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
     return t.diploma.finisherNumber(number: number);
   }
 
-  void _generateDiploma(TrailConfig config, AdventureStats? stats) {
-    final name = _nameController.text.trim();
-    if (name.isEmpty) {
-      setState(() => _diplomaData = null);
-      return;
-    }
-
-    setState(() {
-      // Chiffres REELS de la session si disponibles (etapes marchees,
-      // distance/D+ parcourus, duree/date reelles), sinon fallback totaux du
-      // sentier (demo/vitrine sans session). Parite GR20, 3.B.2.
-      final useReal = stats != null && stats.hasWalkedStages;
-      _diplomaData = DiplomaGenerator.createDiploma(
-        hikerName: name,
-        trailName: config.displayName,
-        trailRegion: config.region,
-        totalStages: useReal ? stats.stagesWalked : config.totalStages,
-        totalDistanceKm: useReal ? stats.distanceKm : config.totalDistanceKm,
-        totalElevationGain: useReal
-            ? stats.elevationGainM
-            : config.totalElevationGain,
-        completionDate: useReal
-            ? (stats.endDate ?? DateTime.now())
-            : DateTime.now(),
-        durationDays: useReal ? stats.durationDays : config.defaultDuration,
-      );
-    });
+  /// LE CERTIFICAT, CALCULE SANS RIEN STOCKER (tache 836).
+  ///
+  /// C'etait une methode a `setState` qui remplissait un champ d'etat, et qui
+  /// le remettait a `null` quand le nom etait vide. Deux consequences, dont une
+  /// etait le defaut constate : il n'y avait AUCUN certificat a l'ouverture de
+  /// l'ecran (rien n'appelait cette methode), et il fallait se souvenir de la
+  /// rappeler a chaque changement de chiffres.
+  ///
+  /// Derive de ses entrees, le certificat ne peut plus manquer : il existe des
+  /// le premier build. [nom] est deja resolu par l'appelant — le nom tape, ou
+  /// le nom en attente.
+  DiplomaData _construireLeDiplome(
+    TrailConfig config,
+    AdventureStats? stats, {
+    required String nom,
+  }) {
+    // Chiffres REELS de la session si disponibles (etapes marchees,
+    // distance/D+ parcourus, duree/date reelles), sinon fallback totaux du
+    // sentier (demo/vitrine sans session). Parite GR20, 3.B.2.
+    final useReal = stats != null && stats.hasWalkedStages;
+    return DiplomaGenerator.createDiploma(
+      hikerName: nom,
+      trailName: config.displayName,
+      trailRegion: config.region,
+      totalStages: useReal ? stats.stagesWalked : config.totalStages,
+      totalDistanceKm: useReal ? stats.distanceKm : config.totalDistanceKm,
+      totalElevationGain: useReal
+          ? stats.elevationGainM
+          : config.totalElevationGain,
+      completionDate: useReal
+          ? (stats.endDate ?? DateTime.now())
+          : DateTime.now(),
+      durationDays: useReal ? stats.durationDays : config.defaultDuration,
+    );
   }
 
   Widget _buildDiplomaPreview(
     ThemeData theme,
     TrekSession? session,
     AdventureStats? stats,
+    DiplomaData data,
   ) {
-    final data = _diplomaData!;
-
     return AppCard(
       padding: EdgeInsets.zero,
       child: Container(
@@ -361,10 +416,16 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   Future<void> _generatePdf(
     TrailConfig config,
     AdventureStats? stats, {
+    required DiplomaData donnees,
     TrekSession? session,
     bool share = false,
   }) async {
-    if (_diplomaData == null) return;
+    // UN FICHIER N'EST ECRIT QUE POUR UN NOM REEL (tache 836). L'apercu existe
+    // des l'ouverture avec un nom en attente ; un PDF portant ce repli serait
+    // un faux diplome pose dans les fichiers du telephone. Les deux boutons
+    // sont deja desactives sans nom — cette garde est la seconde serrure, pour
+    // qu'un futur appelant ne puisse pas l'oublier.
+    if (_nomSaisi.isEmpty) return;
     // E5.5a : retour haptique moyen a la generation du diplome.
     AppHaptics.medium();
     setState(() => _isGeneratingPdf = true);
@@ -382,7 +443,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
                 endDate.subtract(Duration(days: stats.durationDays)))
           : DateTime.now().subtract(Duration(days: config.defaultDuration));
       final data = DiplomaPdfData(
-        hikerName: _diplomaData!.hikerName,
+        hikerName: donnees.hikerName,
         trailName: config.displayName,
         trailRegion: config.region,
         totalStages: useReal ? stats.stagesWalked : config.totalStages,
@@ -816,14 +877,24 @@ class _StatRow extends StatelessWidget {
   }
 }
 
-/// Section carte du trace — trace GPS reel de la session (F3).
+/// Section carte du trace — la trace de la session, SUR UNE CARTE (F3).
 ///
-/// Lit le trace persiste de la derniere session de tracking du
-/// sentier actif (session_track_points) et le dessine via
-/// [SessionTracePainter]. Fallback : message recapNoMap si aucun
-/// trace enregistre.
+/// Lit la trace de la derniere session par [sessionTraceProvider] — les points
+/// persistes au fil de l'eau, ou la matiere fabriquee en demonstration — et la
+/// pose sur le fond de carte du sentier. Repli : le message `recapNoMap` quand
+/// il n'y a pas deux points a relier.
 class _MapTraceSection extends ConsumerWidget {
   const _MapTraceSection();
+
+  /// La hauteur du cadre de la trace, en points (valeur de parite).
+  static const double _hauteurDeLaTrace = 180;
+
+  /// La marge entre la trace et le bord du cadre, en points.
+  ///
+  /// Nommee parce qu'elle sert DEUX fois : au cadrage d'ouverture, qui en
+  /// deduit le zoom, et au `initialCameraFit` garde-fou. Deux valeurs
+  /// differentes feraient sauter la vue entre la premiere image et la suivante.
+  static const double _margeDeLaTrace = 16;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -841,29 +912,84 @@ class _MapTraceSection extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppTheme.spacingSm),
+        // LA TRACE DU DIPLOME EST SUR UNE CARTE, COMME CELLE DU CARNET
+        // (tache 836).
+        //
+        // ELLE ETAIT DESSINEE A NU : un [SessionTracePainter] posait la
+        // polyligne sur le fond de la carte-conteneur, sans aucune tuile.
+        // Christophe a releve les deux ecrans cote a cote — le carnet montre la
+        // trace sur une carte, le diplome la montrait sur du vide, quand il la
+        // montrait. Un diplome est l'ecran de la recompense : la trace y doit
+        // etre LISIBLE, c'est-a-dire posee sur un terrain.
+        //
+        // MEME MONTAGE QUE LA VIGNETTE DU CARNET, et pour les memes raisons
+        // ecrites la-bas : fond par [FondDeCarte] (seul autorise a batir une
+        // couche de tuiles), centre et zoom calcules AVANT la premiere
+        // image par `cadrageDOuverture` — sans quoi le fond reste gris
+        // definitivement, puisque la vignette n'accepte aucun geste — et
+        // l'attribution ODbL, obligatoire des qu'on affiche de l'OSM.
+        //
+        // LE PEINTRE N'EST PAS SUPPRIME : le recapitulatif d'aventure l'emploie
+        // encore, ou le rendu sans tuiles est assume. Ce lot ne touche qu'aux
+        // deux ecrans que Christophe a nommes.
         AppCard(
           padding: EdgeInsets.zero,
-          child: Container(
-            height: 180,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-            ),
-            child: traceAsync.when(
-              data: (points) {
-                if (points.length < 2) {
-                  return _NoTracePlaceholder(message: diplomaT.recapNoMap);
-                }
-                return CustomPaint(
-                  painter: SessionTracePainter(
-                    points: [for (final p in points) Offset(p.lng, p.lat)],
-                    color: theme.colorScheme.primary,
-                  ),
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) =>
-                  _NoTracePlaceholder(message: diplomaT.recapNoMap),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+            child: SizedBox(
+              height: _hauteurDeLaTrace,
+              width: double.infinity,
+              child: traceAsync.when(
+                data: (points) {
+                  if (points.length < 2) {
+                    return _NoTracePlaceholder(message: diplomaT.recapNoMap);
+                  }
+                  final latLngs = [
+                    for (final p in points) LatLng(p.lat, p.lng),
+                  ];
+                  final cible = LatLngBounds.fromPoints(latLngs);
+                  return LayoutBuilder(
+                    builder: (context, contraintes) {
+                      final ouverture = cadrageDOuverture(
+                        cible,
+                        _margeDeLaTrace,
+                        contraintes.biggest,
+                      );
+                      return FlutterMap(
+                        options: MapOptions(
+                          initialCenter: ouverture.centre,
+                          initialZoom: ouverture.zoom,
+                          initialCameraFit: CameraFit.bounds(
+                            bounds: cible,
+                            padding: const EdgeInsets.all(_margeDeLaTrace),
+                          ),
+                          // Vignette de lecture : aucun geste, pour ne pas
+                          // voler le defilement du diplome sous le doigt.
+                          interactionOptions: const InteractionOptions(
+                            flags: InteractiveFlag.none,
+                          ),
+                        ),
+                        children: [
+                          const FondDeCarte.duSentierActif(),
+                          PolylineLayer(
+                            polylines: [
+                              Polyline(
+                                points: latLngs,
+                                strokeWidth: 3,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ],
+                          ),
+                          const AttributionOsm(),
+                        ],
+                      );
+                    },
+                  );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (_, __) =>
+                    _NoTracePlaceholder(message: diplomaT.recapNoMap),
+              ),
             ),
           ),
         ),

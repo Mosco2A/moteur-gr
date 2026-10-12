@@ -1205,6 +1205,9 @@ class Translations$diploma$fr {
 	/// fr: 'Entre ton nom...'
 	String get namePlaceholder => 'Entre ton nom...';
 
+	/// fr: 'Ton nom apparaîtra ici'
+	String get namePending => 'Ton nom apparaîtra ici';
+
 	/// fr: 'Générer le PDF'
 	String get generatePdf => 'Générer le PDF';
 
@@ -9080,6 +9083,7 @@ extension on Translations {
 			'diploma.title' => 'Diplôme de randonnée',
 			'diploma.yourName' => 'Ton nom',
 			'diploma.namePlaceholder' => 'Entre ton nom...',
+			'diploma.namePending' => 'Ton nom apparaîtra ici',
 			'diploma.generatePdf' => 'Générer le PDF',
 			'diploma.certifies' => 'Certifie que',
 			'diploma.completed' => 'a parcouru le',
@@ -9417,9 +9421,9 @@ extension on Translations {
 			'follow.live' => 'En direct',
 			'follow.offline' => 'Hors ligne',
 			'follow.invalidLink' => 'Lien invalide',
-			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
 			_ => null,
 		} ?? switch (path) {
+			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
 			'cloud.localModeTitle' => 'Mode local',
 			'cloud.localModeBody' => 'Cette installation n\'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Tes données restent sur l\'appareil.',
 			'cloud.statusSection' => 'Cloud',
@@ -9931,9 +9935,9 @@ extension on Translations {
 			'recap.title' => 'Mon aventure',
 			'recap.lockedTitle' => 'Disponible à la fin du trek',
 			'recap.lockedMessage' => 'Termine ou abandonne ton parcours pour retrouver le récapitulatif de ton aventure.',
-			'recap.finisherTitle' => 'Félicitations !',
 			_ => null,
 		} ?? switch (path) {
+			'recap.finisherTitle' => 'Félicitations !',
 			'recap.finisherSubtitle' => 'Tu as terminé ton parcours',
 			'recap.partialTitle' => 'Ton parcours partiel',
 			'recap.partialSubtitle' => 'Ton aventure reste enregistrée',

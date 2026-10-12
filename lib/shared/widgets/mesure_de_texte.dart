@@ -103,3 +103,31 @@ double hauteurDeCelluleMesuree({
 /// debordement repasserait par la case « on coupe pour tenir » — c'est-a-dire
 /// par le defaut que ce lot corrige.
 const double margeDArrondiDuPeintre = 2;
+
+/// LA LARGEUR QU'IL FAUT POUR ECRIRE [texte] SUR UNE SEULE LIGNE (tache 836).
+///
+/// Le pendant horizontal de [hauteurDesTextes], et il repare un defaut de la
+/// meme famille : une colonne trop etroite ne coupe pas le texte a la fin d'un
+/// MOT, elle le coupe DEDANS. Dans la rangee de jours du risque incendie,
+/// « Demain » tombait sur trois lignes — « De », « mai », « n » — et les cases
+/// « Niv. 0 » d'a cote, qui tenaient sur une ligne, ne s'alignaient plus avec
+/// elles.
+///
+/// ON MESURE LA LARGEUR INTRINSEQUE : le peintre est mis en page sans borne, il
+/// rend donc la place que le texte reclame pour ne jamais passer a la ligne. Le
+/// point de garde de l'arrondi est compris, pour la raison deja ecrite dans
+/// [margeDArrondiDuPeintre].
+double largeurDUneLigne({
+  required String texte,
+  required TextStyle style,
+  TextScaler echelle = TextScaler.noScaling,
+  TextDirection direction = TextDirection.ltr,
+}) {
+  final peintre = TextPainter(
+    text: TextSpan(text: texte, style: style),
+    textDirection: direction,
+    maxLines: 1,
+    textScaler: echelle,
+  )..layout();
+  return peintre.width + margeDArrondiDuPeintre;
+}

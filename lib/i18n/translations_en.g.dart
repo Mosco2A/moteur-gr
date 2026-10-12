@@ -611,6 +611,7 @@ class _Translations$diploma$en extends Translations$diploma$fr {
 	@override String get title => 'Trek diploma';
 	@override String get yourName => 'Your name';
 	@override String get namePlaceholder => 'Enter your name...';
+	@override String get namePending => 'Your name will appear here';
 	@override String get generatePdf => 'Generate PDF';
 	@override String get certifies => 'Certifies that';
 	@override String get completed => 'completed the';
@@ -4931,6 +4932,7 @@ extension on TranslationsEn {
 			'diploma.title' => 'Trek diploma',
 			'diploma.yourName' => 'Your name',
 			'diploma.namePlaceholder' => 'Enter your name...',
+			'diploma.namePending' => 'Your name will appear here',
 			'diploma.generatePdf' => 'Generate PDF',
 			'diploma.certifies' => 'Certifies that',
 			'diploma.completed' => 'completed the',
@@ -5268,9 +5270,9 @@ extension on TranslationsEn {
 			'follow.live' => 'Live',
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Invalid link',
-			'follow.invalidLinkHint' => 'This tracking link does not exist or has expired.',
 			_ => null,
 		} ?? switch (path) {
+			'follow.invalidLinkHint' => 'This tracking link does not exist or has expired.',
 			'cloud.localModeTitle' => 'Local mode',
 			'cloud.localModeBody' => 'This installation is not connected to a cloud service: live tracking, online backup and account are disabled. Your data stays on this device.',
 			'cloud.statusSection' => 'Cloud',
@@ -5782,9 +5784,9 @@ extension on TranslationsEn {
 			'recap.title' => 'My adventure',
 			'recap.lockedTitle' => 'Available at the end of the trek',
 			'recap.lockedMessage' => 'Finish or abandon your route to view your adventure recap.',
-			'recap.finisherTitle' => 'Congratulations!',
 			_ => null,
 		} ?? switch (path) {
+			'recap.finisherTitle' => 'Congratulations!',
 			'recap.finisherSubtitle' => 'You completed your route',
 			'recap.partialTitle' => 'Your partial route',
 			'recap.partialSubtitle' => 'Your adventure is still saved',

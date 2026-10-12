@@ -611,6 +611,7 @@ class _Translations$diploma$es extends Translations$diploma$fr {
 	@override String get title => 'Diploma de trekking';
 	@override String get yourName => 'Tu nombre';
 	@override String get namePlaceholder => 'Introduce tu nombre...';
+	@override String get namePending => 'Tu nombre aparecerá aquí';
 	@override String get generatePdf => 'Generar PDF';
 	@override String get certifies => 'Certifica que';
 	@override String get completed => 'ha recorrido el';
@@ -4931,6 +4932,7 @@ extension on TranslationsEs {
 			'diploma.title' => 'Diploma de trekking',
 			'diploma.yourName' => 'Tu nombre',
 			'diploma.namePlaceholder' => 'Introduce tu nombre...',
+			'diploma.namePending' => 'Tu nombre aparecerá aquí',
 			'diploma.generatePdf' => 'Generar PDF',
 			'diploma.certifies' => 'Certifica que',
 			'diploma.completed' => 'ha recorrido el',
@@ -5268,9 +5270,9 @@ extension on TranslationsEs {
 			'follow.live' => 'En directo',
 			'follow.offline' => 'Sin conexión',
 			'follow.invalidLink' => 'Enlace no válido',
-			'follow.invalidLinkHint' => 'Este enlace de seguimiento no existe o ha caducado.',
 			_ => null,
 		} ?? switch (path) {
+			'follow.invalidLinkHint' => 'Este enlace de seguimiento no existe o ha caducado.',
 			'cloud.localModeTitle' => 'Modo local',
 			'cloud.localModeBody' => 'Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Tus datos permanecen en el dispositivo.',
 			'cloud.statusSection' => 'Nube',
@@ -5782,9 +5784,9 @@ extension on TranslationsEs {
 			'recap.title' => 'Mi aventura',
 			'recap.lockedTitle' => 'Disponible al final de la ruta',
 			'recap.lockedMessage' => 'Termina o abandona tu ruta para ver el resumen de tu aventura.',
-			'recap.finisherTitle' => 'Felicidades!',
 			_ => null,
 		} ?? switch (path) {
+			'recap.finisherTitle' => 'Felicidades!',
 			'recap.finisherSubtitle' => 'Has completado tu ruta',
 			'recap.partialTitle' => 'Tu ruta parcial',
 			'recap.partialSubtitle' => 'Tu aventura queda registrada',

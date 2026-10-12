@@ -30,6 +30,8 @@ export 'presentation/health_info_screen.dart'
     show healthInfoFileProvider, healthInfoRepositoryProvider;
 export 'presentation/refus_sauvegarde_systeme_dialog.dart'
     show RefusSauvegardeSystemeDialog;
+export 'presentation/reserve_sous_le_sos.dart'
+    show SosQuiReserveSaPlace, ecartAuDessusDuSos, reserveSousLeSosProvider;
 export 'presentation/sos_button.dart' show SosButton;
 export 'providers/health_prepare_providers.dart'
     show healthPrepareDoneProvider, healthPrepareStepsProvider;

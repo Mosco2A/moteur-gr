@@ -795,6 +795,7 @@
     "title": "Trek diploma",
     "yourName": "Your name",
     "namePlaceholder": "Enter your name...",
+    "namePending": "Your name will appear here",
     "generatePdf": "Generate PDF",
     "certifies": "Certifies that",
     "completed": "completed the",
