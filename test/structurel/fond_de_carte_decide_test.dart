@@ -17,7 +17,7 @@
 //  (b) L'URL d'OSM et `NetworkTileProvider(` n'apparaissent que dans le
 //      decideur — sinon une couche « maison » pourrait contourner (a) avec un
 //      autre widget de flutter_map.
-//  (c) Les trois ecrans du randonneur posent bien `FondDeCarte`.
+//  (c) Les ecrans du randonneur posent bien `FondDeCarte`.
 //
 // L'UNIQUE EXEMPTION, TRANCHEE ET ECRITE : la vue de suivi web
 // (`follow_web_screen.dart`). Elle est ouverte par les PROCHES, depuis un
@@ -45,10 +45,19 @@ const _exemptions = <String, String>{
 };
 
 /// Les ecrans du randonneur, qui DOIVENT lire le fichier telecharge.
+///
+/// LE DIPLOME EST ENTRE DANS CETTE LISTE (tache 836). Il montrait la trace de
+/// la session dessinee A NU par un `CustomPainter`, sans aucune tuile : une
+/// trace sans terrain ne se lit pas, et Christophe l'a releve en comparant avec
+/// la vignette du carnet, qui elle en avait une. Depuis que le diplome pose une
+/// vraie carte, il doit lire le fichier telecharge comme les autres — un
+/// randonneur qui relit son diplome en refuge n'a pas plus de reseau que sur le
+/// sentier.
 const _ecransDuRandonneur = <String>[
   'lib/features/trek/presentation/map/map_content.dart',
   'lib/features/journal/presentation/journal_screen.dart',
   'lib/features/after/presentation/gpx_import_screen.dart',
+  'lib/features/diploma/presentation/diploma_screen.dart',
 ];
 
 /// Le CODE d'un source : commentaires retires, chaines conservees.
@@ -93,7 +102,7 @@ void main() {
       expect(_fichiersOu(_urlOsm), {_leDecideur, ..._exemptions.keys});
     });
 
-    test('(c) les trois ecrans du randonneur posent FondDeCarte', () {
+    test('(c) les ecrans du randonneur posent FondDeCarte', () {
       for (final ecran in _ecransDuRandonneur) {
         expect(
           _sansCommentaires(lireSource(ecran)),
