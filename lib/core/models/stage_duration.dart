@@ -76,3 +76,40 @@ String formatDurationMinutes(int minutes) {
   final m = safe % 60;
   return m == 0 ? '${h}h' : '${h}h${m.toString().padLeft(2, '0')}';
 }
+
+/// LES MINUTES D'UNE DUREE, TOUJOURS SUR DEUX CHIFFRES (tache 835).
+///
+/// Ex. 5 h 03 min -> « 03 », 5 h 30 -> « 30 ». A passer a une phrase de
+/// traduction qui porte deja le mot « h » et le mot « min » : c'est le cas de
+/// `eta.durationHm`, dont la forme (« $h h $m min ») est editoriale et vit
+/// dans les cinq fichiers de langue, donc hors de ce formateur.
+///
+/// POURQUOI CETTE FONCTION EXISTE. Le recapitulatif, le journal et l'ETA
+/// recalculaient tous les trois `inHours` et `inMinutes.remainder(60)` a la
+/// main, et tous les trois OUBLIAIENT le zero : le randonneur lisait « 5 H 3 »
+/// pour cinq heures et trois minutes. Onze AUTRES endroits du depot font le
+/// meme calcul et pensent, eux, a le zero-padder — la preuve que le geste est
+/// juste mais qu'il ne doit pas etre recopie douze fois.
+String deuxChiffresDeMinutes(Duration duree) {
+  final m = duree.inMinutes.remainder(60).abs();
+  return m.toString().padLeft(2, '0');
+}
+
+/// UNE DUREE ECRITE POUR L'ECRAN : « 5h03 », « 4h », « 45 min ».
+///
+/// Sous l'heure, on ecrit les minutes seules : « 0h45 » se lit mal et ce
+/// n'etait pas ce que faisaient les ecrans avant ce lot. Au-dela, on delegue a
+/// [formatDurationMinutes], qui est la forme maison (parite GR20) deja employee
+/// par l'ecran d'itineraire et deja couverte par
+/// `test/core/models/stage_duration_test.dart`.
+///
+/// CE QUE CE LOT CHANGE A L'ECRAN, ET C'EST ASSUME : le recapitulatif et le
+/// journal ecrivaient « 5 h 3 » avec des espaces. Ils ecrivent desormais
+/// « 5h03 », donc comme l'ecran d'itineraire. Le defaut corrige est le zero
+/// manquant ; l'alignement sur la forme maison est le benefice de ne plus avoir
+/// douze formateurs de duree, mais UN seul.
+String formatDuree(Duration duree) {
+  final minutes = duree.inMinutes < 0 ? 0 : duree.inMinutes;
+  if (minutes < 60) return '$minutes min';
+  return formatDurationMinutes(minutes);
+}

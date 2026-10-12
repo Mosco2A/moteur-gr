@@ -755,8 +755,20 @@ class Translations$itinerary$fr {
 	/// fr: 'Jours au total'
 	String get daysTotal => 'Jours au total';
 
-	/// fr: '${walk} jours de marche + ${rest} jours de repos'
-	String daysBreakdown({required Object walk, required Object rest}) => '${walk} jours de marche + ${rest} jours de repos';
+	/// fr: '(one) {$n jour de marche} (other) {$n jours de marche}'
+	String walkDays({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: '${n} jour de marche',
+		other: '${n} jours de marche',
+	);
+
+	/// fr: '(one) {$n jour de repos} (other) {$n jours de repos}'
+	String restDays({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: '${n} jour de repos',
+		other: '${n} jours de repos',
+	);
+
+	/// fr: '${walk} + ${rest}'
+	String daysBreakdown({required Object walk, required Object rest}) => '${walk} + ${rest}';
 }
 
 // Path: tracking
@@ -3190,8 +3202,11 @@ class Translations$recap$fr {
 	/// fr: 'Jour $day'
 	String dayLabel({required Object day}) => 'Jour ${day}';
 
-	/// fr: '$count étape(s)'
-	String dayStages({required Object count}) => '${count} étape(s)';
+	/// fr: '(one) {$n étape} (other) {$n étapes}'
+	String dayStages({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: '${n} étape',
+		other: '${n} étapes',
+	);
 
 	/// fr: 'Journée sans étape terminée'
 	String get dayRest => 'Journée sans étape terminée';
@@ -7383,8 +7398,11 @@ class Translations$nuitees$summary$fr {
 
 	// Translations
 
-	/// fr: '{count} nuit(s) restante(s)'
-	String get remaining => '{count} nuit(s) restante(s)';
+	/// fr: '(one) {$n nuit restante} (other) {$n nuits restantes}'
+	String remaining({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: '${n} nuit restante',
+		other: '${n} nuits restantes',
+	);
 
 	/// fr: '{count} OK'
 	String get done => '{count} OK';
@@ -8681,7 +8699,9 @@ extension on Translations {
 			'itinerary.openMap' => 'Voir sur la carte',
 			'itinerary.stageCount' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} étape', other: '${n} étapes', ), 
 			'itinerary.daysTotal' => 'Jours au total',
-			'itinerary.daysBreakdown' => ({required Object walk, required Object rest}) => '${walk} jours de marche + ${rest} jours de repos',
+			'itinerary.walkDays' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} jour de marche', other: '${n} jours de marche', ), 
+			'itinerary.restDays' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} jour de repos', other: '${n} jours de repos', ), 
+			'itinerary.daysBreakdown' => ({required Object walk, required Object rest}) => '${walk} + ${rest}',
 			'tracking.start' => 'Démarrer',
 			'tracking.pause' => 'Pause',
 			'tracking.resume' => 'Reprendre',
@@ -8902,10 +8922,10 @@ extension on Translations {
 			'checklist.ui.share' => 'PARTAGER',
 			'checklist.ui.infoTitle' => 'Matériel & Sac',
 			'checklist.ui.infoCheckTitle' => 'Cocher les items',
-			'checklist.ui.infoCheckBody' => 'Coche ce que tu emportes — le poids se recalcule en haut.',
-			'checklist.ui.infoRequiredTitle' => 'Obligatoires',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoCheckBody' => 'Coche ce que tu emportes — le poids se recalcule en haut.',
+			'checklist.ui.infoRequiredTitle' => 'Obligatoires',
 			'checklist.ui.infoRequiredBody' => 'Items avec cadenas = réglementation (sifflet, lampe, couverture survie).',
 			'checklist.ui.infoGaugeTitle' => 'Jauge poids',
 			'checklist.ui.infoGaugeBody' => 'Objectif : sac < 15% de ton poids. Vert = OK, Orange = attention, Rouge = trop lourd.',
@@ -9416,10 +9436,10 @@ extension on Translations {
 			'follow.connecting' => 'Connexion…',
 			'follow.live' => 'En direct',
 			'follow.offline' => 'Hors ligne',
-			'follow.invalidLink' => 'Lien invalide',
-			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
 			_ => null,
 		} ?? switch (path) {
+			'follow.invalidLink' => 'Lien invalide',
+			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
 			'cloud.localModeTitle' => 'Mode local',
 			'cloud.localModeBody' => 'Cette installation n\'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Tes données restent sur l\'appareil.',
 			'cloud.statusSection' => 'Cloud',
@@ -9930,10 +9950,10 @@ extension on Translations {
 			'bootstrap.loading' => 'Préparation de ta randonnée…',
 			'recap.title' => 'Mon aventure',
 			'recap.lockedTitle' => 'Disponible à la fin du trek',
-			'recap.lockedMessage' => 'Termine ou abandonne ton parcours pour retrouver le récapitulatif de ton aventure.',
-			'recap.finisherTitle' => 'Félicitations !',
 			_ => null,
 		} ?? switch (path) {
+			'recap.lockedMessage' => 'Termine ou abandonne ton parcours pour retrouver le récapitulatif de ton aventure.',
+			'recap.finisherTitle' => 'Félicitations !',
 			'recap.finisherSubtitle' => 'Tu as terminé ton parcours',
 			'recap.partialTitle' => 'Ton parcours partiel',
 			'recap.partialSubtitle' => 'Ton aventure reste enregistrée',
@@ -9958,7 +9978,7 @@ extension on Translations {
 			'recap.gpxError' => 'Export impossible',
 			'recap.daysSection' => 'Jour par jour',
 			'recap.dayLabel' => ({required Object day}) => 'Jour ${day}',
-			'recap.dayStages' => ({required Object count}) => '${count} étape(s)',
+			'recap.dayStages' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} étape', other: '${n} étapes', ), 
 			'recap.dayRest' => 'Journée sans étape terminée',
 			'recap.noDays' => 'Aucune journée enregistrée au GPS',
 			'recap.averageSpeed' => ({required Object kmh}) => '${kmh} km/h de moyenne',
@@ -10089,7 +10109,7 @@ extension on Translations {
 			'nuitees.card.lockedHint' => 'Décoche la nuit pour changer le type',
 			'nuitees.card.eveBadge' => 'J-1',
 			'nuitees.card.eveOfDeparture' => 'Veille du départ',
-			'nuitees.summary.remaining' => '{count} nuit(s) restante(s)',
+			'nuitees.summary.remaining' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} nuit restante', other: '${n} nuits restantes', ), 
 			'nuitees.summary.done' => '{count} OK',
 			'nuitees.summary.allBooked' => 'TOUTES LES NUITS RÉSERVÉES',
 			'nuitees.empty.title' => 'Configure d\'abord ton itinéraire',

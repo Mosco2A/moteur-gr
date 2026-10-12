@@ -553,10 +553,10 @@ class _CompactSummary extends StatelessWidget {
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
-                t.nuitees.summary.remaining.replaceAll(
-                  '{count}',
-                  missingDays.length.toString(),
-                ),
+                // UN VRAI PLURIEL, PLUS UN « (s) » (tache 835) : le randonneur
+                // lisait « 9 nuit(s) restante(s) ». C'est le resolveur cardinal
+                // de Slang qui accorde, dans les cinq langues.
+                t.nuitees.summary.remaining(n: missingDays.length),
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: AppTheme.orangeDifficile,

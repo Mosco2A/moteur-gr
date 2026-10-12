@@ -348,7 +348,15 @@
       "other": "$n stages"
     },
     "daysTotal": "Days in total",
-    "daysBreakdown": "${walk} walking days + ${rest} rest days"
+    "walkDays(plural)": {
+      "one": "$n walking day",
+      "other": "$n walking days"
+    },
+    "restDays(plural)": {
+      "one": "$n rest day",
+      "other": "$n rest days"
+    },
+    "daysBreakdown": "${walk} + ${rest}"
   },
   "tracking": {
     "start": "Start",
@@ -1861,7 +1869,10 @@
     "gpxError": "Export failed",
     "daysSection": "Day by day",
     "dayLabel": "Day $day",
-    "dayStages": "$count stage(s)",
+    "dayStages(plural)": {
+      "one": "$n stage",
+      "other": "$n stages"
+    },
     "dayRest": "No stage completed that day",
     "noDays": "No day recorded by GPS",
     "averageSpeed": "$kmh km/h on average"
@@ -2055,7 +2066,10 @@
       "eveOfDeparture": "Night before departure"
     },
     "summary": {
-      "remaining": "{count} night(s) left",
+      "remaining(plural)": {
+        "one": "$n night left",
+        "other": "$n nights left"
+      },
       "done": "{count} done",
       "allBooked": "ALL NIGHTS BOOKED"
     },

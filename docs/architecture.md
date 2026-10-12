@@ -65,15 +65,15 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte721<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-141 325<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte723<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+141 477<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
-| `lib/core/` |192 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |32 663<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` |473<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |98 355<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/core/` |194 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |32 777<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
+| `lib/features/` |473<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |98 393<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 31 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 5 543<!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
@@ -88,11 +88,11 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 
 | Feature | Fichiers | Lignes |
 |---|---|---|
-| `trek` |80<!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> |17 796<!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
+| `trek` |80<!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> |17 810<!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
 | `safety` | 31 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> |7 068 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
 | `feasibility` | 31 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 736 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
 | `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 5 054 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
-| `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 953 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
+| `planning` | 25 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 8 957 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
 
 `trek` reste la plus grosse feature, et de loin.
 
@@ -149,7 +149,7 @@ de `test/structurel/couches_respectees_645_test.dart` ne comptent que les
 46 <!-- audit:arborescence.tailles.nombre_au_dela_de_500 --> fichiers de `lib/` dépassent
 500 lignes, dont 17 <!-- audit:arborescence.tailles.repartition.>800 --> au-delà de 800. Le
 plus gros, `lib/features/journal/presentation/journal_screen.dart`, compte
-1 261 <!-- audit:arborescence.tailles.au_dela_de_500.0.1 --> lignes. **Non conforme.**
+1 259 <!-- audit:arborescence.tailles.au_dela_de_500.0.1 --> lignes. **Non conforme.**
 
 La racine de `lib/` porte 1 <!-- audit:arborescence.racine_lib.intrus --> dossier non
 autorisé (ECR-13) : `lib/docs/`, de la documentation déposée en `.dart`

@@ -53,7 +53,10 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(buildBar(distanceRemainingKm: 7.2));
-      expect(find.text('7.2 km'), findsOneWidget);
+      // VIRGULE ET NON POINT depuis la tache 835 : ces chiffres sont CALCULES
+      // et passent par `nombreEnClair`, qui lit le separateur dans la langue.
+      // Les tests tournent en `fr` (locale de base), donc « 7,2 km ».
+      expect(find.text('7,2 km'), findsOneWidget);
       expect(find.text(t.tracking.remaining), findsOneWidget);
       // Et la ligne grise qu'il occupait n'existe plus.
       expect(find.text(t.map.stageRemaining(km: '7.2')), findsNothing);
@@ -116,7 +119,7 @@ void main() {
       await tester.pumpWidget(buildBar());
       expect(find.byType(Divider), findsOneWidget);
       expect(find.text(t.tracking.remaining), findsOneWidget);
-      expect(find.text('5.3 km'), findsOneWidget);
+      expect(find.text('5,3 km'), findsOneWidget);
       // Et rien de ce qui demande une mesure ne s invente.
       expect(find.text(t.tracking.dPlus), findsNothing);
       expect(find.text(t.tracking.avgSpeed), findsNothing);
@@ -140,22 +143,22 @@ void main() {
       // LE TOTAL EST MONTE A LA PASTILLE DU TITRE (tache 808) : il est encore
       // affiche, mais plus dans le tableau — et son libelle « Total » a
       // disparu avec lui, la pastille le nommant deja.
-      expect(find.text('180.4 km'), findsOneWidget);
+      expect(find.text('180,4 km'), findsOneWidget);
       expect(
         find.descendant(
           of: find.byType(PastilleDuPerimetre),
-          matching: find.text('180.4 km'),
+          matching: find.text('180,4 km'),
         ),
         findsOneWidget,
       );
       expect(find.text(t.tracking.total), findsNothing);
 
       // ET LE RESTANT A PRIS SA PLACE, premiere case du tableau.
-      expect(find.text('5.3 km'), findsOneWidget);
-      expect(find.text('42.7 km'), findsOneWidget);
+      expect(find.text('5,3 km'), findsOneWidget);
+      expect(find.text('42,7 km'), findsOneWidget);
       expect(find.text('1240 m'), findsOneWidget);
       expect(find.text('980 m'), findsOneWidget);
-      expect(find.text('3.4 km/h'), findsOneWidget);
+      expect(find.text('3,4 km/h'), findsOneWidget);
       // Altitude arrondie au metre : on ne feint pas le decimetre.
       expect(find.text('1466 m'), findsOneWidget);
 
@@ -224,7 +227,7 @@ void main() {
       // sixieme, le restant, est connue avant tout GPS — c'est la longueur de
       // l'etape qu'on n'a pas encore marchee, pas une mesure.
       expect(find.text(StageProgressBar.pendingValueLabel), findsNWidgets(5));
-      expect(find.text('5.3 km'), findsOneWidget);
+      expect(find.text('5,3 km'), findsOneWidget);
     });
 
     testWidgets('un ZERO n est jamais affiche a la place du tiret', (
@@ -232,9 +235,9 @@ void main() {
     ) async {
       await tester.pumpWidget(buildBar(showPendingValues: true));
 
-      expect(find.text('0.0 km'), findsNothing);
+      expect(find.text('0,0 km'), findsNothing);
       expect(find.text('0 m'), findsNothing);
-      expect(find.text('0.0 km/h'), findsNothing);
+      expect(find.text('0,0 km/h'), findsNothing);
     });
 
     testWidgets('les chiffres du PROGRAMME sont reels, seuls les mesures '
@@ -252,12 +255,12 @@ void main() {
         ),
       );
 
-      expect(find.text('96.4 km'), findsOneWidget);
+      expect(find.text('96,4 km'), findsOneWidget);
       expect(find.text('450 m'), findsOneWidget);
       expect(find.text('200 m'), findsOneWidget);
       // Le restant est une case du tableau depuis la tache 808, plus une
       // phrase grise sous la barre.
-      expect(find.text('12.0 km'), findsOneWidget);
+      expect(find.text('12,0 km'), findsOneWidget);
       expect(find.text('0%'), findsOneWidget);
       // Restent en attente : parcouru, vitesse moyenne, altitude.
       expect(find.text(StageProgressBar.pendingValueLabel), findsNWidgets(3));

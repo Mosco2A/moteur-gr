@@ -93,13 +93,13 @@ void main() {
         expect(
           find.descendant(
             of: find.byType(PastilleDuPerimetre),
-            matching: find.text('8.1 km'),
+            matching: find.text('8,1 km'),
           ),
           findsOneWidget,
           reason: 'vueSentier=$vueSentier : « Passer total avec le titre »',
         );
         // Et il n est plus nulle part ailleurs : pas deux totaux a l ecran.
-        expect(find.text('8.1 km'), findsOneWidget);
+        expect(find.text('8,1 km'), findsOneWidget);
         expect(find.text(t.tracking.total), findsNothing);
       }
     });
@@ -118,7 +118,7 @@ void main() {
           findsOneWidget,
           reason: 'vueSentier=$vueSentier : « ce qui bouge dans le tableau »',
         );
-        expect(find.text('7.7 km'), findsOneWidget);
+        expect(find.text('7,7 km'), findsOneWidget);
         // La ligne grise qu il occupait n existe plus du tout.
         expect(find.text(t.map.stageRemaining(km: '7.7')), findsNothing);
       }
@@ -239,7 +239,7 @@ void main() {
       // points, le nom du lieu et l avertissement priment sur une longueur
       // d etape qui ne bouge pas.
       expect(
-        find.text('8.1 km'),
+        find.text('8,1 km'),
         findsNothing,
         reason: 'le total s efface tant que le marcheur est hors trace',
       );

@@ -12,6 +12,7 @@ import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/libelle_de_direction.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -282,10 +283,13 @@ class _ConfigSummaryCard extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingMd),
 
           // Direction (sens de marche choisi).
+          //
+          // EN CLAIR, PAS EN CODE (tache 835) : cette ligne posait la String
+          // brute et le Resume affichait « Direction NS ».
           _ConfigRow(
             icon: StepwaysIcons.maPosition,
             label: t.summary.direction,
-            value: direction,
+            value: libelleDeDirection(direction, t),
           ),
 
           // Duree.

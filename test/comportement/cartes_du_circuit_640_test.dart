@@ -418,7 +418,7 @@ void main() {
       // Le poids annonce est celui du circuit ENTIER : un seul chiffre.
       expect(find.byKey(const ValueKey('cartes-poids')), findsOneWidget);
       expect(
-        find.textContaining('260.0'),
+        find.textContaining('260,0'),
         findsWidgets,
         reason: 'le poids du circuit entier, annonce avant tout transfert',
       );
@@ -490,12 +490,12 @@ void main() {
       );
       // CE QUI VA REELLEMENT VOYAGER, PAS LE POIDS TOTAL.
       expect(
-        find.textContaining('80.0'),
+        find.textContaining('80,0'),
         findsWidgets,
         reason: 'ce qui va REELLEMENT voyager, pas le poids total',
       );
       expect(
-        find.textContaining('180.0'),
+        find.textContaining('180,0'),
         findsWidgets,
         reason: 'ce qui est deja la se dit AVANT, pas apres',
       );

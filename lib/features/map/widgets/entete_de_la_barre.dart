@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/nombre_en_clair.dart';
 import '../../../i18n/translations.g.dart';
 
 /// La pastille du titre : LE PERIMETRE, ET SA LONGUEUR (tache 808).
@@ -79,7 +80,10 @@ class PastilleDuPerimetre extends StatelessWidget {
           // pas un zero qui se lirait comme une mesure (regle L5-6).
           if (totalDistanceKm != null) ...[
             if (perimetre != null) const SizedBox(width: AppTheme.spacingXs),
-            Text('${totalDistanceKm!.toStringAsFixed(1)} km', style: style),
+            // LE TOTAL PASSE PAR LE MEME FORMATEUR QUE LE TABLEAU (tache 835).
+            // Sans cela, la MEME barre aurait affiche « 180.4 km » dans sa
+            // pastille de titre et « 7,2 km » dans ses cases juste dessous.
+            Text('${_totalEnClair(totalDistanceKm!)} km', style: style),
           ],
         ],
       ),
@@ -135,3 +139,7 @@ class PuceHorsTrace extends StatelessWidget {
     );
   }
 }
+
+/// Le total du sentier, ecrit dans la langue active (tache 835).
+String _totalEnClair(double km) =>
+    nombreEnClair(km, LocaleSettings.currentLocale.languageCode);
