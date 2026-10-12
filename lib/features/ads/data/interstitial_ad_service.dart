@@ -38,6 +38,7 @@ import '../../../core/error/error_handler.dart';
 /// raison : qu'un test puisse COMPTER les affichages reellement partis plutot
 /// que de regarder des pixels.
 class InterstitialAdService {
+  /// [enabled] faux coupe tout chargement reel ; le chargeur est injectable.
   InterstitialAdService({
     bool enabled = true,
     String? adUnitId,

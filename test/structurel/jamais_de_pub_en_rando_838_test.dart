@@ -24,16 +24,17 @@
 //
 // CE FICHIER NE MESURE DONC PAS LE COMPORTEMENT, IL MESURE LE SOURCE. Il lit
 // `ads_providers.dart` et exige d'y TROUVER la garde. Pour l'eteindre, il faut
-// venir ici et effacer une affirmation qui porte le verbatim de Christophe et sa
-// date — c'est-a-dire le faire SCIEMMENT, et en laisser la trace dans un diff.
+// venir ici et effacer une affirmation qui porte le verbatim de Christophe
+// et sa date — c'est-a-dire le faire SCIEMMENT, et en laisser la trace
+// dans un diff.
 // Une suppression silencieuse n'est plus possible.
 //
 // LE COMPORTEMENT, LUI, RESTE MESURE AILLEURS, ET C'EST VOULU : le groupe B7 de
 // `pub_v1_595_test.dart` verifie sur la vraie decision — base de donnees,
-// monetisation reelle, regie comptant les demandes REELLEMENT parties — qu'aucune
-// banniere ne part en marchant un sentier gratuit. Les deux gardes sont
-// complementaires : celle-la dit que la regle EST ECRITE, l'autre qu'elle
-// FONCTIONNE.
+// monetisation reelle, regie comptant les demandes REELLEMENT parties —
+// qu'aucune banniere ne part en marchant un sentier gratuit. Les deux
+// gardes sont complementaires : celle-la dit que la regle EST ECRITE,
+// l'autre qu'elle FONCTIONNE.
 library;
 
 import 'package:flutter_test/flutter_test.dart';
@@ -66,10 +67,11 @@ void main() {
             'LE PROVIDER $_predicat A DISPARU DE $_decision.\n'
             'Il porte la regle de Christophe, verbatim : « IL N Y A PAS DE PUB '
             'POSSIBLE EN MODE RANDO !!! ».\n'
-            'Cette regle a deja ete retiree une fois, le 27/09, quelques heures '
-            'apres avoir ete posee, et ses six tests sont partis avec elle — '
-            'personne n a pu le voir. Si tu la retires de nouveau, ce n est pas '
-            'un detail de refactoring : c est defaire une decision de '
+            'Cette regle a deja ete retiree une fois, le 27/09, quelques '
+            'heures apres avoir ete posee, et ses six tests sont partis '
+            'avec elle — '
+            'personne n a pu le voir. Si tu la retires de nouveau, ce n est '
+            'pas un detail de refactoring : c est defaire une decision de '
             'Christophe. Va le lui demander.',
       );
     });
@@ -96,7 +98,7 @@ void main() {
       );
     });
 
-    test('la garde passe AVANT toute attente — aucune demande ne peut partir', () {
+    test('la garde passe AVANT toute attente : rien ne peut partir', () {
       final code = _lignesDeCode(_decision);
       final garde = code.indexWhere(
         (l) => l.contains('watch($_predicat)') && l.contains('return false'),
@@ -117,14 +119,14 @@ void main() {
             'LA GARDE EST PASSEE APRES UNE ATTENTE (ligne de garde $garde, '
             'premiere attente $premiereAttente). En mode rando, rien ne doit '
             'etre consulte ni demande : ni le consentement publicitaire, ni la '
-            'monetisation, ni la regie. Une garde posee apres un `await` laisse '
-            'la chaine publicitaire demarrer avant de dire non — et une '
-            'banniere masquee mais DEMANDEE compte une impression et envoie les '
-            'donnees de l appareil chez Google.',
+            'monetisation, ni la regie. Une garde posee apres un `await` '
+            'laisse la chaine publicitaire demarrer avant de dire non — et une '
+            'banniere masquee mais DEMANDEE compte une impression et envoie '
+            'les donnees de l appareil chez Google.',
       );
     });
 
-    test('la consigne perimee « ne remets pas de garde ici » a ete retiree', () {
+    test('la consigne perimee qui interdisait cette garde a disparu', () {
       // CE TEST GARDE LA MEMOIRE A JOUR, PAS LE CODE. Le fichier portait une
       // consigne explicite au prochain agent : « QUE LE PROCHAIN AGENT NE
       // REMETTE PAS DE GARDE ICI ». Elle a ete ecrite de bonne foi le 27/09 ;

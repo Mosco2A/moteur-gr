@@ -37,6 +37,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/routing/app_router.dart';
 
+import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'regie_pub_absente.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
+
 // CETTE LECTURE EST PASSEE EN PRODUCTION (tache 838, D2), ET ELLE N'EST DONC
 // PLUS ECRITE DEUX FOIS.
 //
@@ -51,12 +58,6 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 // divergeront. Les tests qui l'utilisent n'ont pas change d'une ligne : ils
 // importent ce socle, et le nom leur arrive toujours.
 export 'package:moteur_gr/core/routing/app_router.dart' show cheminAffiche;
-import 'package:moteur_gr/i18n/translations.g.dart';
-import 'package:moteur_gr/main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'regie_pub_absente.dart';
-import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 // ---------------------------------------------------------------------------
 // Les drapeaux de l'application (etat de premier lancement)

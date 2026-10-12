@@ -43,7 +43,7 @@ class _Navigation extends ChangeNotifier {
 /// pas affirmer « rien n'a encore ete demande ». La liste vit donc dans le
 /// test, et l'espion ne fait qu'y ajouter.
 class _Espion extends Interstitiel {
-  _Espion(Ref ref, this.demandes) : super(ref);
+  _Espion(super.ref, this.demandes);
 
   final List<String> demandes;
 

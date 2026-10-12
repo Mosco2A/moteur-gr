@@ -33,6 +33,7 @@ import 'core/services/sync_scheduler.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
 import 'shared/widgets/cadre_demo.dart';
+import 'features/ads/presentation/porteur_d_interstitiel.dart';
 import 'features/ads/providers/ads_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'features/settings/data/settings_service.dart';
@@ -41,7 +42,6 @@ import 'features/feasibility/data/hiker_profile_repository.dart';
 import 'features/safety/presentation/health_info_screen.dart'
     show healthInfoFileProvider;
 import 'features/safety/presentation/backup_consent_gate.dart';
-import 'features/ads/presentation/porteur_d_interstitiel.dart';
 import 'features/trek/presentation/mention_marche_simulee.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';

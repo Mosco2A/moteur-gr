@@ -73,7 +73,6 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/ad_config.dart';
 import 'package:moteur_gr/core/config/feature_flags.dart';
 import 'package:moteur_gr/core/data/database.dart';
-import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/providers/service_providers.dart';
@@ -81,11 +80,12 @@ import 'package:moteur_gr/core/services/consent_service.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/wallet_iap_service.dart';
 import 'package:moteur_gr/core/services/wallet_store.dart';
-import 'package:moteur_gr/features/after/after_facade.dart'
-    show latestTrekSessionProvider;
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/ads/data/banner_ad_presenter.dart';
 import 'package:moteur_gr/features/ads/presentation/banner_ad_slot.dart';
 import 'package:moteur_gr/features/ads/providers/ads_providers.dart';
+import 'package:moteur_gr/features/after/after_facade.dart'
+    show latestTrekSessionProvider;
 import 'package:moteur_gr/features/consent/presentation/consent_settings_screen.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';

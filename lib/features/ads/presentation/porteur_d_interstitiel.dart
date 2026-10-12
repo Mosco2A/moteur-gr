@@ -28,8 +28,8 @@
 ///
 /// ET CELA LE REND MESURABLE SANS APPLICATION. Un test passe un
 /// `ChangeNotifier` et une fermeture qui rend le chemin qu'il veut : il peut
-/// donc faire arriver le randonneur sur l'ecran d'urgence, ou en pleine marche, sans monter un
-/// routeur.
+/// donc faire arriver le randonneur sur l'ecran d'urgence, ou en pleine
+/// marche, sans monter un routeur.
 ///
 /// HORS CADENCE, IL EST TRANSPARENT : il rend son enfant tel quel et n'ajoute
 /// aucun noeud visible a l'arbre.
@@ -45,6 +45,7 @@ import '../providers/interstitiel_providers.dart';
 /// Enveloppe l'application : a chaque changement d'ecran, la cadence est
 /// consultee.
 class PorteurDInterstitiel extends ConsumerStatefulWidget {
+  /// [navigation] previent du changement d'ecran, [chemin] dit lequel.
   const PorteurDInterstitiel({
     super.key,
     required this.child,

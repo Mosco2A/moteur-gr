@@ -33,10 +33,10 @@
 ///
 /// Ce fichier ne lit aucune base, n'appelle aucun SDK, et ne connait ni
 /// Riverpod ni Flutter. Il ne contient QUE la decision. C'est ce qui permet
-/// de la mesurer exhaustivement — chaque refus a son test — sans monter une application, et
-/// c'est ce qui evite la faute que la banniere a connue : une regle eparpillee
-/// dans des conditions d'ecran, que le prochain emplacement publicitaire
-/// n'herite pas.
+/// de la mesurer exhaustivement — chaque refus a son test — sans monter
+/// une application, et c'est ce qui evite la faute que la banniere a connue :
+/// une regle eparpillee dans des conditions d'ecran, que le prochain
+/// emplacement publicitaire n'herite pas.
 ///
 /// LE RESTE — l'horloge d'utilisation, l'etat du dernier affichage, la regie —
 /// est dans `providers/interstitiel_providers.dart`, et c'est lui qui apporte
@@ -85,6 +85,7 @@ const Set<String> kCheminsSansInterstitiel = {
 /// Tout ce que la decision a besoin de savoir, et rien de plus. Les faits
 /// arrivent d'ailleurs ; ici on ne fait que les lire.
 class MomentDInterstitiel {
+  /// Les faits du moment, tous requis : la decision n'en devine aucun.
   const MomentDInterstitiel({
     required this.utilisation,
     required this.utilisationAuDernier,

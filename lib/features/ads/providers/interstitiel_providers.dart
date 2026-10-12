@@ -40,6 +40,7 @@ import 'ads_providers.dart';
 /// demi-heure d'usage de CETTE session. C'est le choix le plus favorable au
 /// randonneur, et il evite d'ecrire une preference de plus pour une publicite.
 class HorlogeDUtilisation {
+  /// [maintenant] est injectable : un test decide de l'heure qu'il est.
   HorlogeDUtilisation({DateTime Function()? maintenant})
     : _maintenant = maintenant ?? DateTime.now {
     _depuis = _maintenant();
@@ -134,7 +135,8 @@ final interstitialAdServiceProvider = Provider<InterstitialAdService>((ref) {
 /// pour un format qui prend tout l'ecran : le randonneur vient de changer de
 /// contexte, il n'est pas en train de lire ni de saisir quelque chose.
 class Interstitiel {
-  Interstitiel(this._ref);
+  /// [ref] donne acces aux faits que la cadence demande.
+  Interstitiel(Ref ref) : _ref = ref;
 
   final Ref _ref;
 
