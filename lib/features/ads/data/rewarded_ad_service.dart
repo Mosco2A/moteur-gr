@@ -23,8 +23,9 @@ enum RewardedOutcome {
 
 /// Service de pub RÉCOMPENSÉE (rewarded) — StepWays L6/A6.
 ///
-/// Charge et affiche UNE pub rewarded (format AUTORISÉ, avec les bannières) ;
-/// PAS d'interstitiel (#99305/#99370). Sur récompense effective, l'appelant
+/// Charge et affiche UNE pub rewarded (format AUTORISÉ, avec les bannières et,
+/// depuis la tâche 838, l'interstitiel — qui a son propre service,
+/// [InterstitialAdService], et sa propre cadence). Sur récompense effective, l'appelant
 /// crédite le sans-pub 24 h (`MonetizationService.grantRewardNoAds`) — ce
 /// service NE connaît PAS la monétisation, il ne fait que la mécanique pub.
 ///

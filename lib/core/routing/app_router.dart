@@ -908,3 +908,26 @@ String? redirectForPath(String path) {
 
   return null;
 }
+
+/// LE CHEMIN DE L'ECRAN AFFICHE, lu sur le routeur (tache 838, D2).
+///
+/// POURQUOI CETTE FONCTION EXISTE DANS LE SOCLE. L'interstitiel doit savoir sur
+/// quel ecran le randonneur vient d'arriver, pour ne JAMAIS s'ouvrir sur le
+/// chemin du secours (`/emergency`, `/health`, `/signalement`). La feature
+/// `ads` ne connait pas le routeur — c'est `main.dart` qui lui passe ce
+/// renseignement — et il faut donc un endroit, cote socle, qui sache le lire.
+///
+/// ON REND LA ROUTE DU HAUT DE LA PILE, PAS L'URL. `config.uri.path` porte
+/// l'adresse complete avec ses parametres ; ce qui interesse l'appelant est la
+/// route DECLAREE sur laquelle on se trouve. `matchedLocation` de la derniere
+/// correspondance la donne, et l'on retombe sur le chemin de l'URL quand la
+/// pile est vide (tout premier rendu).
+///
+/// C'est la meme lecture que le socle de test `parcours_reel.dart` fait depuis
+/// la tache 579 pour savoir quel ecran il regarde.
+String cheminAffiche() {
+  final config = appRouter.routerDelegate.currentConfiguration;
+  if (config.matches.isEmpty) return config.uri.path;
+  final haut = config.matches.last.matchedLocation;
+  return haut.isEmpty ? config.uri.path : haut;
+}

@@ -9,8 +9,22 @@ import 'dart:io' show Platform;
 /// codes en dur dans le depot. Ainsi « brancher les vrais identifiants AdMob »
 /// = le cablage complet + le point d'injection prod, sans fuite de SKU reel.
 ///
-/// FORMATS AUTORISES (decision Chris #99305/#99370) : BANNIERES + RECOMPENSEES
-/// UNIQUEMENT. PAS d'interstitiel — aucune API interstitielle n'est exposee ici.
+/// FORMATS AUTORISES : BANNIERES, RECOMPENSEES, ET DEPUIS LE 12/10/2026
+/// L'INTERSTITIEL (tache 838, volet D2).
+///
+/// CE QUE CE FICHIER A DIT JUSQU'ICI, ET POURQUOI IL NE LE DIT PLUS. La ligne
+/// precedente affirmait « BANNIERES + RECOMPENSEES UNIQUEMENT. PAS
+/// d'interstitiel — aucune API interstitielle n'est exposee ici » (decision
+/// #99305/#99370). Christophe a tranche depuis, verbatim : « j en veu une toute
+/// les demi-heures heures d utilisation ». L'interstitiel entre donc dans les
+/// formats, et son identifiant est expose ici comme les deux autres.
+///
+/// IL N'ENTRE PAS SANS LAISSE, ET C'EST LE POINT. Un interstitiel est le format
+/// le plus intrusif du catalogue : il PREND l'ecran entier. Sa cadence, et les
+/// endroits ou il ne s'ouvre jamais, sont decrits par
+/// [CadenceInterstitiel] — une demi-heure d'utilisation entre deux, jamais
+/// pendant la marche, jamais sur le chemin du secours. Ce fichier ne porte que
+/// l'identifiant ; la regle est ailleurs, et elle est testee.
 abstract final class AdConfig {
   // --- Ad-units de TEST officiels Google (sandbox, surchargeables en prod) ---
 
@@ -29,6 +43,14 @@ abstract final class AdConfig {
   static const String _testRewardedIos =
       'ca-app-pub-3940256099942544/1712485313';
 
+  /// Interstitiel de test officiel (Android).
+  static const String _testInterstitialAndroid =
+      'ca-app-pub-3940256099942544/1033173712';
+
+  /// Interstitiel de test officiel (iOS).
+  static const String _testInterstitialIos =
+      'ca-app-pub-3940256099942544/4411468910';
+
   // --- Injection PROD via --dart-define (vide par defaut => test) -----------
 
   static const String _prodBannerAndroid = String.fromEnvironment(
@@ -42,6 +64,12 @@ abstract final class AdConfig {
   );
   static const String _prodRewardedIos = String.fromEnvironment(
     'ADMOB_REWARDED_IOS',
+  );
+  static const String _prodInterstitialAndroid = String.fromEnvironment(
+    'ADMOB_INTERSTITIAL_ANDROID',
+  );
+  static const String _prodInterstitialIos = String.fromEnvironment(
+    'ADMOB_INTERSTITIAL_IOS',
   );
 
   // --- PUBS DE TEST VISIBLES SUR LE CANAL DE TEST (tache 639, DEM-260930-1224)
@@ -92,7 +120,9 @@ abstract final class AdConfig {
       _prodBannerAndroid.isNotEmpty ||
       _prodBannerIos.isNotEmpty ||
       _prodRewardedAndroid.isNotEmpty ||
-      _prodRewardedIos.isNotEmpty;
+      _prodRewardedIos.isNotEmpty ||
+      _prodInterstitialAndroid.isNotEmpty ||
+      _prodInterstitialIos.isNotEmpty;
 
   /// Ad-unit BANNIERE pour la plateforme courante (prod si injecte, sinon test).
   static String bannerUnitId() {
@@ -112,6 +142,25 @@ abstract final class AdConfig {
     return _prodRewardedAndroid.isNotEmpty
         ? _prodRewardedAndroid
         : _testRewardedAndroid;
+  }
+
+  /// Ad-unit INTERSTITIEL pour la plateforme courante (prod si injecte, sinon
+  /// test).
+  ///
+  /// ENTRE LE 12/10/2026 (tache 838, D2) : « j en veu une toute les
+  /// demi-heures heures d utilisation » (Christophe). Meme doctrine que les deux
+  /// autres formats — le moteur ne porte que l'identifiant de TEST, la prod
+  /// s'injecte au build par `--dart-define ADMOB_INTERSTITIAL_ANDROID` /
+  /// `ADMOB_INTERSTITIAL_IOS`.
+  static String interstitialUnitId() {
+    if (_isIos) {
+      return _prodInterstitialIos.isNotEmpty
+          ? _prodInterstitialIos
+          : _testInterstitialIos;
+    }
+    return _prodInterstitialAndroid.isNotEmpty
+        ? _prodInterstitialAndroid
+        : _testInterstitialAndroid;
   }
 
   /// Plateforme iOS ? (defaut Android hors iOS ; jamais d'exception en test).

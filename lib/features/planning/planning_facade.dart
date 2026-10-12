@@ -37,3 +37,11 @@ export 'providers/planning_provider.dart'
         retainedDurationProvider,
         selectedDurationProvider;
 export 'providers/shop_providers.dart' show trailShopsProvider;
+// LE VERROU DE RANDO SORT PAR LA PORTE (tache 838, D1). La decision
+// publicitaire a besoin du predicat « une rando est en cours » pour tenir la
+// regle de Christophe « IL N Y A PAS DE PUB POSSIBLE EN MODE RANDO !!! ». Elle
+// lit celui qui existe plutot que d'en ecrire un second — et elle le lit par
+// cette facade, parce que le plafond des croisements entre features est a ZERO
+// (`couches_respectees_645_test.dart`) et qu'un import visant
+// `providers/trek_edit_lock_provider.dart` le ferait rougir.
+export 'providers/trek_edit_lock_provider.dart' show trekEditLockProvider;

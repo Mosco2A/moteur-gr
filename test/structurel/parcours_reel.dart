@@ -36,6 +36,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/routing/app_router.dart';
+
+// CETTE LECTURE EST PASSEE EN PRODUCTION (tache 838, D2), ET ELLE N'EST DONC
+// PLUS ECRITE DEUX FOIS.
+//
+// L'interstitiel doit savoir sur quel ecran le randonneur vient d'arriver pour
+// ne jamais s'ouvrir sur le chemin du secours : `cheminAffiche` est devenue une
+// fonction du socle (`core/routing/app_router.dart`), avec le meme corps, au
+// caractere pres, que celui qui vivait ici depuis la tache 579.
+//
+// ON LA RE-EXPORTE PLUTOT QUE DE LA RECOPIER. Deux definitions du meme nom dans
+// le meme arbre, c'est d'abord une erreur de compilation (`ambiguous_import`
+// dans les quatre fichiers qui s'en servent), et ensuite la garantie qu'elles
+// divergeront. Les tests qui l'utilisent n'ont pas change d'une ligne : ils
+// importent ce socle, et le nom leur arrive toujours.
+export 'package:moteur_gr/core/routing/app_router.dart' show cheminAffiche;
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -571,12 +586,9 @@ bool estSousLeDoigt(WidgetTester tester, Finder f) {
 /// cecite (l'option de signalement deja choisie, le bouton du sentier deja
 /// actif). Le dernier `match` porte la route effectivement empilee ; la garde de
 /// redirection l'a deja traversee, donc la promesse de l'en-tete tient.
-String cheminAffiche() {
-  final config = appRouter.routerDelegate.currentConfiguration;
-  if (config.matches.isEmpty) return config.uri.path;
-  final haut = config.matches.last.matchedLocation;
-  return haut.isEmpty ? config.uri.path : haut;
-}
+// `cheminAffiche` VIT MAINTENANT DANS LE SOCLE DE PRODUCTION (tache 838, D2) :
+// elle est re-exportee en tete de ce fichier, et les tests qui s'en servent
+// n'ont pas change d'une ligne. Voir la note de l'`export`.
 
 // ---------------------------------------------------------------------------
 // Lire ce que l'ecran montre

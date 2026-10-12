@@ -10,6 +10,8 @@ import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/wallet_iap_service.dart';
 import 'package:moteur_gr/core/services/wallet_store.dart';
 import 'package:moteur_gr/features/ads/providers/ads_providers.dart';
+import 'package:moteur_gr/features/after/after_facade.dart'
+    show latestTrekSessionProvider;
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Verifie le GATING de la banniere (source unique #99404 + consentement UMP).
@@ -70,14 +72,20 @@ void main() {
       ],
     );
     addTearDown(container.dispose);
-    // PLUS RIEN A DECLARER SUR LA RANDO EN COURS (tache 601). Ce monde
-    // surchargeait `latestTrekSessionProvider` et attendait sa lecture, parce que
-    // la decision publicitaire refusait toute publicite en realisation et
-    // repondait « en rando » tant que la base n'avait pas parle. Cette garde a
-    // ete retiree par Chris le 27/09 14:41 : « TOUT PORTER LA PUB sauf si tu es
-    // abonne ou sur le trek que tu as achete .. Pas la peine de mettre plus de
-    // regles ». La decision ne consulte plus l'etat de rando du tout, donc la
-    // surcharge ne servait plus qu'a decorer.
+    // ON LAISSE LA BASE PARLER AVANT DE MESURER (remis par la tache 838, D1).
+    //
+    // La decision publicitaire refuse de nouveau toute publicite en
+    // realisation — « IL N Y A PAS DE PUB POSSIBLE EN MODE RANDO !!! »
+    // (Christophe) — et elle repond « en rando » TANT QUE la session persistee
+    // est inconnue. Sans cette attente, ce monde mesurerait la fenetre
+    // d'amorce : aucune banniere nulle part, pour une raison qui n'a rien a
+    // voir avec le gating que ce fichier verifie.
+    //
+    // AUCUNE SESSION N'EST DECLAREE ICI, et c'est suffisant : la base de
+    // memoire est vide, donc la lecture aboutit sur « aucune rando », et le
+    // tracking vivant est au repos. Ce monde est donc HORS RANDO, l'etat dans
+    // lequel ce fichier veut mesurer le gating.
+    await container.read(latestTrekSessionProvider.future);
     return container;
   }
 

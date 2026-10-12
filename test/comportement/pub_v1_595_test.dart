@@ -61,6 +61,7 @@
 //       repondre differemment selon qu'une base a repondu ou non.
 library;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/drift.dart' show Value;
@@ -72,6 +73,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/ad_config.dart';
 import 'package:moteur_gr/core/config/feature_flags.dart';
 import 'package:moteur_gr/core/data/database.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/providers/service_providers.dart';
@@ -79,6 +81,8 @@ import 'package:moteur_gr/core/services/consent_service.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/wallet_iap_service.dart';
 import 'package:moteur_gr/core/services/wallet_store.dart';
+import 'package:moteur_gr/features/after/after_facade.dart'
+    show latestTrekSessionProvider;
 import 'package:moteur_gr/features/ads/data/banner_ad_presenter.dart';
 import 'package:moteur_gr/features/ads/presentation/banner_ad_slot.dart';
 import 'package:moteur_gr/features/ads/providers/ads_providers.dart';
@@ -130,11 +134,9 @@ class _ReseauEnLigne extends ConnectivityMonitor {
 /// Sert a mettre le monde du test EN RANDO par le chemin de la session VIVANTE,
 /// sans faire tourner de GPS.
 ///
-/// A QUOI CA SERT ENCORE, puisque la decision publicitaire ne consulte plus
-/// l'etat de rando (Chris, 27/09 14:41) : a tenir la GARDE ANTI-RETOUR. Les
-/// tests de B7 declarent une rando en cours et exigent que la banniere soit LA
-/// sur un sentier gratuit. Si quelqu'un remet une garde de mode trek, ils
-/// tombent — c'est leur seule raison d'etre en rando.
+/// C'EST LE CHEMIN QUE LA REGLE DE RANDO EMPRUNTE (tache 838, D1). Mettre ce
+/// monde en `recording` doit ETEINDRE la banniere, meme sur un sentier gratuit :
+/// « IL N Y A PAS DE PUB POSSIBLE EN MODE RANDO !!! » (Christophe).
 class _TrackingFige extends TrekSessionManagerNotifier {
   _TrackingFige(this._etat);
 
@@ -178,22 +180,23 @@ void main() {
   /// et c'est voulu : le premier dit si l'on a le DROIT de demander une pub,
   /// le second ce que la demande a le droit d'emporter.
   ///
-  /// `tracking` met le monde en RANDO par le chemin de la session vivante. Il ne
-  /// sert plus a la decision publicitaire, qui ne consulte plus l'etat de rando
-  /// du tout (Chris, 27/09 14:41 : « TOUT PORTER LA PUB sauf si tu es abonne ou
-  /// sur le trek que tu as achete .. Pas la peine de mettre plus de regles »).
-  /// Il sert de GARDE ANTI-RETOUR : si quelqu'un remet une garde de mode trek,
-  /// les tests de B7 qui declarent une rando en cours tombent.
-  ///
-  /// LE SECOND CHEMIN A ETE RETIRE avec la garde. `sessionPersistee` surchargeait
-  /// `latestTrekSessionProvider`, que la decision publicitaire lisait via
-  /// `enModeTrekProvider` ; ni l'un ni l'autre n'existent plus, et une surcharge
-  /// que personne ne lit est un decor.
+  /// `tracking` met le monde en RANDO par le chemin de la session VIVANTE, et
+  /// la decision publicitaire le lit de nouveau depuis la tache 838 (D1) :
+  /// Christophe a tranche « IL N Y A PAS DE PUB POSSIBLE EN MODE RANDO !!! ».
+  /// Ce parametre n'est donc plus un decor anti-retour — il commande la regle
+  /// la plus forte du modele sur la publicite.
+  /// `baseMuette` laisse la session persistee INCONNUE pour toujours, pour
+  /// mesurer la FENETRE D'AMORCE — l'instant ou l'application ne sait pas
+  /// encore si une rando est en cours. C'est le cas de Christophe qui rallume
+  /// son telephone en pleine marche, et la decision doit y repondre « en
+  /// rando » : un doute se tranche du cote du randonneur, jamais du cote de la
+  /// regie.
   Future<(ProviderContainer, MonetizationService)> monterLeMonde({
     bool pubAutorisee = true,
     bool? pubPersonnalisee,
     TrackingSessionStatus tracking = TrackingSessionStatus.idle,
     Set<String> sentiersGratuits = const <String>{},
+    bool baseMuette = false,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final iap = WalletIapService(
@@ -240,21 +243,34 @@ void main() {
         trekSessionManagerProvider.overrideWith(
           () => _TrackingFige(TrackingSessionState(status: tracking)),
         ),
+        // UNE LECTURE QUI N'ABOUTIT JAMAIS : la base ne parle pas. On ne la
+        // fait pas ECHOUER, on la laisse EN COURS — c'est l'etat reel d'une
+        // application qui demarre, et le seul qui mette `hasValue` a faux.
+        if (baseMuette)
+          latestTrekSessionProvider.overrideWith(
+            (ref) => Completer<TrekSession?>().future,
+          ),
       ],
     );
     addTearDown(container.dispose);
-    // PLUS DE LECTURE DE BASE A ATTENDRE AVANT DE MESURER, ET IL FAUT LE DIRE
-    // FRANCHEMENT. Cette fonction attendait `latestTrekSessionProvider` parce
-    // que la decision publicitaire repondait « en rando » tant que la session
-    // persistee etait inconnue : ne pas laisser cette lecture aboutir revenait a
-    // mesurer la FENETRE D'AMORCE au lieu de la regle.
+    // ON LAISSE LA BASE PARLER AVANT DE MESURER (remis par la tache 838, D1).
     //
-    // CETTE FENETRE N'EXISTE PLUS, ET ELLE N'EST DONC PLUS MESUREE NULLE PART.
-    // Ce n'est pas un trou de couverture : la decision publicitaire ne consulte
-    // plus l'etat de rando, donc il n'y a plus d'instant ou elle repondrait
-    // autrement selon qu'une base a parle ou non. Le test qui la mesurait
-    // (« TANT QUE LA BASE N A PAS PARLE, aucune demande ne part », groupe B6) a
-    // ete supprime avec la garde qu'il gardait, et non remplace.
+    // POURQUOI CETTE LIGNE EST INDISPENSABLE, ET CE QU'ELLE A COUTE QUAND ELLE
+    // A DISPARU. La decision publicitaire repond « en rando » TANT QUE LA
+    // SESSION PERSISTEE EST INCONNUE (`enModeTrekProvider` : dans le doute, on
+    // tranche du cote du randonneur). Sans cette attente, tous les tests de ce
+    // fichier mesureraient la FENETRE D'AMORCE au lieu de la regle — et c'est
+    // exactement ce qui s'est produit en remettant la garde : vingt tests sont
+    // tombes d'un coup, dont « hors mode trek : le sentier gratuit est AVEC
+    // pub », parce que la base n'avait jamais repondu.
+    //
+    // ELLE AVAIT ETE RETIREE AVEC LA GARDE (tache 601), avec la mention qu'il
+    // n'y avait « plus de lecture de base a attendre ». C'etait vrai le temps
+    // que la garde soit absente ; ca ne l'est plus.
+    //
+    // SAUF QUAND LE TEST VEUT JUSTEMENT MESURER CETTE FENETRE : `baseMuette`
+    // l'ouvre pour de bon, et l'attendre serait attendre pour toujours.
+    if (!baseMuette) await container.read(latestTrekSessionProvider.future);
     return (container, monetisation);
   }
 
@@ -898,14 +914,22 @@ void main() {
     // payant pour le concurrencer. C'est exactement ce que faisait le drapeau
     // vitrine, qui resolvait le sentier en « possede ».
     //
-    // ET EN MARCHANT ? LA PUB AUSSI, ET C'EST ASSUME. Une garde « en mode trek
-    // jamais » a existe une demi-journee dans la decision ; Chris l'a retiree
-    // avec la phrase ci-dessus, apres qu'on lui ait montre ce cas precis. Sur un
-    // sentier PAYANT la question ne se pose pas — on ne le realise qu'en l'ayant
-    // achete, donc il est deja sans pub. Le sentier GRATUIT est le seul endroit
-    // ou l'on marche sans avoir paye, donc le seul ou la banniere peut
-    // apparaitre pendant la realisation. Le test ci-dessous le DIT, pour que
-    // personne ne le prenne pour un oubli et ne remette une garde.
+    // ET EN MARCHANT ? AUCUNE PUB, ET C'EST CHRISTOPHE QUI L'A TRANCHE (tache
+    // 838, D1). Verbatim : « IL N Y A PAS DE PUB POSSIBLE EN MODE RANDO !!! ».
+    //
+    // CE GROUPE A DIT L'INVERSE, ET IL FAUT SAVOIR POURQUOI. La garde « en mode
+    // trek jamais » a vecu une demi-journee le 27/09 : posee le matin (595, B6),
+    // retiree l'apres-midi (601) sur la phrase « deux exceptions, pas plus ». Le
+    // test d'alors affirmait donc que la banniere EST la quand on marche un
+    // sentier gratuit, et il portait meme la consigne « NE REMETS PAS DE GARDE
+    // ICI ». La parole de Christophe est PLUS RECENTE que cette consigne : la
+    // garde est remise, et ce test dit maintenant ce que la regle produit.
+    //
+    // LE PERIMETRE REEL DE LA GARDE EST UN SEUL CAS, et le reste du groupe le
+    // montre : sur un sentier PAYANT on ne marche qu'en l'ayant achete (verrou
+    // `canRealizeTrail`, lot 594), donc il est deja sans pub. Le sentier GRATUIT
+    // est le seul endroit ou l'on marche sans avoir paye — c'est la, et nulle
+    // part ailleurs, que cette garde change quelque chose.
     const gratuit = 'sentier-gratuit';
 
     test('hors mode trek : le sentier gratuit est AVEC pub', () async {
@@ -928,7 +952,7 @@ void main() {
     });
 
     test(
-      'EN MARCHANT sur le sentier gratuit : la pub EST la, et c est voulu',
+      'EN MARCHANT sur le sentier gratuit : AUCUNE pub, c est la regle de rando',
       () async {
         final (c, _) = await monterLeMonde(
           sentiersGratuits: {gratuit},
@@ -937,17 +961,53 @@ void main() {
 
         expect(
           await c.read(bannerAdProvider(gratuit).future),
-          isNotNull,
+          isNull,
           reason:
-              'CE TEST DIT L INVERSE DE CE QU IL DISAIT LE MATIN DU 27/09, '
-              'et ce n est pas un relachement : Chris a retire sa garde « en '
-              'mode trek jamais » a 14:41 — « TOUT PORTER LA PUB sauf si tu es '
-              'abonne ou sur le trek que tu as achete .. Pas la peine de mettre '
-              'plus de regles ». Deux exceptions, pas trois. Un sentier gratuit '
-              'n est ni abonne ni achete, meme quand on le marche. NE REMETS PAS '
-              'DE GARDE ICI : ce serait ajouter la regle qu il vient d enlever',
+              'C EST LE CAS QUE CHRISTOPHE A TRANCHE : « IL N Y A PAS DE PUB '
+              'POSSIBLE EN MODE RANDO !!! ». Le sentier gratuit est le SEUL '
+              'endroit ou l on marche sans avoir paye, donc le seul ou cette '
+              'garde change quelque chose — et c est precisement celui qu il '
+              'vise. Ce test disait l inverse avant la tache 838 : sa parole '
+              'est plus recente que le commentaire qui l affirmait',
         );
-        expect(regie.demandes, hasLength(1));
+        expect(
+          regie.demandes,
+          isEmpty,
+          reason:
+              'ON NE MESURE PAS DES PIXELS : aucune demande ne doit PARTIR a '
+              'la regie. Une banniere masquee mais demandee compterait une '
+              'impression et enverrait les donnees de l appareil chez Google',
+        );
+      },
+    );
+
+    test(
+      'TANT QUE LA BASE N A PAS PARLE : aucune demande ne part (le doute)',
+      () async {
+        // LE CAS DE CHRISTOPHE : LE TELEPHONE RALLUME EN PLEINE MARCHE. La
+        // session VIVANTE repart vide et seule la base se souvient — mais elle
+        // n'a pas encore repondu. Sans cette reponse, l'application ne SAIT
+        // PAS si une rando est en cours, et c'est tres exactement la fenetre
+        // qu'il faut pour qu'une banniere part alors que le randonneur marche.
+        //
+        // ON TRANCHE DU COTE DU RANDONNEUR. Ce test etait dans le groupe B6 du
+        // 27/09 au matin ; il a ete supprime l'apres-midi avec la garde, et
+        // rien ne l'a remplace. Il revient avec elle (tache 838, D1).
+        final (c, _) = await monterLeMonde(
+          sentiersGratuits: {gratuit},
+          baseMuette: true,
+        );
+
+        expect(
+          await c.read(bannerAdProvider(gratuit).future),
+          isNull,
+          reason:
+              'la base ne s est pas encore prononcee : l application ne sait '
+              'pas si une rando est en cours. Dans ce doute, elle doit '
+              'repondre « en rando » — sinon rallumer son telephone sur le '
+              'sentier rallume la publicite pendant la lecture de la base',
+        );
+        expect(regie.demandes, isEmpty);
       },
     );
 

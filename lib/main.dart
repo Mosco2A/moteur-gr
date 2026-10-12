@@ -41,6 +41,7 @@ import 'features/feasibility/data/hiker_profile_repository.dart';
 import 'features/safety/presentation/health_info_screen.dart'
     show healthInfoFileProvider;
 import 'features/safety/presentation/backup_consent_gate.dart';
+import 'features/ads/presentation/porteur_d_interstitiel.dart';
 import 'features/trek/presentation/mention_marche_simulee.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
@@ -602,8 +603,32 @@ class BootstrapGate extends ConsumerWidget {
         // cadre, et pas dans le cadre : `shared/` ne doit pas connaitre
         // `features/` (ARB-645-05-a), et `main.dart` compose l'application.
         sousLeBandeau: const MentionMarcheSimulee(),
-        child: BackupConsentGate(
-          child: OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
+        // TACHE 838 (D2) — L'INTERSTITIEL EST BRANCHE ICI, ET NULLE PART
+        // AILLEURS.
+        //
+        // « j en veu une toute les demi-heures heures d utilisation »
+        // (Christophe). Le porteur ecoute les changements d'ecran et consulte
+        // la cadence ; il ne montre rien de lui-meme et reste transparent dans
+        // l'arbre.
+        //
+        // IL EST POSE AU-DESSUS DU `Navigator`, comme le cadre de demo, pour la
+        // meme raison : un declencheur qui vivrait dans un ecran disparaitrait
+        // a chaque navigation, c'est-a-dire au moment meme ou il doit agir.
+        //
+        // LES DEUX FAITS DU ROUTEUR LUI SONT DONNES ICI. La feature `ads` ne
+        // connait pas `core/routing` : brancher depuis `app_router.dart`
+        // aurait ajoute une fleche socle -> feature et fait rougir le plafond
+        // de `couches_respectees_645_test.dart`, qui est serre contre la
+        // mesure. C'est donc `main.dart`, qui compose l'application, qui noue
+        // les deux — meme raison que `sousLeBandeau` juste au-dessus.
+        child: PorteurDInterstitiel(
+          navigation: appRouter.routerDelegate,
+          chemin: cheminAffiche,
+          child: BackupConsentGate(
+            child: OrphanSessionReprise(
+              child: child ?? const SizedBox.shrink(),
+            ),
+          ),
         ),
       ),
       loading: loader,

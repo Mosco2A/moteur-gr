@@ -10,7 +10,9 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/services/monetization_service.dart';
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
 import '../../consent/consent_facade.dart' show consentStatesProvider;
+import '../../planning/planning_facade.dart' show trekEditLockProvider;
 import '../data/ads_consent_service.dart';
 import '../data/banner_ad_presenter.dart';
 import '../data/rewarded_ad_service.dart';
@@ -40,6 +42,62 @@ final rewardedAdServiceProvider = Provider<RewardedAdService>((ref) {
   final svc = RewardedAdService(enabled: ready);
   ref.onDispose(svc.dispose);
   return svc;
+});
+
+/// L'APPLICATION EST-ELLE EN MODE TREK — une realisation en cours ?
+///
+/// REMISE EN PLACE LE 12/10/2026 (tache 838, volet D1) APRES AVOIR ETE RETIREE
+/// LE 27/09. Cette garde a existe une demi-journee : posee le matin du 27/09
+/// (tache 595, B6), retiree l'apres-midi du meme jour (tache 601) sur la phrase
+/// « TOUT PORTER LA PUB sauf si tu es abonne ou sur le trek que tu as achete ».
+/// Le code a alors ecrit, noir sur blanc, la consequence qu'il assumait — « sur
+/// le sentier demo, on verra de la pub en marchant » — et une consigne pour le
+/// prochain agent, lui enjoignant de ne jamais la retablir.
+///
+/// CETTE CONSIGNE EST PERIMEE, ET C'EST CHRISTOPHE QUI L'A PERIMEE. Verbatim :
+/// « IL N Y A PAS DE PUB POSSIBLE EN MODE RANDO !!! ». Sa parole est PLUS
+/// RECENTE que le commentaire qui demandait de ne pas la retablir, et c'est elle
+/// qui tranche. Ce qui avait ete montre le 27/09 — que la garde etait redondante
+/// sur les sentiers PAYANTS — reste vrai ; ce qui a change, c'est que
+/// Christophe ne veut plus du seul cas qu'elle couvrait vraiment : marcher sans
+/// avoir paye, c'est-a-dire le sentier GRATUIT et la demonstration.
+///
+/// ELLE LIT LA SOURCE QUI EXISTE DEJA, elle n'en invente pas une quatrieme.
+/// [trekEditLockProvider] agrege precisement les deux vues d'une rando en cours,
+/// et son en-tete le dit mot pour mot : « le trek est considere DEMARRE si le
+/// tracking enregistre/est en pause, ou si la session persistee est encore
+/// active/paused ». Les deux comptent, et le second n'est pas un luxe : apres un
+/// redemarrage en pleine marche, la session vivante repart vide et seule la base
+/// se souvient. Sans elle, rallumer son telephone sur le sentier ferait revenir
+/// la publicite.
+///
+/// SON NOM PARLE D'EDITION ET ON S'EN SERT POUR LA PUBLICITE : c'est assume. Le
+/// predicat est le meme — « une rando est en cours » — et le dupliquer sous un
+/// plus joli nom creerait deux definitions de la meme chose, donc un jour deux
+/// reponses. Ce provider-ci ne fait que NOMMER l'intention a l'endroit ou elle
+/// sert.
+///
+/// ET ELLE COUVRE LA MARCHE SIMULEE DE LA DEMONSTRATION, qui est le cas que
+/// Christophe vise. En demonstration, [trekEditLockProvider] ecarte
+/// volontairement la vue persistee (tache 810 : elle y est FABRIQUEE et
+/// terminee) et ne garde que la vue VIVANTE — celle qui dit ce que cette
+/// demonstration-la parcourt reellement. Une marche simulee en cours rend donc
+/// `trekStarted` vrai, et la banniere s'eteint.
+///
+/// DANS LE DOUTE, ON DIT « EN RANDO », ET CE N'EST PAS DE LA PRUDENCE
+/// DECORATIVE. [trekEditLockProvider] lit la session persistee en `.value` et
+/// retombe volontairement sur la seule vue vivante tant que la base n'a pas
+/// repondu : c'est le bon choix pour un ecran d'edition, qui doit s'afficher
+/// tout de suite. Pour la publicite c'est le mauvais. Au demarrage, la vue
+/// vivante est VIDE et la base pas encore lue — l'application se croirait donc
+/// hors rando pendant une lecture de base, et c'est tres exactement la fenetre
+/// qu'il faut pour qu'une banniere part alors que le randonneur marche. Or
+/// c'est le cas de Christophe : le telephone rallume en pleine marche. Tant que
+/// la base n'a pas parle, on repond donc « en rando ». Un doute se tranche du
+/// cote du randonneur, jamais du cote de la regie.
+final enModeTrekProvider = Provider<bool>((ref) {
+  if (!ref.watch(latestTrekSessionProvider).hasValue) return true;
+  return ref.watch(trekEditLockProvider).trekStarted;
 });
 
 /// Vrai si une bannière est SEULEMENT POSSIBLE (le CMP l'autorise).
@@ -127,38 +185,57 @@ final shouldShowBannerProvider = FutureProvider.autoDispose.family<bool, String>
   ref,
   trailId,
 ) async {
-  // DEUX EXCEPTIONS A LA PUBLICITE, PAS PLUS. Regle de Chris, 27/09 14:41,
-  // verbatim : « TOUT PORTER LA PUB sauf si tu es abonne ou sur le trek que tu
-  // as achete .. Pas la peine de mettre plus de regles ». Plus la recompense
-  // video de 24 h, qui est dans son modele du 08/09 (#99404) et qu'il ne remet
-  // pas en cause. Ces trois etats sont TOUS portes par la source unique
-  // [MonetizationService.isNoAdsActive] : aucune regle n'est recalculee ici.
+  // EN MODE RANDO, JAMAIS DE PUBLICITE. Regle de Christophe, verbatim :
+  // « IL N Y A PAS DE PUB POSSIBLE EN MODE RANDO !!! ».
   //
-  // CE QUI A ETE RETIRE ICI, ET CE N'EST PAS UN OUBLI : UNE GARDE « EN MODE TREK
-  // JAMAIS », POSEE LE MATIN DU 27/09 ET RETIREE LE MEME JOUR PAR CHRIS.
-  // Elle rendait `false` avant tout le reste des qu'une rando etait en cours.
-  // Chris l'a remplacee par la phrase ci-dessus, en connaissance de cause, apres
-  // qu'on lui ait montre le cas qu'elle couvrait. Son raisonnement du matin
-  // — « il paye FORCEMENT en mode trek » — est exact pour tous les sentiers
-  // PAYANTS : on ne peut realiser un trek qu'en l'ayant achete (verrou
-  // `canRealizeTrail`, lot 594), et un trek achete est deja sans pub par
-  // l'exception « sentier achete ». La garde etait donc redondante partout,
-  // SAUF sur un cas :
+  // PREMIERE, ET AVANT MEME LE CMP : en mode trek on ne consulte pas le
+  // consentement publicitaire, on ne demande rien, on ne charge rien. C'est la
+  // regle la plus forte du modele sur la publicite, et la plus simple a tenir.
   //
-  // LA CONSEQUENCE ASSUMEE — SUR LE SENTIER DEMO, ON VERRA DE LA PUB EN
-  // MARCHANT. Le sentier de demonstration est GRATUIT et REALISABLE : c'est le
-  // seul endroit ou l'on marche sans avoir achete, donc le seul ou la pub peut
-  // apparaitre pendant la realisation. C'est exactement ce que la regle de Chris
-  // produit, il l'a tranche en connaissance de cause, et ce n'est pas au code de
-  // le rattraper par une regle de plus. QUE LE PROCHAIN AGENT NE REMETTE PAS DE
-  // GARDE ICI : ce serait ajouter la regle que Chris vient de retirer.
+  // ELLE EST ICI, DANS LA DECISION, ET PAS SUR UN ECRAN. Elle a d'abord vecu en
+  // condition ternaire au bas du cockpit : une ligne, sur UN ecran, que rien ne
+  // verrouillait et que le prochain emplacement publicitaire n'aurait pas
+  // heritee. Dans la decision, elle couvre le cockpit, le catalogue, et tout
+  // ecran qu'on branchera un jour — sans que personne y pense.
   //
-  // ET L'IMPACT REEL EST FAIBLE, PAR UN FAIT DE TERRAIN. Sur le sentier il n'y a
-  // pas de reseau, et la banniere ne se chargera donc pas de toute facon : le
-  // budget d'amorce du consentement ([AdsConsentService], 6 s) expire hors ligne
-  // et [adsReadyProvider] rend alors `false` DEFINITIVEMENT pour ce processus —
-  // aucune publicite n'est demandee. Ce garde-fou hors ligne existait avant cette
-  // regle et il reste en place.
+  // CE QUI S'EST PASSE ENTRE-TEMPS, PARCE QUE LE PROCHAIN QUI LIRA CECI DOIT LE
+  // SAVOIR. Cette garde a ete posee le matin du 27/09 (tache 595, B6), RETIREE
+  // l'apres-midi du meme jour (tache 601) sur une phrase qui simplifiait le
+  // modele a deux exceptions — « TOUT PORTER LA PUB sauf si tu es abonne ou sur
+  // le trek que tu as achete » — et le code a alors inscrit une consigne
+  // enjoignant au prochain agent de ne jamais la retablir. Elle est retablie, et
+  // cette consigne est PERIMEE : la parole citee en tete de ce bloc est plus
+  // recente, et c'est Christophe qui l'a dite. On ne laisse pas un commentaire
+  // du 27/09 arbitrer contre sa decision d'aujourd'hui. La garde qui veille sur
+  // ce retrait est `test/structurel/jamais_de_pub_en_rando_838_test.dart`.
+  //
+  // CE QU'ELLE CHANGE REELLEMENT, ET C'EST UN SEUL CAS. Sur un sentier PAYANT
+  // elle est redondante : on ne realise un trek qu'en l'ayant achete (verrou
+  // `canRealizeTrail`, lot 594) et un trek achete est deja sans pub par
+  // l'exception « sentier achete ». Le seul endroit ou l'on marche SANS avoir
+  // paye est le sentier GRATUIT — la demonstration. C'est donc exactement la
+  // que cette garde agit, et c'est exactement ce que Christophe demande.
+  //
+  // ET UNE REGLE ENONCEE « JAMAIS » NE SE DEDUIT PAS, ELLE S'ECRIT. Meme la ou
+  // elle est redondante, elle reste une seconde ligne : le jour ou une exception
+  // sans-pub bouge, la rando ne doit pas se mettre a porter de la publicite par
+  // effet de bord.
+  if (ref.watch(enModeTrekProvider)) return false;
+
+  // HORS RANDO, DEUX EXCEPTIONS A LA PUBLICITE, PAS PLUS. Regle de Chris,
+  // 27/09 14:41, verbatim : « TOUT PORTER LA PUB sauf si tu es abonne ou sur le
+  // trek que tu as achete .. Pas la peine de mettre plus de regles ». Plus la
+  // recompense video de 24 h, qui est dans son modele du 08/09 (#99404) et
+  // qu'il ne remet pas en cause. Ces trois etats sont TOUS portes par la source
+  // unique [MonetizationService.isNoAdsActive] : aucune regle n'est recalculee
+  // ici.
+  //
+  // ET UN FAIT DE TERRAIN S'AJOUTE A LA GARDE, SANS LA REMPLACER. Sur le
+  // sentier il n'y a pas de reseau : le budget d'amorce du consentement
+  // ([AdsConsentService], 6 s) expire hors ligne et [adsReadyProvider] rend
+  // alors `false` DEFINITIVEMENT pour ce processus. Ce garde-fou existait avant
+  // la regle et il reste en place — mais il ne vaut qu'hors ligne, et c'est
+  // pourquoi il ne tient pas lieu de garde.
 
   // SE BRANCHER SUR LES SIGNAUX VIVANTS AVANT TOUT `await`. Un `ref.watch`
   // pose APRES une suspension n'enregistre pas fiablement sa dependance : la
