@@ -176,8 +176,10 @@ class _PaywallSheetState extends ConsumerState<PaywallSheet> {
                 onPressed: _acheter,
               ),
             // StepWays L6/A6 : voie sans-pub 24 h par pub RECOMPENSEE (rewarded).
-            // Affichee seulement si le consentement pub est obtenu (adsReady) —
-            // formats autorises = banniere + rewarded, PAS d'interstitiel.
+            // Affichee seulement si le consentement pub est obtenu (adsReady).
+            // Formats autorises : banniere, recompensee et, depuis la tache
+            // 838, l'interstitiel — ce dernier a sa propre cadence et ne peut
+            // pas s'ouvrir ici, cette feuille n'etant pas une route.
             //
             // TACHE 614 — C'EST LE MEME BOUTON QUE CELUI DE LA BANNIERE. Il
             // vivait ici en widget PRIVE, donc inatteignable depuis l'endroit

@@ -99,14 +99,54 @@ class DemoSimulationButton extends ConsumerWidget {
     }
 
     if (compact) {
-      return IconButton(
-        key: const ValueKey('demo-simuler'),
-        onPressed: geste,
-        tooltip: libelle,
-        icon: const StepIcon(
-          StepwaysIcons.flecheAvant,
-          size: 22,
-          color: AppTheme.orangeDifficile,
+      // PAS DE BULLE D'AIDE ICI, ET CE N'EST PAS UN OUBLI D'ERGONOMIE
+      // (tache 838, defaut mesure en ecrivant le test du volet D4).
+      //
+      // CE QUI A ETE MESURE, MOT POUR MOT, en montant l'application reelle
+      // avec une marche simulee en cours :
+      //
+      //     The following assertion was thrown building RawTooltip(...):
+      //     No Overlay widget found.
+      //     RawTooltip widgets require an Overlay widget ancestor within the
+      //     closest LookupBoundary.
+      //     The relevant error-causing widget was:
+      //       IconButton-[<'demo-simuler'>]
+      //
+      // LA CAUSE EST CELLE DE LA TACHE 637, AU MEME ENDROIT DE L'ARBRE. Cette
+      // variante compacte etait concue pour la BARRE DE TITRE DE LA CARTE, donc
+      // SOUS le `Navigator` — ou un `Overlay` existe. La tache 747 l'a deplacee
+      // dans le bandeau de demonstration (`MentionMarcheSimulee`, passee a
+      // `CadreDemo.sousLeBandeau`), c'est-a-dire dans le `builder` de
+      // `MaterialApp.router` : AU-DESSUS du `Navigator`, ou il n'y a aucun
+      // `Overlay`. Un `IconButton` qui recoit un `tooltip` se fabrique une
+      // `Tooltip`, et une `Tooltip` sans `Overlay` ne peut pas se construire.
+      //
+      // C'est la MEME famille que le « Quitter » muet du build 8 (tache 649) :
+      // un widget pose au-dessus du `Router` qui reclame ce qui ne vit qu'en
+      // dessous. On ne corrige donc pas en remontant un `Overlay` jusqu'ici —
+      // on retire ce qui ne peut pas marcher a cet endroit.
+      //
+      // ET LA PORTEE EST CELLE-CI, SANS EXAGERATION : `debugCheckHasOverlay`
+      // est une assertion, donc retiree en release. Un paquet installe ne
+      // plante pas pour autant — la bulle d'aide y echoue en silence au lieu de
+      // s'afficher. Le defaut est donc visible en debug et muet en release, ce
+      // qui est exactement la facon dont il a pu vivre sans etre vu.
+      //
+      // LE LIBELLE N'EST PAS PERDU : il part en semantique, donc il reste
+      // annonce par les lecteurs d'ecran — c'est ce que la bulle apportait
+      // vraiment, l'icone etant deja a cote de la phrase « marche simulee »
+      // qui la nomme.
+      return Semantics(
+        label: libelle,
+        button: true,
+        child: IconButton(
+          key: const ValueKey('demo-simuler'),
+          onPressed: geste,
+          icon: const StepIcon(
+            StepwaysIcons.flecheAvant,
+            size: 22,
+            color: AppTheme.orangeDifficile,
+          ),
         ),
       );
     }
