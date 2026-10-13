@@ -1642,6 +1642,11 @@
     "emergencyHint": "In caso di emergenza, mostra questa schermata ai soccorsi.",
     "entryTitle": "Le mie info sanitarie",
     "entrySubtitle": "Da mostrare ai soccorsi (restano sul telefono)",
+    "completion": {
+      "empty": "Da compilare",
+      "partial": "Parzialmente compilata",
+      "complete": "Completa"
+    },
     "a11y": {
       "form": "Modulo informazioni sanitarie",
       "saveButton": "Salva le informazioni sanitarie"

@@ -2817,6 +2817,7 @@ class Translations$health$fr {
 	/// fr: 'À montrer aux secours (restées sur le téléphone)'
 	String get entrySubtitle => 'À montrer aux secours (restées sur le téléphone)';
 
+	late final Translations$health$completion$fr completion = Translations$health$completion$fr.internal(_root);
 	late final Translations$health$a11y$fr a11y = Translations$health$a11y$fr.internal(_root);
 	late final Translations$health$delete$fr delete = Translations$health$delete$fr.internal(_root);
 	late final Translations$health$consent$fr consent = Translations$health$consent$fr.internal(_root);
@@ -6595,6 +6596,24 @@ class Translations$health$error$fr {
 	String get bloodType => 'Groupe sanguin invalide (A+, A-, B+, B-, AB+, AB-, O+, O-)';
 }
 
+// Path: health.completion
+class Translations$health$completion$fr {
+	Translations$health$completion$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'À remplir'
+	String get empty => 'À remplir';
+
+	/// fr: 'Partiellement remplie'
+	String get partial => 'Partiellement remplie';
+
+	/// fr: 'Complète'
+	String get complete => 'Complète';
+}
+
 // Path: health.a11y
 class Translations$health$a11y$fr {
 	Translations$health$a11y$fr.internal(this._root);
@@ -9796,6 +9815,9 @@ extension on Translations {
 			'health.emergencyHint' => 'En cas d\'urgence, montre cet écran aux secours.',
 			'health.entryTitle' => 'Mes infos santé',
 			'health.entrySubtitle' => 'À montrer aux secours (restées sur le téléphone)',
+			'health.completion.empty' => 'À remplir',
+			'health.completion.partial' => 'Partiellement remplie',
+			'health.completion.complete' => 'Complète',
 			'health.a11y.form' => 'Formulaire d\'informations de santé',
 			'health.a11y.saveButton' => 'Enregistrer les informations de santé',
 			'health.delete.button' => 'Effacer ma fiche',
@@ -9950,11 +9972,11 @@ extension on Translations {
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Déclaration de bonne foi, ${state}',
 			'moderation.a11y.submitReport' => 'Envoyer le signalement',
 			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
 			'bootstrap.loading' => 'Préparation de ta randonnée…',
 			'recap.title' => 'Mon aventure',
-			_ => null,
-		} ?? switch (path) {
 			'recap.lockedTitle' => 'Disponible à la fin du trek',
 			'recap.lockedMessage' => 'Termine ou abandonne ton parcours pour retrouver le récapitulatif de ton aventure.',
 			'recap.finisherTitle' => 'Félicitations !',
@@ -10464,6 +10486,8 @@ extension on Translations {
 			'lieu.rafraichirEchec' => 'La mise à jour a échoué. Les données du téléphone sont intactes.',
 			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => 'Ouvrir ${name} dans l\'application de cartes',
 			'lieu.a11y.telephoner' => ({required Object name}) => 'Appeler ${name}',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Ouvrir le site officiel de ${name}',
 			_ => null,
 		};

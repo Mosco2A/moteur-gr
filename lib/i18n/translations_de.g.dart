@@ -1340,6 +1340,7 @@ class _Translations$health$de extends Translations$health$fr {
 	@override String get emergencyHint => 'Zeig diesen Bildschirm im Notfall den Rettungskräften.';
 	@override String get entryTitle => 'Meine Gesundheitsdaten';
 	@override String get entrySubtitle => 'Den Rettungskräften zeigen (bleiben auf dem Telefon)';
+	@override late final _Translations$health$completion$de completion = _Translations$health$completion$de._(_root);
 	@override late final _Translations$health$a11y$de a11y = _Translations$health$a11y$de._(_root);
 	@override late final _Translations$health$delete$de delete = _Translations$health$delete$de._(_root);
 	@override late final _Translations$health$consent$de consent = _Translations$health$consent$de._(_root);
@@ -3115,6 +3116,18 @@ class _Translations$health$error$de extends Translations$health$error$fr {
 
 	// Translations
 	@override String get bloodType => 'Ungültige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)';
+}
+
+// Path: health.completion
+class _Translations$health$completion$de extends Translations$health$completion$fr {
+	_Translations$health$completion$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get empty => 'Auszufüllen';
+	@override String get partial => 'Teilweise ausgefüllt';
+	@override String get complete => 'Vollständig';
 }
 
 // Path: health.a11y
@@ -5641,6 +5654,9 @@ extension on TranslationsDe {
 			'health.emergencyHint' => 'Zeig diesen Bildschirm im Notfall den Rettungskräften.',
 			'health.entryTitle' => 'Meine Gesundheitsdaten',
 			'health.entrySubtitle' => 'Den Rettungskräften zeigen (bleiben auf dem Telefon)',
+			'health.completion.empty' => 'Auszufüllen',
+			'health.completion.partial' => 'Teilweise ausgefüllt',
+			'health.completion.complete' => 'Vollständig',
 			'health.a11y.form' => 'Formular für Gesundheitsinformationen',
 			'health.a11y.saveButton' => 'Gesundheitsinformationen speichern',
 			'health.delete.button' => 'Meine Karte löschen',
@@ -5795,11 +5811,11 @@ extension on TranslationsDe {
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Erklärung in gutem Glauben, ${state}',
 			'moderation.a11y.submitReport' => 'Meldung senden',
 			'moderation.a11y.statementCard' => 'Begründung der Moderationsentscheidung',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.a11y.complaintForm' => 'Formular zur Anfechtung der Entscheidung',
 			'bootstrap.loading' => 'Deine Wanderung wird vorbereitet…',
 			'recap.title' => 'Mein Abenteuer',
-			_ => null,
-		} ?? switch (path) {
 			'recap.lockedTitle' => 'Verfügbar am Ende der Tour',
 			'recap.lockedMessage' => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.',
 			'recap.finisherTitle' => 'Glückwunsch!',
@@ -6309,6 +6325,8 @@ extension on TranslationsDe {
 			'lieu.rafraichirEchec' => 'Die Aktualisierung ist fehlgeschlagen. Die Daten auf dem Telefon sind unversehrt.',
 			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => '${name} in der Karten-App öffnen',
 			'lieu.a11y.telephoner' => ({required Object name}) => '${name} anrufen',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Offizielle Website von ${name} öffnen',
 			_ => null,
 		};
