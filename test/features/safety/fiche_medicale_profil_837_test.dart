@@ -1,4 +1,3 @@
-import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,10 +10,12 @@ import 'package:moteur_gr/features/auth/domain/auth_service.dart';
 import 'package:moteur_gr/features/auth/presentation/profile_screen.dart';
 import 'package:moteur_gr/features/auth/providers/auth_provider.dart';
 import 'package:moteur_gr/features/checklist/widgets/checklist_preparation_section.dart';
-import 'package:moteur_gr/features/hub/presentation/widgets/step_status_icon.dart';
+import 'package:moteur_gr/features/safety/data/health_info_file.dart';
+import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
 import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
 import 'package:moteur_gr/features/safety/presentation/health_sheet_check.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/step_status_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// TACHE 837 — LOT C (C4) : LA FICHE MEDICALE DEVIENT UNE DONNEE DU PROFIL.
@@ -36,6 +37,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// CE QUI EST FIGE ICI : les trois etats, la presence dans le profil, et le
 /// fait que la check-list CONSTATE sans pouvoir modifier (aucune case a cocher
 /// sur cette ligne, et elle ne compte comme faite que COMPLETE).
+///
+/// AMORCAGE DE LA FICHE — PAR LE FICHIER, PLUS PAR DRIFT (tache 843). Ce lot
+/// avait ete ecrit sur la principale du 25/09, quand la fiche vivait dans
+/// Drift. La tache 613 l'a depuis deplacee dans SON PROPRE FICHIER, sous le
+/// dossier exclu des sauvegardes systeme, et `healthInfoProvider` ne lit plus
+/// que ce fichier. Amorcer la base Drift ne changeait donc plus rien a ce que
+/// l'ecran affiche : les cas semes passaient a cote. On passe par le depot
+/// reel, celui que l'application lit.
+Future<void> amorcerLaFiche(HealthInfo fiche) =>
+    HealthInfoRepository(fichier: HealthInfoFile()).save(fiche);
+
 void main() {
   group('les trois etats de la fiche (vide / partielle / complete)', () {
     test('fiche vierge -> VIDE', () {
@@ -112,9 +124,14 @@ void main() {
   group('la fiche est DANS LE PROFIL', () {
     late AppDatabase db;
 
-    setUp(() {
+    setUp(() async {
       SharedPreferences.setMockInitialValues({});
       db = AppDatabase(NativeDatabase.memory());
+      // LE DISQUE EST REMIS A NEUF ENTRE DEUX CAS : flutter_test_config.dart
+      // pointe le stockage applicatif sur UN SEUL dossier temporaire pour
+      // toute la suite, donc une fiche laissee par le cas precedent ferait
+      // passer — ou rougir — celui-ci pour de mauvaises raisons.
+      await HealthInfoFile().effacer();
     });
 
     tearDown(() async {
@@ -189,9 +206,7 @@ void main() {
     testWidgets('une fiche partielle est annoncee PARTIELLE, pas remplie', (
       tester,
     ) async {
-      await db.healthInfoDao.insertEntry(
-        HealthInfoEntriesCompanion.insert(bloodType: const Value('AB+')),
-      );
+      await amorcerLaFiche(const HealthInfo(bloodType: 'AB+'));
       await pumpProfil(tester);
 
       expect(find.text(t.health.completion.partial), findsOneWidget);
@@ -199,13 +214,13 @@ void main() {
     });
 
     testWidgets('une fiche complete est annoncee COMPLETE', (tester) async {
-      await db.healthInfoDao.insertEntry(
-        HealthInfoEntriesCompanion.insert(
-          bloodType: const Value('AB+'),
-          allergies: const Value('penicilline'),
-          treatments: const Value('aucun'),
-          doctorContact: const Value('Dr Dupont'),
-          insuranceNumber: const Value('CEAM-123'),
+      await amorcerLaFiche(
+        const HealthInfo(
+          bloodType: 'AB+',
+          allergies: 'penicilline',
+          treatments: 'aucun',
+          doctorContact: 'Dr Dupont',
+          insuranceNumber: 'CEAM-123',
         ),
       );
       await pumpProfil(tester);
@@ -228,9 +243,14 @@ void main() {
   group('la check-list de preparation ne fait que CONSTATER', () {
     late AppDatabase db;
 
-    setUp(() {
+    setUp(() async {
       SharedPreferences.setMockInitialValues({});
       db = AppDatabase(NativeDatabase.memory());
+      // LE DISQUE EST REMIS A NEUF ENTRE DEUX CAS : flutter_test_config.dart
+      // pointe le stockage applicatif sur UN SEUL dossier temporaire pour
+      // toute la suite, donc une fiche laissee par le cas precedent ferait
+      // passer — ou rougir — celui-ci pour de mauvaises raisons.
+      await HealthInfoFile().effacer();
     });
 
     tearDown(() async {
@@ -307,9 +327,7 @@ void main() {
     testWidgets('fiche PARTIELLE : toujours pas comptee comme faite', (
       tester,
     ) async {
-      await db.healthInfoDao.insertEntry(
-        HealthInfoEntriesCompanion.insert(bloodType: const Value('A+')),
-      );
+      await amorcerLaFiche(const HealthInfo(bloodType: 'A+'));
       await pumpChecklist(tester);
 
       // Une fiche a moitie remplie ne doit pas rassurer a tort.
@@ -323,13 +341,13 @@ void main() {
     testWidgets('fiche COMPLETE : la check-list la compte comme faite', (
       tester,
     ) async {
-      await db.healthInfoDao.insertEntry(
-        HealthInfoEntriesCompanion.insert(
-          bloodType: const Value('A+'),
-          allergies: const Value('aucune'),
-          treatments: const Value('aucun'),
-          doctorContact: const Value('Dr Dupont'),
-          insuranceNumber: const Value('CEAM-9'),
+      await amorcerLaFiche(
+        const HealthInfo(
+          bloodType: 'A+',
+          allergies: 'aucune',
+          treatments: 'aucun',
+          doctorContact: 'Dr Dupont',
+          insuranceNumber: 'CEAM-9',
         ),
       );
       await pumpChecklist(tester);

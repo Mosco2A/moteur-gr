@@ -159,10 +159,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           // COMPTE EST DANS LE PROFIL (tache 837, retour Christophe : « Dans
           // profil le numeros de recuperation de compte doit aparaitre »). Il
           // n'etait visible que derriere Reglages > Mon code de reconnexion.
-          SectionHeader(
-            title: i18n.recovery.title,
-            icon: Icons.vpn_key_outlined,
-          ),
+          SectionHeader(title: i18n.recovery.title, icon: StepwaysIcons.cle),
           const SizedBox(height: AppTheme.spacingSm),
           _buildRecoveryCodeSection(context, ref, theme, i18n),
           const SizedBox(height: AppTheme.spacingLg),
@@ -173,7 +170,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           // que depuis l'ecran d'urgence.
           SectionHeader(
             title: i18n.health.entryTitle,
-            icon: Icons.medical_information_outlined,
+            icon: StepwaysIcons.ficheMedicale,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           _buildHealthSheetSection(context, ref, theme, i18n),
@@ -474,7 +471,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             error: (_, __) => Text(
               i18n.recovery.error,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppTheme.rougeUrgence,
+                color: AppTheme.emergencyRed,
               ),
             ),
             data: (code) => Column(
@@ -501,11 +498,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: AppTheme.spacingMd),
-                OutlinedButton.icon(
+                // AppButton ET NON un OutlinedButton brut : la garde
+                // aucun_bouton_brut_645 (ECR-19) plafonne les boutons bruts, et
+                // un bouton brut porte sa propre taille de cible, son propre
+                // contraste et son propre etat de chargement — autant de
+                // decisions d'accessibilite a reprendre une fois de plus.
+                AppButton(
                   key: const ValueKey('profile-recovery-copy'),
                   onPressed: () => _copyRecoveryCode(context, code),
-                  icon: const Icon(Icons.copy, size: 18),
-                  label: Text(i18n.recovery.copy),
+                  variant: AppButtonVariant.outline,
+                  icon: StepwaysIcons.copier,
+                  iconSize: 18,
+                  label: i18n.recovery.copy,
+                  isFullWidth: false,
                 ),
               ],
             ),
