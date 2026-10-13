@@ -240,22 +240,41 @@ class DurationSelector extends StatelessWidget {
                 : null,
           ),
           // Bornes min / max sous le curseur (parite GR20).
+          //
+          // LES DEUX BORNES SONT `Flexible` (tache 836). Elles etaient deux
+          // `Text` nus dans un `Row` en `spaceBetween`, donc dimensionnes a
+          // leur largeur NATURELLE : sur un ecran de 320 points, « N jours au
+          // total » deux fois de suite reclamait 9,6 points de plus que la
+          // largeur disponible, et le `Row` debordait pour de vrai — rayures
+          // jaunes et noires a l'appui, releve en banc de mesure.
+          //
+          // `Flexible` leur donne une largeur BORNEE, donc le texte passe a la
+          // ligne au lieu de pousser hors cadre : c'est le premier des trois
+          // moyens du lot 749. Aucun `maxLines`, aucune ellipse — rien n'est
+          // coupe, la ligne grandit.
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                t.programme.duration.daysTotal.replaceAll(
-                  '{count}',
-                  '$minDuration',
+              Flexible(
+                child: Text(
+                  t.programme.duration.daysTotal.replaceAll(
+                    '{count}',
+                    '$minDuration',
+                  ),
+                  style: theme.textTheme.bodySmall,
                 ),
-                style: theme.textTheme.bodySmall,
               ),
-              Text(
-                t.programme.duration.daysTotal.replaceAll(
-                  '{count}',
-                  '$maxDuration',
+              const SizedBox(width: AppTheme.spacingSm),
+              Flexible(
+                child: Text(
+                  t.programme.duration.daysTotal.replaceAll(
+                    '{count}',
+                    '$maxDuration',
+                  ),
+                  style: theme.textTheme.bodySmall,
+                  textAlign: TextAlign.end,
                 ),
-                style: theme.textTheme.bodySmall,
               ),
             ],
           ),

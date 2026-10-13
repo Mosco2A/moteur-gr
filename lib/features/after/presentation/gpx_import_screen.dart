@@ -23,9 +23,17 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../domain/stage.dart';
+import '../../trek/trek_facade.dart' show cadrageDOuverture;
 import '../data/gpx_import_service.dart';
 import '../providers/gpx_import_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
+
+/// La marge entre la trace importee et le bord de la carte, en points.
+///
+/// Nommee parce qu'elle sert DEUX fois : au cadrage d'ouverture, qui en deduit
+/// le zoom, et au `initialCameraFit` garde-fou. Deux valeurs differentes
+/// feraient sauter la vue entre la premiere image et la suivante.
+const double _margeDeLaCarte = 30;
 
 /// Import GPX — permet d'importer une trace GPS externe (parite GR20).
 ///
@@ -299,69 +307,87 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       borderRadius: BorderRadius.circular(AppTheme.radiusCard),
       child: SizedBox(
         height: 250,
-        child: FlutterMap(
-          options: MapOptions(
-            initialCameraFit: CameraFit.bounds(
-              bounds: bounds,
-              padding: const EdgeInsets.all(30),
-            ),
-            interactionOptions: const InteractionOptions(
-              flags: InteractiveFlag.none,
-            ),
-          ),
-          children: [
-            FondDeCarte(trailId: widget.trailId),
-            PolylineLayer(
-              polylines: [
-                Polyline(
-                  points: points,
-                  strokeWidth: 3,
-                  color: theme.colorScheme.primary,
+        // MEME CORRECTIF QUE LA VIGNETTE DU CARNET (tache 836). Cette carte-ci
+        // n'etait pas dans le signalement de Christophe, mais elle portait le
+        // defaut MOT POUR MOT : `initialCameraFit` seul, donc une premiere
+        // fournee de tuiles demandee au zoom par defaut pour une vue que
+        // personne ne verra, et `InteractiveFlag.none`, donc aucun geste pour
+        // rattraper le coup. La laisser aurait garanti le meme rapport dans
+        // quinze jours. La raison complete est dans `cadrage_d_ouverture.dart`.
+        child: LayoutBuilder(
+          builder: (context, contraintes) {
+            final ouverture = cadrageDOuverture(
+              bounds,
+              _margeDeLaCarte,
+              contraintes.biggest,
+            );
+            return FlutterMap(
+              options: MapOptions(
+                initialCenter: ouverture.centre,
+                initialZoom: ouverture.zoom,
+                initialCameraFit: CameraFit.bounds(
+                  bounds: bounds,
+                  padding: const EdgeInsets.all(_margeDeLaCarte),
                 ),
-              ],
-            ),
-            MarkerLayer(
-              markers: [
-                Marker(
-                  point: points.first,
-                  width: 24,
-                  height: 24,
-                  child: Container(
-                    decoration: BoxDecoration(
+                interactionOptions: const InteractionOptions(
+                  flags: InteractiveFlag.none,
+                ),
+              ),
+              children: [
+                FondDeCarte(trailId: widget.trailId),
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: points,
+                      strokeWidth: 3,
                       color: theme.colorScheme.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child: const StepIcon(
-                      StepwaysIcons.save,
-                      size: 14,
-                      color: Colors.white,
-                    ),
-                  ),
+                  ],
                 ),
-                Marker(
-                  point: points.last,
-                  width: 24,
-                  height: 24,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppTheme.orangeDifficile,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: points.first,
+                      width: 24,
+                      height: 24,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: const StepIcon(
+                          StepwaysIcons.save,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                    child: const StepIcon(
-                      StepwaysIcons.depart,
-                      size: 14,
-                      color: Colors.white,
+                    Marker(
+                      point: points.last,
+                      width: 24,
+                      height: 24,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppTheme.orangeDifficile,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: const StepIcon(
+                          StepwaysIcons.depart,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
+                // ODbL : les tuiles viennent d OpenStreetMap, la carte le dit
+                // (integration 647).
+                const AttributionOsm(),
               ],
-            ),
-            // ODbL : les tuiles viennent d OpenStreetMap, la carte le dit
-            // (integration 647).
-            const AttributionOsm(),
-          ],
+            );
+          },
         ),
       ),
     );
