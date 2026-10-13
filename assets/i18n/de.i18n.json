@@ -1642,6 +1642,11 @@
     "emergencyHint": "Zeig diesen Bildschirm im Notfall den Rettungskräften.",
     "entryTitle": "Meine Gesundheitsdaten",
     "entrySubtitle": "Den Rettungskräften zeigen (bleiben auf dem Telefon)",
+    "completion": {
+      "empty": "Auszufüllen",
+      "partial": "Teilweise ausgefüllt",
+      "complete": "Vollständig"
+    },
     "a11y": {
       "form": "Formular für Gesundheitsinformationen",
       "saveButton": "Gesundheitsinformationen speichern"

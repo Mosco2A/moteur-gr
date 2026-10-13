@@ -90,10 +90,12 @@ void main() {
     expect(find.text(t.myTreks.sectionInProgress), findsAtLeastNWidgets(1));
     expect(find.text(t.myTreks.sectionPrepared), findsOneWidget);
     expect(find.text(t.myTreks.sectionCompleted), findsOneWidget);
-    // Découvrir / Mon compte apparaissent DEUX fois : dans le bandeau du corps
-    // ([HubSection]) ET dans la barre contextuelle (§4, Ph5). Les deux coexistent
-    // (la barre ne retire pas le contenu du corps).
-    expect(find.text(t.myTreks.discoverTitle), findsNWidgets(2));
+    // UN SEUL « Découvrir des sentiers » (tache 837) : il en restait DEUX ici
+    // (bandeau du corps + barre contextuelle), plus un troisieme dans l'etat
+    // vide. Seul celui de la BARRE subsiste.
+    expect(find.text(t.myTreks.discoverTitle), findsOneWidget);
+    // « Mon compte » garde, lui, son double acces : le retour de Christophe ne
+    // portait que sur Découvrir.
     expect(find.text(t.myTreks.accountTitle), findsNWidgets(2));
   });
 
@@ -127,11 +129,6 @@ void main() {
       reason:
           'le texte renvoie vers le catalogue ET vers la demo, qui est en '
           'tete du catalogue',
-    );
-    expect(
-      find.byKey(const ValueKey('my-treks-empty-discover')),
-      findsOneWidget,
-      reason: 'et la porte est la, pas seulement la phrase',
     );
   });
 
@@ -171,20 +168,63 @@ void main() {
     expect(container.read(selectedTrailIdProvider), 'gr20');
   });
 
-  testWidgets('bandeau du corps : Découvrir -> /catalog', (tester) async {
+  testWidgets('le bandeau du corps ne porte PLUS de Découvrir (tache 837)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrap(makeContainer([_summary('a', TrekLifecycleState.owned)])),
     );
     await tester.pumpAndSettle();
 
-    // Découvrir existe en 2 exemplaires (corps + barre §4) : on cible celui du
-    // CORPS (hors [ContextualActionBar]) pour tester le bandeau historique.
+    // AVANT la tache 837 ce test tapait le Découvrir du CORPS (carte du
+    // bandeau [HubSection]) pour aller a /catalog. Cette carte faisait doublon
+    // avec la barre, en bas de ListView donc sous la ligne de flottaison : elle
+    // est retiree. Le corps n'en porte plus aucun.
     final bodyDiscover = find.descendant(
       of: find.byType(ListView),
       matching: find.text(t.myTreks.discoverTitle),
     );
-    expect(bodyDiscover, findsOneWidget);
-    await tester.tap(bodyDiscover);
+    expect(bodyDiscover, findsNothing);
+
+    // Et le bandeau garde ses DEUX autres cartes : on n'a pas vide la section.
+    final bodyAccount = find.descendant(
+      of: find.byType(ListView),
+      matching: find.text(t.myTreks.accountTitle),
+    );
+    expect(bodyAccount, findsOneWidget);
+  });
+
+  testWidgets('l etat vide ne porte PLUS de CTA Découvrir (tache 837)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(wrap(makeContainer(const [])));
+    await tester.pumpAndSettle();
+
+    // Le CTA de l'empty-state etait le 3e Découvrir. L'invite ECRITE reste —
+    // et c'est celle de la principale, qui dit aussi la demo quand elle n'est
+    // pas cachee (tache 843 : la tache 837 ne touchait pas ce texte).
+    expect(find.byKey(const ValueKey('my-treks-empty-discover')), findsNothing);
+    expect(find.text(t.myTreks.emptyCatalogueOuDemo), findsOneWidget);
+    // Liste vide ou pleine, il n'y a QU'UN SEUL Découvrir a l'ecran.
+    expect(find.text(t.myTreks.discoverTitle), findsOneWidget);
+  });
+
+  testWidgets('le seul Découvrir restant est celui de la barre -> /catalog', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      wrap(makeContainer([_summary('a', TrekLifecycleState.owned)])),
+    );
+    await tester.pumpAndSettle();
+
+    // Il est DANS la barre contextuelle, et il mene bien au catalogue : ce qui
+    // a ete retire, c'est le doublon, pas l'acces.
+    final barDiscover = find.descendant(
+      of: find.byType(ContextualActionBar),
+      matching: find.text(t.myTreks.discoverTitle),
+    );
+    expect(barDiscover, findsOneWidget);
+    await tester.tap(barDiscover);
     await tester.pumpAndSettle();
     expect(find.text('CATALOG'), findsOneWidget);
   });

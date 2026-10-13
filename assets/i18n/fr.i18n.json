@@ -1642,6 +1642,11 @@
     "emergencyHint": "En cas d'urgence, montre cet écran aux secours.",
     "entryTitle": "Mes infos santé",
     "entrySubtitle": "À montrer aux secours (restées sur le téléphone)",
+    "completion": {
+      "empty": "À remplir",
+      "partial": "Partiellement remplie",
+      "complete": "Complète"
+    },
     "a11y": {
       "form": "Formulaire d'informations de santé",
       "saveButton": "Enregistrer les informations de santé"

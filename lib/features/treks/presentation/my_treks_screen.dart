@@ -13,7 +13,6 @@ import '../../../core/routing/contextual_actions_provider.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/contextual_action_bar.dart';
 import '../../../shared/widgets/contextual_bottom_bar.dart';
 import '../../../shared/widgets/empty_state.dart';
@@ -30,7 +29,7 @@ import '../../../core/branding/stepways_icons.dart';
 /// Nouvelle entree de l'onglet Accueil (option A) : liste les treks POSSEDES de
 /// l'utilisateur ([myTreksProvider]) repartis en sections — **En cours** (0/1,
 /// invariant C4) · **Préparés** (prepared + juste possedes) · **Terminés** —
-/// puis un bandeau « Découvrir / Mon compte » (reutilise [HubSection], comme le
+/// puis un bandeau « Mon compte / Réglages » (reutilise [HubSection], comme le
 /// HUB). Selectionner un trek ecrit [selectedTrailIdProvider] et bascule vers le
 /// cockpit `/home` (geste eprouve du catalogue) : tout le contexte du sentier
 /// suit alors la selection ([trailConfigProvider] en derive).
@@ -42,11 +41,16 @@ import '../../../core/branding/stepways_icons.dart';
 /// (aucune rando active). Il ne porte donc PAS d'`AppHeader` (§4 : « pas de
 /// header, c'est l'accueil ») — juste son `AppBar` de titre. Sa BARRE
 /// CONTEXTUELLE (mecanisme L3, [ContextualActionsMixin] + [ContextualBottomBar])
-/// porte les deux entrees transverses de l'accueil : **Découvrir** (-> /catalog)
-/// et **Mon compte** (-> /profile), conformement a §4. Les memes acces restent
-/// aussi disponibles en bas du corps (bandeau [HubSection] avec sous-titres) —
-/// la barre les rend atteignables a une main (thumb zone, §11.4) sans rien
-/// retirer du contenu.
+/// porte les entrees transverses de l'accueil : **Découvrir** (-> /catalog),
+/// **Mon compte** (-> /profile) et **Réglages**, conformement a §4.
+///
+/// UN SEUL « Découvrir des sentiers » (tache 837, retour Christophe). Il y en
+/// avait TROIS sur cette page : la barre contextuelle, une carte du bandeau en
+/// bas de liste, et le CTA de l'empty-state. Les deux derniers sont retires ;
+/// celui de la BARRE reste, parce que c'est le seul des trois qui soit TOUJOURS
+/// a l'ecran — ancre en bas, jamais sous la ligne de flottaison, atteignable a
+/// une main (thumb zone, §11.4). « Mon compte » et « Réglages » gardent, eux,
+/// leur double acces : le retour ne portait que sur Découvrir.
 class MyTreksScreen extends ConsumerStatefulWidget {
   const MyTreksScreen({super.key});
 
@@ -70,6 +74,9 @@ class _MyTreksScreenState extends ConsumerState<MyTreksScreen>
     // comme geste systeme Android) retombait sur l'accueil contextuel, donc
     // sur le COCKPIT d'un sentier non choisi — le defaut de Chris du 26/09.
     // En empilant, le retour DEPILE naturellement vers « Mes treks ».
+    //
+    // C'est le SEUL Découvrir de l'ecran depuis la tache 837 : les deux autres
+    // (CTA de l'etat vide, carte du bandeau du corps) ont ete retires.
     ContextualAction(
       icon: StepwaysIcons.trailCatalog,
       label: t.myTreks.discoverTitle,
@@ -171,8 +178,15 @@ class _MyTreksBody extends ConsumerWidget {
         // un mensonge, exactement celui que le dialogue de sortie evite deja.
         //
         // Reutilise le widget maison [EmptyState] (meme grammaire que le
-        // catalogue vide) ; le bandeau « Decouvrir / Mon compte » en bas de liste
-        // reste present, et le bouton d ici est la porte saillante.
+        // catalogue vide).
+        //
+        // UN SEUL « Découvrir des sentiers » (tache 837, retour Christophe :
+        // « TOUJOURS 3 boutons decouvrir les sentier sur la premiere page »).
+        // L'empty-state portait un CTA de plus vers /catalog : il est RETIRE.
+        // Il reste l'invite ECRITE juste au-dessus et la barre contextuelle,
+        // qui est a l'ecran a cet instant precis comme a tout autre — donc
+        // rien n'est perdu. Le TEXTE, lui, ne bouge pas : la tache 837 ne le
+        // touchait pas, il reste celui de la principale (tache 843).
         if (isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXl),
@@ -182,15 +196,6 @@ class _MyTreksBody extends ConsumerWidget {
               subtitle: ref.watch(boutonDemoCacheProvider)
                   ? t.myTreks.emptyCatalogueSeul
                   : t.myTreks.emptyCatalogueOuDemo,
-              action: AppButton(
-                key: const ValueKey('my-treks-empty-discover'),
-                icon: StepwaysIcons.trailCatalog,
-                iconSize: 18,
-                label: t.myTreks.discoverTitle,
-                isFullWidth: false,
-                // Q2 (tache 568) : `push`, pour que le retour depile vers ici.
-                onPressed: () => context.push('/catalog'),
-              ),
             ),
           ),
 
@@ -210,8 +215,14 @@ class _MyTreksBody extends ConsumerWidget {
           onSelect: (id) => _selectTrek(ref, context, id),
         ),
 
-        // Bandeau « Découvrir / Mon compte » : reutilise HubSection (grille 2
+        // Bandeau « Mon compte / Réglages » : reutilise HubSection (grille de
         // cartes) — meme grammaire visuelle que le HUB.
+        //
+        // UN SEUL « Découvrir des sentiers » (tache 837) : la carte Découvrir de
+        // ce bandeau faisait DOUBLON avec la barre contextuelle juste en dessous
+        // — meme libelle, meme icone, meme destination /catalog — et elle etait
+        // en BAS de la ListView, donc sous la ligne de flottaison des qu'on
+        // possede plusieurs treks. C'est elle qui degage ; la barre reste.
         const SizedBox(height: AppTheme.spacingLg),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingMd),
@@ -219,13 +230,6 @@ class _MyTreksBody extends ConsumerWidget {
             title: t.nav.myTreks,
             icon: StepwaysIcons.trailCatalog,
             cards: [
-              QuickAccessCard(
-                icon: StepwaysIcons.trailCatalog,
-                title: t.myTreks.discoverTitle,
-                subtitle: t.myTreks.discoverSubtitle,
-                // Q2 (tache 568) : `push`, pour que le retour depile vers ici.
-                onTap: () => context.push('/catalog'),
-              ),
               QuickAccessCard(
                 icon: StepwaysIcons.myAccount,
                 title: t.myTreks.accountTitle,

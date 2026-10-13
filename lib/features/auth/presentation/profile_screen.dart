@@ -5,12 +5,15 @@ library;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/analytics/screen_entry.dart';
 import '../../../core/firebase/cloud_unavailable_notice.dart';
 import '../../../core/firebase/firebase_service.dart';
+import '../../../core/services/recovery_code_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -21,7 +24,8 @@ import '../../../shared/widgets/section_header.dart';
 import '../../../core/services/pilote_demo.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../shared/widgets/grise_en_demo.dart';
-import '../../safety/safety_facade.dart' show RefusSauvegardeSystemeDialog;
+import '../../safety/safety_facade.dart'
+    show HealthSheetCheck, RefusSauvegardeSystemeDialog, healthInfoProvider;
 import '../../settings/settings_facade.dart'
     show DominantHand, DominantHandValues, settingsProvider;
 import '../domain/auth_service.dart';
@@ -46,13 +50,21 @@ const _avatarIcons = <String>[
 ///
 /// Parite GR20 (tache 517) : meme charpente que l'ecran profil GR20 —
 /// en-tete avatar centre + pseudo, sections regroupees par [SectionHeader]
-/// (compte, main dominante, zone dangereuse), et VERSION visible en bas de
-/// page (« StepWays v0.1.0 (build 1) », lue via package_info_plus).
+/// (compte, code de reconnexion, fiche medicale, main dominante, zone
+/// dangereuse), et VERSION visible en bas de page (« StepWays v0.1.0
+/// (build 1) », lue via package_info_plus).
 ///
 /// Acquis finitions conserves : profil OK hors-ligne (aucun spinner infini —
-/// etat explicite si l'utilisateur est absent), acces au code de reconnexion
-/// via les Reglages, choix de la main dominante. Tous les textes passent par
-/// Slang (zero texte en dur), 5 langues.
+/// etat explicite si l'utilisateur est absent), choix de la main dominante.
+/// Tous les textes passent par Slang (zero texte en dur), 5 langues.
+///
+/// TACHE 837 — ce que « Mon compte » doit contenir, et ne contenait pas :
+///  - le NUMERO DE RECUPERATION DE COMPTE (code de reconnexion) y est affiche,
+///    lisible et copiable : il n'etait visible que derriere les Reglages ;
+///  - la FICHE MEDICALE y est une donnee de profil, avec sa coche a trois
+///    etats : elle n'etait atteignable que depuis l'ecran d'urgence ;
+///  - les deux boutons de la main dominante sont dans l'ordre qu'ils
+///    designent : Gaucher a gauche, Droitier a droite.
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
@@ -141,6 +153,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           GriseEnDemo(
             child: _buildAccountSection(context, ref, theme, i18n, user),
           ),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Section « Mon code de reconnexion » — LE NUMERO DE RECUPERATION DE
+          // COMPTE EST DANS LE PROFIL (tache 837, retour Christophe : « Dans
+          // profil le numeros de recuperation de compte doit aparaitre »). Il
+          // n'etait visible que derriere Reglages > Mon code de reconnexion.
+          SectionHeader(title: i18n.recovery.title, icon: StepwaysIcons.cle),
+          const SizedBox(height: AppTheme.spacingSm),
+          _buildRecoveryCodeSection(context, ref, theme, i18n),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Section « Mes infos sante » — LA FICHE MEDICALE EST UNE DONNEE DU
+          // PROFIL (tache 837, retour Christophe : « Fiche medicale dans
+          // profil »), avec sa coche a trois etats. Elle n'etait atteignable
+          // que depuis l'ecran d'urgence.
+          SectionHeader(
+            title: i18n.health.entryTitle,
+            icon: StepwaysIcons.ficheMedicale,
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _buildHealthSheetSection(context, ref, theme, i18n),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Section « Main dominante » (lateralite, R9/R10) : place le SOS et
@@ -389,11 +422,179 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
+  /// Section « Mon code de reconnexion » — LE NUMERO DE RECUPERATION DE COMPTE
+  /// (tache 837 : « Dans profil le numeros de recuperation de compte doit
+  /// aparaitre »).
+  ///
+  /// C'est le code qui permet de retrouver ses donnees en changeant de
+  /// telephone : il ouvre le coffre chiffre (profil, fiche de renseignement,
+  /// solde d'etapes) sur un autre appareil. Il existait deja, genere par
+  /// [recoveryCodeProvider] et garde dans le keystore de l'OS — mais il ne
+  /// s'affichait QUE derriere Reglages > Mon code de reconnexion, c'est-a-dire
+  /// nulle part pour qui cherche son compte. Il est donc ici, dans « Mon
+  /// compte », au complet : LISIBLE (monospace, selectionnable), COPIABLE (un
+  /// bouton, confirmation par SnackBar) et EXPLIQUE (`recovery.intro`).
+  ///
+  /// Aucune cle de traduction nouvelle : les textes `recovery.*` existaient
+  /// deja dans les 5 langues pour l'ecran dedie. L'ecran dedie reste en place
+  /// (il porte en plus l'avertissement « perdre le code = irrecuperable »).
+  Widget _buildRecoveryCodeSection(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations i18n,
+  ) {
+    final codeAsync = ref.watch(recoveryCodeProvider);
+    return AppCard(
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // L'explication, avant le code : a quoi il sert et quand il sauve.
+          Text(
+            i18n.recovery.intro,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          codeAsync.when(
+            // AUCUN SPINNER ICI — c'est une regle de cet ecran (audit #327 :
+            // un spinner infini masquait une absence de donnee). Le code vient
+            // du keystore de l'OS ; si celui-ci ne repond jamais (ce qui est
+            // precisement le cas sous test, sans implementation de plateforme),
+            // un `CircularProgressIndicator` tournerait pour toujours et le
+            // profil ne se stabiliserait jamais. On n'affiche donc RIEN dans
+            // l'emplacement du code : l'explication au-dessus tient le bloc, et
+            // le code apparait des qu'il est lu.
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => Text(
+              i18n.recovery.error,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.emergencyRed,
+              ),
+            ),
+            data: (code) => Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  i18n.recovery.codeLabel,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: AppTheme.spacingSm),
+                // LISIBLE et SELECTIONNABLE : meme rendu que l'ecran dedie
+                // (monospace + interlettrage), pour qu'un code recopie a la
+                // main ne se confonde pas caractere par caractere.
+                SelectableText(
+                  code,
+                  key: const ValueKey('profile-recovery-code'),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontFamily: 'monospace',
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 2,
+                  ),
+                ),
+                const SizedBox(height: AppTheme.spacingMd),
+                // AppButton ET NON un OutlinedButton brut : la garde
+                // aucun_bouton_brut_645 (ECR-19) plafonne les boutons bruts, et
+                // un bouton brut porte sa propre taille de cible, son propre
+                // contraste et son propre etat de chargement — autant de
+                // decisions d'accessibilite a reprendre une fois de plus.
+                AppButton(
+                  key: const ValueKey('profile-recovery-copy'),
+                  onPressed: () => _copyRecoveryCode(context, code),
+                  variant: AppButtonVariant.outline,
+                  icon: StepwaysIcons.copier,
+                  iconSize: 18,
+                  label: i18n.recovery.copy,
+                  isFullWidth: false,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Copie le code de reconnexion dans le presse-papiers + confirmation.
+  ///
+  /// `messenger` et les textes sont captures AVANT l'`await` : apres, le
+  /// `BuildContext` peut avoir disparu (l'utilisateur a pu quitter l'ecran).
+  Future<void> _copyRecoveryCode(BuildContext context, String code) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final i18n = Translations.of(context);
+    await Clipboard.setData(ClipboardData(text: code));
+    messenger.showSnackBar(SnackBar(content: Text(i18n.recovery.copied)));
+  }
+
+  /// Section « Mes infos sante » — LA FICHE MEDICALE, DONNEE DE PROFIL
+  /// (tache 837 : « Fiche medicale dans profil »).
+  ///
+  /// Elle etait un instrument du parcours d'urgence : son SEUL point d'entree
+  /// etait l'ecran SOS, donc on la decouvrait au pire moment pour la remplir.
+  /// Elle se remplit desormais ici, une fois pour toutes, et la check-list de
+  /// preparation de chaque randonnee ne fait plus que CONSTATER son etat.
+  ///
+  /// La coche a trois etats ([HealthSheetCheck]) est la meme des deux cotes :
+  /// la tuile montre ici l'etat et le libelle, l'ecran de saisie reste `/health`
+  /// (inchange — ses gardes RGPD, son consentement sante et sa validation de
+  /// groupe sanguin ne sont pas touches).
+  Widget _buildHealthSheetSection(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations i18n,
+  ) {
+    // `asData?.value` : tant que Drift n'a pas repondu (ou s'il echoue), la
+    // tuile reste la et mene a la fiche — on n'affiche simplement AUCUNE coche
+    // plutot qu'une coche fausse.
+    final completion = ref.watch(healthInfoProvider).asData?.value.completion;
+    return AppCard(
+      padding: EdgeInsets.zero,
+      child: ListTile(
+        key: const ValueKey('profile-health-sheet'),
+        leading: const Icon(Icons.medical_information_outlined),
+        // Le [SectionHeader] juste au-dessus NOMME deja la fiche : la tuile ne
+        // repete pas son nom, elle dit son ETAT (« A remplir » / « Partiellement
+        // remplie » / « Complete ») et rappelle a quoi elle sert.
+        title: Text(
+          completion == null
+              ? i18n.health.entrySubtitle
+              : HealthSheetCheck.label(i18n, completion),
+        ),
+        subtitle: completion == null ? null : Text(i18n.health.entrySubtitle),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (completion != null) HealthSheetCheck(completion: completion),
+            const SizedBox(width: AppTheme.spacingXs),
+            const Icon(Icons.chevron_right, color: AppTheme.grisGranite),
+          ],
+        ),
+        onTap: () => context.push('/health'),
+      ),
+    );
+  }
+
   /// Section « main dominante » (lateralite, R9/R10).
   ///
   /// Choix droitier/gaucher (defaut droitier) via [SegmentedButton] : positionne
   /// le SOS et les commandes critiques du cote de la main dominante (thumb zone,
   /// atteignabilite a une main en marchant). Persiste par [settingsProvider].
+  ///
+  /// L'ORDRE DES DEUX BOUTONS EST UNE DONNEE, PAS UN DETAIL (tache 837, retour
+  /// Christophe : « main dominante inverser les bouton droitier a droite et
+  /// gaucher a gauche »). Le reglage etait rendu dans l'ordre [Droitier,
+  /// Gaucher] : le bouton « Droitier » tombait donc A GAUCHE du controle, et
+  /// « Gaucher » A DROITE — l'inverse exact de ce que chacun designe. On lit
+  /// desormais **Gaucher a gauche, Droitier a droite** : le controle devient la
+  /// CARTE de ce qu'il commande, on choisit son cote en le pointant. Le test
+  /// `profil_main_dominante_837_test.dart` mesure les abscisses a l'ecran et
+  /// fige ce sens.
   Widget _buildDominantHandSection(
     BuildContext context,
     WidgetRef ref,
@@ -415,14 +616,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: AppTheme.spacingMd),
           SegmentedButton<DominantHand>(
             segments: [
-              ButtonSegment<DominantHand>(
-                value: DominantHandValues.right,
-                label: Text(i18n.navPilote.dominantHandRight),
-                icon: const StepIcon(StepwaysIcons.geste),
-              ),
+              // GAUCHER A GAUCHE, DROITIER A DROITE : l'ordre de cette liste
+              // EST l'ordre a l'ecran (un SegmentedButton est une Row).
               ButtonSegment<DominantHand>(
                 value: DominantHandValues.left,
                 label: Text(i18n.navPilote.dominantHandLeft),
+                icon: const StepIcon(StepwaysIcons.geste),
+              ),
+              ButtonSegment<DominantHand>(
+                value: DominantHandValues.right,
+                label: Text(i18n.navPilote.dominantHandRight),
                 icon: const StepIcon(StepwaysIcons.geste),
               ),
             ],
