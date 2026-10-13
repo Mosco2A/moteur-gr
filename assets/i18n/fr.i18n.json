@@ -348,7 +348,15 @@
       "other": "$n étapes"
     },
     "daysTotal": "Jours au total",
-    "daysBreakdown": "${walk} jours de marche + ${rest} jours de repos"
+    "walkDays(plural)": {
+      "one": "$n jour de marche",
+      "other": "$n jours de marche"
+    },
+    "restDays(plural)": {
+      "one": "$n jour de repos",
+      "other": "$n jours de repos"
+    },
+    "daysBreakdown": "${walk} + ${rest}"
   },
   "tracking": {
     "start": "Démarrer",
@@ -1861,7 +1869,10 @@
     "gpxError": "Export impossible",
     "daysSection": "Jour par jour",
     "dayLabel": "Jour $day",
-    "dayStages": "$count étape(s)",
+    "dayStages(plural)": {
+      "one": "$n étape",
+      "other": "$n étapes"
+    },
     "dayRest": "Journée sans étape terminée",
     "noDays": "Aucune journée enregistrée au GPS",
     "averageSpeed": "$kmh km/h de moyenne"
@@ -2055,7 +2066,10 @@
       "eveOfDeparture": "Veille du départ"
     },
     "summary": {
-      "remaining": "{count} nuit(s) restante(s)",
+      "remaining(plural)": {
+        "one": "$n nuit restante",
+        "other": "$n nuits restantes"
+      },
       "done": "{count} OK",
       "allBooked": "TOUTES LES NUITS RÉSERVÉES"
     },

@@ -392,9 +392,13 @@ class _ItineraryStatsHeader extends StatelessWidget {
           ),
           const SizedBox(height: AppTheme.spacingXs),
           Text(
+            // « 1 jours de repos » n'existe plus (tache 835) : le mot « jour »
+            // etait au pluriel EN DUR dans la phrase. Chaque moitie porte
+            // maintenant son propre pluriel cardinal, et la phrase ne fait plus
+            // que les joindre — ce qui laisse chaque langue libre de son ordre.
             t.itinerary.daysBreakdown(
-              walk: dayCount - restDayCount,
-              rest: restDayCount,
+              walk: t.itinerary.walkDays(n: dayCount - restDayCount),
+              rest: t.itinerary.restDays(n: restDayCount),
             ),
             key: const ValueKey('itinerary-days-breakdown'),
             textAlign: TextAlign.center,

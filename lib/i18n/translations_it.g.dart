@@ -418,7 +418,15 @@ class _Translations$itinerary$it extends Translations$itinerary$fr {
 		other: '${n} tappe',
 	);
 	@override String get daysTotal => 'Giorni in totale';
-	@override String daysBreakdown({required Object walk, required Object rest}) => '${walk} giorni di cammino + ${rest} giorni di riposo';
+	@override String walkDays({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: '${n} giorno di cammino',
+		other: '${n} giorni di cammino',
+	);
+	@override String restDays({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: '${n} giorno di riposo',
+		other: '${n} giorni di riposo',
+	);
+	@override String daysBreakdown({required Object walk, required Object rest}) => '${walk} + ${rest}';
 }
 
 // Path: tracking
@@ -1504,7 +1512,10 @@ class _Translations$recap$it extends Translations$recap$fr {
 	@override String get gpxError => 'Esportazione non riuscita';
 	@override String get daysSection => 'Giorno per giorno';
 	@override String dayLabel({required Object day}) => 'Giorno ${day}';
-	@override String dayStages({required Object count}) => '${count} tappa/e';
+	@override String dayStages({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: '${n} tappa',
+		other: '${n} tappe',
+	);
 	@override String get dayRest => 'Nessuna tappa conclusa quel giorno';
 	@override String get noDays => 'Nessuna giornata registrata dal GPS';
 	@override String averageSpeed({required Object kmh}) => '${kmh} km/h di media';
@@ -3586,7 +3597,10 @@ class _Translations$nuitees$summary$it extends Translations$nuitees$summary$fr {
 	final TranslationsIt _root; // ignore: unused_field
 
 	// Translations
-	@override String get remaining => '{count} notte/i rimasta/e';
+	@override String remaining({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n,
+		one: '${n} notte rimasta',
+		other: '${n} notti rimaste',
+	);
 	@override String get done => '{count} OK';
 	@override String get allBooked => 'TUTTE LE NOTTI PRENOTATE';
 }
@@ -4532,7 +4546,9 @@ extension on TranslationsIt {
 			'itinerary.openMap' => 'Vedi sulla mappa',
 			'itinerary.stageCount' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: '${n} tappa', other: '${n} tappe', ), 
 			'itinerary.daysTotal' => 'Giorni in totale',
-			'itinerary.daysBreakdown' => ({required Object walk, required Object rest}) => '${walk} giorni di cammino + ${rest} giorni di riposo',
+			'itinerary.walkDays' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: '${n} giorno di cammino', other: '${n} giorni di cammino', ), 
+			'itinerary.restDays' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: '${n} giorno di riposo', other: '${n} giorni di riposo', ), 
+			'itinerary.daysBreakdown' => ({required Object walk, required Object rest}) => '${walk} + ${rest}',
 			'tracking.start' => 'Avvia',
 			'tracking.pause' => 'Pausa',
 			'tracking.resume' => 'Riprendi',
@@ -4753,10 +4769,10 @@ extension on TranslationsIt {
 			'checklist.ui.share' => 'CONDIVIDI',
 			'checklist.ui.infoTitle' => 'Attrezzatura & Zaino',
 			'checklist.ui.infoCheckTitle' => 'Spunta gli articoli',
-			'checklist.ui.infoCheckBody' => 'Spunta ciò che porti — il peso si ricalcola in alto.',
-			'checklist.ui.infoRequiredTitle' => 'Obbligatori',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoCheckBody' => 'Spunta ciò che porti — il peso si ricalcola in alto.',
+			'checklist.ui.infoRequiredTitle' => 'Obbligatori',
 			'checklist.ui.infoRequiredBody' => 'Articoli con lucchetto = regolamento (fischietto, lampada, coperta di sopravvivenza).',
 			'checklist.ui.infoGaugeTitle' => 'Indicatore peso',
 			'checklist.ui.infoGaugeBody' => 'Obiettivo: zaino < 15% del tuo peso. Verde = OK, Arancione = attenzione, Rosso = troppo pesante.',
@@ -5267,10 +5283,10 @@ extension on TranslationsIt {
 			'follow.connecting' => 'Connessione…',
 			'follow.live' => 'In diretta',
 			'follow.offline' => 'Offline',
-			'follow.invalidLink' => 'Link non valido',
-			'follow.invalidLinkHint' => 'Questo link di localizzazione non esiste o è scaduto.',
 			_ => null,
 		} ?? switch (path) {
+			'follow.invalidLink' => 'Link non valido',
+			'follow.invalidLinkHint' => 'Questo link di localizzazione non esiste o è scaduto.',
 			'cloud.localModeTitle' => 'Modalità locale',
 			'cloud.localModeBody' => 'Questa installazione non è collegata a un servizio cloud: localizzazione in diretta, backup online e account sono disattivati. I tuoi dati restano sul dispositivo.',
 			'cloud.statusSection' => 'Cloud',
@@ -5781,10 +5797,10 @@ extension on TranslationsIt {
 			'bootstrap.loading' => 'Preparazione della tua escursione…',
 			'recap.title' => 'La mia avventura',
 			'recap.lockedTitle' => 'Disponibile alla fine del trek',
-			'recap.lockedMessage' => 'Termina o abbandona il tuo percorso per rivedere il riepilogo della tua avventura.',
-			'recap.finisherTitle' => 'Congratulazioni!',
 			_ => null,
 		} ?? switch (path) {
+			'recap.lockedMessage' => 'Termina o abbandona il tuo percorso per rivedere il riepilogo della tua avventura.',
+			'recap.finisherTitle' => 'Congratulazioni!',
 			'recap.finisherSubtitle' => 'Hai completato il tuo percorso',
 			'recap.partialTitle' => 'Il tuo percorso parziale',
 			'recap.partialSubtitle' => 'La tua avventura resta registrata',
@@ -5809,7 +5825,7 @@ extension on TranslationsIt {
 			'recap.gpxError' => 'Esportazione non riuscita',
 			'recap.daysSection' => 'Giorno per giorno',
 			'recap.dayLabel' => ({required Object day}) => 'Giorno ${day}',
-			'recap.dayStages' => ({required Object count}) => '${count} tappa/e',
+			'recap.dayStages' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: '${n} tappa', other: '${n} tappe', ), 
 			'recap.dayRest' => 'Nessuna tappa conclusa quel giorno',
 			'recap.noDays' => 'Nessuna giornata registrata dal GPS',
 			'recap.averageSpeed' => ({required Object kmh}) => '${kmh} km/h di media',
@@ -5940,7 +5956,7 @@ extension on TranslationsIt {
 			'nuitees.card.lockedHint' => 'Deseleziona la notte per cambiare il tipo',
 			'nuitees.card.eveBadge' => 'G-1',
 			'nuitees.card.eveOfDeparture' => 'Notte prima della partenza',
-			'nuitees.summary.remaining' => '{count} notte/i rimasta/e',
+			'nuitees.summary.remaining' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('it'))(n, one: '${n} notte rimasta', other: '${n} notti rimaste', ), 
 			'nuitees.summary.done' => '{count} OK',
 			'nuitees.summary.allBooked' => 'TUTTE LE NOTTI PRENOTATE',
 			'nuitees.empty.title' => 'Configura prima il tuo itinerario',

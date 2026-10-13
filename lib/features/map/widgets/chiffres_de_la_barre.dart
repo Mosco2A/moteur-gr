@@ -61,6 +61,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/nombre_en_clair.dart';
 import '../../../i18n/translations.g.dart';
 
 /// La seconde ligne de la barre : six chiffres mesures, sur deux rangees.
@@ -147,6 +148,10 @@ class ChiffresDeLaBarre extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // CES TROIS CHIFFRES SONT CALCULES, donc ils passent par le formateur : le
+    // randonneur francais lisait « 19.9 km » et « 2.7 km/h » avec un POINT
+    // (tache 835). L'unite, elle, reste collee au nombre comme avant.
+    final langue = LocaleSettings.currentLocale.languageCode;
     return Column(
       children: [
         // Rangee 1 — CE QUI AVANCE : restant, parcouru, vitesse moyenne.
@@ -164,7 +169,7 @@ class ChiffresDeLaBarre extends StatelessWidget {
                 value: _valeurOuTiret(
                   distanceRemainingKm == null
                       ? null
-                      : '${distanceRemainingKm!.toStringAsFixed(1)} km',
+                      : '${nombreEnClair(distanceRemainingKm!, langue)} km',
                 ),
               ),
             if (_montre(distanceCoveredKm))
@@ -175,7 +180,7 @@ class ChiffresDeLaBarre extends StatelessWidget {
                 value: _valeurOuTiret(
                   distanceCoveredKm == null
                       ? null
-                      : '${distanceCoveredKm!.toStringAsFixed(1)} km',
+                      : '${nombreEnClair(distanceCoveredKm!, langue)} km',
                 ),
               ),
             if (_montre(avgSpeedKmh))
@@ -186,7 +191,7 @@ class ChiffresDeLaBarre extends StatelessWidget {
                 value: _valeurOuTiret(
                   avgSpeedKmh == null
                       ? null
-                      : '${avgSpeedKmh!.toStringAsFixed(1)} km/h',
+                      : '${nombreEnClair(avgSpeedKmh!, langue)} km/h',
                 ),
               ),
           ],

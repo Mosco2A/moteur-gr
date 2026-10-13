@@ -15,6 +15,7 @@ import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/map/fond_de_carte.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/libelle_de_direction.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/attribution_osm.dart';
@@ -149,9 +150,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     final durationMinutes = data.totalDuration.inMinutes % 60;
     final durationStr =
         '${durationHours}h${durationMinutes.toString().padLeft(2, '0')}';
-    final directionLabel = data.direction == 'NS'
-        ? t.import.directionNS
-        : t.import.directionSN;
+    final directionLabel = libelleDeDirection(data.direction, t);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -569,9 +568,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
 
   void _validateImport(BuildContext context, ImportedTrekData data) {
     if (!data.isValid) return;
-    final directionLabel = data.direction == 'NS'
-        ? t.import.directionNS
-        : t.import.directionSN;
+    final directionLabel = libelleDeDirection(data.direction, t);
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(

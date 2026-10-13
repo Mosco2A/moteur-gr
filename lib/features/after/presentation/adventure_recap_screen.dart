@@ -10,7 +10,9 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/models/stage_duration.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/nombre_en_clair.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -356,8 +358,7 @@ class _DayCard extends StatelessWidget {
       }
     }
 
-    final h = stats.duration.inHours;
-    final m = stats.duration.inMinutes.remainder(60);
+    final langue = LocaleSettings.currentLocale.languageCode;
     final speed = stats.averageSpeedKmh;
 
     return AppCard(
@@ -387,7 +388,7 @@ class _DayCard extends StatelessWidget {
             // demi-journee, etape a cheval sur deux jours.
             day.stageIds.isEmpty
                 ? recapT.dayRest
-                : recapT.dayStages(count: day.stageIds.length),
+                : recapT.dayStages(n: day.stageIds.length),
             style: theme.textTheme.bodySmall?.copyWith(
               color: AppTheme.grisTexteSecondaire,
             ),
@@ -402,7 +403,7 @@ class _DayCard extends StatelessWidget {
               Text(
                 recapT.distance.replaceAll(
                   '{km}',
-                  stats.distanceKm.toStringAsFixed(1),
+                  nombreEnClair(stats.distanceKm, langue),
                 ),
                 style: theme.textTheme.bodyMedium,
               ),
@@ -418,14 +419,14 @@ class _DayCard extends StatelessWidget {
                 style: theme.textTheme.bodyMedium,
               ),
               Text(
-                h > 0 ? '$h h $m' : '$m min',
+                formatDuree(stats.duration),
                 style: theme.textTheme.bodyMedium,
               ),
               // CORRECTIF L5-6 : la vitesse moyenne n'est affichee QUE
               // lorsqu'elle a un sens (cf. TrackSegmentStats).
               if (speed != null)
                 Text(
-                  recapT.averageSpeed(kmh: speed.toStringAsFixed(1)),
+                  recapT.averageSpeed(kmh: nombreEnClair(speed, langue)),
                   style: theme.textTheme.bodyMedium,
                 ),
             ],

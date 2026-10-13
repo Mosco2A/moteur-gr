@@ -14,8 +14,10 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/analytics/screen_entry.dart';
 import '../../../core/map/fond_de_carte.dart';
+import '../../../core/models/stage_duration.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/nombre_en_clair.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../shared/widgets/attribution_osm.dart';
@@ -712,8 +714,7 @@ class _StatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final h = stats.duration.inHours;
-    final m = stats.duration.inMinutes.remainder(60);
+    final langue = LocaleSettings.currentLocale.languageCode;
     // [Wrap] et non [Row] : en allemand et en espagnol, quatre libelles
     // cote a cote debordent la largeur d'un telephone.
     return Wrap(
@@ -722,7 +723,7 @@ class _StatsRow extends StatelessWidget {
       children: [
         _StatTile(
           label: journalT.distance,
-          value: '${stats.distanceKm.toStringAsFixed(1)} km',
+          value: '${nombreEnClair(stats.distanceKm, langue)} km',
         ),
         _StatTile(
           label: journalT.elevationGain,
@@ -732,10 +733,7 @@ class _StatsRow extends StatelessWidget {
           label: journalT.elevationLoss,
           value: '${stats.elevationLossM} m',
         ),
-        _StatTile(
-          label: journalT.duration,
-          value: h > 0 ? '$h h $m' : '$m min',
-        ),
+        _StatTile(label: journalT.duration, value: formatDuree(stats.duration)),
       ],
     );
   }

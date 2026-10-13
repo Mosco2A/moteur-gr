@@ -418,7 +418,15 @@ class _Translations$itinerary$de extends Translations$itinerary$fr {
 		other: '${n} Etappen',
 	);
 	@override String get daysTotal => 'Tage insgesamt';
-	@override String daysBreakdown({required Object walk, required Object rest}) => '${walk} Wandertage + ${rest} Ruhetage';
+	@override String walkDays({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: '${n} Wandertag',
+		other: '${n} Wandertage',
+	);
+	@override String restDays({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: '${n} Ruhetag',
+		other: '${n} Ruhetage',
+	);
+	@override String daysBreakdown({required Object walk, required Object rest}) => '${walk} + ${rest}';
 }
 
 // Path: tracking
@@ -1504,7 +1512,10 @@ class _Translations$recap$de extends Translations$recap$fr {
 	@override String get gpxError => 'Export nicht möglich';
 	@override String get daysSection => 'Tag für Tag';
 	@override String dayLabel({required Object day}) => 'Tag ${day}';
-	@override String dayStages({required Object count}) => '${count} Etappe(n)';
+	@override String dayStages({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: '${n} Etappe',
+		other: '${n} Etappen',
+	);
 	@override String get dayRest => 'An diesem Tag keine Etappe beendet';
 	@override String get noDays => 'Kein per GPS aufgezeichneter Tag';
 	@override String averageSpeed({required Object kmh}) => '${kmh} km/h im Durchschnitt';
@@ -3586,7 +3597,10 @@ class _Translations$nuitees$summary$de extends Translations$nuitees$summary$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get remaining => 'Noch {count} Nacht/Nächte';
+	@override String remaining({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: 'Noch ${n} Nacht',
+		other: 'Noch ${n} Nächte',
+	);
 	@override String get done => '{count} erledigt';
 	@override String get allBooked => 'ALLE NÄCHTE GEBUCHT';
 }
@@ -4532,7 +4546,9 @@ extension on TranslationsDe {
 			'itinerary.openMap' => 'Auf Karte ansehen',
 			'itinerary.stageCount' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: '${n} Etappe', other: '${n} Etappen', ), 
 			'itinerary.daysTotal' => 'Tage insgesamt',
-			'itinerary.daysBreakdown' => ({required Object walk, required Object rest}) => '${walk} Wandertage + ${rest} Ruhetage',
+			'itinerary.walkDays' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: '${n} Wandertag', other: '${n} Wandertage', ), 
+			'itinerary.restDays' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: '${n} Ruhetag', other: '${n} Ruhetage', ), 
+			'itinerary.daysBreakdown' => ({required Object walk, required Object rest}) => '${walk} + ${rest}',
 			'tracking.start' => 'Starten',
 			'tracking.pause' => 'Pause',
 			'tracking.resume' => 'Fortsetzen',
@@ -4753,10 +4769,10 @@ extension on TranslationsDe {
 			'checklist.ui.share' => 'TEILEN',
 			'checklist.ui.infoTitle' => 'Ausrüstung & Rucksack',
 			'checklist.ui.infoCheckTitle' => 'Artikel anhaken',
-			'checklist.ui.infoCheckBody' => 'Hake an, was du mitnimmst — das Gewicht wird oben neu berechnet.',
-			'checklist.ui.infoRequiredTitle' => 'Pflicht',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.infoCheckBody' => 'Hake an, was du mitnimmst — das Gewicht wird oben neu berechnet.',
+			'checklist.ui.infoRequiredTitle' => 'Pflicht',
 			'checklist.ui.infoRequiredBody' => 'Artikel mit Schloss = Vorschrift (Pfeife, Lampe, Rettungsdecke).',
 			'checklist.ui.infoGaugeTitle' => 'Gewichtsanzeige',
 			'checklist.ui.infoGaugeBody' => 'Ziel: Rucksack < 15% deines Gewichts. Grün = OK, Orange = Achtung, Rot = zu schwer.',
@@ -5267,10 +5283,10 @@ extension on TranslationsDe {
 			'follow.connecting' => 'Verbinden…',
 			'follow.live' => 'Live',
 			'follow.offline' => 'Offline',
-			'follow.invalidLink' => 'Ungültiger Link',
-			'follow.invalidLinkHint' => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.',
 			_ => null,
 		} ?? switch (path) {
+			'follow.invalidLink' => 'Ungültiger Link',
+			'follow.invalidLinkHint' => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.',
 			'cloud.localModeTitle' => 'Lokaler Modus',
 			'cloud.localModeBody' => 'Diese Installation ist mit keinem Cloud-Dienst verbunden: Live-Verfolgung, Online-Sicherung und Konto sind deaktiviert. Deine Daten bleiben auf dem Gerät.',
 			'cloud.statusSection' => 'Cloud',
@@ -5781,10 +5797,10 @@ extension on TranslationsDe {
 			'bootstrap.loading' => 'Deine Wanderung wird vorbereitet…',
 			'recap.title' => 'Mein Abenteuer',
 			'recap.lockedTitle' => 'Verfügbar am Ende der Tour',
-			'recap.lockedMessage' => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.',
-			'recap.finisherTitle' => 'Glückwunsch!',
 			_ => null,
 		} ?? switch (path) {
+			'recap.lockedMessage' => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.',
+			'recap.finisherTitle' => 'Glückwunsch!',
 			'recap.finisherSubtitle' => 'Du hast deine Route abgeschlossen',
 			'recap.partialTitle' => 'Deine Teilroute',
 			'recap.partialSubtitle' => 'Dein Abenteuer bleibt gespeichert',
@@ -5809,7 +5825,7 @@ extension on TranslationsDe {
 			'recap.gpxError' => 'Export nicht möglich',
 			'recap.daysSection' => 'Tag für Tag',
 			'recap.dayLabel' => ({required Object day}) => 'Tag ${day}',
-			'recap.dayStages' => ({required Object count}) => '${count} Etappe(n)',
+			'recap.dayStages' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: '${n} Etappe', other: '${n} Etappen', ), 
 			'recap.dayRest' => 'An diesem Tag keine Etappe beendet',
 			'recap.noDays' => 'Kein per GPS aufgezeichneter Tag',
 			'recap.averageSpeed' => ({required Object kmh}) => '${kmh} km/h im Durchschnitt',
@@ -5940,7 +5956,7 @@ extension on TranslationsDe {
 			'nuitees.card.lockedHint' => 'Nacht abwählen, um den Typ zu ändern',
 			'nuitees.card.eveBadge' => 'T-1',
 			'nuitees.card.eveOfDeparture' => 'Nacht vor dem Aufbruch',
-			'nuitees.summary.remaining' => 'Noch {count} Nacht/Nächte',
+			'nuitees.summary.remaining' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: 'Noch ${n} Nacht', other: 'Noch ${n} Nächte', ), 
 			'nuitees.summary.done' => '{count} erledigt',
 			'nuitees.summary.allBooked' => 'ALLE NÄCHTE GEBUCHT',
 			'nuitees.empty.title' => 'Richte zuerst deine Route ein',

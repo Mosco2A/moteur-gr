@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../core/ui/input_formatters.dart';
+import '../../../core/utils/nombre_en_clair.dart';
 import '../../../i18n/translations.g.dart';
 import '../../feasibility/feasibility_facade.dart'
     show
@@ -470,9 +471,11 @@ class ChecklistWeightGauge extends StatelessWidget {
       gaugeLabel = w.gaugeDanger;
     }
 
+    // Le pourcentage est CALCULE, donc il passe par le formateur : sans lui, le
+    // randonneur francais lisait « 1.6 % du poids de reference » (tache 835).
     final pctLabel = w.percentOfReference.replaceAll(
       '{pct}',
-      pct.toStringAsFixed(1),
+      nombreEnClair(pct, LocaleSettings.currentLocale.languageCode),
     );
 
     return Padding(

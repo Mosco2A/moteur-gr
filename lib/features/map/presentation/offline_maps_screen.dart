@@ -48,6 +48,7 @@ import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/services/map_downloader.dart';
 import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/nombre_en_clair.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -224,7 +225,14 @@ class _OfflineMapsScreenState extends ConsumerState<OfflineMapsScreen> {
   }
 
   /// Le poids TEL QU ON LE DIT : un chiffre apres la virgule, jamais un octet.
-  String _mo(double megaoctets) => megaoctets.toStringAsFixed(1);
+  ///
+  /// LA VIRGULE ETAIT DANS LE COMMENTAIRE, PAS DANS LE CODE (tache 835).
+  /// `toStringAsFixed(1)` rend « 27.0 » avec un POINT : la ligne d'au-dessus
+  /// promettait une virgule depuis le premier jour et le randonneur francais
+  /// lisait « 27.0 Mo ». Un separateur decimal ne se choisit pas, il se LIT
+  /// dans la langue — cf. `nombre_en_clair.dart`.
+  String _mo(double megaoctets) =>
+      nombreEnClair(megaoctets, LocaleSettings.currentLocale.languageCode);
 
   @override
   Widget build(BuildContext context) {

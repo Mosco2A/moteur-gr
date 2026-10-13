@@ -54,6 +54,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/branding/stepways_icons.dart';
 import '../../../../core/services/session_demo.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/nombre_en_clair.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../map/map_facade.dart' show stageDistanceCoveredProvider;
@@ -106,6 +107,7 @@ class _FelicitationsDeLaDemoState extends ConsumerState<FelicitationsDeLaDemo> {
     final mesures = ref.watch(chiffresDeLaMarcheProvider);
     final mesurable = mesures != null;
     final parcouruKm = ref.watch(stageDistanceCoveredProvider) / 1000;
+    final langue = LocaleSettings.currentLocale.languageCode;
 
     return Positioned.fill(
       child: ColoredBox(
@@ -160,7 +162,10 @@ class _FelicitationsDeLaDemoState extends ConsumerState<FelicitationsDeLaDemo> {
                     _Chiffre(
                       icon: StepwaysIcons.distance,
                       label: t.tracking.covered,
-                      valeur: '${parcouruKm.toStringAsFixed(1)} km',
+                      // CALCULE, donc au formateur (tache 835) : ces chiffres
+                      // sont les MEMES que ceux de la barre, ils doivent donc
+                      // s'ecrire comme eux.
+                      valeur: '${nombreEnClair(parcouruKm, langue)} km',
                     ),
                     if (mesurable)
                       _Chiffre(
@@ -179,7 +184,7 @@ class _FelicitationsDeLaDemoState extends ConsumerState<FelicitationsDeLaDemo> {
                         icon: StepwaysIcons.vitesse,
                         label: t.tracking.avgSpeed,
                         valeur:
-                            '${mesures.averageSpeedKmh!.toStringAsFixed(1)}'
+                            '${nombreEnClair(mesures.averageSpeedKmh!, langue)}'
                             ' km/h',
                       ),
                     const SizedBox(height: AppTheme.spacingMd),

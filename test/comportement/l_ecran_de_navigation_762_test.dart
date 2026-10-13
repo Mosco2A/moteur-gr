@@ -211,7 +211,10 @@ void main() {
       // rend suivis d'une espace (`'$label '`), pour les coller a leur valeur
       // sur la meme ligne.
       expect(find.textContaining(t.tracking.covered), findsOneWidget);
-      expect(find.text('63.0 km'), findsOneWidget);
+      // VIRGULE ET NON POINT depuis la tache 835 : ces chiffres sont
+      // CALCULES et passent par `nombreEnClair`, qui lit le separateur
+      // decimal dans la langue active (`fr` dans les tests).
+      expect(find.text('63,0 km'), findsOneWidget);
       expect(find.textContaining(t.tracking.dPlus), findsOneWidget);
       expect(find.text('2480 m'), findsOneWidget);
       expect(find.textContaining(t.tracking.dMinus), findsOneWidget);
@@ -355,13 +358,13 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(PastilleDuPerimetre),
-          matching: find.text('10.0 km'),
+          matching: find.text('10,0 km'),
         ),
         findsOneWidget,
         reason: 'la pastille dit « Etape » : son total est celui de l etape',
       );
       expect(
-        find.text('20.0 km'),
+        find.text('20,0 km'),
         findsNothing,
         reason: 'la longueur du sentier n a rien a faire sous le mot Etape',
       );

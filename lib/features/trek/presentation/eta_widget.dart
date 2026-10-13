@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/models/stage_duration.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -101,9 +102,13 @@ class EtaWidget extends ConsumerWidget {
   /// Formate une durée en `h min` via Slang (jamais de logique métier ici).
   String _fmt(Translations t, Duration d) {
     final h = d.inHours;
-    final m = d.inMinutes.remainder(60);
-    if (h > 0) return t.eta.durationHm(h: h, m: m);
-    return t.eta.durationM(m: m);
+    // LES MINUTES D'UNE DUREE COMPOSEE S'ECRIVENT SUR DEUX CHIFFRES
+    // (tache 835) : la phrase de traduction porte deja « h » et « min », donc
+    // la forme reste editoriale et dans les cinq langues ; seul le zero vient
+    // d'ici. Sans lui, cinq heures et trois minutes s'ecrivaient « 5 h 3 min ».
+    // Sous l'heure, en revanche, on ecrit « 3 min » et non « 03 min ».
+    if (h > 0) return t.eta.durationHm(h: h, m: deuxChiffresDeMinutes(d));
+    return t.eta.durationM(m: d.inMinutes.remainder(60));
   }
 }
 
