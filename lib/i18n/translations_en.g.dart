@@ -1331,6 +1331,7 @@ class _Translations$health$en extends Translations$health$fr {
 	@override String get emergencyHint => 'In an emergency, show this screen to the rescue team.';
 	@override String get entryTitle => 'My health info';
 	@override String get entrySubtitle => 'To show the rescue team (kept on the phone)';
+	@override late final _Translations$health$completion$en completion = _Translations$health$completion$en._(_root);
 	@override late final _Translations$health$a11y$en a11y = _Translations$health$a11y$en._(_root);
 	@override late final _Translations$health$delete$en delete = _Translations$health$delete$en._(_root);
 	@override late final _Translations$health$consent$en consent = _Translations$health$consent$en._(_root);
@@ -3103,6 +3104,18 @@ class _Translations$health$error$en extends Translations$health$error$fr {
 
 	// Translations
 	@override String get bloodType => 'Invalid blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)';
+}
+
+// Path: health.completion
+class _Translations$health$completion$en extends Translations$health$completion$fr {
+	_Translations$health$completion$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get empty => 'To fill in';
+	@override String get partial => 'Partly filled';
+	@override String get complete => 'Complete';
 }
 
 // Path: health.a11y
@@ -5623,6 +5636,9 @@ extension on TranslationsEn {
 			'health.emergencyHint' => 'In an emergency, show this screen to the rescue team.',
 			'health.entryTitle' => 'My health info',
 			'health.entrySubtitle' => 'To show the rescue team (kept on the phone)',
+			'health.completion.empty' => 'To fill in',
+			'health.completion.partial' => 'Partly filled',
+			'health.completion.complete' => 'Complete',
 			'health.a11y.form' => 'Health information form',
 			'health.a11y.saveButton' => 'Save health information',
 			'health.delete.button' => 'Delete my card',
@@ -5780,11 +5796,11 @@ extension on TranslationsEn {
 			'moderation.a11y.complaintForm' => 'Decision challenge form',
 			'bootstrap.loading' => 'Preparing your hike…',
 			'recap.title' => 'My adventure',
+			_ => null,
+		} ?? switch (path) {
 			'recap.lockedTitle' => 'Available at the end of the trek',
 			'recap.lockedMessage' => 'Finish or abandon your route to view your adventure recap.',
 			'recap.finisherTitle' => 'Congratulations!',
-			_ => null,
-		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'You completed your route',
 			'recap.partialTitle' => 'Your partial route',
 			'recap.partialSubtitle' => 'Your adventure is still saved',

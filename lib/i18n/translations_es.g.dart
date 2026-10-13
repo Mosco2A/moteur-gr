@@ -1331,6 +1331,7 @@ class _Translations$health$es extends Translations$health$fr {
 	@override String get emergencyHint => 'En caso de emergencia, muestra esta pantalla a los servicios de rescate.';
 	@override String get entryTitle => 'Mi información de salud';
 	@override String get entrySubtitle => 'Para mostrar a los servicios de rescate (permanece en el teléfono)';
+	@override late final _Translations$health$completion$es completion = _Translations$health$completion$es._(_root);
 	@override late final _Translations$health$a11y$es a11y = _Translations$health$a11y$es._(_root);
 	@override late final _Translations$health$delete$es delete = _Translations$health$delete$es._(_root);
 	@override late final _Translations$health$consent$es consent = _Translations$health$consent$es._(_root);
@@ -3103,6 +3104,18 @@ class _Translations$health$error$es extends Translations$health$error$fr {
 
 	// Translations
 	@override String get bloodType => 'Grupo sanguíneo no válido (A+, A-, B+, B-, AB+, AB-, O+, O-)';
+}
+
+// Path: health.completion
+class _Translations$health$completion$es extends Translations$health$completion$fr {
+	_Translations$health$completion$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get empty => 'Por rellenar';
+	@override String get partial => 'Parcialmente rellenada';
+	@override String get complete => 'Completa';
 }
 
 // Path: health.a11y
@@ -5623,6 +5636,9 @@ extension on TranslationsEs {
 			'health.emergencyHint' => 'En caso de emergencia, muestra esta pantalla a los servicios de rescate.',
 			'health.entryTitle' => 'Mi información de salud',
 			'health.entrySubtitle' => 'Para mostrar a los servicios de rescate (permanece en el teléfono)',
+			'health.completion.empty' => 'Por rellenar',
+			'health.completion.partial' => 'Parcialmente rellenada',
+			'health.completion.complete' => 'Completa',
 			'health.a11y.form' => 'Formulario de información de salud',
 			'health.a11y.saveButton' => 'Guardar la información de salud',
 			'health.delete.button' => 'Borrar mi ficha',
@@ -5780,11 +5796,11 @@ extension on TranslationsEs {
 			'moderation.a11y.complaintForm' => 'Formulario de impugnación de la decisión',
 			'bootstrap.loading' => 'Preparando tu excursión…',
 			'recap.title' => 'Mi aventura',
+			_ => null,
+		} ?? switch (path) {
 			'recap.lockedTitle' => 'Disponible al final de la ruta',
 			'recap.lockedMessage' => 'Termina o abandona tu ruta para ver el resumen de tu aventura.',
 			'recap.finisherTitle' => 'Felicidades!',
-			_ => null,
-		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'Has completado tu ruta',
 			'recap.partialTitle' => 'Tu ruta parcial',
 			'recap.partialSubtitle' => 'Tu aventura queda registrada',

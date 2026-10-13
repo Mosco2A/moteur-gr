@@ -1633,6 +1633,11 @@
     "emergencyHint": "En caso de emergencia, muestra esta pantalla a los servicios de rescate.",
     "entryTitle": "Mi información de salud",
     "entrySubtitle": "Para mostrar a los servicios de rescate (permanece en el teléfono)",
+    "completion": {
+      "empty": "Por rellenar",
+      "partial": "Parcialmente rellenada",
+      "complete": "Completa"
+    },
     "a11y": {
       "form": "Formulario de información de salud",
       "saveButton": "Guardar la información de salud"

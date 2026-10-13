@@ -104,6 +104,29 @@ import 'emergency_contact.dart';
 part 'health_info.freezed.dart';
 part 'health_info.g.dart';
 
+/// Etat de remplissage de la fiche medicale — la COCHE A TROIS ETATS
+/// (tache 837, retour Christophe : « Fiche medicale dans profil », et elle
+/// reste listee dans la check-list de preparation, « cochee ou non selon sa
+/// completude »).
+///
+/// Deux etats ne suffisaient pas : la fiche n'a jamais eu qu'un `hasData`
+/// booleen (« au moins un champ »), qui disait « coche » pour un groupe
+/// sanguin seul — et promettait donc aux secours une fiche qui n'existait
+/// qu'au quart. Trois etats disent la verite :
+///  - [empty]    : aucun champ renseigne — rien a montrer aux secours ;
+///  - [partial]  : une partie seulement — entame, pas fiable ;
+///  - [complete] : les cinq champs renseignes.
+enum HealthSheetCompletion {
+  /// Aucun des champs n'est renseigne.
+  empty,
+
+  /// Au moins un champ renseigne, mais pas tous.
+  partial,
+
+  /// Les cinq champs sont renseignes.
+  complete,
+}
+
 /// Fiche d'urgence du randonneur — LOCAL ONLY.
 ///
 /// Stockee exclusivement sur le telephone, dans un fichier sous le dossier
@@ -250,6 +273,9 @@ abstract class HealthInfo with _$HealthInfo {
     @Default('') String carteMutuelleFichier,
   }) = _HealthInfo;
 
+  /// Nombre total de champs de la fiche (base du calcul de completude).
+  static const int fieldCount = 5;
+
   /// Verifie si au moins un champ est renseigne.
   ///
   /// IL PILOTE DEUX CHOSES, ET C'EST POUR CELA QU'IL DOIT ETRE COMPLET : la
@@ -276,6 +302,29 @@ abstract class HealthInfo with _$HealthInfo {
   /// Vrai si la fiche porte au moins une des deux photos de carte.
   bool get hasCard =>
       carteVitaleFichier.isNotEmpty || carteMutuelleFichier.isNotEmpty;
+
+  /// Nombre de champs renseignes (0 a [fieldCount]).
+  ///
+  /// Un champ qui ne contient que des espaces NE COMPTE PAS : l'ecran de
+  /// saisie `trim()` avant d'enregistrer, et une fiche remplie d'espaces ne
+  /// secourt personne.
+  int get filledFieldCount => [
+    bloodType,
+    allergies,
+    treatments,
+    doctorContact,
+    insuranceNumber,
+  ].where((f) => f.trim().isNotEmpty).length;
+
+  /// L'etat de la coche a trois etats — SEULE source de verite partagee par
+  /// le profil (ou la fiche se remplit) et la check-list (qui ne fait que
+  /// CONSTATER). Les deux ecrans ne peuvent donc pas se contredire.
+  HealthSheetCompletion get completion {
+    final filled = filledFieldCount;
+    if (filled == 0) return HealthSheetCompletion.empty;
+    if (filled == fieldCount) return HealthSheetCompletion.complete;
+    return HealthSheetCompletion.partial;
+  }
 
   /// Conversion depuis JSON (fichier local `medical/fiche.json`).
   ///

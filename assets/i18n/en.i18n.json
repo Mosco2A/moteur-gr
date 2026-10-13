@@ -1633,6 +1633,11 @@
     "emergencyHint": "In an emergency, show this screen to the rescue team.",
     "entryTitle": "My health info",
     "entrySubtitle": "To show the rescue team (kept on the phone)",
+    "completion": {
+      "empty": "To fill in",
+      "partial": "Partly filled",
+      "complete": "Complete"
+    },
     "a11y": {
       "form": "Health information form",
       "saveButton": "Save health information"

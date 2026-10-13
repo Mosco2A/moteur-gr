@@ -1331,6 +1331,7 @@ class _Translations$health$it extends Translations$health$fr {
 	@override String get emergencyHint => 'In caso di emergenza, mostra questa schermata ai soccorsi.';
 	@override String get entryTitle => 'Le mie info sanitarie';
 	@override String get entrySubtitle => 'Da mostrare ai soccorsi (restano sul telefono)';
+	@override late final _Translations$health$completion$it completion = _Translations$health$completion$it._(_root);
 	@override late final _Translations$health$a11y$it a11y = _Translations$health$a11y$it._(_root);
 	@override late final _Translations$health$delete$it delete = _Translations$health$delete$it._(_root);
 	@override late final _Translations$health$consent$it consent = _Translations$health$consent$it._(_root);
@@ -3103,6 +3104,18 @@ class _Translations$health$error$it extends Translations$health$error$fr {
 
 	// Translations
 	@override String get bloodType => 'Gruppo sanguigno non valido (A+, A-, B+, B-, AB+, AB-, O+, O-)';
+}
+
+// Path: health.completion
+class _Translations$health$completion$it extends Translations$health$completion$fr {
+	_Translations$health$completion$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get empty => 'Da compilare';
+	@override String get partial => 'Parzialmente compilata';
+	@override String get complete => 'Completa';
 }
 
 // Path: health.a11y
@@ -5623,6 +5636,9 @@ extension on TranslationsIt {
 			'health.emergencyHint' => 'In caso di emergenza, mostra questa schermata ai soccorsi.',
 			'health.entryTitle' => 'Le mie info sanitarie',
 			'health.entrySubtitle' => 'Da mostrare ai soccorsi (restano sul telefono)',
+			'health.completion.empty' => 'Da compilare',
+			'health.completion.partial' => 'Parzialmente compilata',
+			'health.completion.complete' => 'Completa',
 			'health.a11y.form' => 'Modulo informazioni sanitarie',
 			'health.a11y.saveButton' => 'Salva le informazioni sanitarie',
 			'health.delete.button' => 'Elimina la mia scheda',
@@ -5780,11 +5796,11 @@ extension on TranslationsIt {
 			'moderation.a11y.complaintForm' => 'Modulo di contestazione della decisione',
 			'bootstrap.loading' => 'Preparazione della tua escursione…',
 			'recap.title' => 'La mia avventura',
+			_ => null,
+		} ?? switch (path) {
 			'recap.lockedTitle' => 'Disponibile alla fine del trek',
 			'recap.lockedMessage' => 'Termina o abbandona il tuo percorso per rivedere il riepilogo della tua avventura.',
 			'recap.finisherTitle' => 'Congratulazioni!',
-			_ => null,
-		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'Hai completato il tuo percorso',
 			'recap.partialTitle' => 'Il tuo percorso parziale',
 			'recap.partialSubtitle' => 'La tua avventura resta registrata',

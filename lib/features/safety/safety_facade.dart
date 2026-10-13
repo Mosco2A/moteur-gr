@@ -20,14 +20,22 @@
 /// devient l interface sur laquelle les autres reposent. La facade rend ce cout
 /// visible — elle ne l interdit pas, elle le NOMME.
 ///
-/// LUE PAR 8 FICHIERS DE 4 FEATURES AU 07/10/2026 : `auth`, `hub`, `settings`,
-/// `trek`.
+/// LUE PAR 9 FICHIERS DE 5 FEATURES AU 13/10/2026 : `auth`, `checklist`,
+/// `hub`, `settings`, `trek`. `checklist` est arrivee avec la tache 837 : la
+/// fiche medicale est devenue une donnee de profil, et la check-list ne fait
+/// plus que CONSTATER son etat — elle lit donc `healthInfoProvider`,
+/// `HealthSheetCompletion` et `HealthSheetCheck` par cette porte.
 library;
 
 export 'data/signalement_service.dart'
     show SignalementService, WaterSourceStatus;
+export 'domain/models/health_info.dart' show HealthSheetCompletion;
 export 'presentation/health_info_screen.dart'
-    show healthInfoFileProvider, healthInfoRepositoryProvider;
+    show
+        healthInfoFileProvider,
+        healthInfoProvider,
+        healthInfoRepositoryProvider;
+export 'presentation/health_sheet_check.dart' show HealthSheetCheck;
 export 'presentation/refus_sauvegarde_systeme_dialog.dart'
     show RefusSauvegardeSystemeDialog;
 export 'presentation/sos_button.dart' show SosButton;

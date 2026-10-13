@@ -3,9 +3,13 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../safety/safety_facade.dart'
+    show HealthSheetCheck, HealthSheetCompletion, healthInfoProvider;
 import '../providers/checklist_provider.dart';
 import '../../../core/branding/stepways_icons.dart';
 
@@ -236,16 +240,24 @@ class _ChecklistPreparationSectionState
 ///
 /// 8 rappels a cocher avant de partir. Etat local (session). Cle i18n
 /// checklist.ui.preDep1..preDep8.
-class ChecklistPreDepartureSection extends StatefulWidget {
+///
+/// TACHE 837 — LA FICHE MEDICALE Y EST LISTEE, MAIS LA CHECK-LIST NE LA
+/// REMPLIT PAS. Christophe : « Fiche medicale dans profil », et elle reste
+/// listee dans la check-list de preparation de chaque randonnee, « cochee ou
+/// non selon sa completude ». La fiche est devenue une donnee du PROFIL,
+/// remplie une fois pour toutes ; cette section ne fait que CONSTATER son etat
+/// avec la coche a trois etats ([HealthSheetCheck]) — d'ou une ligne SANS
+/// Checkbox, qui ouvre la fiche au lieu de se cocher.
+class ChecklistPreDepartureSection extends ConsumerStatefulWidget {
   const ChecklistPreDepartureSection({super.key});
 
   @override
-  State<ChecklistPreDepartureSection> createState() =>
+  ConsumerState<ChecklistPreDepartureSection> createState() =>
       _ChecklistPreDepartureSectionState();
 }
 
 class _ChecklistPreDepartureSectionState
-    extends State<ChecklistPreDepartureSection> {
+    extends ConsumerState<ChecklistPreDepartureSection> {
   final Map<int, bool> _checked = {};
 
   List<String> get _items {
@@ -262,16 +274,75 @@ class _ChecklistPreDepartureSectionState
     ];
   }
 
+  /// La ligne « fiche medicale » : un CONSTAT, pas une case a cocher.
+  ///
+  /// La coche a trois etats prend la place de la [Checkbox] (meme colonne, meme
+  /// taille) pour que la ligne se lise comme les autres ; mais elle n'a pas
+  /// d'`onChanged` — on ne coche pas une fiche medicale a la main, on la
+  /// remplit. Le tap ouvre donc la fiche (`/health`) au lieu de basculer un
+  /// booleen, et le libelle dit l'etat constate.
+  Widget _buildHealthRow(
+    BuildContext context,
+    ThemeData theme,
+    HealthSheetCompletion? completion,
+  ) {
+    final i18n = Translations.of(context);
+    return ListTile(
+      key: const ValueKey('predeparture-health-sheet'),
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      leading: SizedBox(
+        width: 24,
+        height: 24,
+        child: Center(
+          child: completion == null
+              ? const SizedBox.shrink()
+              : HealthSheetCheck(completion: completion),
+        ),
+      ),
+      title: Text(i18n.health.entryTitle, style: theme.textTheme.bodyMedium),
+      subtitle: Text(
+        completion == null
+            ? i18n.health.entrySubtitle
+            : HealthSheetCheck.label(i18n, completion),
+        style: theme.textTheme.bodySmall,
+      ),
+      trailing: const Icon(
+        Icons.chevron_right,
+        size: 20,
+        color: AppTheme.grisGranite,
+      ),
+      onTap: () => context.push('/health'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ui = t.checklist.ui;
     final items = _items;
-    final allChecked =
-        _checked.length == items.length && _checked.values.every((v) => v);
+
+    // L'ETAT DE LA FICHE MEDICALE EST LU, JAMAIS ECRIT ICI (tache 837).
+    // `asData?.value` : si Drift n'a pas encore repondu, on n'affiche AUCUNE
+    // coche plutot qu'une coche fausse — et la ligne reste la, donc le chemin
+    // vers la fiche ne disparait jamais.
+    final healthCompletion = ref
+        .watch(healthInfoProvider)
+        .asData
+        ?.value
+        .completion;
+    final healthDone = healthCompletion == HealthSheetCompletion.complete;
+
+    // La fiche COMPTE dans le total : elle fait partie de la preparation du
+    // depart. Elle ne compte comme FAITE que COMPLETE — une fiche a moitie
+    // remplie n'est pas une fiche, et le compteur ne doit pas rassurer a tort.
+    final total = items.length + 1;
+    final checked =
+        _checked.values.where((v) => v).length + (healthDone ? 1 : 0);
+    final allChecked = checked == total;
     final counterLabel = ui.preDepartureCounter
-        .replaceAll('{checked}', '${_checked.values.where((v) => v).length}')
-        .replaceAll('{total}', '${items.length}');
+        .replaceAll('{checked}', '$checked')
+        .replaceAll('{total}', '$total');
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingMd),
@@ -294,24 +365,31 @@ class _ChecklistPreDepartureSectionState
           right: AppTheme.spacingSm,
           bottom: AppTheme.spacingSm,
         ),
-        children: List.generate(items.length, (index) {
-          final isChecked = _checked[index] ?? false;
-          return CheckboxListTile(
-            dense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-            value: isChecked,
-            onChanged: (val) => setState(() => _checked[index] = val ?? false),
-            title: Text(
-              items[index],
-              style: theme.textTheme.bodyMedium?.copyWith(
-                decoration: isChecked ? TextDecoration.lineThrough : null,
-                color: isChecked ? AppTheme.grisGranite : null,
+        children: [
+          // La fiche medicale EN TETE : c'est la seule ligne qui ne se coche
+          // pas, et la seule qui ouvre un ecran. En tete parce que c'est la
+          // seule dont l'oubli se paie aux secours.
+          _buildHealthRow(context, theme, healthCompletion),
+          ...List.generate(items.length, (index) {
+            final isChecked = _checked[index] ?? false;
+            return CheckboxListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              value: isChecked,
+              onChanged: (val) =>
+                  setState(() => _checked[index] = val ?? false),
+              title: Text(
+                items[index],
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  decoration: isChecked ? TextDecoration.lineThrough : null,
+                  color: isChecked ? AppTheme.grisGranite : null,
+                ),
               ),
-            ),
-            activeColor: AppTheme.vertFacile,
-            controlAffinity: ListTileControlAffinity.leading,
-          );
-        }),
+              activeColor: AppTheme.vertFacile,
+              controlAffinity: ListTileControlAffinity.leading,
+            );
+          }),
+        ],
       ),
     );
   }
