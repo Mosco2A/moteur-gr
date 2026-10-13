@@ -57,12 +57,12 @@ void main() {
       );
 
       // Titre : base sur le sentier actif injecte, pas hardcode
-      expect(service.notificationTitle,
-          equals('Secours Sentier des Volcans'));
+      expect(service.notificationTitle, equals('Secours Sentier des Volcans'));
 
       // Corps de la notification (service reellement sollicite)
-      final content = service
-          .buildNotificationContent(contactsService.getContacts());
+      final content = service.buildNotificationContent(
+        contactsService.getContacts(),
+      );
 
       // Infos sante presentes
       expect(content, contains('SANTE'));
@@ -78,8 +78,9 @@ void main() {
       expect(content, contains('Etape 3: Crete des Puys'));
 
       // Payload iOS : memes donnees dans le widget lockscreen
-      final payload = service
-          .buildIosSecurityPayload(contactsService.getContacts());
+      final payload = service.buildIosSecurityPayload(
+        contactsService.getContacts(),
+      );
       expect(payload['health_info'], isNotNull);
       expect((payload['health_info'] as Map)['bloodType'], equals('O+'));
       expect(payload['contacts'], isNotEmpty);
@@ -101,8 +102,9 @@ void main() {
         stageName: 'Col du Lac Vert',
         stageIndex: 2,
       );
-      final contentBefore = service
-          .buildNotificationContent(contactsService.getContacts());
+      final contentBefore = service.buildNotificationContent(
+        contactsService.getContacts(),
+      );
       expect(contentBefore, contains('GPS: 45.51234, 2.96543'));
 
       // Le randonneur avance : nouvelle position GPS
@@ -112,16 +114,18 @@ void main() {
         stageName: 'Col du Lac Vert',
         stageIndex: 2,
       );
-      final contentAfter = service
-          .buildNotificationContent(contactsService.getContacts());
+      final contentAfter = service.buildNotificationContent(
+        contactsService.getContacts(),
+      );
 
       // La notification reflete la NOUVELLE position
       expect(contentAfter, contains('GPS: 45.53891, 2.99012'));
       expect(contentAfter, isNot(contains('GPS: 45.51234, 2.96543')));
 
       // Payload iOS egalement mis a jour
-      final payload = service
-          .buildIosSecurityPayload(contactsService.getContacts());
+      final payload = service.buildIosSecurityPayload(
+        contactsService.getContacts(),
+      );
       expect((payload['gps'] as Map)['latitude'], equals(45.53891));
       expect((payload['gps'] as Map)['longitude'], equals(2.99012));
 
@@ -141,9 +145,7 @@ void main() {
       expect(emptyData.hasGpsPosition, isFalse);
 
       // HealthInfo vide => hasHealthInfo false
-      const emptyHealthData = LockscreenSecurityData(
-        healthInfo: HealthInfo(),
-      );
+      const emptyHealthData = LockscreenSecurityData(healthInfo: HealthInfo());
       expect(emptyHealthData.hasHealthInfo, isFalse);
 
       // GPS partiel (latitude seule) => false

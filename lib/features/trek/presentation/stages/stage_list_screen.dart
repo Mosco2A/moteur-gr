@@ -1,13 +1,18 @@
+/// La liste des etapes, triee par numero, avec ses trois etats traites :
+/// chargement, erreur, donnee.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/models/stage.dart';
+import '../../../../core/analytics/screen_entry.dart';
+import '../../../../core/models/stage_row.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_header.dart';
-import '../../../trail/providers/stages_provider.dart';
+import '../../../trail/trail_facade.dart' show stagesProvider;
 
 /// Ecran liste des etapes d'un sentier.
 ///
@@ -23,6 +28,10 @@ class StageListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.stageList, trail: trailId);
     final stagesAsync = ref.watch(
       stagesProvider(trailId).select((async) => async),
     );
@@ -71,6 +80,22 @@ class _StageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // SW-SKIN-L3c : Card Material -> AppCard. padding zero pour garder la
     // ListTile bord a bord (elle porte son propre rembourrage).
+    //
+    // TACHE 639 (bug 4) — LE CHEVRON QUI MENTAIT EST RETIRE.
+    //
+    // Cette carte ne portait AUCUN geste — ni sur l'AppCard, ni sur la ListTile
+    // — et affichait pourtant un chevron droit, c'est-a-dire la promesse
+    // universelle « il y a quelque chose derriere ». Le randonneur appuyait, et
+    // rien. C'est la faute symetrique de celle de Christophe sur « Pret a
+    // partir » (DEM-260930-1010, verbatim : « il faut differencier visuellement
+    // ce qui est clicable de ce qui ne l est pas ») : la, une information avait
+    // le relief d'un bouton ; ici, elle en avait la fleche.
+    //
+    // ON RETIRE LA PROMESSE, ON N'INVENTE PAS LA DESTINATION : cet ecran est un
+    // placeholder (« sera remplacee par un widget riche en E2.4b ») et la carte
+    // d'etape CLIQUABLE existe deja ailleurs ([StageCard], qui porte son `onTap`
+    // et garde donc son chevron a bon droit). Brancher une navigation ici serait
+    // ajouter une fonction non demandee.
     return AppCard(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       padding: EdgeInsets.zero,
@@ -81,7 +106,6 @@ class _StageCard extends StatelessWidget {
           '${stage.distanceKm.toStringAsFixed(1)} km  '
           'D+ ${stage.elevationGainM} m',
         ),
-        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }

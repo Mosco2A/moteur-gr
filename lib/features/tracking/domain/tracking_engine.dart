@@ -1,5 +1,9 @@
+/// Le calcul d'une rando en cours, en Dart pur : distance cumulee, denivele,
+/// vitesse, a partir des points recus.
+library;
+
 import '../../../core/geo/geo_utils.dart';
-import '../../../core/geo/track_point.dart';
+import '../../../core/geo/trace_point.dart';
 
 /// Moteur de calcul pour le tracking de randonnee.
 ///
@@ -82,12 +86,14 @@ class TrackingEngine {
       }
     }
 
-    _points.add(TrackPoint(
-      lat: lat,
-      lng: lng,
-      altitude: altitude,
-      distanceFromStart: _distanceMeters,
-    ));
+    _points.add(
+      TrackPoint(
+        lat: lat,
+        lng: lng,
+        altitude: altitude,
+        distanceFromStart: _distanceMeters,
+      ),
+    );
   }
 
   /// Met le tracking en pause.

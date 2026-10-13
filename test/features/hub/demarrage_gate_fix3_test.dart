@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/hub/presentation/widgets/hub_start_trek_button.dart';
 import 'package:moteur_gr/features/hub/providers/cockpit_start_providers.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
+import 'package:moteur_gr/features/safety/providers/health_prepare_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/app_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// FIX-3 — NON-REGRESSION DU GATE DE DEMARRAGE (« Démarrer la randonnée »).
@@ -30,6 +32,21 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   const trailId = 'mare-a-mare-centre';
+
+  /// TACHE 568 (LOT Q) — LA PORTE A GAGNE UNE QUATRIEME CONDITION.
+  ///
+  /// Decision de Chris du 26/09 10:29, verbatim : « on ne demarre pas un trek
+  /// sans avoir rempli sa fiche medicale et lu les conseils pour qu'elle soit
+  /// applicable sur le sentier ». Ces tests-ci portent sur la MECANIQUE de
+  /// rafraichissement de la vue derivee (lecon M4) et sur la COURSE de relecture
+  /// des preferences (lecon FIX-3) : la fiche medicale y est donc posee comme
+  /// ACQUISE, pour que ce qu'ils mesurent reste le trio historique. La regle de
+  /// la 4e condition, elle, est verrouillee par
+  /// `test/features/safety/fiche_medicale_condition_depart_568_test.dart` et par
+  /// `test/features/hub/providers/cockpit_start_providers_test.dart`.
+  const ficheMedicaleFaite = <String, Object>{
+    kHealthPrepareStepsKey: <String>['filled', 'adviceRead'],
+  };
 
   /// Enveloppe le bouton avec le minimum vital : Slang (libelles) + un routeur
   /// (le bouton pousse `/map` au succes) + un [ProviderScope] reel (aucun
@@ -56,24 +73,31 @@ void main() {
     );
   }
 
-  /// Le [FilledButton] du CTA. `onPressed == null` = grise (gate fermee).
-  FilledButton cta(WidgetTester tester) => tester.widget<FilledButton>(
-        find.ancestor(
-          of: find.text(t.hub.startCta),
-          matching: find.byType(FilledButton),
-        ),
-      );
+  /// L'[AppButton] du CTA. `onPressed == null` = grise (gate fermee).
+  ///
+  /// CE QUE CE TEST CHERCHAIT AVANT (tache 645-03) : un `FilledButton`. Le CTA
+  /// passe depuis par le composant unique, qui peint sa variante `filledTone`
+  /// avec un `ElevatedButton` : le type a change, le COMPORTEMENT mesure ici
+  /// (grise ou actif) pas d'un cran. On interroge donc `AppButton`, c'est-a-dire
+  /// le composant que l'ecran appelle vraiment — plus stable que la forme
+  /// Material qu'il choisit en interne.
+  AppButton cta(WidgetTester tester) => tester.widget<AppButton>(
+    find.ancestor(
+      of: find.text(t.hub.startCta),
+      matching: find.byType(AppButton),
+    ),
+  );
 
   ProviderContainer scopeOf(WidgetTester tester) => ProviderScope.containerOf(
-        tester.element(find.byType(HubStartTrekButton)),
-      );
+    tester.element(find.byType(HubStartTrekButton)),
+  );
 
   group('FIX-3 — le CTA « Démarrer » s ouvre quand la preparation est faite', () {
     testWidgets(
       'A CHAUD : le CTA passe de grise a ACTIF des le 3e signal, sans relancer '
       'l application (lecon M4 : une vue derivee doit se rafraichir)',
       (tester) async {
-        SharedPreferences.setMockInitialValues(<String, Object>{});
+        SharedPreferences.setMockInitialValues(ficheMedicaleFaite);
         await tester.pumpWidget(wrap());
         await tester.pumpAndSettle();
 
@@ -126,6 +150,7 @@ void main() {
         SharedPreferences.setMockInitialValues(<String, Object>{
           'prepare_core_steps_$trailId': <String>['itinerary', 'programme'],
           'departure_date_$trailId': '2026-10-20T00:00:00.000',
+          ...ficheMedicaleFaite,
         });
         await tester.pumpWidget(wrap());
         await tester.pumpAndSettle();
@@ -155,6 +180,7 @@ void main() {
         SharedPreferences.setMockInitialValues(<String, Object>{
           'prepare_core_steps_$trailId': <String>['programme'],
           'departure_date_$trailId': '2026-10-20T00:00:00.000',
+          ...ficheMedicaleFaite,
         });
         final c = ProviderContainer();
         addTearDown(c.dispose);
@@ -206,24 +232,21 @@ void main() {
     /// recalcule pas une liste a partir de l'etat) : il n'y a donc pas de mise
     /// a jour perdue ici. Ce test VERROUILLE cette propriete — si un jour la
     /// date devient derivee d'un etat relu, la regression sera vue tout de suite.
-    test(
-      'une date posee pendant la relecture au build survit',
-      () async {
-        SharedPreferences.setMockInitialValues(<String, Object>{});
-        final c = ProviderContainer();
-        addTearDown(c.dispose);
+    test('une date posee pendant la relecture au build survit', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      final c = ProviderContainer();
+      addTearDown(c.dispose);
 
-        // Premier acces = build() -> relecture des prefs EN VOL.
-        final reminder = c.read(downloadReminderProvider(trailId).notifier);
-        await reminder.setDepartureDate(DateTime(2026, 10, 20));
-        await Future<void>.delayed(Duration.zero);
+      // Premier acces = build() -> relecture des prefs EN VOL.
+      final reminder = c.read(downloadReminderProvider(trailId).notifier);
+      await reminder.setDepartureDate(DateTime(2026, 10, 20));
+      await Future<void>.delayed(Duration.zero);
 
-        expect(
-          c.read(downloadReminderProvider(trailId)).departureDate,
-          isNotNull,
-          reason: 'la relecture des prefs ne doit pas effacer la date posee',
-        );
-      },
-    );
+      expect(
+        c.read(downloadReminderProvider(trailId)).departureDate,
+        isNotNull,
+        reason: 'la relecture des prefs ne doit pas effacer la date posee',
+      );
+    });
   });
 }

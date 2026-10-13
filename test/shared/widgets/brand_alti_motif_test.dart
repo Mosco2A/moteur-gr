@@ -14,8 +14,10 @@ void main() {
   const accent = Color(0xFF2E7D32); // vert Pyrenees (accent-sentier de test)
 
   Widget wrap(Widget child) => MaterialApp(
-        home: Scaffold(body: Center(child: SizedBox(width: 320, child: child))),
-      );
+    home: Scaffold(
+      body: Center(child: SizedBox(width: 320, child: child)),
+    ),
+  );
 
   // Rend le painter isole sur un canvas de taille connue, pour verifier qu'il
   // ne leve pas (paint execute reellement) — le vrai filet anti-crash.
@@ -28,8 +30,9 @@ void main() {
 
   group('rendu des 3 variantes', () {
     for (final variant in BrandAltiVariant.values) {
-      testWidgets('variante ${variant.name} : rend sans exception',
-          (tester) async {
+      testWidgets('variante ${variant.name} : rend sans exception', (
+        tester,
+      ) async {
         await tester.pumpWidget(
           wrap(
             BrandAltiMotif(
@@ -65,8 +68,9 @@ void main() {
   });
 
   group('parite de trace fiche etape (.synthetic)', () {
-    testWidgets('BrandAltiMotif.synthetic rend le motif sans crash',
-        (tester) async {
+    testWidgets('BrandAltiMotif.synthetic rend le motif sans crash', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(
           BrandAltiMotif.synthetic(
@@ -82,41 +86,44 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    test('geometrie synthetique = geometrie historique (montee->sommet->descente)',
-        () {
-      // Reproduction du calcul historique de _ElevationProfilePainter, pour
-      // FIGER la parite : peakRatio = D+/(D+ + D-), endRatio = (D+ - D-)/total
-      // clamp 0..0.8. Si le motif changeait cette geometrie, ce test casserait.
-      const gain = 840;
-      const loss = 620;
-      const total = gain + loss;
-      const expectedPeakRatio = gain / total;
-      final expectedEndRatio = ((gain - loss) / total).clamp(0.0, 0.8);
+    test(
+      'geometrie synthetique = geometrie historique (montee->sommet->descente)',
+      () {
+        // Reproduction du calcul historique de _ElevationProfilePainter, pour
+        // FIGER la parite : peakRatio = D+/(D+ + D-), endRatio = (D+ - D-)/total
+        // clamp 0..0.8. Si le motif changeait cette geometrie, ce test casserait.
+        const gain = 840;
+        const loss = 620;
+        const total = gain + loss;
+        const expectedPeakRatio = gain / total;
+        final expectedEndRatio = ((gain - loss) / total).clamp(0.0, 0.8);
 
-      expect(expectedPeakRatio, closeTo(0.5753, 0.0001));
-      expect(expectedEndRatio, closeTo(0.1506, 0.0001));
+        expect(expectedPeakRatio, closeTo(0.5753, 0.0001));
+        expect(expectedEndRatio, closeTo(0.1506, 0.0001));
 
-      // Le painter en mode synthetique se peint sans exception sur une taille
-      // standard (execute reellement _syntheticPath + les cotes chiffrees).
-      final painter = AltiProfilePainter(
-        elevations: const [],
-        synthetic: const AltiSyntheticProfile(
-          elevationGain: gain,
-          elevationLoss: loss,
-          distance: 12.4,
-        ),
-        variant: BrandAltiVariant.hero,
-        accent: accent,
-      );
-      expect(painter.synthetic, isNotNull);
-      expect(
-        () => paintPainter(painter, const Size(320, 160)),
-        returnsNormally,
-      );
-    });
+        // Le painter en mode synthetique se peint sans exception sur une taille
+        // standard (execute reellement _syntheticPath + les cotes chiffrees).
+        final painter = AltiProfilePainter(
+          elevations: const [],
+          synthetic: const AltiSyntheticProfile(
+            elevationGain: gain,
+            elevationLoss: loss,
+            distance: 12.4,
+          ),
+          variant: BrandAltiVariant.hero,
+          accent: accent,
+        );
+        expect(painter.synthetic, isNotNull);
+        expect(
+          () => paintPainter(painter, const Size(320, 160)),
+          returnsNormally,
+        );
+      },
+    );
 
-    testWidgets('D+ et D- nuls : pas de crash (fallback ratio 0.5)',
-        (tester) async {
+    testWidgets('D+ et D- nuls : pas de crash (fallback ratio 0.5)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(
           BrandAltiMotif.synthetic(
@@ -142,8 +149,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('un seul point : pas de crash (pas de segment tracable)',
-        (tester) async {
+    testWidgets('un seul point : pas de crash (pas de segment tracable)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(const BrandAltiMotif(elevations: [1500], accent: accent)),
       );
@@ -184,10 +192,7 @@ void main() {
         variant: BrandAltiVariant.hero,
         accent: accent,
       );
-      expect(
-        () => paintPainter(painter, Size.zero),
-        returnsNormally,
-      );
+      expect(() => paintPainter(painter, Size.zero), returnsNormally);
     });
 
     test('profil totalement plat (min == max) : pas de division par zero', () {
@@ -209,13 +214,12 @@ void main() {
       List<double> elevations = const [1200, 1400, 1300],
       BrandAltiVariant variant = BrandAltiVariant.hero,
       Color accent = accent,
-    }) =>
-        AltiProfilePainter(
-          elevations: elevations,
-          synthetic: null,
-          variant: variant,
-          accent: accent,
-        );
+    }) => AltiProfilePainter(
+      elevations: elevations,
+      synthetic: null,
+      variant: variant,
+      accent: accent,
+    );
 
     test('memes params -> pas de repaint', () {
       expect(make().shouldRepaint(make()), isFalse);

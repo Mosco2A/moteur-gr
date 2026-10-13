@@ -1,3 +1,7 @@
+/// Deux suiveurs sont gratuits ; a partir du troisieme, c'est la publicite qui
+/// paie le partage.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
@@ -23,9 +27,7 @@ const kFreeFollowerThreshold = 2;
 ///
 /// E4.13 — Dependances: E4.11 (FollowService).
 class AdService {
-  AdService({
-    this.testMode = false,
-  });
+  AdService({this.testMode = false});
 
   /// Mode test pour desactiver le chargement reel des pubs.
   final bool testMode;
@@ -43,10 +45,7 @@ class AdService {
   /// [MonetizationService.isNoAdsActive] ; passer par [shouldShowAdForTrail]
   /// (ST7) pour resoudre cette decision a partir d'un [trailId] sans dupliquer
   /// la regle.
-  bool shouldShowAd({
-    required int followerIndex,
-    required bool isPaid,
-  }) {
+  bool shouldShowAd({required int followerIndex, required bool isPaid}) {
     if (isPaid) return false;
     return followerIndex >= kFreeFollowerThreshold;
   }
@@ -90,8 +89,10 @@ class AdService {
         },
         onAdFailedToLoad: (error) {
           _isAdLoaded = false;
-          _log.e('[AdService] Echec chargement interstitielle: '
-              '${error.message}');
+          _log.e(
+            '[AdService] Echec chargement interstitielle: '
+            '${error.message}',
+          );
         },
       ),
     );

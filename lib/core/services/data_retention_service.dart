@@ -1,3 +1,7 @@
+/// Deux obligations qui se tiennent : purger ce qui a depasse sa duree de
+/// conservation (art. 5.1.e) et effacer sur demande (art. 17).
+library;
+
 // D4B-02 — Service de RETENTION et de DROIT A L'EFFACEMENT (design D4 CORDO
 // #86166, angle mort AM-2 + RGPD art 17).
 //
@@ -13,7 +17,8 @@
 //
 //   2. DROIT A L'EFFACEMENT (art 17 RGPD) : [deleteAccountData] efface
 //      TOUTES les donnees personnelles locales (tables Drift utilisateur, fiche
-//      randonneur, caches, cles SharedPreferences, consentements) ET emet une
+//      randonneur, FICHIER de la fiche medicale depuis la tache 613, caches,
+//      cles SharedPreferences, consentements) ET emet une
 //      demande de suppression cote serveur (suppression des documents lies a
 //      l'UID hache). L'app etant anonyme-by-design (UID hache SHA-256, zero PII
 //      directe #85383), l'effacement est simple — mais il doit etre COMPLET et
@@ -50,6 +55,7 @@ import 'package:drift/drift.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/feasibility/data/hiker_profile_repository.dart';
+import '../../features/safety/data/health_info_file.dart';
 import '../data/database.dart';
 import 'consent_service.dart';
 import 'secure_keystore_eraser.dart';
@@ -228,6 +234,18 @@ class DeletionReport {
 /// les DEUX etages de stockage de cette fiche (prefs durables + miroir Drift).
 typedef HikerFileEraser = Future<void> Function();
 
+/// Signature de l'effacement de la FICHE MEDICALE (art. 9), TACHE 613.
+///
+/// ELLE N'EST PLUS DANS LA BASE, DONC LA PURGE DES TABLES NE L'EMPORTE PLUS.
+/// Jusqu'a la tache 613 la fiche vivait dans la table `health_info_entries` et
+/// [_wipeAllUserTables] l'effacait sans qu'on ait a la nommer. Depuis qu'elle a
+/// son propre fichier (voir [HealthInfoFile], et la raison : rendre la base
+/// sauvegardable sans emporter la donnee de sante), l'effacement DOIT la nommer —
+/// sans quoi la tache 613 aurait discretement defait le droit a l'effacement
+/// conquis aux lots J a O. Injectable pour les tests ; par defaut branchee sur le
+/// fichier REEL.
+typedef FicheMedicaleEraser = Future<void> Function();
+
 /// Signature de l'appel de suppression cote serveur.
 ///
 /// Recoit l'UID hache du compte a supprimer. L'implementation reelle
@@ -245,24 +263,34 @@ class DataRetentionService {
     ServerDeletionRequest? serverDeletion,
     RetentionPolicy policy = const RetentionPolicy(),
     HikerFileEraser? hikerFileEraser,
+    FicheMedicaleEraser? ficheMedicaleEraser,
     SecureKeystoreErasure? secureKeystoreErasure,
     DateTime Function()? now,
-  })  : _db = database,
-        _prefs = prefs,
-        _serverDeletion = serverDeletion,
-        _policy = policy,
-        _hikerFileEraser = hikerFileEraser ??
-            HikerProfileRepository(db: database, prefs: prefs)
-                .eraseAllPersonalData,
-        _secureKeystoreErasure =
-            secureKeystoreErasure ?? SecureKeystoreEraser().eraseAll,
-        _now = now ?? DateTime.now;
+  }) : _db = database,
+       _prefs = prefs,
+       _serverDeletion = serverDeletion,
+       _policy = policy,
+       _hikerFileEraser =
+           hikerFileEraser ??
+           HikerProfileRepository(
+             db: database,
+             prefs: prefs,
+           ).eraseAllPersonalData,
+       _ficheMedicaleEraser = ficheMedicaleEraser ?? HealthInfoFile().effacer,
+       _secureKeystoreErasure =
+           secureKeystoreErasure ?? SecureKeystoreEraser().eraseAll,
+       _now = now ?? DateTime.now;
 
   final AppDatabase _db;
   final SharedPreferences _prefs;
   final ServerDeletionRequest? _serverDeletion;
   final RetentionPolicy _policy;
   final HikerFileEraser _hikerFileEraser;
+
+  /// Effacement du FICHIER de la fiche medicale (tache 613). JAMAIS nul, meme
+  /// raison que le keystore : une etape d'effacement qu'on desactive en oubliant
+  /// un parametre n'efface rien.
+  final FicheMedicaleEraser _ficheMedicaleEraser;
 
   /// Effacement du keystore OS (tache 562, K2). JAMAIS nul : a defaut
   /// d'injection, il est branche sur le keystore REEL. Une etape d'effacement
@@ -365,9 +393,11 @@ class DataRetentionService {
   /// `allTables` moins les deux exceptions. Une table ajoutee au schema sans
   /// etre classee tombe automatiquement ici (et sera donc effacee).
   List<TableInfo> get userTables => _db.allTables
-      .where((t) =>
-          !referenceTableNames.contains(t.actualTableName) &&
-          !retainedOnErasureTableNames.contains(t.actualTableName))
+      .where(
+        (t) =>
+            !referenceTableNames.contains(t.actualTableName) &&
+            !retainedOnErasureTableNames.contains(t.actualTableName),
+      )
       .toList(growable: false);
 
   /// Noms SQL des tables effacees (lecture, tracabilite et tests).
@@ -395,42 +425,62 @@ class DataRetentionService {
     final now = _now();
     final contribCutoff = now.subtract(_policy.syncedContributions);
 
-    // 1. Cache meteo expire (reutilise la logique TTL existante du DAO).
-    //    On passe la MEME horloge que le reste de la purge : sinon une entree
-    //    encore valide (expiresAt > now) serait supprimee a tort (D4B-02).
-    final expiredWeather = await _db.weatherCacheDao.clearExpired(now);
+    // 1. Cache meteo trop ANCIEN — au sens de la politique ecrite
+    //    ([RetentionPolicy.cartoCache] : 7 jours), et non du TTL de
+    //    re-telechargement (3 h).
+    //
+    //    TACHE 572 : ces deux durees etaient confondues. La purge appelait
+    //    `clearExpired`, qui efface sur `expiresAt`, donc TROIS HEURES apres le
+    //    releve — pendant que la politique de ce fichier documente sept JOURS
+    //    pour les caches carto/meteo. Consequence sur le sentier : le randonneur
+    //    telecharge sa meteo au refuge, marche, et trois heures plus tard
+    //    l'application a efface le bulletin qu'il n'a plus aucun moyen de
+    //    retelecharger. On purge desormais sur l'AGE du bulletin, avec la meme
+    //    horloge que le reste de la purge (D4B-02).
+    final expiredWeather = await _db.weatherCacheDao.clearFetchedBefore(
+      now.subtract(_policy.cartoCache),
+    );
 
     // 2. File de synchro terminee et ancienne.
-    final oldSync = await _db.syncQueueDao
-        .cleanOldCompleted(_policy.completedSyncQueue.inDays);
+    final oldSync = await _db.syncQueueDao.cleanOldCompleted(
+      _policy.completedSyncQueue.inDays,
+    );
 
     // 3. Signalements synchronises et anciens.
-    final reports = await (_db.delete(_db.reportLocal)
-          ..where((t) =>
-              t.syncState.equals('synced') &
-              t.createdAt.isSmallerThanValue(contribCutoff)))
-        .go();
+    final reports =
+        await (_db.delete(_db.reportLocal)..where(
+              (t) =>
+                  t.syncState.equals('synced') &
+                  t.createdAt.isSmallerThanValue(contribCutoff),
+            ))
+            .go();
 
     // 4. Efforts de segment synchronises et anciens (date = startedAt).
-    final efforts = await (_db.delete(_db.segmentEffortLocal)
-          ..where((t) =>
-              t.syncState.equals('synced') &
-              t.startedAt.isSmallerThanValue(contribCutoff)))
-        .go();
+    final efforts =
+        await (_db.delete(_db.segmentEffortLocal)..where(
+              (t) =>
+                  t.syncState.equals('synced') &
+                  t.startedAt.isSmallerThanValue(contribCutoff),
+            ))
+            .go();
 
     // 5. Kudos synchronises et anciens.
-    final kudos = await (_db.delete(_db.kudosLocal)
-          ..where((t) =>
-              t.syncState.equals('synced') &
-              t.createdAt.isSmallerThanValue(contribCutoff)))
-        .go();
+    final kudos =
+        await (_db.delete(_db.kudosLocal)..where(
+              (t) =>
+                  t.syncState.equals('synced') &
+                  t.createdAt.isSmallerThanValue(contribCutoff),
+            ))
+            .go();
 
     // 6. Commentaires de waypoint synchronises et anciens.
-    final comments = await (_db.delete(_db.waypointComment)
-          ..where((t) =>
-              t.syncState.equals('synced') &
-              t.createdAt.isSmallerThanValue(contribCutoff)))
-        .go();
+    final comments =
+        await (_db.delete(_db.waypointComment)..where(
+              (t) =>
+                  t.syncState.equals('synced') &
+                  t.createdAt.isSmallerThanValue(contribCutoff),
+            ))
+            .go();
 
     return PurgeReport(
       expiredWeatherCache: expiredWeather,
@@ -455,6 +505,8 @@ class DataRetentionService {
   ///      erreur remonte (pas d'effacement partiel silencieux).
   ///   2. Effacement de la FICHE RANDONNEUR par la couche qui la possede
   ///      (donnee de sante art. 9, stockee sur DEUX etages).
+  ///   2 bis. Effacement du FICHIER de la FICHE MEDICALE (tache 613) : elle a
+  ///      quitte la base, donc la purge des tables ne l'emporte plus.
   ///   3. Purge de toutes les tables Drift a donnee utilisateur, DERIVEE du
   ///      schema (voir [userTables]).
   ///   4. Purge des cles SharedPreferences personnelles, DERIVEE du store reel
@@ -480,6 +532,15 @@ class DataRetentionService {
     //    les deux etages. Vider le miroir Drift sans les prefs ne servirait a
     //    rien — le boot suivant le re-hydrate depuis les prefs.
     await _hikerFileEraser();
+
+    // 2 bis. FICHE MEDICALE (art. 9), TACHE 613 : elle a QUITTE LA BASE pour son
+    //    propre fichier, sous le dossier exclu de la sauvegarde du telephone. La
+    //    purge des tables de l'etape 3 ne l'emporte donc plus. L'effacement la
+    //    nomme desormais explicitement — sinon rendre la base durable aurait
+    //    laisse la fiche sur le disque APRES que le randonneur a demande son
+    //    effacement, ce qui est exactement le defaut que les lots J a O ont
+    //    ferme.
+    await _ficheMedicaleEraser();
 
     // 3. Purge locale de toutes les tables a donnees utilisateur (derivee).
     final localRows = await _wipeAllUserTables();

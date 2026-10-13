@@ -29,8 +29,9 @@ void main() {
 
   const hold = Duration(seconds: 30);
 
-  testWidgets('FIX-1 — captures B1 (poids corporel) et M3 (poids article)',
-      (tester) async {
+  testWidgets('FIX-1 — captures B1 (poids corporel) et M3 (poids article)', (
+    tester,
+  ) async {
     final container = ProviderContainer(
       overrides: [trailConfigProvider.overrideWithValue(testTrailConfig)],
     );
@@ -39,7 +40,10 @@ void main() {
     final router = GoRouter(
       initialLocation: '/checklist',
       routes: [
-        GoRoute(path: '/checklist', builder: (_, __) => const ChecklistScreen()),
+        GoRoute(
+          path: '/checklist',
+          builder: (_, __) => const ChecklistScreen(),
+        ),
         GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
       ],
     );
@@ -73,17 +77,23 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
     // --- CAPTURE 1 (B1) : 890 kg refuse, message borne affiche ---
-    final weightField =
-        find.byKey(const ValueKey('checklist-body-weight-field'));
+    final weightField = find.byKey(
+      const ValueKey('checklist-body-weight-field'),
+    );
     expect(weightField, findsOneWidget);
     await tester.enterText(weightField, '890');
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const ValueKey('checklist-body-weight-error')),
-        findsOneWidget,
-        reason: 'le refus doit etre VISIBLE a l ecran, pas seulement en memoire');
-    expect(find.textContaining('Infinity'), findsNothing,
-        reason: 'plus aucun verdict absurde affiche');
+    expect(
+      find.byKey(const ValueKey('checklist-body-weight-error')),
+      findsOneWidget,
+      reason: 'le refus doit etre VISIBLE a l ecran, pas seulement en memoire',
+    );
+    expect(
+      find.textContaining('Infinity'),
+      findsNothing,
+      reason: 'plus aucun verdict absurde affiche',
+    );
 
     debugPrint('FIX1_SHOT_B1 poids_corporel_890_refuse');
     await Future<void>.delayed(hold);
@@ -99,14 +109,20 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(
-        find.widgetWithText(TextField, t.checklist.ui.fieldName).first,
-        'Rechaud');
+      find.widgetWithText(TextField, t.checklist.ui.fieldName).first,
+      'Rechaud',
+    );
     await tester.enterText(
-        find.byKey(const ValueKey('checklist-add-weight-field')), '99999999');
+      find.byKey(const ValueKey('checklist-add-weight-field')),
+      '99999999',
+    );
     await tester.pumpAndSettle();
 
-    expect(find.text(t.checklist.ui.errorWeightGrams), findsOneWidget,
-        reason: 'le clamp silencieux est remplace par un refus motive');
+    expect(
+      find.text(t.checklist.ui.errorWeightGrams),
+      findsOneWidget,
+      reason: 'le clamp silencieux est remplace par un refus motive',
+    );
 
     debugPrint('FIX1_SHOT_M3 poids_article_99999999_refuse');
     await Future<void>.delayed(hold);

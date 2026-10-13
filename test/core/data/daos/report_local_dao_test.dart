@@ -49,9 +49,11 @@ void main() {
 
     test('pendingReports tries du plus ancien au plus recent', () async {
       await dao.insertReport(
-          makeReport(type: 'danger', createdAt: DateTime.utc(2026, 6, 12, 12)));
-      await dao.insertReport(makeReport(
-          type: 'obstacle', createdAt: DateTime.utc(2026, 6, 12, 9)));
+        makeReport(type: 'danger', createdAt: DateTime.utc(2026, 6, 12, 12)),
+      );
+      await dao.insertReport(
+        makeReport(type: 'obstacle', createdAt: DateTime.utc(2026, 6, 12, 9)),
+      );
       final pending = await dao.pendingReports();
       expect(pending.first.type, 'obstacle'); // plus ancien d'abord
       expect(pending.last.type, 'danger');
@@ -101,7 +103,8 @@ void main() {
     test('dequeueBatch borne le nombre de signalements', () async {
       for (var i = 0; i < 5; i++) {
         await dao.insertReport(
-            makeReport(createdAt: DateTime.utc(2026, 6, 12, 10, i)));
+          makeReport(createdAt: DateTime.utc(2026, 6, 12, 10, i)),
+        );
       }
       final batch = await dao.dequeueBatch(limit: 3);
       expect(batch.length, 3);

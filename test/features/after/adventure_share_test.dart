@@ -18,19 +18,18 @@ void main() {
     int elevationGainM = 3750,
     int elevationLossM = 3600,
     int durationDays = 7,
-  }) =>
-      AdventureStats(
-        stagesWalked: stagesWalked,
-        totalStages: totalStages,
-        distanceKm: distanceKm,
-        elevationGainM: elevationGainM,
-        elevationLossM: elevationLossM,
-        startDate: DateTime(2026, 6, 10),
-        endDate: DateTime(2026, 6, 16),
-        durationDays: durationDays,
-        fullyWalked: true,
-        tracePoints: const [],
-      );
+  }) => AdventureStats(
+    stagesWalked: stagesWalked,
+    totalStages: totalStages,
+    distanceKm: distanceKm,
+    elevationGainM: elevationGainM,
+    elevationLossM: elevationLossM,
+    startDate: DateTime(2026, 6, 10),
+    endDate: DateTime(2026, 6, 16),
+    durationDays: durationDays,
+    fullyWalked: true,
+    tracePoints: const [],
+  );
 
   group('L5-3 — texte de partage', () {
     test('en-tete nomme le sentier, puis une ligne par chiffre', () {

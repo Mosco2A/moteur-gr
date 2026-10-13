@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 /// Affiche un indicateur de progression circulaire centre
 /// avec un message optionnel en dessous.
 class LoadingView extends StatelessWidget {
-  const LoadingView({
-    super.key,
-    this.message,
-  });
+  const LoadingView({super.key, this.message});
 
   /// Message optionnel affiche sous l'indicateur de chargement.
   final String? message;

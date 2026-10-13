@@ -1,3 +1,7 @@
+/// Un puits distant qui ECHOUE proprement tant que le serveur n'est pas branche
+/// : les signalements restent en file, ils ne sont pas perdus.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/database.dart';

@@ -1,3 +1,7 @@
+/// Le profil charge depuis sa source durable au premier acces, puis tenu en
+/// memoire : la faisabilite et la fiche le partagent.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/hiker_profile_repository.dart';
@@ -11,7 +15,8 @@ import '../domain/past_hike.dart';
 /// fiche info consomment ce provider.
 final hikerProfileProvider =
     AsyncNotifierProvider<HikerProfileNotifier, HikerProfile>(
-        HikerProfileNotifier.new);
+      HikerProfileNotifier.new,
+    );
 
 /// Notifier du profil randonneur.
 class HikerProfileNotifier extends AsyncNotifier<HikerProfile> {
@@ -55,7 +60,8 @@ class HikerProfileNotifier extends AsyncNotifier<HikerProfile> {
 /// Randos passees du randonneur (max 5) — StepWays LOT 4, Ph3.
 final pastHikesProvider =
     AsyncNotifierProvider<PastHikesNotifier, List<PastHike>>(
-        PastHikesNotifier.new);
+      PastHikesNotifier.new,
+    );
 
 /// Notifier des randos passees.
 class PastHikesNotifier extends AsyncNotifier<List<PastHike>> {
@@ -78,30 +84,20 @@ class PastHikesNotifier extends AsyncNotifier<List<PastHike>> {
   }
 }
 
-/// Note d'experience globale (texte libre « difficultes ») — Ph3.
-///
-/// V1 : STOCKEE seulement (l'IA la lira en V2). `AsyncNotifier<String>`.
-final experienceNoteProvider =
-    AsyncNotifierProvider<ExperienceNoteNotifier, String>(
-        ExperienceNoteNotifier.new);
-
-/// Notifier de la note d'experience globale.
-class ExperienceNoteNotifier extends AsyncNotifier<String> {
-  /// Repository pour les ECRITURES (hors `build`, ou `watch` est interdit).
-  HikerProfileRepository get _repo => ref.read(hikerProfileRepositoryProvider);
-
-  @override
-  Future<String> build() async {
-    // `watch` ET PAS `read` : voir [HikerProfileNotifier.build].
-    return ref.watch(hikerProfileRepositoryProvider).getExperienceNote();
-  }
-
-  /// Sauvegarde le texte libre global.
-  Future<void> save(String text) async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      await _repo.saveExperienceNote(text);
-      return text;
-    });
-  }
-}
+// LA NOTE D'EXPERIENCE (texte libre « difficultes ») N'A PLUS DE PROVIDER
+// (tache 570, S2).
+//
+// `experienceNoteProvider` et son notifier vivaient ici. Leur commentaire
+// d'origine portait l'aveu : « V1 : STOCKEE seulement (l'IA la lira en V2) ».
+// La V2 n'est jamais venue, et la mesure est sans appel : le provider
+// n'apparaissait que dans DEUX fichiers — celui-ci et l'ecran qui le remplissait
+// — alors que la donnee, elle, descendait jusqu'au cloud et remontait a la
+// restauration. Elle etait donc collectee, propagee, conservee, et lue par
+// personne.
+//
+// Decision de Chris du 26/09 : « sinon tu le vire pour l'instant ». Le provider
+// part avec l'ecran et avec son ecriture. Ce qui RESTE, volontairement, c'est
+// l'EFFACEMENT de ce qui a deja ete ecrit sur les telephones existants (voir
+// [HikerProfileRepository.eraseAllPersonalData]) : cesser de collecter ne
+// dispense pas d'effacer, et un randonneur qui exerce son droit a l'oubli doit
+// voir partir aussi la note qu'il avait saisie avant ce lot.

@@ -47,7 +47,10 @@ void main() {
       );
       expect(
         SegmentMatchingService.isOnSegment(
-            const LatLng(42.01, 9.0), single, 25),
+          const LatLng(42.01, 9.0),
+          single,
+          25,
+        ),
         isFalse,
       );
     });
@@ -136,8 +139,9 @@ void main() {
       final userTrack = [
         TimedPoint(position: const LatLng(42.0000, 9.0000), time: start),
         TimedPoint(
-            position: const LatLng(42.0003, 9.0000),
-            time: start.add(const Duration(seconds: 90))),
+          position: const LatLng(42.0003, 9.0000),
+          time: start.add(const Duration(seconds: 90)),
+        ),
       ];
       final id = await service.detectAndStore(
         segmentId: 'seg-1',
@@ -159,8 +163,9 @@ void main() {
       final userTrack = [
         TimedPoint(position: const LatLng(43.0, 9.5), time: start),
         TimedPoint(
-            position: const LatLng(43.1, 9.6),
-            time: start.add(const Duration(seconds: 60))),
+          position: const LatLng(43.1, 9.6),
+          time: start.add(const Duration(seconds: 60)),
+        ),
       ];
       final id = await service.detectAndStore(
         segmentId: 'seg-1',

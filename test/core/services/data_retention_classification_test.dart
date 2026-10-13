@@ -54,27 +54,39 @@ void main() {
         ...service.userTableNames,
       };
 
-      expect(schema.difference(classified), isEmpty,
-          reason: 'table du schema non classee : elle doit etre declaree '
-              'REFERENCE, CONSERVEE avec sa raison, ou laissee au defaut '
-              '(effacee)');
-      expect(classified.difference(schema), isEmpty,
-          reason: 'une categorie nomme une table absente du schema : faute de '
-              'frappe, ou table supprimee sans nettoyer la liste');
+      expect(
+        schema.difference(classified),
+        isEmpty,
+        reason:
+            'table du schema non classee : elle doit etre declaree '
+            'REFERENCE, CONSERVEE avec sa raison, ou laissee au defaut '
+            '(effacee)',
+      );
+      expect(
+        classified.difference(schema),
+        isEmpty,
+        reason:
+            'une categorie nomme une table absente du schema : faute de '
+            'frappe, ou table supprimee sans nettoyer la liste',
+      );
     });
 
     test('les trois categories sont DISJOINTES', () {
       final user = service.userTableNames.toSet();
-      expect(user.intersection(DataRetentionService.referenceTableNames),
-          isEmpty);
       expect(
-          user.intersection(
-              DataRetentionService.retainedOnErasureTableNames),
-          isEmpty);
+        user.intersection(DataRetentionService.referenceTableNames),
+        isEmpty,
+      );
       expect(
-          DataRetentionService.referenceTableNames
-              .intersection(DataRetentionService.retainedOnErasureTableNames),
-          isEmpty);
+        user.intersection(DataRetentionService.retainedOnErasureTableNames),
+        isEmpty,
+      );
+      expect(
+        DataRetentionService.referenceTableNames.intersection(
+          DataRetentionService.retainedOnErasureTableNames,
+        ),
+        isEmpty,
+      );
     });
 
     test('une table NON classee tombe du cote EFFACE, pas du cote oublie', () {
@@ -97,8 +109,11 @@ void main() {
         'trek_sessions',
         'nuitee_selections',
       ]) {
-        expect(service.userTableNames, contains(name),
-            reason: '$name portait de la donnee personnelle hors effacement');
+        expect(
+          service.userTableNames,
+          contains(name),
+          reason: '$name portait de la donnee personnelle hors effacement',
+        );
       }
     });
 
@@ -118,8 +133,11 @@ void main() {
     test('les cles conservees sont des REGLAGES, pas de la donnee perso', () {
       // Aucune cle conservee ne doit ressembler a de la donnee personnelle.
       for (final key in DataRetentionService.preservedPrefsKeys) {
-        expect(key.startsWith('settings_'), isTrue,
-            reason: '$key est conservee sans etre un reglage d affichage');
+        expect(
+          key.startsWith('settings_'),
+          isTrue,
+          reason: '$key est conservee sans etre un reglage d affichage',
+        );
       }
     });
 
@@ -129,9 +147,13 @@ void main() {
         ...DataRetentionService.retainedOnErasurePrefsKeys,
       };
       for (final key in retained) {
-        expect(key.startsWith('consent_'), isFalse,
-            reason: 'un consentement est un acte positif : il se re-demande '
-                'apres un effacement, il ne survit pas');
+        expect(
+          key.startsWith('consent_'),
+          isFalse,
+          reason:
+              'un consentement est un acte positif : il se re-demande '
+              'apres un effacement, il ne survit pas',
+        );
       }
     });
 
@@ -141,8 +163,11 @@ void main() {
         ...DataRetentionService.retainedOnErasurePrefsKeys,
       };
       for (final key in retained) {
-        expect(key.startsWith('hiker.'), isFalse,
-            reason: 'donnee de sante (art. 9) : aucune exception possible');
+        expect(
+          key.startsWith('hiker.'),
+          isFalse,
+          reason: 'donnee de sante (art. 9) : aucune exception possible',
+        );
       }
     });
   });

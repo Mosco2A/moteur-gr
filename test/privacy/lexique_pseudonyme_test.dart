@@ -66,7 +66,8 @@ void main() {
       expect(
         offenders,
         isEmpty,
-        reason: 'Le classement/social est PSEUDONYME, pas anonyme (#86142). '
+        reason:
+            'Le classement/social est PSEUDONYME, pas anonyme (#86142). '
             'Ces VALEURS de traduction emploient un terme interdit cote '
             'utilisateur (utiliser "pseudonyme" / "sans compte"):\n'
             '${offenders.join('\n')}',
@@ -91,7 +92,8 @@ void main() {
       expect(
         offenders,
         isEmpty,
-        reason: 'Un libelle utilisateur emploie "anonyme" dans une feature '
+        reason:
+            'Un libelle utilisateur emploie "anonyme" dans une feature '
             'sociale/classement (PSEUDONYME impose, #86142). Les commentaires '
             'techniques sont autorises, pas les chaines affichees:\n'
             '${offenders.join('\n')}',
@@ -185,7 +187,10 @@ String _stripTrailingComment(String line) {
 List<String> _stringLiterals(String code) {
   final result = <String>[];
   // Chaines double-quote OU simple-quote (contenu capture, hors guillemets).
-  final pattern = RegExp('"([^"]*)"' r"|'([^']*)'");
+  final pattern = RegExp(
+    '"([^"]*)"'
+    r"|'([^']*)'",
+  );
   for (final m in pattern.allMatches(code)) {
     result.add(m.group(1) ?? m.group(2) ?? '');
   }

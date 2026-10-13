@@ -1,9 +1,14 @@
+/// Le pendant VISIBLE de l'alerte d'ecart : la notification et la vibration
+/// partent ailleurs, ce bandeau n'est le bonus de l'ecran ouvert.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/off_track_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Banniere de securite affichee sur la carte quand le randonneur s'ecarte du
 /// trace (etat pilote par [offTrackProvider], avec hysteresis 80/50 m). Rendu
@@ -18,9 +23,7 @@ class OffTrackBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isOffTrack = ref.watch(
-      offTrackProvider.select((s) => s.isOffTrack),
-    );
+    final isOffTrack = ref.watch(offTrackProvider.select((s) => s.isOffTrack));
     if (!isOffTrack) {
       return const SizedBox.shrink();
     }
@@ -41,8 +44,8 @@ class OffTrackBanner extends ConsumerWidget {
           ),
           child: Row(
             children: [
-              const Icon(
-                Icons.wrong_location_outlined,
+              const StepIcon(
+                StepwaysIcons.gpsPerdu,
                 color: Colors.white,
                 size: 22,
               ),

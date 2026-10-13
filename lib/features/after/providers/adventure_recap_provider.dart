@@ -1,19 +1,28 @@
+/// Tout l'« apres le trek » derive de la SESSION reellement persistee : les
+/// chiffres du recapitulatif et le droit au diplome.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Le modele de domaine `Stage` (features/trek/domain/models/stage.dart) est la
+// Le modele de domaine `Stage` (lib/domain/stage.dart depuis 645-05) est la
 // source des distances/D+ par etape. La base Drift expose aussi une classe
 // `Stage` (table) : on la masque ici pour lever l'ambiguite tout en gardant
 // `SessionTrackPoint` (trace GPS de session).
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart' hide Stage;
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/geo/recorded_track_stats.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../../core/providers/service_providers.dart';
-import '../../trek/domain/models/stage.dart';
-import '../../trek/domain/models/trek_session.dart';
-import '../../trek/domain/trek_completion.dart';
-import '../../trek/providers/gps_providers.dart';
-import '../../trek/providers/stage_providers.dart';
+import '../../../core/services/session_demo.dart';
+import '../../../domain/stage.dart';
+import '../../../domain/trek_session.dart';
+import '../../../domain/trek_completion.dart';
+import '../../../domain/trek_session_mapping.dart';
+import '../../map/map_facade.dart' show statsTraceProvider;
+import '../../trek/trek_facade.dart'
+    show currentTrekPlanProvider, domainStagesProvider, stagesProvider;
+import 'aventure_de_demo_provider.dart';
 
 /// PARITE GR20, LOT 3 (#99433) — socle « Apres le trek » : session reelle,
 /// stats reelles, et gate du diplome (finisher).
@@ -23,8 +32,16 @@ import '../../trek/providers/stage_providers.dart';
 /// actif ([TrekSessionsDao.getLatestByTrailId]) — jamais des totaux statiques du
 /// sentier. C'est la parite avec GR20 : le diplome et le recap refletent le
 /// parcours reellement effectue (etapes marchees, distance/D+ parcourus), et le
-/// diplome est verrouille tant que le parcours n'a pas ete fini — sauf sur un
-/// sentier VITRINE, debloque pour la demonstration.
+/// diplome est verrouille tant que le parcours n'a pas ete fini.
+///
+/// PLUS AUCUNE EXCEPTION DE DEMONSTRATION (tache 601). Le diplome et le recap
+/// etaient DONNES d'office sur le sentier « vitrine » : le randonneur en demo
+/// voyait un diplome qu'il n'avait pas marche. Le sentier de demonstration est
+/// desormais un sentier GRATUIT de deux etapes, et deux etapes se marchent :
+/// l'arrivee et le diplome y sont ATTEIGNABLES pour de vrai. C'est exactement ce
+/// que Chris demandait — un sentier demo, pas un sentier bride demo — et c'est
+/// mieux qu'une exemption : le diplome reste verrouille par la MARCHE, jamais par
+/// l'argent, et cette regle est la meme pour tout le monde.
 
 /// Statut « brut » de la derniere session persistee (String extensible).
 const String kTrekStatusCompleted = 'completed';
@@ -34,40 +51,44 @@ const String kTrekStatusAbandoned = 'abandoned';
 ///
 /// Source unique de l'etat « apres le trek ». Relit la base a chaque
 /// invalidation ; l'ecran Recap et le gate du diplome s'y abonnent.
+///
+/// EN DEMONSTRATION, LA SESSION EST FABRIQUEE ET N'EST JAMAIS ECRITE. Elle ne
+/// passe par aucun DAO : elle est rendue ici et nulle part ailleurs, donc elle
+/// meurt avec le provider a la sortie de la demonstration. La base n'est meme
+/// pas interrogee — ce n'est pas une optimisation, c'est la garantie qu'une
+/// demonstration ne peut pas resservir, ni ecraser, la vraie derniere session
+/// du randonneur sur ce sentier.
 final latestTrekSessionProvider = FutureProvider<TrekSession?>((ref) async {
   final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+  if (ref.watch(enDemoProvider)) {
+    // Les etapes du sentier d'abord : la matiere se fabrique a partir d'elles,
+    // et [domainStagesProvider] est un derive SYNCHRONE de `stagesProvider`.
+    // Sans cette attente il rendrait une liste vide tant que le chargement
+    // n'a pas abouti, et la matiere naitrait vide — exactement le piege que
+    // [adventureStatsProvider] documente deja plus bas.
+    await ref.watch(stagesProvider.future);
+    return ref.watch(matiereDeDemoProvider)?.session;
+  }
   final db = ref.watch(databaseProvider);
   return db.trekSessionsDao.getLatestByTrailId(trailId);
 });
 
-/// Le sentier actif est-il une VITRINE de demonstration ?
+/// Le DIPLOME est-il deverrouille ? (gate finisher — UNE SEULE REGLE).
 ///
-/// Exception de parite (LOT 2/3) : sur une vitrine, le diplome et le recap sont
-/// debloques pour la demo (comme le mode demo « tout debloque » de GR20). Pilote
-/// par le flag de donnees [TrailConfig.isShowcaseTrail] (via
-/// [DemoModeService]) — jamais un id de localite en dur.
-final isShowcaseTrailProvider = Provider<bool>((ref) {
-  final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
-  final demo = ref.watch(demoModeServiceProvider);
-  return demo.isShowcaseTrail(trailId);
-});
-
-/// Le DIPLOME est-il deverrouille ? (gate finisher + exception vitrine).
+/// PARITE GR20, LOT 3 (#99433), point 3.B(1) : le diplome n'est deverrouille QUE
+/// si le parcours a ete REELLEMENT parcouru en entier — la derniere session
+/// persistee porte `parcoursFullyWalked == true` (le finisher, cf.
+/// [TrekPlan.isFullyWalked] fige au franchissement de la porte). Tant que
+/// `!parcoursFullyWalked`, le diplome est VERROUILLE (equivalent du
+/// `status != completed` de GR20, mais sur l'etat de session reel).
 ///
-/// PARITE GR20, LOT 3 (#99433), point 3.B(1) :
-///  * Un sentier VITRINE est TOUJOURS deverrouille (demonstration) — parite avec
-///    le diplome GR20 debloque en mode demo.
-///  * Sinon (vrai trek non-vitrine), le diplome n'est deverrouille QUE si le
-///    parcours a ete REELLEMENT parcouru en entier : la derniere session
-///    persistee porte `parcoursFullyWalked == true` (le finisher, cf.
-///    [TrekPlan.isFullyWalked] fige au franchissement de la porte). Tant que
-///    `!parcoursFullyWalked`, le diplome est VERROUILLE (equivalent du
-///    `status != completed` de GR20, mais sur l'etat de session reel).
+/// L'EXCEPTION VITRINE EST PARTIE (tache 601) : elle offrait le diplome sans la
+/// marche. Sur le sentier gratuit de deux etapes, on le gagne — et un diplome
+/// gagne vaut infiniment mieux, en demonstration, qu'un diplome donne.
 ///
 /// Retourne false tant que la session n'est pas chargee (fail-closed : jamais de
 /// faux deverrouillage pendant le chargement).
 final isDiplomaUnlockedProvider = Provider<bool>((ref) {
-  if (ref.watch(isShowcaseTrailProvider)) return true;
   final session = ref.watch(latestTrekSessionProvider).value;
   return session?.parcoursFullyWalked ?? false;
 });
@@ -75,11 +96,11 @@ final isDiplomaUnlockedProvider = Provider<bool>((ref) {
 /// Le RECAP « Mon aventure » est-il accessible ?
 ///
 /// PARITE GR20, LOT 3 (#99433), point 3.A : accessible quand le trek est TERMINE
-/// (`completed`) OU ABANDONNE (`abandoned`) — plus la VITRINE (demo). Un abandon
-/// doit pouvoir revoir son aventure (parite `after/adventure_recap_screen.dart`
-/// GR20, chantier C #97501). Fail-closed pendant le chargement.
+/// (`completed`) OU ABANDONNE (`abandoned`). Un abandon doit pouvoir revoir son
+/// aventure (parite `after/adventure_recap_screen.dart` GR20, chantier C #97501).
+/// Fail-closed pendant le chargement. Plus d'exception vitrine (tache 601) : sur
+/// le sentier gratuit, le trek se termine vraiment.
 final isRecapAvailableProvider = Provider<bool>((ref) {
-  if (ref.watch(isShowcaseTrailProvider)) return true;
   final session = ref.watch(latestTrekSessionProvider).value;
   if (session == null) return false;
   return session.status == kTrekStatusCompleted ||
@@ -148,7 +169,27 @@ final adventureStatsProvider = FutureProvider<AdventureStats>((ref) async {
   await ref.watch(stagesProvider.future);
   final stages = ref.watch(domainStagesProvider);
   final plan = ref.watch(currentTrekPlanProvider);
-  final trace = await db.sessionTrackPointsDao.getByTrailId(trailId);
+  // La trace DENSE, points estimes compris (lot 671-03) : c'est celle que la
+  // carte du recapitulatif dessine et que l'export GPX ecrit. Aucun chiffre
+  // de ce provider ne vient d'elle (distance et D+ sont ceux des etapes).
+  //
+  // TACHE 810 — EN DEMONSTRATION, LA TRACE DE LA SESSION EST LA TRACE DU
+  // SENTIER, datee ([traceFabriqueeDeDemoProvider]). La base n'est pas lue :
+  // aucune trace de demonstration n'y est ecrite, et une lecture rendrait de
+  // toute facon la trace d'une VRAIE randonnee du randonneur sur ce sentier —
+  // ce qu'une demonstration n'a pas a montrer.
+  //
+  // TOUT LE RESTE DE CE PROVIDER EST INCHANGE EN DEMONSTRATION, et c'est
+  // voulu : etapes marchees, distance, D+, D-, duree et dates se calculent sur
+  // la session et sur les etapes du sentier, par le MEME code qu'en reel. Sur
+  // le Mare a Mare Centre, les sept etapes fabriquees rendent donc 87,3 km et
+  // 4 274 m de D+ parce qu'on les additionne, pas parce qu'on les a recopies.
+  final trace = ref.watch(enDemoProvider)
+      ? await ref.watch(traceFabriqueeDeDemoProvider.future)
+      : await db.sessionTrackPointsDao.getByTrailId(
+          trailId,
+          read: TrackPointsRead.withEstimated,
+        );
 
   // Nombre d'etapes du parcours choisi (jamais un total statique en dur) :
   // le plan si dispo, sinon la liste d'etapes du sentier.
@@ -214,7 +255,6 @@ final adventureCongratulationsProvider = Provider<TrekCongratulations?>((ref) {
   return TrekCongratulations.forPlan(plan);
 });
 
-
 /// Une journee de marche du recapitulatif (CORRECTIF L5-5).
 class AdventureDay {
   const AdventureDay({
@@ -231,7 +271,8 @@ class AdventureDay {
   /// Journee calendaire du premier point de la journee.
   final DateTime date;
 
-  /// Chiffres MESURES sur les points GPS de cette journee-la.
+  /// Chiffres MESURES de cette journee-la : sur la tranche de trace que ses
+  /// releves reels bornent et datent (lot 671-06).
   final TrackSegmentStats stats;
 
   /// Etapes traversees dans la journee, dans l'ordre de passage.
@@ -253,10 +294,61 @@ class AdventureDay {
 /// les journees sortent donc du terrain, et non d'un decoupage theorique du
 /// sentier. Une trace sans jour connu (anterieure a la migration v26) est
 /// regroupee par journee CALENDAIRE, ce qui reste juste.
+///
+/// LOT 671-03 : les journees se forment et se datent sur les SEULS RELEVES
+/// REELS, relus a part, et non sur [AdventureStats.tracePoints] qui porte
+/// aussi les points estimes.
+///
+/// LOT 671-06 : distance et denivele de chaque journee SUR LE TRACE, entre son
+/// premier et son dernier releve reel, projetes ; la duree reste l'ecart entre
+/// ces deux releves. LE PERIMETRE NE CHANGE PAS : la journee de marche, ou la
+/// journee civile pour une trace d'avant la v26.
+///
+/// TACHE 810 — EN DEMONSTRATION, LES JOURNEES SONT FABRIQUEES, UNE PAR ETAPE.
+/// Elles ne sortent pas de la trace fabriquee mais des ETAPES elles-memes, et
+/// ce choix a une raison : la somme des journees doit faire le total affiche
+/// juste au-dessus. En les mesurant sur la trace, les arrondis de projection
+/// auraient fait mentir l'addition d'un ou deux kilometres, a l'ecran et dans
+/// le texte de partage. Chaque journee porte donc la distance, le D+ et le D-
+/// REELS de son etape, sa duree estimee par le sentier, et le nombre de points
+/// que la trace fabriquee lui a effectivement attribues.
 final adventureDaysProvider = FutureProvider<List<AdventureDay>>((ref) async {
-  final stats = await ref.watch(adventureStatsProvider.future);
-  final points = stats.tracePoints;
+  // Le recapitulatif reste la source de rafraichissement (memes
+  // invalidations a la fin d'une session).
+  await ref.watch(adventureStatsProvider.future);
+  final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+  final matiere = ref.watch(matiereDeDemoProvider);
+  if (matiere != null) {
+    if (matiere.estVide) return const <AdventureDay>[];
+    final trace = await ref.watch(traceFabriqueeDeDemoProvider.future);
+    final parJour = <int, int>{};
+    for (final p in trace) {
+      final n = p.dayIndex;
+      if (n != null) parJour[n] = (parJour[n] ?? 0) + 1;
+    }
+    return [
+      for (final j in matiere.journees)
+        AdventureDay(
+          dayIndex: j.numero,
+          date: j.jour,
+          stats: TrackSegmentStats(
+            distanceKm: j.etape.distance,
+            elevationGainM: j.etape.elevationGain,
+            elevationLossM: j.etape.elevationLoss,
+            duration: j.duree,
+            pointCount: parJour[j.numero] ?? 0,
+          ),
+          stageIds: <String>[j.etape.id],
+        ),
+    ];
+  }
+  final traceFuture = ref.watch(statsTraceProvider.future);
+  final points = await ref
+      .watch(databaseProvider)
+      .sessionTrackPointsDao
+      .getByTrailId(trailId, read: TrackPointsRead.gpsOnly);
   if (points.isEmpty) return const <AdventureDay>[];
+  final trace = await traceFuture;
 
   DateTime dayOf(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
 
@@ -278,12 +370,14 @@ final adventureDaysProvider = FutureProvider<List<AdventureDay>>((ref) async {
         stageIds.add(id);
       }
     }
-    days.add(AdventureDay(
-      dayIndex: entry.key is int ? entry.key as int : null,
-      date: dayOf(dayPoints.first.recordedAt),
-      stats: computeTrackStats(dayPoints),
-      stageIds: stageIds,
-    ));
+    days.add(
+      AdventureDay(
+        dayIndex: entry.key is int ? entry.key as int : null,
+        date: dayOf(dayPoints.first.recordedAt),
+        stats: computeTrackStatsOnTrace(readings: dayPoints, trace: trace),
+        stageIds: stageIds,
+      ),
+    );
   }
 
   days.sort((a, b) => a.date.compareTo(b.date));

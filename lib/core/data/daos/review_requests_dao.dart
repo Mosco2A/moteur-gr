@@ -1,3 +1,7 @@
+/// Memoire des demandes d'avis au store : une seule par sentier, pour ne jamais
+/// la reposer deux fois au meme marcheur.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';

@@ -6,6 +6,16 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<!-- Les cinq langues de l application (slang) et de la fiche. Sans cette
+	     liste, iOS et la page App Store ne connaissent que l anglais. -->
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>fr</string>
+		<string>en</string>
+		<string>de</string>
+		<string>it</string>
+		<string>es</string>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>StepWays</string>
 	<key>CFBundleExecutable</key>
@@ -24,22 +34,127 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<!-- DECLARATION DE CHIFFREMENT (lot fiche magasin et preparation Apple).
+	     Sans cette cle, App Store Connect pose la question du chiffrement a
+	     CHAQUE envoi et retient le build tant qu on n y a pas repondu.
+	     NO = l application n emploie qu un chiffrement EXEMPTE :
+	       - HTTPS/TLS (systeme, Firebase, gRPC) pour ses echanges reseau ;
+	       - SHA-256 (paquet crypto) : une empreinte, pas un chiffrement ;
+	       - AES-GCM-256 et PBKDF2 (paquet cryptography, coffre de
+	         sauvegarde) : chemin d appel mort aujourd hui ; et meme vivant, la
+	         fonction premiere de StepWays est la randonnee, pas la securite de
+	         l information (EAR, categorie 5 partie 2, Note 4).
+	     Raisonnement complet : docs/store/fiche-app-store-connect.md.
+	     A REVOIR le jour ou la sauvegarde chiffree s allume, ou si
+	     l application gagne une fonction dont le chiffrement est le but. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<!-- P1-2 audit #327 : textes d usage des permissions (FR).
-	     Sans ces cles, iOS tue l app au premier acces GPS/photos. -->
+	     Sans ces cles, iOS tue l app au premier acces GPS/photos.
+	     CINQ LANGUES (lot fiche magasin) : ces textes-ci sont le francais de
+	     reference ; les traductions sont dans Runner/<langue>.lproj/
+	     InfoPlist.strings. Toute phrase changee ici se change dans les cinq. -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>StepWays utilise votre position pour vous situer sur le sentier, suivre votre progression d&#8217;étape en étape et enregistrer votre randonnée.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>L&#8217;accès à la position en arrière-plan permet de poursuivre l&#8217;enregistrement de votre randonnée écran éteint et de partager votre position en temps réel avec vos proches lorsque vous l&#8217;activez.</string>
+	<string>L&#8217;accès à la position en arrière-plan permet de poursuivre l&#8217;enregistrement de votre randonnée écran éteint, téléphone dans le sac. Votre position reste sur votre téléphone.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>L&#8217;appareil photo permet d&#8217;ajouter des photos à votre carnet de randonnée. Les photos restent sur votre téléphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>L&#8217;accès à vos photos permet d&#8217;illustrer votre carnet de randonnée. Les photos restent sur votre téléphone.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>StepWays utilise le Bluetooth pour se connecter a votre ceinture cardiaque et afficher votre frequence cardiaque pendant la randonnee. Cette donnee reste sur votre telephone.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>StepWays compte vos pas pendant la randonnée, pour mesurer votre longueur de pas et la consommation de la batterie. Le compte reste sur votre téléphone.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>StepWays lit (lecture seule) vos pas, frequence cardiaque, distance et calories depuis l app Sante pour afficher vos statistiques de randonnee. Ces donnees restent sur votre telephone.</string>
+	<!-- TACHE 740 — LA CLE D ECRITURE SANTE, EXIGEE SANS QUE RIEN NE S ECRIVE.
+	     LE REJET, MESURE : Apple a refuse la livraison 0.1.7 build 9 (App Apple
+	     ID 6817011266) avec ITMS-90683 « Missing purpose string in Info.plist » —
+	     le Info.plist de Runner.app doit porter NSHealthUpdateUsageDescription.
+	     LA CAUSE, MESUREE AUSSI : `health` 13.3.1 appelle
+	     `healthStore.requestAuthorization(toShare: typesToWrite, read: typesToRead)`
+	     dans ios/Classes/HealthDataOperations.swift ligne 180, SANS condition de
+	     compilation. La reference a l API d ECRITURE de HealthKit est donc dans
+	     le binaire, et le controle d Apple la lit — que l application s en serve
+	     ou non.
+	     L APPLICATION, ELLE, N ECRIT RIEN. lib/core/services/
+	     health_reader_service.dart est le SEUL appelant de `health` et ne
+	     declare que `readTypes` : pas, frequence cardiaque, distance, calories.
+	     Aucun appel d ecriture nulle part dans lib/.
+	     AUCUN ENTITLEMENT HEALTHKIT N EST AJOUTE, et il n en faut pas : lire et
+	     ecrire passent tous deux par la meme autorisation d usage, pas par un
+	     droit signe. ios/Runner/Runner.entitlements reste donc sans HealthKit.
+	     LA PHRASE DIT CELA ET RIEN DE PLUS : elle ne promet aucune fonction qui
+	     n existe pas. Le jour ou l application ecrira vraiment dans Sante, c est
+	     cette phrase qu il faudra reecrire AVANT le code. -->
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>StepWays ne modifie rien dans l&#8217;app Santé. Cette mention est exigée parce que la bibliothèque qui lit vos pas déclare aussi les fonctions d&#8217;écriture de Santé.</string>
+	<!-- TACHE 740 — LES DEUX CLES QUE LE BINAIRE RECLAME ALORS QUE
+	     L APPLICATION N APPELLE JAMAIS L API. Apple ne les a PAS reprochees au
+	     build 9 : elles sont posees apres l audit greffon par greffon du meme
+	     lot, parce que la reference a l API EST dans le binaire et que c est
+	     cela, et non l usage, que le controle ITMS-90683 regarde. Les poser
+	     coute une chaine de caracteres ; ne pas les poser coute une livraison.
+
+	     NSAppleMusicUsageDescription — `file_picker` 8.3.7 importe
+	     MediaPlayer/MediaPlayer.h dans son EN-TETE PUBLIC
+	     (ios/file_picker/Sources/file_picker/include/file_picker/
+	     FilePickerPlugin.h ligne 3) et instancie un MPMediaPickerController
+	     (FilePickerPlugin.m ligne 369), sans condition de compilation. Le seul
+	     appel du depot est `FileType.custom` pour une trace .gpx
+	     (lib/features/after/presentation/gpx_import_screen.dart ligne 517) :
+	     le selecteur de morceaux n est JAMAIS ouvert.
+
+	     NSFaceIDUsageDescription — `flutter_secure_storage_darwin` 0.3.2 importe
+	     LocalAuthentication et construit un LAContext
+	     (FlutterSecureStorageDarwinPlugin.swift ligne 197). Ce chemin ne
+	     s execute que si l appelant demande `useSecureEnclave` ou un
+	     `accessControlFlags` biometrique : le depot ne passe NI l un NI l autre
+	     (aucune occurrence dans lib/). Face ID n est donc jamais demande.
+
+	     LES DEUX PHRASES DISENT EXACTEMENT CELA. Elles ne seront affichees que
+	     si l application se met un jour a appeler l API — et ce jour-la, c est
+	     la phrase qu il faut reecrire d abord. -->
+	<key>NSAppleMusicUsageDescription</key>
+	<string>StepWays n&#8217;accède pas à votre musique. Cette mention est exigée parce que le sélecteur de fichiers, utilisé pour importer une trace GPX, déclare aussi le choix de morceaux.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>StepWays ne demande ni Face ID ni Touch ID. Cette mention est exigée parce que le coffre qui garde vos secrets sait protéger une clé par la biométrie.</string>
+	<!-- ================= ADMOB / iOS (tache 595, B3) =================
+	     LE DEFAUT REPARE : ce fichier ne portait AUCUN identifiant publicitaire,
+	     alors que le SDK Google Mobile Ads EXIGE GADApplicationIdentifier et
+	     refuse de s initialiser sans lui. Android portait au moins l App ID de
+	     TEST ; iOS n avait RIEN — la publicite y etait structurellement
+	     impossible, et l app aurait plante au demarrage du SDK.
+
+	     LA VALEUR N EST PAS ECRITE ICI. Elle vient du reglage de build
+	     ADMOB_APP_ID_IOS (ios/Flutter/Debug.xcconfig et Release.xcconfig), qui
+	     retombe sur l App ID de TEST public de Google. Aucune cle de production
+	     n entre dans ce depot. -->
+	<key>GADApplicationIdentifier</key>
+	<string>$(ADMOB_APP_ID_IOS)</string>
+	<!-- ATT (App Tracking Transparency) : texte OBLIGATOIRE des lors que l app
+	     peut demander l autorisation de suivi. Sans lui la demande est
+	     impossible et la revue App Store rejette le binaire. Le texte dit ce qui
+	     se passe VRAIMENT : refuser ne supprime pas la publicite du niveau
+	     gratuit, cela la rend non ciblee. -->
+	<key>NSUserTrackingUsageDescription</key>
+	<string>StepWays vous demande cette autorisation pour vous proposer des publicites adaptees a vos centres d&#8217;interet. Si vous refusez, l&#8217;application gratuite continue d&#8217;afficher des publicites, mais elles ne sont pas ciblees.</string>
+	<!-- SKAdNetwork : reseaux autorises a mesurer une installation issue d une
+	     publicite, sans identifiant personnel. Liste MINIMALE ET ASSUMEE :
+	     Google (AdMob), la seule regie branchee. Elle s allongera le jour ou une
+	     autre regie sera reellement utilisee — pas avant : une liste copiee de
+	     partout declare des partenaires qui ne traitent aucune donnee pour nous.
+	     -->
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
@@ -84,5 +199,17 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- TACHE 632 — ECRAN DE DEMARRAGE. Ces deux cles sont ce que
+	     `flutter_native_splash` pose pour un splash `fullscreen: true` : la barre
+	     d'etat reste masquee pendant la fenetre de demarrage native, le temps que
+	     Flutter dessine sa premiere image. Elles sont ecrites A LA MAIN ici parce
+	     que le generateur, lui, reserialise TOUT le fichier (reindentation
+	     complete, entites HTML decodees) : un diff de 46 lignes pour deux cles,
+	     sur un fichier que d'autres chantiers touchent aussi. Si le generateur est
+	     relance, reprendre cette version-ci plutot que la sienne. -->
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

@@ -67,11 +67,20 @@ void main() {
     test('getByCategory filtre par categorie', () async {
       await dao.insertAll([
         makeItem(
-            trailId: 'sentier-bleu', itemId: 'backpack', category: 'equipment'),
+          trailId: 'sentier-bleu',
+          itemId: 'backpack',
+          category: 'equipment',
+        ),
         makeItem(
-            trailId: 'sentier-bleu', itemId: 'boots', category: 'clothing'),
+          trailId: 'sentier-bleu',
+          itemId: 'boots',
+          category: 'clothing',
+        ),
         makeItem(
-            trailId: 'sentier-bleu', itemId: 'headlamp', category: 'equipment'),
+          trailId: 'sentier-bleu',
+          itemId: 'headlamp',
+          category: 'equipment',
+        ),
       ]);
 
       final equipment = await dao.getByCategory('sentier-bleu', 'equipment');
@@ -115,12 +124,14 @@ void main() {
         makeItem(trailId: 'sentier-bleu', itemId: 'backpack'),
       ]);
 
-      await dao.upsertItem(const ChecklistItemsCompanion(
-        trailId: Value('sentier-bleu'),
-        itemId: Value('backpack'),
-        category: Value('equipment'),
-        isChecked: Value(true),
-      ));
+      await dao.upsertItem(
+        const ChecklistItemsCompanion(
+          trailId: Value('sentier-bleu'),
+          itemId: Value('backpack'),
+          category: Value('equipment'),
+          isChecked: Value(true),
+        ),
+      );
 
       final items = await dao.getByTrailId('sentier-bleu');
       expect(items.length, 1);

@@ -1,4 +1,8 @@
-import 'feasibility_formula.dart';
+/// Ce que le marcheur a DEJA fait, chiffre : maxima realises et rang de forme
+/// donnent le niveau, le niveau donne le plafond, puis le feu.
+library;
+
+import '../../../domain/feasibility_formula.dart';
 import 'past_hike.dart';
 import 'walk_test_norms.dart';
 import 'walk_test_result.dart';
@@ -94,15 +98,15 @@ class ObjectiveProfile {
       energyCount++;
     }
     final hasTest = walkTest != null;
-    final rank =
-        hasTest ? WalkTestLevel.rank(walkTest.level) : fallbackFitnessRank;
+    final rank = hasTest
+        ? WalkTestLevel.rank(walkTest.level)
+        : fallbackFitnessRank;
     return ObjectiveProfile(
       maxElevationGainPerDayDone: maxGain,
       maxDistancePerDayDone: maxDist,
       maxConsecutiveDaysDone: maxDays,
       maxDailyEnergyKmDone: maxEnergy,
-      habitualDailyEnergyKm:
-          energyCount > 0 ? energySum / energyCount : null,
+      habitualDailyEnergyKm: energyCount > 0 ? energySum / energyCount : null,
       fitnessLevelRank: rank,
       hasWalkTest: hasTest,
     );

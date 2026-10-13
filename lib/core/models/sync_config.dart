@@ -1,3 +1,7 @@
+/// Reglages de la montee vers le cloud : cadence des lots, declencheurs
+/// automatiques (arrivee au refuge, retour du reseau) et reprises.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'sync_config.freezed.dart';

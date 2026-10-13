@@ -1,14 +1,17 @@
+/// L'implantation en base de l'acces aux donnees d'un sentier, derriere
+/// l'interface abstraite du domaine.
+library;
+
 import '../../../core/config/trail_config.dart';
 import '../../../core/data/daos/stages_dao.dart';
 import '../../../core/data/daos/trail_accommodations_dao.dart';
-import '../../../core/data/daos/trail_gpx_points_dao.dart';
 import '../../../core/data/daos/trail_itineraries_dao.dart';
 import '../../../core/data/daos/trail_stages_dao.dart';
 import '../../../core/data/database.dart';
-import '../../../core/geo/geo_utils.dart';
-import '../../../core/geo/track_point.dart';
-import '../../../core/models/stage.dart';
-import '../../trek/domain/models/stage_accommodation.dart';
+import '../../../core/geo/trail_track.dart';
+import '../../../core/geo/trace_point.dart';
+import '../../../core/models/stage_row.dart';
+import '../../../domain/stage_accommodation.dart';
 import '../domain/trail_data_provider.dart';
 
 /// Implementation Drift de TrailDataProvider.
@@ -19,8 +22,8 @@ class DriftTrailDataProvider implements TrailDataProvider {
   DriftTrailDataProvider({
     required AppDatabase db,
     required TrailConfig trailConfig,
-  })  : _db = db,
-        _trailConfig = trailConfig;
+  }) : _db = db,
+       _trailConfig = trailConfig;
 
   final AppDatabase _db;
   final TrailConfig _trailConfig;
@@ -32,31 +35,17 @@ class DriftTrailDataProvider implements TrailDataProvider {
     return rows.map(StageModel.fromDb).toList();
   }
 
+  /// Points de la trace [trackId], via le CHEMIN UNIQUE de lecture de trace.
+  ///
+  /// Cette methode portait sa propre conversion « lignes de la base ->
+  /// [TrackPoint] », accumulation de la distance comprise : une SECONDE
+  /// definition du meme calcul que celui de la carte, et elle n avait aucun
+  /// appelant dans `lib/` — donc rien ne l aurait signalee si elle avait derive.
+  /// Elle delegue desormais a [LecteurDeTrace], comme `gpxTrackProvider`
+  /// (tache 606).
   @override
-  Future<List<TrackPoint>> getTrackPoints(String stageId) async {
-    final dao = TrailGpxPointsDao(_db);
-    final rows = await dao.getByTrackId(stageId);
-
-    final points = <TrackPoint>[];
-    var cumulativeDistance = 0.0;
-
-    for (final row in rows) {
-      if (points.isNotEmpty) {
-        final prev = points.last;
-        cumulativeDistance += GeoUtils.haversineDistance(
-          prev.lat, prev.lng, row.lat, row.lng,
-        );
-      }
-
-      points.add(TrackPoint(
-        lat: row.lat,
-        lng: row.lng,
-        altitude: row.elevation,
-        distanceFromStart: cumulativeDistance,
-      ));
-    }
-
-    return points;
+  Future<List<TrackPoint>> getTrackPoints(String trackId) {
+    return LecteurDeTrace(db: _db).pointsDeLaTrace([trackId]);
   }
 
   @override
@@ -74,8 +63,7 @@ class DriftTrailDataProvider implements TrailDataProvider {
     // 2. Etapes (optionnellement filtrees par numero)
     final stages = <TrailStage>[];
     for (final itinerary in itineraries) {
-      final itineraryStages =
-          await stagesDao.getByItineraryId(itinerary.id);
+      final itineraryStages = await stagesDao.getByItineraryId(itinerary.id);
       stages.addAll(
         stageNumber == null
             ? itineraryStages
@@ -87,7 +75,9 @@ class DriftTrailDataProvider implements TrailDataProvider {
     final result = <StageAccommodation>[];
     for (final stage in stages) {
       final rows = await accommodationsDao.getByStageId(stage.id);
-      result.addAll(rows.map((row) => StageAccommodation(
+      result.addAll(
+        rows.map(
+          (row) => StageAccommodation(
             id: row.id,
             stageId: row.stageId,
             stageNumber: stage.stageNumber,
@@ -104,7 +94,12 @@ class DriftTrailDataProvider implements TrailDataProvider {
             capacity: row.capacity,
             priceRange: row.priceRange,
             bookingUrl: row.bookingUrl,
-          )));
+            // L ADRESSE POSTALE (tache 641, bug 15) : elle vient de la base,
+            // comme tout le reste de la fiche.
+            address: row.address,
+          ),
+        ),
+      );
     }
     return result;
   }

@@ -1,14 +1,22 @@
+/// Les pages d'accueil du premier lancement, avec leurs hauteurs reservees pour
+/// que le bouton ne saute pas d'une page a l'autre.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_logo.dart';
 import '../../../i18n/translations.g.dart';
-import '../../settings/providers/settings_provider.dart';
+import '../../settings/settings_facade.dart' show settingsProvider;
 import '../providers/onboarding_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Page courante dans le PageView d'onboarding.
 final _onboardingPageProvider = StateProvider.autoDispose<int>((ref) => 0);
@@ -51,6 +59,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   /// Passe a la page suivante (utilise par le bouton « Suivant »).
   void _nextPage() => _goToPage(ref.read(_onboardingPageProvider) + 1);
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.onboarding);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +119,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   children: [
                     _WelcomePage(tr: tr, theme: theme, appName: appName),
                     _LanguagePage(tr: tr, theme: theme),
-                    _DownloadPage(tr: tr, theme: theme, onBrowse: _goToCatalog),
+                    // Q1 (tache 568) : le bouton du contenu fait desormais les
+                    // DEUX gestes, dans le bon ordre (`_finish`) — et non plus
+                    // la seule navigation, que la garde du routeur annulait.
+                    _DownloadPage(tr: tr, theme: theme, onBrowse: _finish),
                   ],
                 ),
               ),
@@ -168,6 +185,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             // Bouton d'action — pleine largeur, ancre en bas. La largeur fixe
             // (double.infinity via SizedBox) n'est PAS une distribution de flex
             // -> non concernee par le bug RenderFlex de l'emulateur.
+            //
+            // Q1 (tache 568) — LE DOUBLON A DISPARU SUR LA DERNIERE PAGE. Cette
+            // zone portait « Commencer », qui menait EXACTEMENT au meme endroit
+            // que le bouton « Parcourir le catalogue » du contenu, sur le meme
+            // ecran et au meme instant. Un ecran qui propose deux fois la meme
+            // action n'a pas choisi — et c'est ce doublon qui a produit le
+            // defaut de Chris : les deux commandes ne faisaient pas la meme
+            // chose (l'une posait le drapeau d'onboarding, l'autre non), donc
+            // l'une marchait et l'autre paraissait morte. On garde le geste
+            // EXPLICITE (celui du contenu, avec son icone explore) et cette zone
+            // conserve son seul role legitime : « Suivant », sur les deux
+            // premieres pages.
             Positioned(
               left: 0,
               right: 0,
@@ -183,10 +212,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           label: tr.onboarding.next,
                           onPressed: _nextPage,
                         )
-                      : AppButton(
-                          label: tr.onboarding.getStarted,
-                          onPressed: _finish,
-                        ),
+                      : const SizedBox.shrink(),
                 ),
               ),
             ),
@@ -197,12 +223,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   /// Termine l'onboarding (persiste le flag) puis bascule sur le catalogue.
+  ///
+  /// C'EST LE SEUL CHEMIN DE SORTIE DE CET ECRAN (tache 568, Q1). L'ORDRE EST LA
+  /// CORRECTION : `completeOnboarding` d'abord, la navigation ensuite. La garde
+  /// du routeur (`redirectForPath` : `if (!hasCompletedOnboarding) return
+  /// '/onboarding'`) est SYNCHRONE et lit la globale alignee par
+  /// `completeOnboarding` ; naviguer avant de la poser renvoyait AUSSITOT sur
+  /// l'onboarding, et le bouton paraissait mort. « Passer » et « Parcourir le
+  /// catalogue » passent tous deux par ici.
   Future<void> _finish() async {
     await completeOnboarding(ref);
     _goToCatalog();
   }
 
   /// Navigue vers le catalogue de sentiers (telechargement du premier sentier).
+  ///
+  /// PRIVE AU CHEMIN DE SORTIE : ne JAMAIS l'exposer directement a un bouton —
+  /// c'etait le defaut Q1 (navigation sans drapeau). Passer par [_finish].
   void _goToCatalog() {
     if (!mounted) return;
     context.go('/catalog');
@@ -228,19 +265,17 @@ class _WelcomePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primaryContainer.withAlpha(40),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.terrain,
-              size: 64,
-              color: theme.colorScheme.primary.withAlpha(180),
-            ),
-          ),
+          // LE LOGO, A LA PLACE DU PICTOGRAMME MATERIAL (tache 632).
+          //
+          // Cette page etait la seule surface d'identite de l'application, et
+          // elle montrait un `Icons.terrain` generique dans un rond teinte — la
+          // meme montagne que dans n'importe quelle autre application Material.
+          // C'est desormais le logo livre par Christophe. Le rond teinte part
+          // avec le pictogramme : le logo porte deja sa propre forme.
+          // 150 de large = 135 de haut : a peine plus que le rond de 120 qu'il
+          // remplace. Plus grand, la page deborde du budget de hauteur que le
+          // PageView laisse entre le bandeau haut et le bandeau bas.
+          const AppLogo.vertical(largeur: 150),
           const SizedBox(height: AppTheme.spacingXl),
           Text(
             tr.onboarding.welcomeTitle(appName: appName),
@@ -252,6 +287,20 @@ class _WelcomePage extends StatelessWidget {
             tr.onboarding.welcomeSubtitle,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: AppTheme.grisGranite,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppTheme.spacingBase),
+          // LA SIGNATURE DE MARQUE, ENFIN BRANCHEE (tache 632). Le texte
+          // `branding.tagline` (« Votre compagnon de randonnee ») existait dans
+          // les cinq langues depuis le debut et n'etait lu par AUCUN widget.
+          // Il trouve sa place ici, sous le logo : c'est le seul endroit de
+          // l'application qui parle d'elle-meme et non du sentier.
+          Text(
+            tr.branding.tagline,
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),
@@ -291,16 +340,17 @@ class _LanguagePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Selection courante = langue des reglages (source de verite persistee),
     // et non plus la seule locale en memoire de Slang.
-    final currentLanguage =
-        ref.watch(settingsProvider.select((s) => s.language));
+    final currentLanguage = ref.watch(
+      settingsProvider.select((s) => s.language),
+    );
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingXl),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: AppTheme.spacingXl),
-          Icon(
-            Icons.language,
+          StepIcon(
+            StepwaysIcons.langue,
             size: 64,
             color: theme.colorScheme.primary.withAlpha(180),
           ),
@@ -374,8 +424,8 @@ class _DownloadPage extends StatelessWidget {
               color: theme.colorScheme.primaryContainer.withAlpha(40),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.downloading_rounded,
+            child: StepIcon(
+              StepwaysIcons.download,
               size: 64,
               color: theme.colorScheme.primary.withAlpha(180),
             ),
@@ -400,16 +450,24 @@ class _DownloadPage extends StatelessWidget {
           // remplissait deja la Column) -> isFullWidth:true = iso-rendu.
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: Icons.explore,
+            icon: StepwaysIcons.trailCatalog,
             label: tr.onboarding.browseCatalog,
             onPressed: onBrowse,
           ),
-          const SizedBox(height: AppTheme.spacingLg),
           // Finitions V1 (point 4) : NUDGE code de reconnexion (#99784). On
           // invite l'utilisateur a noter TOT son code (affichable dans les
           // reglages) — c'est la cle de son coffre, le perdre = donnees perdues.
           // Nudge discret (pas de blocage) : le code s'affiche a la demande.
-          _RecoveryNudge(tr: tr, theme: theme),
+          //
+          // TACHE 596 (C2) : ce conseil n'a de sens QUE si le coffre est
+          // reellement alimente. Il ne l'est pas — rien n'y ecrit, aucun ecran
+          // ne permet de saisir un code. Pousser le randonneur a noter la cle
+          // d'un coffre vide des sa premiere minute dans l'appli, c'est le faux
+          // succes le plus difficile a rattraper ensuite.
+          if (ReconnectionVault.alimente) ...[
+            const SizedBox(height: AppTheme.spacingLg),
+            _RecoveryNudge(tr: tr, theme: theme),
+          ],
         ],
       ),
     );
@@ -438,8 +496,11 @@ class _RecoveryNudge extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.vpn_key_outlined,
-              size: 20, color: theme.colorScheme.primary),
+          StepIcon(
+            StepwaysIcons.cle,
+            size: 20,
+            color: theme.colorScheme.primary,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(

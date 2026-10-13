@@ -27,8 +27,7 @@ class ReportLocal extends Table {
   TextColumn get payload => text().nullable()();
 
   /// Etat de synchronisation ('pending', 'synced', 'failed').
-  TextColumn get syncState =>
-      text().withDefault(const Constant('pending'))();
+  TextColumn get syncState => text().withDefault(const Constant('pending'))();
 
   /// Identifiant Firestore distant une fois synchronise (nullable).
   TextColumn get remoteId => text().nullable()();

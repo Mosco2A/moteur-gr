@@ -17,14 +17,14 @@ cible (Mare a Mare) est integre de maniere **parametrique** (assets +
 > `scripts/scan_secrets.sh` et la gate QA).
 
 Nom du package Dart : `moteur_gr`. ApplicationId / namespace :
-`com.only1cent.moteur_gr`.
+`com.only1cent.stepways`.
 
 ## Stack technique
 
 Versions reelles (source : `pubspec.yaml` / `pubspec.lock`).
 
 - **Framework** — Flutter / Dart, SDK `>= 3.8.0 < 4.0.0`
-- **State management** — **Riverpod 2.6** (`flutter_riverpod` ^2.6.0),
+- **State management** — **Riverpod 3.3.2** (`flutter_riverpod` ^3.3.2),
   providers **manuels** (pas de generator)
 - **Navigation** — GoRouter ^13.0.0
 - **Cartes offline** — flutter_map ^8.2.0 + flutter_map_mbtiles ^1.0.4
@@ -33,13 +33,14 @@ Versions reelles (source : `pubspec.yaml` / `pubspec.lock`).
 - **Modeles immuables** — **Freezed** ^3.2.5 + json_serializable ^6.7.0
 - **i18n** — **Slang** ^4.15.0 (type-safe, 5 langues)
 - **Backend** — Firebase (Auth, Firestore, Storage, Analytics, Crashlytics),
-  Core ^3.8.0
+  `firebase_core` ^3.8.0
 - **Monorepo** — Melos ^6.3.2 + Pub Workspaces
 - **Tests** — flutter_test (SDK)
 
-> **Riverpod 2.6, pas v3.** Un upgrade Riverpod v3 est un lot futur dedie
-> (decision option A). La stack reelle de `main` est en 2.6 — voir
-> `docs/ADR/003-riverpod-over-bloc.md`.
+> **Riverpod 3.3.2.** La migration vers Riverpod 3 (INC-1) est faite : bump
+> de version, API legacy conservees (`StateProvider`/`StateNotifierProvider`
+> via `legacy.dart`), retry automatique neutralise au `ProviderScope` racine —
+> voir le commentaire de `pubspec.yaml` et `docs/ADR/003-riverpod-over-bloc.md`.
 
 > **Providers manuels.** Les providers sont declares a la main
 > (`final xProvider = Provider(...)` / `NotifierProvider` / `FutureProvider`).
@@ -101,6 +102,80 @@ bash scripts/scan_secrets.sh
 > `build_runner`. `slang_build_runner` est volontairement desactive dans
 > `build.yaml` (incompatibilite + risque de doublon). Voir l'en-tete de
 > `slang.yaml`.
+
+## Outillage
+
+### UN SEUL `pub get` A LA FOIS PAR MACHINE
+
+**La regle, et elle n'est pas negociable : sur une machine qui porte plusieurs
+arbres de travail du depot, un seul `pub get` tourne a la fois.** Le cache pub
+est **partage** par tous les arbres (`%LOCALAPPDATA%\Pub\Cache` sous Windows,
+`~/.pub-cache` ailleurs) : deux resolutions concurrentes ecrivent dans les memes
+dossiers.
+
+**Ce que ca coute quand on l'oublie — mesure du 05/10/2026 (memoires #101275,
+#101276).** Deux `flutter pub get` ont tourne en parallele dans deux arbres a
+13:24:55. Resultat : **29 dossiers de paquets existaient mais etaient vides** —
+`cloud_firestore`, `share_plus`, `firebase_core`, `connectivity_plus`,
+`battery_plus`, `device_info_plus`, `package_info_plus`, `printing`,
+`sqlite3_flutter_libs` et vingt autres, tous horodates a la meme seconde.
+
+**Et voici le piege, celui qui coute une demi-journee** : `pub get` decide qu'un
+paquet est deja installe **en regardant si son dossier existe**. Un dossier vide
+passe donc pour un paquet installe, et ne se retelecharge **jamais**. La
+resolution reste cassee **en silence, pour tous les arbres de la machine**.
+Facture constatee : **219 fausses erreurs** de `flutter analyze` (« Target of URI
+doesn't exist: package:cloud_firestore/cloud_firestore.dart », « Undefined name
+Share / Timestamp / ConnectivityResult ») sur un depot parfaitement sain, et deux
+agents partis chercher une regression qui n'existait pas.
+
+**Comment tenir la regle.** `tool/pub_cache_sain.py` pose un verrou de fichier
+**dans le cache qu'il protege** : deux arbres qui partagent le cache partagent le
+verrou par construction, et un arbre qui a son propre `PUB_CACHE` n'attend
+personne. Les appels concurrents **attendent leur tour**, ils n'echouent pas.
+
+```bash
+# A la place de `flutter pub get` quand la machine peut etre occupee
+python tool/pub_cache_sain.py --pub-get
+
+# Toute autre commande qui touche au cache, serialisee de la meme facon
+python tool/pub_cache_sain.py --sous-verrou dart pub get
+
+# Mesurer sans rien toucher / reparer un cache deja abime
+python tool/pub_cache_sain.py --mesurer
+python tool/pub_cache_sain.py --purger [--simuler]
+```
+
+**La purge est le filet, le verrou est la regle.** Un dossier de `hosted/<hote>/`
+n'est efface que si **deux conditions** sont reunies : il **porte la forme
+`<paquet>-<version>`** *et* il **n'a pas de `pubspec.yaml` a sa racine**. Rien
+d'autre n'est touche : ni un paquet complet, ni un fichier, ni le cache `git/`,
+**ni les dossiers de `pub` lui-meme**. Cette condition de forme n'est pas
+decorative : `hosted/pub.dev/.cache`, le cache de metadonnees de `pub`, n'a pas de
+`pubspec.yaml` non plus, et la premiere version de l'outil l'a efface pour de bon
+(697 fichiers, 22 315 916 octets) faute de l'exiger. Chaque suppression est
+journalisee avec ce que le dossier contenait.
+
+La purge repare donc un cache abime par un appelant qui n'est **pas** passe par le
+verrou — a commencer par `flutter test` et `flutter build`, qui lancent un
+`pub get` implicite dont personne ne controle le moment.
+
+**Et la purge se fait elle-meme sous le verrou.** Purger pendant qu'un `pub get`
+concurrent telecharge, c'est effacer sous ses pieds le paquet qu'il est en train
+de remplir : le defaut qu'on repare, refait a l'envers. `--sous-verrou` **sans
+commande** assainit sous le verrou et ne lance rien — c'est la forme a utiliser
+quand on veut un cache sain sans payer un `pub get` de plus :
+
+```bash
+python tool/pub_cache_sain.py --sous-verrou
+```
+
+Le pilote de la recette persona (`tool/run_persona.ps1`) appelle exactement cela
+**a son reveil**, avant le pre-build qui lance Gradle (donc `pub get`) ;
+`-SansControleCachePub` le coupe, en le disant. La garde
+`test/outillage/cache_pub_sain_695_test.dart` eprouve la purge sur un faux cache,
+verifie que le verrou n'est pas decoratif, et **refuse une purge nue depuis le
+pilote**.
 
 ## Structure des dossiers
 

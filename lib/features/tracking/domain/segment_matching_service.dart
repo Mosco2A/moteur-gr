@@ -1,3 +1,7 @@
+/// Decide, cote telephone, si le marcheur a reellement parcouru un segment :
+/// c'est cette detection qui autorise un effort.
+library;
+
 import 'package:drift/drift.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -50,7 +54,7 @@ class SegmentDetection {
 /// ZERO catch silencieux — toute erreur de persistance est loggee + relancee.
 class SegmentMatchingService {
   SegmentMatchingService({required AppDatabase database})
-      : _dao = SegmentsDao(database);
+    : _dao = SegmentsDao(database);
 
   final SegmentsDao _dao;
 
@@ -176,8 +180,11 @@ class SegmentMatchingService {
         ),
       );
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'SegmentMatchingService.detectAndStore');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'SegmentMatchingService.detectAndStore',
+      );
       rethrow;
     }
   }

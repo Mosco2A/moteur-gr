@@ -1,8 +1,14 @@
+/// L'etat du programme : genere localement, et les seances faites gardees en
+/// local uniquement.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../notifications/providers/notification_provider.dart';
+import '../../../core/services/session_demo.dart';
+import '../../notifications/notifications_facade.dart'
+    show notificationServiceProvider;
 import '../domain/programme_generator.dart';
 import '../models/programme_entrainement.dart';
 
@@ -15,10 +21,7 @@ const _prefsDoneKey = 'training_done_offsets';
 /// terminées est persisté UNIQUEMENT en local (SharedPreferences). AUCUNE
 /// donnée de santé/perso n'est envoyée à un serveur (minimisation RGPD).
 class TrainingState {
-  const TrainingState({
-    required this.programme,
-    this.doneOffsets = const {},
-  });
+  const TrainingState({required this.programme, this.doneOffsets = const {}});
 
   /// Programme généré (séances ordonnées par jourOffset).
   final ProgrammeEntrainement programme;
@@ -55,8 +58,9 @@ class TrainingParams {
 }
 
 /// Paramètres courants du programme (modifiable par l'UI).
-final trainingParamsProvider =
-    StateProvider<TrainingParams>((ref) => const TrainingParams());
+final trainingParamsProvider = StateProvider<TrainingParams>(
+  (ref) => const TrainingParams(),
+);
 
 /// Notifier du programme d'entraînement (F6E-02), persistance locale.
 class TrainingNotifier extends Notifier<TrainingState> {
@@ -90,6 +94,11 @@ class TrainingNotifier extends Notifier<TrainingState> {
       updated.remove(jourOffset);
     }
     state = state.copyWith(doneOffsets: updated);
+    // EN DEMO, LA COCHE VIT EN MEMOIRE (tache 760). `/training` est atteignable
+    // en demonstration et n'etait pas garde : les seances cochees restaient
+    // cochees apres la sortie. L'etat est pose juste au-dessus, donc l'ecran se
+    // comporte comme en reel et tout repart a zero a la sortie.
+    if (ref.read(enDemoProvider)) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
       _prefsDoneKey,
@@ -114,8 +123,11 @@ class TrainingNotifier extends Notifier<TrainingState> {
     for (var i = 0; i < seances.length; i++) {
       final seance = seances[i];
       if (state.isDone(seance.jourOffset)) continue;
-      final day = DateTime(startDate.year, startDate.month, startDate.day)
-          .add(Duration(days: seance.jourOffset));
+      final day = DateTime(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+      ).add(Duration(days: seance.jourOffset));
       final when = DateTime(day.year, day.month, day.day, hour);
       if (when.isBefore(DateTime.now())) continue;
       await service.scheduleTrainingReminder(
@@ -131,5 +143,6 @@ class TrainingNotifier extends Notifier<TrainingState> {
 }
 
 /// Provider du programme d'entraînement (F6E-02).
-final trainingProvider =
-    NotifierProvider<TrainingNotifier, TrainingState>(TrainingNotifier.new);
+final trainingProvider = NotifierProvider<TrainingNotifier, TrainingState>(
+  TrainingNotifier.new,
+);

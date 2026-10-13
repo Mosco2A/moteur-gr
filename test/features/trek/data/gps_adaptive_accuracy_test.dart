@@ -20,133 +20,93 @@ Position _pos({double speed = 0, double lat = 42, double lng = 9}) {
   );
 }
 
-/// Tests E5.2b (maj F6A-03) — precision GPS adaptative 3 paliers + filtre 10 m.
+/// Tests E5.2b (maj F6A-03, puis lot 671-00) — ce qui reste de la precision
+/// adaptative : la vitesse ne pilote plus le flux.
+///
+/// LOT 671-01 — LA DETTE DU LOT 671-00 EST PAYEE. Les regles du regime
+/// adaptatif (`classifyMovement`, `accuracyForMode`, `intervalForMode`,
+/// `settingsForMode`) n'avaient plus aucun appelant depuis le robinet unique :
+/// elles sont retirees avec leurs huit cas d'ici et leurs quinze cas de
+/// `gps_service_test.dart`. Les cadences vivent dans `GpsCadence`.
 void main() {
-  group('classifyMovement — hysteresis', () {
-    test('repos : vitesse nulle reste repos', () {
-      expect(GpsService.classifyMovement(0, GpsAccuracyMode.resting),
-          GpsAccuracyMode.resting);
-    });
+  // LOT 671-00 — ROBINET UNIQUE GPS. Jusqu'au lot 671-00, ce groupe
+  // verrouillait la RE-SOUSCRIPTION adaptative de getPositionStream (low au
+  // repos, high en mouvement). Ce regime ne pilote plus le flux : chaque appel
+  // rend le flux unique du PositionController, profil carte (high, 10 m). Les
+  // deux cas verrouillent desormais ce contrat.
+  group('getPositionStream — robinet unique, profil carte (lot 671-00)', () {
+    test(
+      'precision haute constante : la vitesse ne re-souscrit plus la source',
+      () async {
+        final accuracies = <LocationAccuracy>[];
+        final controllers = <StreamController<Position>>[];
 
-    test('repos -> mouvement au-dela du seuil haut', () {
-      expect(GpsService.classifyMovement(1.5, GpsAccuracyMode.resting),
-          GpsAccuracyMode.moving);
-    });
+        final service = GpsService(
+          getPositionStream: ({required LocationSettings locationSettings}) {
+            accuracies.add(locationSettings.accuracy);
+            final c = StreamController<Position>();
+            controllers.add(c);
+            return c.stream;
+          },
+        );
 
-    test('repos : vitesse intermediaire -> walking (palier F6A-03)', () {
-      // 0.7 m/s : entre 0.4 et 1.0 -> palier intermediaire walking (avant
-      // F6A-03 cette bande restait au repos ; le palier balanced est ajoute).
-      expect(GpsService.classifyMovement(0.7, GpsAccuracyMode.resting),
-          GpsAccuracyMode.walking);
-    });
+        final received = <Position>[];
+        final sub = service.getPositionStream().listen(received.add);
 
-    test('mouvement -> repos en deca du seuil bas', () {
-      expect(GpsService.classifyMovement(0.2, GpsAccuracyMode.moving),
-          GpsAccuracyMode.resting);
-    });
+        // onListen -> une souscription, profil carte -> high.
+        await Future<void>.delayed(Duration.zero);
+        expect(accuracies, [LocationAccuracy.high]);
 
-    test('mouvement : vitesse intermediaire -> walking (hysteresis F6A-03)', () {
-      // Depuis moving, a 0.7 m/s on redescend vers le palier walking (et non
-      // jusqu au repos) : descente progressive via le palier intermediaire.
-      expect(GpsService.classifyMovement(0.7, GpsAccuracyMode.moving),
-          GpsAccuracyMode.walking);
-    });
+        // Mouvement puis repos : plus aucune re-souscription.
+        controllers.last.add(_pos(speed: 5.0));
+        controllers.last.add(_pos(speed: 0.0));
+        await Future<void>.delayed(Duration.zero);
+        expect(accuracies, [LocationAccuracy.high]);
 
-    test('vitesse non finie traitee comme repos', () {
-      expect(GpsService.classifyMovement(double.nan, GpsAccuracyMode.moving),
-          GpsAccuracyMode.resting);
-    });
-  });
+        // Les positions ont bien ete transmises au consommateur.
+        expect(received.length, 2);
 
-  group('mapping precision', () {
-    test('mouvement -> high, repos -> low (extremes preserves F6A-03)', () {
-      expect(GpsService.accuracyForMode(GpsAccuracyMode.moving),
-          LocationAccuracy.high);
-      expect(GpsService.accuracyForMode(GpsAccuracyMode.resting),
-          LocationAccuracy.low);
-    });
+        await sub.cancel();
+        for (final c in controllers) {
+          await c.close();
+        }
+      },
+    );
 
-    test('settingsForMode conserve le distanceFilter 10 m', () {
-      expect(GpsService.settingsForMode(GpsAccuracyMode.moving).distanceFilter,
-          10);
-      expect(GpsService.settingsForMode(GpsAccuracyMode.resting).distanceFilter,
-          10);
-      expect(GpsService.distanceFilterMeters, 10);
-    });
-  });
+    test(
+      'deux appels a getPositionStream partagent une seule source',
+      () async {
+        final accuracies = <LocationAccuracy>[];
+        final controllers = <StreamController<Position>>[];
 
-  group('getPositionStream — switch precision mouvement/repos detecte', () {
-    test('demarre basse precision, haute en mouvement, basse au repos',
-        () async {
-      final accuracies = <LocationAccuracy>[];
-      final controllers = <StreamController<Position>>[];
+        final service = GpsService(
+          getPositionStream: ({required LocationSettings locationSettings}) {
+            accuracies.add(locationSettings.accuracy);
+            final c = StreamController<Position>();
+            controllers.add(c);
+            return c.stream;
+          },
+        );
 
-      final service = GpsService(
-        getPositionStream: ({required LocationSettings locationSettings}) {
-          accuracies.add(locationSettings.accuracy);
-          final c = StreamController<Position>();
-          controllers.add(c);
-          return c.stream;
-        },
-      );
+        final sub1 = service.getPositionStream().listen((_) {});
+        final sub2 = service.getPositionStream().listen((_) {});
+        await Future<void>.delayed(Duration.zero);
 
-      final received = <Position>[];
-      final sub = service.getPositionStream().listen(received.add);
+        controllers.last
+          ..add(_pos(speed: 0.0))
+          ..add(_pos(speed: 0.1))
+          ..add(_pos(speed: 3.0));
+        await Future<void>.delayed(Duration.zero);
 
-      // onListen -> 1ere souscription, regime repos par defaut -> low.
-      await Future<void>.delayed(Duration.zero);
-      expect(accuracies, [LocationAccuracy.low]);
+        expect(accuracies, [LocationAccuracy.high]);
+        expect(controllers.length, 1);
 
-      // Mouvement detecte -> re-souscription en haute precision.
-      controllers.last.add(_pos(speed: 5.0));
-      await Future<void>.delayed(Duration.zero);
-      expect(accuracies, [LocationAccuracy.low, LocationAccuracy.high]);
-
-      // Retour au repos -> re-souscription en basse precision.
-      controllers.last.add(_pos(speed: 0.0));
-      await Future<void>.delayed(Duration.zero);
-      expect(accuracies,
-          [LocationAccuracy.low, LocationAccuracy.high, LocationAccuracy.low]);
-
-      // Les positions ont bien ete transmises au consommateur.
-      expect(received.length, 2);
-
-      await sub.cancel();
-      for (final c in controllers) {
-        await c.close();
-      }
-    });
-
-    test('aucune re-souscription tant que le regime ne change pas', () async {
-      final accuracies = <LocationAccuracy>[];
-      final controllers = <StreamController<Position>>[];
-
-      final service = GpsService(
-        getPositionStream: ({required LocationSettings locationSettings}) {
-          accuracies.add(locationSettings.accuracy);
-          final c = StreamController<Position>();
-          controllers.add(c);
-          return c.stream;
-        },
-      );
-
-      final sub = service.getPositionStream().listen((_) {});
-      await Future<void>.delayed(Duration.zero);
-
-      // Trois positions sous le seuil haut -> reste au repos, pas de switch.
-      controllers.last
-        ..add(_pos(speed: 0.0))
-        ..add(_pos(speed: 0.1))
-        ..add(_pos(speed: 0.3));
-      await Future<void>.delayed(Duration.zero);
-
-      expect(accuracies, [LocationAccuracy.low]);
-      expect(controllers.length, 1);
-
-      await sub.cancel();
-      for (final c in controllers) {
-        await c.close();
-      }
-    });
+        await sub1.cancel();
+        await sub2.cancel();
+        for (final c in controllers) {
+          await c.close();
+        }
+      },
+    );
   });
 }

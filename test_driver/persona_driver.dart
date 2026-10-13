@@ -25,17 +25,19 @@ Future<void> main() async {
     // Ecrit chaque capture recue en PNG sur le disque de l'hote.
     onScreenshot:
         (String name, List<int> bytes, [Map<String, Object?>? args]) async {
-      try {
-        final safe = name.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_');
-        final file = File('$kCapturesDir\\$safe.png');
-        await file.writeAsBytes(bytes);
-        print('DRIVER capture ecrite : ${file.path} (${bytes.length} octets)');
-        return true;
-      } catch (e) {
-        print('DRIVER ECHEC ecriture capture $name : $e');
-        return false;
-      }
-    },
+          try {
+            final safe = name.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_');
+            final file = File('$kCapturesDir\\$safe.png');
+            await file.writeAsBytes(bytes);
+            print(
+              'DRIVER capture ecrite : ${file.path} (${bytes.length} octets)',
+            );
+            return true;
+          } catch (e) {
+            print('DRIVER ECHEC ecriture capture $name : $e');
+            return false;
+          }
+        },
     // A la fin, persiste le journal de chaque persona (reportData renvoye par le
     // test via kBinding.reportData). `responseDataCallback` remplace l'ecriture
     // JSON par defaut : on ecrit un .txt lisible par persona.

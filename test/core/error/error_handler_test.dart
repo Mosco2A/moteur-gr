@@ -7,7 +7,9 @@ void main() {
     group('classify', () {
       test('classifie les erreurs reseau correctement', () {
         expect(
-          ErrorHandler.classify(Exception('SocketException: connection refused')),
+          ErrorHandler.classify(
+            Exception('SocketException: connection refused'),
+          ),
           equals(ErrorCategory.network),
         );
         expect(

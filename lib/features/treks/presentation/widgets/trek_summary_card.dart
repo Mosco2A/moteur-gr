@@ -1,3 +1,7 @@
+/// Un trek POSSEDE sur l'accueil, calque sur la carte de catalogue et augmentee
+/// de son etat de cycle de vie.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
@@ -32,8 +36,8 @@ class TrekSummaryCard extends StatelessWidget {
   /// Vue synthetique du trek (config + etat derive + progression).
   final TrekSummary summary;
 
-  /// Geste de selection du trek (ecrit `selectedTrailIdProvider` + `go('/home')`
-  /// cote ecran — la carte ne connait pas la navigation).
+  /// Geste de selection du trek (ecrit `selectedTrailIdProvider` +
+  /// `go('/home')` cote ecran — la carte ne connait pas la navigation).
   final VoidCallback onTap;
 
   @override
@@ -71,8 +75,6 @@ class TrekSummaryCard extends StatelessWidget {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(width: AppTheme.spacingSm),
@@ -102,8 +104,8 @@ class TrekSummaryCard extends StatelessWidget {
             // Barre de progression : uniquement si le trek est engage (evite un
             // 0 % inutile sur un trek juste possede, ou un 100 % redondant avec
             // le badge « Terminé »).
-            if (fraction > 0 && summary.state != TrekLifecycleState.completed)
-              ...[
+            if (fraction > 0 &&
+                summary.state != TrekLifecycleState.completed) ...[
               const SizedBox(height: AppTheme.spacingSm),
               ClipRRect(
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),

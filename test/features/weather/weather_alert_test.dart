@@ -158,8 +158,9 @@ void main() {
       );
 
       final alerts = WeatherAlert.fromForecast(forecast);
-      final windAlert =
-          alerts.firstWhere((a) => a.kind == WeatherAlertKind.wind);
+      final windAlert = alerts.firstWhere(
+        (a) => a.kind == WeatherAlertKind.wind,
+      );
       expect(windAlert.severity, 'danger');
     });
 
@@ -181,8 +182,9 @@ void main() {
       );
 
       final alerts = WeatherAlert.fromForecast(forecast);
-      final windAlert =
-          alerts.firstWhere((a) => a.kind == WeatherAlertKind.wind);
+      final windAlert = alerts.firstWhere(
+        (a) => a.kind == WeatherAlertKind.wind,
+      );
       expect(windAlert.severity, 'warning');
     });
   });

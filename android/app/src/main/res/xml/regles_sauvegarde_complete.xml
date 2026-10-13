@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- REGLES DE SAUVEGARDE COMPLETE — ANDROID 11 ET EN DESSOUS (API 30 et moins).
+     Referencees par android:fullBackupContent dans AndroidManifest.xml.
+
+     POURQUOI DEUX FICHIERS. Android 12 a change de format : au-dessus c est
+     dataExtractionRules (regles_sauvegarde_donnees.xml), en dessous c est
+     fullBackupContent. Declarer le premier seulement laisserait les telephones
+     Android 11 et anterieurs tout sauvegarder — et le randonneur qui a le plus
+     vieux telephone est exactement celui a qui on aurait promis le contraire.
+
+     TACHE 617 — MEME RENVERSEMENT QUE DANS L AUTRE FICHIER, MEME SOURCE DE
+     VERITE : lib/core/services/sauvegarde_systeme.dart, champs « inclusions » et
+     « exclusions ». Ce fichier ne liste plus ce qui reste dehors, il liste CE QUI
+     PART, et la liste tient en une ligne.
+
+     REGLE GENERALE DE CHRISTOPHE, 28/09 14:31 : « on ne partage aucune donnee
+     confiee sauf si le client decoche volontairement ». Une seule inclusion, le
+     dossier des copies que le randonneur a explicitement acceptees, VIDE tant
+     qu il n a pas decoche. Source Android verifiee, mot pour mot : « If you
+     specify an <include> element, the system no longer includes any files by
+     default and backs up ONLY the files specified. » Donc la base
+     (progression, journal, trace, treks realises, solde), les photos du journal,
+     le profil randonneur en preferences (age, taille, poids, randonnees
+     passees), les paquets, les tuiles et la fiche medicale sont tous dehors, y
+     compris ceux qu on n aurait pas pense a lister.
+
+     L EXCLUSION DE medical/ RESTE, comme second verrou pour le jour ou une
+     inclusion trop large serait ajoutee : « <exclude> takes precedence »
+     (documentation Android). Deux invariantes Dart exigent que ce fichier dise la
+     MEME chose que le code, dans les deux sens. Deux listes qui divergent, c est
+     une porte qui se rouvre sur la moitie du parc. -->
+<!-- TACHE 619 — POURQUOI LE CONTROLE `FullBackupContent` EST TU ICI, NOMMEMENT,
+     ET POURQUOI CE N'EST PAS UN CONTOURNEMENT DE CONFORT.
+     Le controle Lint d'Android refuse une exclusion qui ne tombe pas sous une
+     inclusion : « medical/ is not in an included path ». Il a raison SUR LE FAIT
+     : `medical/` n'est pas sous `sauvegarde_systeme/`, donc cette exclusion ne
+     retire rien aujourd'hui. Elle est ecrite POUR DEMAIN. Le jour ou quelqu'un
+     elargira l'inclusion, la regle « <exclude> takes precedence » la rendra
+     agissante sans que personne ait a y repenser. C'est le second verrou de la
+     decision du 28/09 10:42 sur les donnees medicales, et DEUX INVARIANTES DART
+     EXIGENT sa presence (fiche_medicale_locale_612_test.dart).
+     La retirer pour satisfaire Lint casserait ces invariantes ET retirerait le
+     verrou. Or Lint faisait echouer la compilation release : mesure du 28/09,
+     « Lint found 3 errors », aucun paquet produit, donc rien d'installable. On
+     garde l'exclusion et on tait le controle — ici seulement, et par son nom. -->
+<full-backup-content xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="FullBackupContent">
+    <include domain="file" path="sauvegarde_systeme/" />
+    <exclude domain="file" path="medical/" />
+</full-backup-content>

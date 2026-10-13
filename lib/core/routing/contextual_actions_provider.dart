@@ -1,3 +1,7 @@
+/// Chaque ecran DECLARE ses actions au montage et les vide en partant ; la
+/// barre du bas ne fait que lire cette declaration.
+library;
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,8 +26,8 @@ import '../../shared/widgets/contextual_action_bar.dart';
 /// (hub-and-push : un écran plein écran à l'avant-plan).
 final contextualActionsProvider =
     NotifierProvider<ContextualActionsNotifier, List<ContextualAction>>(
-  ContextualActionsNotifier.new,
-);
+      ContextualActionsNotifier.new,
+    );
 
 /// Notifier de la liste d'actions courantes (set au montage / clear au démontage).
 class ContextualActionsNotifier extends Notifier<List<ContextualAction>> {

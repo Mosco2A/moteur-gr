@@ -1,3 +1,7 @@
+/// La liste FERMEE des motifs de signalement, dans un ordre stable puisqu'il
+/// sert de cle de selection.
+library;
+
 // D4C-03 — Providers de l'UI de moderation hebergeur DSA (design D4 CORDO
 // #86166). Pont entre le [ModerationService] (D4C-01) et les widgets de
 // signalement / expose des motifs / plaintes, SANS logique serveur dans l'UI
@@ -5,11 +9,12 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/firebase/firebase_service.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/complaint_service.dart';
 import '../../../core/services/firestore_complaint_sink.dart';
 import '../../../core/services/moderation_service.dart';
-import '../../auth/providers/auth_provider.dart';
+import '../../auth/auth_facade.dart' show authServiceProvider;
 
 /// Motifs de signalement proposes a l'utilisateur (art 16).
 ///
@@ -77,8 +82,9 @@ class ModerationReportController {
 }
 
 /// Provider du [ModerationReportController].
-final moderationReportControllerProvider =
-    Provider<ModerationReportController>(ModerationReportController.new);
+final moderationReportControllerProvider = Provider<ModerationReportController>(
+  ModerationReportController.new,
+);
 
 /// Provider du sink Firestore des plaintes (D4C-03).
 ///
@@ -88,6 +94,8 @@ final complaintSinkProvider = Provider<ComplaintSink>((ref) {
   final auth = ref.watch(authServiceProvider);
   return FirestoreComplaintSink(
     currentUidHash: () => auth.currentUser?.uid ?? '',
+    // 596 C4 : garde de disponibilite injectee (voir FirestoreComplaintSink).
+    firebaseService: ref.watch(firebaseServiceProvider),
   );
 });
 
@@ -112,7 +120,9 @@ class ModerationComplaintController {
     required String contentRef,
     required String expose,
   }) {
-    return _ref.read(complaintServiceProvider).fileComplaint(
+    return _ref
+        .read(complaintServiceProvider)
+        .fileComplaint(
           contentType: contentType,
           contentRef: contentRef,
           expose: expose,
@@ -122,6 +132,4 @@ class ModerationComplaintController {
 
 /// Provider du [ModerationComplaintController].
 final moderationComplaintControllerProvider =
-    Provider<ModerationComplaintController>(
-  ModerationComplaintController.new,
-);
+    Provider<ModerationComplaintController>(ModerationComplaintController.new);

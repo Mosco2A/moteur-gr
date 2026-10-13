@@ -15,7 +15,7 @@ _HebergementPeripherique _$HebergementPeripheriqueFromJson(
   latitude: (json['latitude'] as num).toDouble(),
   longitude: (json['longitude'] as num).toDouble(),
   distanceAllerRetourKm: (json['distanceAllerRetourKm'] as num).toDouble(),
-  deeplinkUrl: json['deeplinkUrl'] as String,
+  deeplinkUrl: json['deeplinkUrl'] as String?,
 );
 
 Map<String, dynamic> _$HebergementPeripheriqueToJson(

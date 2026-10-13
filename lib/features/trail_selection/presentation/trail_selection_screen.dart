@@ -1,13 +1,20 @@
+/// Basculer de sentier : la selection ecrit la source de verite, et toute la
+/// configuration active en decoule.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_selection.dart';
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de selection / bascule de sentier (F8D-02, Phase 8 P8-D, #84627).
 ///
@@ -23,6 +30,10 @@ class TrailSelectionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.trailSelection);
     final t = Translations.of(context);
     final trails = ref.watch(availableTrailsProvider);
     final selectedId = ref.watch(selectedTrailIdProvider);
@@ -54,9 +65,11 @@ class TrailSelectionScreen extends ConsumerWidget {
 
   /// Active le sentier [trailId] : ecrit la selection, le reste de l'app suit.
   void _selectTrail(WidgetRef ref, String trailId) {
-    final notifier = ref.read(selectedTrailIdProvider.notifier);
-    if (notifier.state == trailId) return; // deja actif, no-op
-    notifier.state = trailId;
+    if (ref.read(selectedTrailIdProvider) == trailId) return; // deja actif
+    // Cet ecran-ci ne navigue pas, il reste sur place : le defaut de build ne
+    // l'atteint donc pas. On passe quand meme par le geste commun pour qu'il
+    // n'existe qu'UNE facon de basculer de sentier dans le depot.
+    chooseTrail(ref, trailId);
   }
 }
 
@@ -159,31 +172,46 @@ class _TrailChoiceCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            // Action : activer ce sentier (desactivee si deja actif).
+            // Action : activer ce sentier.
             // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
             // #A5). isFullWidth:false : FilledButton n'est pas force pleine
             // largeur par le theme, il restait dimensionne au contenu et aligne
-            // a droite dans l'Align (iso-rendu). Icone et libelle basculent
-            // selon l'etat actif. key/Semantics(button+enabled+label) gardees.
-            Align(
-              alignment: Alignment.centerRight,
-              child: Semantics(
-                button: true,
-                enabled: !selected,
-                label: t.trailSelection.a11y.selectButton(
-                  nom: trail.displayName,
-                ),
-                child: AppButton(
-                  key: ValueKey('trail-select-${trail.id}'),
-                  isFullWidth: false,
-                  icon: selected ? Icons.check : Icons.swap_horiz,
-                  label: selected
-                      ? t.trailSelection.selected
-                      : t.trailSelection.select,
-                  onPressed: selected ? null : onSelect,
+            // a droite dans l'Align (iso-rendu). key/Semantics(button+label)
+            // gardees.
+            //
+            // LE SENTIER ACTIF N'A PLUS DE BOUTON DU TOUT (tache 638).
+            //
+            // GESTE INERTE PREEXISTANT, TROUVE PAR MESURE. La carte du sentier
+            // ACTIF portait un bouton « Sentier actif » DESACTIVE — qui repete la
+            // pastille « actif » posee quelques lignes plus haut, et qui laisse
+            // dans l'arbre une zone inerte. Le balayage « aucun geste mort »
+            // (tache 573) repere les gestes par leur POSITION dans l'arbre : des
+            // que le balayage change lui-meme de sentier actif — ce qui est tout
+            // l'objet de cet ecran — cette zone inerte se decale sous le doigt
+            // d'un geste cense etre vivant, et le geste est declare mort. La
+            // suppression du sentier gratuit du catalogue a rendu ce decalage
+            // visible ; il etait la avant.
+            //
+            // UN ETAT N'EST PAS UNE COMMANDE : l'etat « actif » est dit par la
+            // pastille ; le bouton ne sert qu'a CHANGER de sentier. Il n'existe
+            // donc que sur les cartes ou il y a quelque chose a changer.
+            if (!selected)
+              Align(
+                alignment: Alignment.centerRight,
+                child: Semantics(
+                  button: true,
+                  label: t.trailSelection.a11y.selectButton(
+                    nom: trail.displayName,
+                  ),
+                  child: AppButton(
+                    key: ValueKey('trail-select-${trail.id}'),
+                    isFullWidth: false,
+                    icon: StepwaysIcons.inverser,
+                    label: t.trailSelection.select,
+                    onPressed: onSelect,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

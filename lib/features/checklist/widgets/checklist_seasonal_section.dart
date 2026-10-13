@@ -1,11 +1,17 @@
+/// Suggestions ADDITIVES selon le sentier et la saison : la liste de base ne
+/// change pas, chaque suggestion s'ajoute d'un tap et compte au poids.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Section « Sac adaptatif » (StepWays LOT 5, sous-ensemble B).
 ///
@@ -52,8 +58,8 @@ class ChecklistSeasonalSection extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.wb_twilight,
+                const StepIcon(
+                  StepwaysIcons.nuit,
                   size: 20,
                   color: AppTheme.bleuRepos,
                 ),
@@ -119,8 +125,8 @@ class _SuggestionRow extends ConsumerWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.check_circle,
+                const StepIcon(
+                  StepwaysIcons.cochePleine,
                   size: 18,
                   color: AppTheme.vertFacile,
                 ),
@@ -134,7 +140,12 @@ class _SuggestionRow extends ConsumerWidget {
               ],
             )
           else
-            TextButton.icon(
+            AppButton(
+              variant: AppButtonVariant.text,
+              icon: StepwaysIcons.plus,
+              iconSize: 18,
+              label: t.checklist.seasonalAdd,
+              isFullWidth: false,
               onPressed: () => ref
                   .read(checklistProvider.notifier)
                   .addSuggestedItem(
@@ -142,8 +153,6 @@ class _SuggestionRow extends ConsumerWidget {
                     name: name,
                     weightGrams: item.weightGrams,
                   ),
-              icon: const Icon(Icons.add_circle_outline, size: 18),
-              label: Text(t.checklist.seasonalAdd),
             ),
         ],
       ),

@@ -1,8 +1,14 @@
+/// Une SEULE pile de navigation sur laquelle on pousse les ecrans : il n'y a
+/// plus d'onglets depuis la refonte hub-and-push.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../i18n/translations.g.dart';
+import '../analytics/screen_entry.dart';
+import 'navigateur_racine.dart';
 import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/checklist/presentation/checklist_screen.dart';
 import '../../features/consent/presentation/consent_settings_screen.dart';
@@ -22,6 +28,7 @@ import '../../features/planning/presentation/shop_screen.dart';
 import '../../features/planning/presentation/trail_planning_screen.dart';
 import '../../features/planning/presentation/trek_adjust_screen.dart';
 import '../../features/planning/presentation/transport_screen.dart';
+import '../../features/settings/presentation/mesure_batterie_screen.dart';
 import '../../features/settings/presentation/recovery_code_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
@@ -37,14 +44,16 @@ import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/goodies/presentation/goodies_catalog_screen.dart';
 import '../../features/guides/presentation/town_guide_detail_screen.dart';
 import '../../features/guides/presentation/town_guides_screen.dart';
-import '../../features/booking/presentation/booking_screen.dart';
 import '../../features/booking/presentation/hebergements_peripheriques_screen.dart';
 import '../../features/booking/presentation/nuitees_screen.dart';
 import '../../features/safety/presentation/emergency_screen.dart';
 import '../../features/safety/presentation/health_info_screen.dart';
 import '../../features/safety/presentation/signalement_screen.dart';
 import '../../features/training/presentation/training_screen.dart';
+import '../../features/monetization/presentation/subscription_screen.dart';
+import '../../features/monetization/presentation/wallet_recharge_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/map/presentation/offline_maps_screen.dart';
 import '../../features/trail_selection/presentation/trail_selection_screen.dart';
 import '../../features/treks/presentation/my_treks_screen.dart';
 import '../config/feature_flags.dart';
@@ -61,7 +70,12 @@ import '../../features/trek/presentation/stages/trek_stage_detail_screen.dart'
 /// Depuis le big-bang, il n'y a plus de branches d'onglet (StatefulShellRoute
 /// supprime) : une seule pile racine, sur laquelle on POUSSE les ecrans. Les
 /// cles de branche (`_shellHomeKey`, etc.) ont ete retirees avec le shell.
-final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+///
+/// TACHE 637 — ELLE N'EST PLUS PRIVEE, ET ELLE A DEMENAGE. Les gardes
+/// d'ouverture posees dans le `builder` de `MaterialApp.router` vivent AU-DESSUS
+/// de ce navigateur ; sans un moyen de le designer, leur `showDialog` plantait a
+/// tous les lancements. Voir [cleNavigateurRacine] et [contexteDeDialogue].
+final _rootNavigatorKey = cleNavigateurRacine;
 
 /// Configuration du routeur GoRouter.
 ///
@@ -90,6 +104,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 ///   /trail/:id/transport         - TRANSPORT (aller/retour, data-driven)
 ///   /trail/:id/shop              - RAVITAILLEMENT (commerces par etape, data-driven)
 ///   /trail/:id/checklist         - Checklist materiel
+///   /trail/:id/cartes            - Cartes hors ligne du circuit (tache 640)
 ///   /trail/:id/feasibility       - Verdict de faisabilite (tricolore)
 ///   /trail/:id/tips              - Fiches conseils
 ///   /trail/:id/journal           - Journal de trek
@@ -104,7 +119,6 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 ///   /follow/:code                - Suivi web temps reel (sans auth, E4.12a)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
 ///   /goodies                     - Boutique goodies (gardee par FeatureFlags)
-///   /booking                     - Reservation (stub, gardee par FeatureFlags)
 ///   /accommodations-nearby       - Hebergements peripheriques A/R (facilitateur)
 ///   /emergency                   - Contacts d'urgence
 ///   /health                      - Fiche infos sante LOCAL ONLY (E57, via Urgence)
@@ -112,9 +126,16 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 ///   /training                    - Programme d'entrainement pre-trek
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
 ///   /settings                    - Parametres
+///   /mesure-batterie             - Mesure batterie, cachee (appui long sur
+///                                  le numero de version des reglages)
 ///   /profile                     - Profil utilisateur
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
+  // LOT 645-09b : la cle `screen` d'un rapport de plantage doit nommer l'ecran
+  // VU. Quand on depile, cet observateur repose la miette de l'ecran qui
+  // redevient visible — y compris d'un ecran a etat, dont la miette vit dans
+  // `initState` et ne repart pas d'elle-meme. Voir `screen_entry.dart`.
+  observers: [ScreenEntryObserver()],
   // Cablage nav (#88246 + HUB E07/AM-1) : le guard renvoie vers /onboarding au
   // premier lancement, puis vers /catalog tant qu aucun sentier n est
   // telecharge (currentTrailGuard). Une fois un sentier actif, l entree du
@@ -179,8 +200,7 @@ final appRouter = GoRouter(
           name: 'stage-by-id',
           builder: (context, state) {
             final trailId = state.uri.queryParameters['trailId'];
-            final stageId =
-                int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
+            final stageId = int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
             return _TrailScopedScreen(
               explicitTrailId: trailId,
               builder: (id) => trek_detail.TrekStageDetailScreen(
@@ -238,7 +258,10 @@ final appRouter = GoRouter(
             final trailId = state.pathParameters['id'] ?? '';
             final stageNum =
                 int.tryParse(state.pathParameters['num'] ?? '') ?? 1;
-            return TrailStageDetailScreen(trailId: trailId, stageNumber: stageNum);
+            return TrailStageDetailScreen(
+              trailId: trailId,
+              stageNumber: stageNum,
+            );
           },
         ),
         GoRoute(
@@ -359,6 +382,31 @@ final appRouter = GoRouter(
           name: 'trail-checklist',
           builder: (context, state) => const ChecklistScreen(),
         ),
+        // CARTES HORS LIGNE — UN SEUL GESTE, TOUT LE CIRCUIT (tache 640, bug 10).
+        //
+        // CETTE ROUTE REMPLACE CELLE DU MAGASIN DE PACKS, ET CE N EST PAS UN
+        // RENOMMAGE. L ancienne ouvrait un magasin de quatre demi-circuits
+        // achetables (Nord / Sud / Complet / nom du sentier) qui ne telechargeait
+        // rien du tout : sa source de fichiers levait a chaque appel et son
+        // stockage ecrivait dans un dossier que la carte ne lit pas. C etait la
+        // seule porte que Christophe pouvait pousser, d ou « telecharger les
+        // cartes plante » (bug 9, DEM-260930-1016), et elle proposait des
+        // morceaux, d ou le bug 10 (DEM-260930-1017).
+        //
+        // La nouvelle route ouvre l unique telechargeur de cartes du depot
+        // ([MapDownloader], lot 622) : un bouton, le poids du circuit
+        // ENTIER, la progression, la reprise, l annulation. Sous-route de
+        // `/trail/:id` parce que les cartes sont PAR CIRCUIT — meme forme que
+        // checklist / tips / feasibility, atteinte par `context.push` depuis la
+        // carte « Cartes hors ligne » de la section Preparer du HUB.
+        GoRoute(
+          path: 'cartes',
+          name: 'trail-cartes',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return OfflineMapsScreen(trailId: trailId);
+          },
+        ),
         // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos nuits »
         // (clone GR20 `RefugeAssistantScreen`). Pour chaque nuit du programme :
         // choix du type de nuitee (refuge / gite / bivouac / autre) + etat
@@ -366,8 +414,11 @@ final appRouter = GoRouter(
         // Firebase avant Phase 4). Alimente par les donnees du sentier (module
         // booking) ; generique multi-sentiers, fallback si aucun hebergement.
         // La carte HUB « Nuitees » (section Preparer) ouvre cet ecran via
-        // `context.push` (retour propre). Le stub /booking reste derriere son
-        // FeatureFlag, non reference depuis le HUB (aligne sur GR20).
+        // `context.push` (retour propre). LE STUB /booking N'EXISTE PLUS : sa
+        // route et son ecran sont retires par le lot produit P1 (#101255) —
+        // aucune porte ne menait a lui, aucune donnee ne l'alimentait, et son
+        // drapeau n'a jamais ete ouvert. Reserver, aujourd'hui, se fait par les
+        // fiches etapes et par cet assistant.
         GoRoute(
           path: 'nuitees',
           name: 'trail-nuitees',
@@ -579,18 +630,6 @@ final appRouter = GoRouter(
       },
       builder: (context, state) => const GoodiesCatalogScreen(),
     ),
-    // E5.13 : Reservation (stub) -- garde par FeatureFlags
-    GoRoute(
-      path: '/booking',
-      name: 'booking',
-      redirect: (context, state) {
-        // Garde par feature flag -- redirige vers /trails si desactive
-        final trailId = state.uri.queryParameters['trailId'] ?? '';
-        if (!FeatureFlags.isBookingEnabled(trailId)) return '/trails';
-        return null;
-      },
-      builder: (context, state) => const BookingScreen(),
-    ),
     // F6D-02 : Hebergements peripheriques A/R (facilitateur deeplink, #84100)
     GoRoute(
       path: '/accommodations-nearby',
@@ -655,6 +694,14 @@ final appRouter = GoRouter(
     // du coffre chiffre : profil + fiche sante + solde wallet) pour que
     // l'utilisateur le NOTE. Atteint depuis les reglages (push -> retour propre).
     // Sans sentier requis (donnee de compte) -> ajoute aux excludedPaths du guard.
+    // LOT 671-01 : l'ecran CACHE du build de mesure batterie. Sa seule porte
+    // est un appui long sur le numero de version des reglages. Sans sentier
+    // requis (reglage de l'appareil) -> ajoute aux chemins exclus du garde.
+    GoRoute(
+      path: '/mesure-batterie',
+      name: 'mesure-batterie',
+      builder: (context, state) => const MesureBatterieScreen(),
+    ),
     GoRoute(
       path: '/recovery-code',
       name: 'recovery-code',
@@ -670,6 +717,24 @@ final appRouter = GoRouter(
       path: '/profile',
       name: 'profile',
       builder: (context, state) => const ProfileScreen(),
+    ),
+    // V1 ARGENT (tache 594, A3) — LES DEUX ECRANS DE PAIEMENT QUI MANQUAIENT.
+    //
+    // La grille des packs etait ecrite au centime dans le code et affichee
+    // nulle part ; l'abonnement n'avait aucun ecran et `subscribe()` n'avait
+    // aucun appelant. Donnees de COMPTE, pas de sentier : ces deux routes sont
+    // ajoutees aux chemins exclus du garde de sentier actif (voir
+    // [redirectForPath]) — on doit pouvoir recharger son compte-etapes sans
+    // avoir telecharge un sentier.
+    GoRoute(
+      path: '/wallet',
+      name: 'wallet',
+      builder: (context, state) => const WalletRechargeScreen(),
+    ),
+    GoRoute(
+      path: '/subscription',
+      name: 'subscription',
+      builder: (context, state) => const SubscriptionScreen(),
     ),
     // StepWays L8 (RELEASE V1) : la route de DEMO/pilote '/nav-pilote'
     // (demonstrateur visuel JETABLE de la refonte navigation, methode D2) a
@@ -821,6 +886,12 @@ String? redirectForPath(String path) {
     // Finitions V1 (point 4) : code de reconnexion = donnee de compte, sans
     // sentier requis (atteignable depuis les reglages, meme sans trek actif).
     '/recovery-code',
+    // Lot 671-01 : la mesure batterie se regle sans sentier actif.
+    '/mesure-batterie',
+    // V1 ARGENT (tache 594) : compte-etapes et abonnement sont des donnees de
+    // COMPTE. On recharge et on s'abonne sans sentier actif.
+    '/wallet',
+    '/subscription',
   ];
   if (excludedPaths.contains(path)) return null;
 

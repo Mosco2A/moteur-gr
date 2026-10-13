@@ -21,9 +21,19 @@ mixin _$HebergementPeripherique {
  HebergementType get type;/// Latitude de l'hébergement (hors-trace).
  double get latitude;/// Longitude de l'hébergement (hors-trace).
  double get longitude;/// Distance aller-retour estimée (km) depuis le point d'étape de référence.
- double get distanceAllerRetourKm;/// Lien profond (URL) vers le site/app du prestataire pour réserver.
-/// Le facilitateur ouvre ce lien : pas de réservation in-app (#84100).
- String get deeplinkUrl;
+ double get distanceAllerRetourKm;/// Lien profond (URL) vers le site/app du prestataire pour réserver, ou
+/// `null` quand on ne le connait pas.
+///
+/// NULLABLE DEPUIS LE LOT 645-08 (voie V2, arbitrage de Christophe du
+/// 02/10/2026), ET LE CHANGEMENT DE TYPE EST LE POINT. Tant que le champ
+/// etait `required String`, un hebergement sans lien connu ne pouvait
+/// s'ecrire que d'une seule facon : une chaine inventee. Les trois
+/// hebergements de demonstration portaient donc `https://example.org/...`,
+/// et l'ecran construisait un bouton « Voir le site » qui n'envoyait le
+/// randonneur nulle part. Le facilitateur ouvre ce lien quand il existe
+/// ([hasDeeplink]) ; sinon il n'y a PAS de bouton, pas de tiret, pas
+/// d'espace reserve. Aucune reservation in-app dans les deux cas (#84100).
+ String? get deeplinkUrl;
 /// Create a copy of HebergementPeripherique
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -56,7 +66,7 @@ abstract mixin class $HebergementPeripheriqueCopyWith<$Res>  {
   factory $HebergementPeripheriqueCopyWith(HebergementPeripherique value, $Res Function(HebergementPeripherique) _then) = _$HebergementPeripheriqueCopyWithImpl;
 @useResult
 $Res call({
- String id, String nom, HebergementType type, double latitude, double longitude, double distanceAllerRetourKm, String deeplinkUrl
+ String id, String nom, HebergementType type, double latitude, double longitude, double distanceAllerRetourKm, String? deeplinkUrl
 });
 
 
@@ -73,7 +83,7 @@ class _$HebergementPeripheriqueCopyWithImpl<$Res>
 
 /// Create a copy of HebergementPeripherique
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nom = null,Object? type = null,Object? latitude = null,Object? longitude = null,Object? distanceAllerRetourKm = null,Object? deeplinkUrl = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nom = null,Object? type = null,Object? latitude = null,Object? longitude = null,Object? distanceAllerRetourKm = null,Object? deeplinkUrl = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,nom: null == nom ? _self.nom : nom // ignore: cast_nullable_to_non_nullable
@@ -81,8 +91,8 @@ as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non
 as HebergementType,latitude: null == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double,longitude: null == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as double,distanceAllerRetourKm: null == distanceAllerRetourKm ? _self.distanceAllerRetourKm : distanceAllerRetourKm // ignore: cast_nullable_to_non_nullable
-as double,deeplinkUrl: null == deeplinkUrl ? _self.deeplinkUrl : deeplinkUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as double,deeplinkUrl: freezed == deeplinkUrl ? _self.deeplinkUrl : deeplinkUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -167,7 +177,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String nom,  HebergementType type,  double latitude,  double longitude,  double distanceAllerRetourKm,  String deeplinkUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String nom,  HebergementType type,  double latitude,  double longitude,  double distanceAllerRetourKm,  String? deeplinkUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HebergementPeripherique() when $default != null:
 return $default(_that.id,_that.nom,_that.type,_that.latitude,_that.longitude,_that.distanceAllerRetourKm,_that.deeplinkUrl);case _:
@@ -188,7 +198,7 @@ return $default(_that.id,_that.nom,_that.type,_that.latitude,_that.longitude,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String nom,  HebergementType type,  double latitude,  double longitude,  double distanceAllerRetourKm,  String deeplinkUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String nom,  HebergementType type,  double latitude,  double longitude,  double distanceAllerRetourKm,  String? deeplinkUrl)  $default,) {final _that = this;
 switch (_that) {
 case _HebergementPeripherique():
 return $default(_that.id,_that.nom,_that.type,_that.latitude,_that.longitude,_that.distanceAllerRetourKm,_that.deeplinkUrl);case _:
@@ -208,7 +218,7 @@ return $default(_that.id,_that.nom,_that.type,_that.latitude,_that.longitude,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String nom,  HebergementType type,  double latitude,  double longitude,  double distanceAllerRetourKm,  String deeplinkUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String nom,  HebergementType type,  double latitude,  double longitude,  double distanceAllerRetourKm,  String? deeplinkUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _HebergementPeripherique() when $default != null:
 return $default(_that.id,_that.nom,_that.type,_that.latitude,_that.longitude,_that.distanceAllerRetourKm,_that.deeplinkUrl);case _:
@@ -223,7 +233,7 @@ return $default(_that.id,_that.nom,_that.type,_that.latitude,_that.longitude,_th
 @JsonSerializable()
 
 class _HebergementPeripherique extends HebergementPeripherique {
-  const _HebergementPeripherique({required this.id, required this.nom, required this.type, required this.latitude, required this.longitude, required this.distanceAllerRetourKm, required this.deeplinkUrl}): super._();
+  const _HebergementPeripherique({required this.id, required this.nom, required this.type, required this.latitude, required this.longitude, required this.distanceAllerRetourKm, this.deeplinkUrl}): super._();
   factory _HebergementPeripherique.fromJson(Map<String, dynamic> json) => _$HebergementPeripheriqueFromJson(json);
 
 /// Identifiant unique de l'hébergement.
@@ -238,9 +248,19 @@ class _HebergementPeripherique extends HebergementPeripherique {
 @override final  double longitude;
 /// Distance aller-retour estimée (km) depuis le point d'étape de référence.
 @override final  double distanceAllerRetourKm;
-/// Lien profond (URL) vers le site/app du prestataire pour réserver.
-/// Le facilitateur ouvre ce lien : pas de réservation in-app (#84100).
-@override final  String deeplinkUrl;
+/// Lien profond (URL) vers le site/app du prestataire pour réserver, ou
+/// `null` quand on ne le connait pas.
+///
+/// NULLABLE DEPUIS LE LOT 645-08 (voie V2, arbitrage de Christophe du
+/// 02/10/2026), ET LE CHANGEMENT DE TYPE EST LE POINT. Tant que le champ
+/// etait `required String`, un hebergement sans lien connu ne pouvait
+/// s'ecrire que d'une seule facon : une chaine inventee. Les trois
+/// hebergements de demonstration portaient donc `https://example.org/...`,
+/// et l'ecran construisait un bouton « Voir le site » qui n'envoyait le
+/// randonneur nulle part. Le facilitateur ouvre ce lien quand il existe
+/// ([hasDeeplink]) ; sinon il n'y a PAS de bouton, pas de tiret, pas
+/// d'espace reserve. Aucune reservation in-app dans les deux cas (#84100).
+@override final  String? deeplinkUrl;
 
 /// Create a copy of HebergementPeripherique
 /// with the given fields replaced by the non-null parameter values.
@@ -275,7 +295,7 @@ abstract mixin class _$HebergementPeripheriqueCopyWith<$Res> implements $Heberge
   factory _$HebergementPeripheriqueCopyWith(_HebergementPeripherique value, $Res Function(_HebergementPeripherique) _then) = __$HebergementPeripheriqueCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String nom, HebergementType type, double latitude, double longitude, double distanceAllerRetourKm, String deeplinkUrl
+ String id, String nom, HebergementType type, double latitude, double longitude, double distanceAllerRetourKm, String? deeplinkUrl
 });
 
 
@@ -292,7 +312,7 @@ class __$HebergementPeripheriqueCopyWithImpl<$Res>
 
 /// Create a copy of HebergementPeripherique
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nom = null,Object? type = null,Object? latitude = null,Object? longitude = null,Object? distanceAllerRetourKm = null,Object? deeplinkUrl = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nom = null,Object? type = null,Object? latitude = null,Object? longitude = null,Object? distanceAllerRetourKm = null,Object? deeplinkUrl = freezed,}) {
   return _then(_HebergementPeripherique(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,nom: null == nom ? _self.nom : nom // ignore: cast_nullable_to_non_nullable
@@ -300,8 +320,8 @@ as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non
 as HebergementType,latitude: null == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double,longitude: null == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as double,distanceAllerRetourKm: null == distanceAllerRetourKm ? _self.distanceAllerRetourKm : distanceAllerRetourKm // ignore: cast_nullable_to_non_nullable
-as double,deeplinkUrl: null == deeplinkUrl ? _self.deeplinkUrl : deeplinkUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as double,deeplinkUrl: freezed == deeplinkUrl ? _self.deeplinkUrl : deeplinkUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

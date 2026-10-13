@@ -1,3 +1,7 @@
+/// Le mode de partage, serialise vers le serveur donc extensible, et les
+/// positions mises en attente quand le reseau manque.
+library;
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,11 +49,11 @@ class PendingGroupPosition {
   final String? stageId;
 
   Map<String, dynamic> toJson() => {
-        'lat': lat,
-        'lng': lng,
-        'timestamp': timestamp.toIso8601String(),
-        if (stageId != null) 'stageId': stageId,
-      };
+    'lat': lat,
+    'lng': lng,
+    'timestamp': timestamp.toIso8601String(),
+    if (stageId != null) 'stageId': stageId,
+  };
 }
 
 /// Service de synchronisation groupe eco-batterie (E4.12b).
@@ -71,8 +75,8 @@ class GroupSyncService {
     required this.connectivityMonitor,
     FirebaseFirestore? firestore,
     Connectivity? connectivity,
-  })  : _firestore = firestore,
-        _connectivity = connectivity ?? Connectivity();
+  }) : _firestore = firestore,
+       _connectivity = connectivity ?? Connectivity();
 
   final FirebaseService firebaseService;
   final ConnectivityMonitor connectivityMonitor;
@@ -157,12 +161,14 @@ class GroupSyncService {
     required double lng,
     String? stageId,
   }) {
-    _buffer.add(PendingGroupPosition(
-      lat: lat,
-      lng: lng,
-      timestamp: DateTime.now(),
-      stageId: stageId,
-    ));
+    _buffer.add(
+      PendingGroupPosition(
+        lat: lat,
+        lng: lng,
+        timestamp: DateTime.now(),
+        stageId: stageId,
+      ),
+    );
   }
 
   /// Force un envoi immediat du buffer (ex: fermeture app).
@@ -233,8 +239,14 @@ class GroupSyncService {
   /// Verifie si le reseau actuel est wifi et flush si c est le cas.
   Future<void> _checkWifiAndFlush() async {
     try {
-      final result = await _connectivity.checkConnectivity();
-      if (result == ConnectivityResult.wifi) {
+      // connectivity_plus 6+ rend une liste de liens actifs : « wifi detecte »
+      // se lit donc wifi PRESENT parmi eux. Contrairement a la descente de
+      // cartes (voir ConnectivityMonitor._mapLien), un push de positions
+      // tamponnees ne pese rien : le wifi present suffit, inutile d exiger
+      // qu il soit le seul lien monte — l exiger retiendrait le tampon plus
+      // longtemps qu avant la montee.
+      final results = await _connectivity.checkConnectivity();
+      if (results.contains(ConnectivityResult.wifi)) {
         _log.i('[GroupSync] Wifi refuge detecte, push positions');
         await _flushBuffer();
       }

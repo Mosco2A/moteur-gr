@@ -24,8 +24,7 @@ class KudosLocal extends Table {
   DateTimeColumn get createdAt => dateTime()();
 
   /// Etat de synchronisation ('pending', 'synced', 'failed').
-  TextColumn get syncState =>
-      text().withDefault(const Constant('pending'))();
+  TextColumn get syncState => text().withDefault(const Constant('pending'))();
 
   /// Nombre de tentatives de synchronisation echouees.
   IntColumn get attempts => integer().withDefault(const Constant(0))();

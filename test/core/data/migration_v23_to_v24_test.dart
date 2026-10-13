@@ -30,18 +30,19 @@ import 'package:moteur_gr/core/data/database.dart';
 /// on ferme, puis on rouvre : Drift detecte 23 < 24 et joue `onUpgrade`.
 void main() {
   group('Drift migration v23 -> v24 (socle wallet StepWays)', () {
-    test('la version du schema est au moins 24 (introduction des tables wallet)',
-        () {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
-      // Les tables sont introduites en v24 ; le schema peut continuer d'evoluer.
-      // On verifie le seuil d'introduction, sans figer une version exacte qui
-      // casserait a chaque migration ulterieure.
-      expect(db.schemaVersion, greaterThanOrEqualTo(24));
-    });
-
     test(
-        'migration reelle 23 -> 24 : cree les 3 tables wallet et preserve les '
+      'la version du schema est au moins 24 (introduction des tables wallet)',
+      () {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
+        // Les tables sont introduites en v24 ; le schema peut continuer d'evoluer.
+        // On verifie le seuil d'introduction, sans figer une version exacte qui
+        // casserait a chaque migration ulterieure.
+        expect(db.schemaVersion, greaterThanOrEqualTo(24));
+      },
+    );
+
+    test('migration reelle 23 -> 24 : cree les 3 tables wallet et preserve les '
         'donnees existantes', () async {
       final dir = await Directory.systemTemp.createTemp('gr_mig_v24_');
       addTearDown(() async {
@@ -101,21 +102,34 @@ void main() {
           .get();
       final tableNames = tables.map((r) => r.read<String>('name')).toList();
 
-      expect(tableNames, contains('wallet_balance'),
-          reason: 'Table wallet_balance creee en migration v24');
-      expect(tableNames, contains('trek_entitlements'),
-          reason: 'Table trek_entitlements creee en migration v24');
-      expect(tableNames, contains('no_ads_state'),
-          reason: 'Table no_ads_state creee en migration v24');
+      expect(
+        tableNames,
+        contains('wallet_balance'),
+        reason: 'Table wallet_balance creee en migration v24',
+      );
+      expect(
+        tableNames,
+        contains('trek_entitlements'),
+        reason: 'Table trek_entitlements creee en migration v24',
+      );
+      expect(
+        tableNames,
+        contains('no_ads_state'),
+        reason: 'Table no_ads_state creee en migration v24',
+      );
 
       // --- 3. Aucune perte : l'etape preexistante est intacte ---------------
-      final stagesRows =
-          await db.customSelect('SELECT * FROM stages').get();
-      expect(stagesRows, hasLength(1),
-          reason: 'La donnee metier v23 survit a la migration');
+      final stagesRows = await db.customSelect('SELECT * FROM stages').get();
+      expect(
+        stagesRows,
+        hasLength(1),
+        reason: 'La donnee metier v23 survit a la migration',
+      );
       expect(stagesRows.first.read<String>('trail_id'), 'gr20');
-      expect(stagesRows.first.read<String>('name'),
-          'Calenzana - Ortu di u Piobbu');
+      expect(
+        stagesRows.first.read<String>('name'),
+        'Calenzana - Ortu di u Piobbu',
+      );
       expect(stagesRows.first.read<double>('distance_km'), 10.5);
 
       // La version a bien ete portee a la version courante (>= 24).
@@ -126,55 +140,57 @@ void main() {
       expect(userVersion, greaterThanOrEqualTo(24));
     });
 
-    test('les 3 nouvelles tables sont utilisables (DAOs + valeurs par defaut)',
-        () async {
-      final db = AppDatabase(NativeDatabase.memory());
-      addTearDown(db.close);
+    test(
+      'les 3 nouvelles tables sont utilisables (DAOs + valeurs par defaut)',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
 
-      // WalletBalance : upsert minimal -> defauts (0) appliques.
-      await db.walletDao.upsert(
-        WalletBalanceCompanion.insert(
-          userId: 'user-hash-abc',
-          updatedAt: DateTime(2026, 9, 8),
-        ),
-      );
-      final wallet = await db.walletDao.getByUserId('user-hash-abc');
-      expect(wallet, isNotNull);
-      expect(wallet!.balanceSteps, 0);
-      expect(wallet.lifetimeEarnedSteps, 0);
-      expect(wallet.lifetimeSpentSteps, 0);
+        // WalletBalance : upsert minimal -> defauts (0) appliques.
+        await db.walletDao.upsert(
+          WalletBalanceCompanion.insert(
+            userId: 'user-hash-abc',
+            updatedAt: DateTime(2026, 9, 8),
+          ),
+        );
+        final wallet = await db.walletDao.getByUserId('user-hash-abc');
+        expect(wallet, isNotNull);
+        expect(wallet!.balanceSteps, 0);
+        expect(wallet.lifetimeEarnedSteps, 0);
+        expect(wallet.lifetimeSpentSteps, 0);
 
-      // TrekEntitlements : upsert minimal -> owned=false, source='none'.
-      await db.trekEntitlementsDao.upsert(
-        TrekEntitlementsCompanion.insert(
-          trailId: 'gr20',
-          updatedAt: DateTime(2026, 9, 8),
-        ),
-      );
-      final ent = await db.trekEntitlementsDao.getByTrailId('gr20');
-      expect(ent, isNotNull);
-      expect(ent!.owned, isFalse);
-      expect(ent.acquiredStages, 0);
-      expect(ent.totalStages, 0);
-      expect(ent.consumedComplementSteps, 0);
-      expect(ent.purchaseSource, 'none');
-      expect(ent.purchasedAt, isNull);
+        // TrekEntitlements : upsert minimal -> owned=false, source='none'.
+        await db.trekEntitlementsDao.upsert(
+          TrekEntitlementsCompanion.insert(
+            trailId: 'gr20',
+            updatedAt: DateTime(2026, 9, 8),
+          ),
+        );
+        final ent = await db.trekEntitlementsDao.getByTrailId('gr20');
+        expect(ent, isNotNull);
+        expect(ent!.owned, isFalse);
+        expect(ent.acquiredStages, 0);
+        expect(ent.totalStages, 0);
+        expect(ent.consumedComplementSteps, 0);
+        expect(ent.purchaseSource, 'none');
+        expect(ent.purchasedAt, isNull);
 
-      // NoAdsState : insert d'une source reward (scope 'global' par defaut).
-      final startedAt = DateTime(2026, 9, 8, 12);
-      await db.noAdsDao.insertState(
-        NoAdsStateCompanion.insert(
-          source: 'reward',
-          startedAt: startedAt,
-          updatedAt: startedAt,
-          expiresAt: Value(startedAt.add(const Duration(hours: 24))),
-        ),
-      );
-      final all = await db.noAdsDao.getAll();
-      expect(all, hasLength(1));
-      expect(all.first.source, 'reward');
-      expect(all.first.scope, 'global');
-      expect(all.first.expiresAt, startedAt.add(const Duration(hours: 24)));
-    });
+        // NoAdsState : insert d'une source reward (scope 'global' par defaut).
+        final startedAt = DateTime(2026, 9, 8, 12);
+        await db.noAdsDao.insertState(
+          NoAdsStateCompanion.insert(
+            source: 'reward',
+            startedAt: startedAt,
+            updatedAt: startedAt,
+            expiresAt: Value(startedAt.add(const Duration(hours: 24))),
+          ),
+        );
+        final all = await db.noAdsDao.getAll();
+        expect(all, hasLength(1));
+        expect(all.first.source, 'reward');
+        expect(all.first.scope, 'global');
+        expect(all.first.expiresAt, startedAt.add(const Duration(hours: 24)));
+      },
+    );
   });
 }

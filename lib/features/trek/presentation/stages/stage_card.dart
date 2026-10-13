@@ -1,7 +1,12 @@
+/// Une etape en carte, avec son nom dans la langue courante et sa duree
+/// estimee.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../shared/widgets/app_card.dart';
-import '../../domain/models/stage.dart';
+import '../../../../domain/stage.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Carte Material 3 representant une etape de sentier.
 ///
@@ -83,7 +88,7 @@ class StageCard extends StatelessWidget {
         ),
         title: Text(_localizedName(context)),
         subtitle: Text(_subtitle()),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const StepIcon(StepwaysIcons.chevronDroite),
       ),
     );
   }

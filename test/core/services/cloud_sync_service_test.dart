@@ -23,7 +23,9 @@ void main() {
     db = AppDatabase(NativeDatabase.memory());
     syncQueueDao = SyncQueueDao(db);
   });
-  tearDown(() async { await db.close(); });
+  tearDown(() async {
+    await db.close();
+  });
 
   // Firebase non disponible par defaut dans les tests
   // (pas de FakeFirebaseService necessaire, le constructeur prive suffit)
@@ -34,7 +36,10 @@ void main() {
       // Impossible d instancier FirebaseService directement (constructeur prive)
       // On teste via le comportement : la sync ne fait rien.
       // Note: en vrai test on mockerait Firestore. Ici on verifie la logique.
-      expect(true, isTrue); // placeholder - Firestore mock requis en integration
+      expect(
+        true,
+        isTrue,
+      ); // placeholder - Firestore mock requis en integration
     });
   });
 
@@ -73,13 +78,15 @@ void main() {
 
     test("insertion cloud_sync_batch dans la queue", () async {
       final now = DateTime.now().toIso8601String();
-      await syncQueueDao.insertOrReplace(SyncQueueCompanion(
-        trailId: const Value("sentier-volcans"),
-        action: const Value("cloud_sync_batch"),
-        status: const Value("pending"),
-        createdAt: Value(now),
-        payload: const Value("user1"),
-      ));
+      await syncQueueDao.insertOrReplace(
+        SyncQueueCompanion(
+          trailId: const Value("sentier-volcans"),
+          action: const Value("cloud_sync_batch"),
+          status: const Value("pending"),
+          createdAt: Value(now),
+          payload: const Value("user1"),
+        ),
+      );
       final pending = await syncQueueDao.getPending();
       expect(pending.length, 1);
       expect(pending.first.action, "cloud_sync_batch");
@@ -87,12 +94,14 @@ void main() {
 
     test("markCompleted change le statut", () async {
       final now = DateTime.now().toIso8601String();
-      final id = await syncQueueDao.insertOrReplace(SyncQueueCompanion(
-        trailId: const Value("sentier-volcans"),
-        action: const Value("cloud_sync"),
-        status: const Value("pending"),
-        createdAt: Value(now),
-      ));
+      final id = await syncQueueDao.insertOrReplace(
+        SyncQueueCompanion(
+          trailId: const Value("sentier-volcans"),
+          action: const Value("cloud_sync"),
+          status: const Value("pending"),
+          createdAt: Value(now),
+        ),
+      );
       await syncQueueDao.markCompleted(id);
       final all = await syncQueueDao.getByTrailId("sentier-volcans");
       expect(all.first.status, "completed");
@@ -100,12 +109,14 @@ void main() {
 
     test("markFailed enregistre l erreur", () async {
       final now = DateTime.now().toIso8601String();
-      final id = await syncQueueDao.insertOrReplace(SyncQueueCompanion(
-        trailId: const Value("sentier-volcans"),
-        action: const Value("cloud_sync"),
-        status: const Value("pending"),
-        createdAt: Value(now),
-      ));
+      final id = await syncQueueDao.insertOrReplace(
+        SyncQueueCompanion(
+          trailId: const Value("sentier-volcans"),
+          action: const Value("cloud_sync"),
+          status: const Value("pending"),
+          createdAt: Value(now),
+        ),
+      );
       await syncQueueDao.markFailed(id, "timeout");
       final all = await syncQueueDao.getByTrailId("sentier-volcans");
       expect(all.first.status, "failed");

@@ -1,15 +1,17 @@
-# ADR-003 : Riverpod (2.6) plutot que BLoC pour le state management
+# ADR-003 : Riverpod plutot que BLoC pour le state management
 
 ## Statut
 
-Accepte. Version en production : **Riverpod 2.6** (`flutter_riverpod` ^2.6.0),
+Accepte. Version en production : **Riverpod 3.3.2** (`flutter_riverpod` ^3.3.2),
 providers **manuels** (sans `riverpod_generator`).
 
-> Un upgrade vers **Riverpod v3** est un **lot futur dedie** (decision option
-> A). Cet ADR documente l'etat **reel** de `main` : Riverpod 2.6. Les
-> fonctionnalites propres a la v3 (ex: persistence offline native, retry auto)
-> **ne sont pas** dans le perimetre actuel et ne doivent pas etre invoquees
-> comme acquises.
+> **Mise a jour du 04/10/2026 (lot 645-12).** La migration vers Riverpod 3
+> (INC-1) est faite : bump de version, API legacy conservees via
+> `legacy.dart`, retry automatique neutralise au `ProviderScope` racine (voir
+> le commentaire de `pubspec.yaml`). La decision — Riverpod plutot que BLoC,
+> providers manuels — est inchangee. Les fonctionnalites propres a la v3 (ex:
+> persistence offline native, retry auto) **ne sont pas** utilisees et ne
+> doivent pas etre invoquees comme acquises.
 
 ## Contexte
 
@@ -17,7 +19,7 @@ StepWays a besoin d'un state management reactif, testable et concis pour une
 app offline-first riche (catalogue, carte, suivi GPS, planning, journal). Le
 choix s'est porte entre **BLoC** (events/states explicites) et **Riverpod**.
 
-### Riverpod 2.6 — option retenue
+### Riverpod — option retenue
 
 - State reactif base sur des providers composables.
 - API concise : `Provider`, `FutureProvider`, `StreamProvider`,
@@ -36,7 +38,7 @@ choix s'est porte entre **BLoC** (events/states explicites) et **Riverpod**.
 
 ## Decision
 
-**Adopter Riverpod 2.6 avec des providers manuels** comme socle de state
+**Adopter Riverpod avec des providers manuels** comme socle de state
 management de StepWays.
 
 ## Raisons
@@ -45,7 +47,7 @@ management de StepWays.
 
 Charger et afficher des donnees est court et lisible.
 
-**Riverpod 2.6 (provider manuel) :**
+**Riverpod (provider manuel) :**
 ```dart
 final stagesProvider =
     FutureProvider.family<List<StageModel>, String>((ref, trailId) async {
@@ -93,7 +95,7 @@ ProviderScope(
 
 ### 4. Offline gere explicitement (pas "magiquement")
 
-En 2.6, la persistence offline n'est **pas** automatique : elle est geree
+La persistence offline n'est **pas** automatique : elle est geree
 explicitement par la couche data (Drift comme source de verite locale, sync
 best-effort vers Firestore quand disponible). C'est un choix assume et
 testable, pas une dependance a une fonctionnalite de framework.
@@ -104,13 +106,11 @@ Riverpod est deja la stack de reference de l'equipe. BLoC imposerait un
 changement de paradigme (events/states pour chaque feature) sans benefice net
 ici.
 
-## Pourquoi pas (encore) Riverpod v3
+## La migration vers Riverpod 3
 
 - L'upgrade v3 touche la generation, des APIs et le comportement (retry,
-  persistence) : c'est un **lot a part entiere**, planifie separement (option
-  A retenue).
-- Le faire "au passage" risquerait de melanger une migration transverse avec
-  des lots fonctionnels. La stack reste donc en **2.6** jusqu'a ce lot dedie.
+  persistence) : il a ete fait comme un **lot a part entiere** (INC-1),
+  separe des lots fonctionnels (option A retenue).
 
 ## Alternatives ecartees
 
@@ -121,8 +121,8 @@ ici.
 
 ## Consequences
 
-- StepWays utilise Riverpod **2.6** avec des providers **manuels**.
+- StepWays utilise Riverpod **3.3.2** avec des providers **manuels**.
 - Pas de `riverpod_generator` : ne pas introduire d'annotation `@riverpod`.
 - Tests via `ProviderContainer` / `ProviderScope` + overrides.
 - L'offline est gere par la couche data (Drift), pas par le framework de state.
-- L'upgrade Riverpod v3 fera l'objet d'un lot dedie ulterieur.
+- Les API legacy de Riverpod 3 restent importees via `legacy.dart`.

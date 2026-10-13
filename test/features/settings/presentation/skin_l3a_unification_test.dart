@@ -55,7 +55,9 @@ void main() {
   }
 
   group('SW-SKIN-L3a — SettingsScreen', () {
-    testWidgets('utilise AppCard et aucune Card Material brute', (tester) async {
+    testWidgets('utilise AppCard et aucune Card Material brute', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(const SettingsScreen()));
       await tester.pumpAndSettle();
 
@@ -68,15 +70,20 @@ void main() {
       // On parcourt tout l'ecran : chaque section construite est une AppCard,
       // jamais une Card brute (verrou anti-regression au defilement).
       final scrollable = find.byType(Scrollable).first;
-      for (final header in <IconData>[
-        Icons.language,
-        Icons.storage,
-        Icons.notifications,
-        Icons.privacy_tip_outlined,
-        Icons.info_outline,
+      // TACHE 632 — on defile sur les TITRES de section, plus sur leurs icones.
+      // Les icones de Christophe se reemploient d'une section a l'autre
+      // (l'information revient a plusieurs endroits) : un finder d'icone n'est
+      // plus unique, et `scrollUntilVisible` en exige un. Le titre, lui, l'est —
+      // et il dit mieux ce qu'on cherche.
+      for (final header in <String>[
+        t.settings.language,
+        t.settings.units,
+        t.settings.theme,
+        t.settings.cache,
+        t.settings.version,
       ]) {
         await tester.scrollUntilVisible(
-          find.byIcon(header),
+          find.text(header),
           120,
           scrollable: scrollable,
         );
@@ -88,9 +95,7 @@ void main() {
 
   group('SW-SKIN-L3a — DepartureDatePicker', () {
     testWidgets('utilise AppCard (plus de Card brute)', (tester) async {
-      await tester.pumpWidget(wrap(
-        const DepartureDatePicker(trailId: 'gr20'),
-      ));
+      await tester.pumpWidget(wrap(const DepartureDatePicker(trailId: 'gr20')));
       await tester.pumpAndSettle();
 
       expect(find.byType(AppCard), findsOneWidget);
@@ -111,12 +116,13 @@ void main() {
   });
 
   group('SW-SKIN-L3a — ConsentOnboardingScreen', () {
-    testWidgets('utilise AppButton pour la validation + tap fonctionnel',
-        (tester) async {
+    testWidgets('utilise AppButton pour la validation + tap fonctionnel', (
+      tester,
+    ) async {
       var continued = false;
-      await tester.pumpWidget(wrap(
-        ConsentOnboardingScreen(onContinue: () => continued = true),
-      ));
+      await tester.pumpWidget(
+        wrap(ConsentOnboardingScreen(onContinue: () => continued = true)),
+      );
       await tester.pumpAndSettle();
 
       // Plus aucune Card Material brute (section sante = AppCard).
@@ -130,7 +136,17 @@ void main() {
       await tester.pumpAndSettle();
 
       // Le bouton de validation est desormais un AppButton (variante primary).
-      expect(find.byType(AppButton), findsOneWidget);
+      //
+      // ON VISE LE BOUTON PAR SON LIBELLE, PLUS PAR LE COMPTE (tache 645-03).
+      // `findsOneWidget` sur TOUT l'ecran disait « il n'y a qu'un AppButton
+      // ici » — vrai le jour de SW-SKIN-L3a, faux depuis que le lien
+      // « Politique de confidentialite » du bas de page passe lui aussi par le
+      // composant unique. Ce que ce test veut prouver n'a pas change : que LE
+      // BOUTON DE VALIDATION est un AppButton. On le demande donc de lui.
+      expect(
+        find.ancestor(of: label, matching: find.byType(AppButton)),
+        findsOneWidget,
+      );
 
       // Tap fonctionnel : le libelle est preserve et declenche onContinue.
       await tester.tap(label);

@@ -1,3 +1,7 @@
+/// L'ecart au trace, avec hysteresis pour ne pas clignoter a la frontiere. Le
+/// metier ignore Slang : les libelles lui sont injectes.
+library;
+
 import 'dart:async';
 
 import 'package:flutter/services.dart';
@@ -6,9 +10,11 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/geo/track_point.dart';
+import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_projection.dart';
-import '../../notifications/providers/notification_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show notificationServiceProvider, notificationSettingsProvider;
+import '../../trek/trek_facade.dart' show positionControllerProvider;
 import '../domain/off_track_detector.dart';
 import 'gpx_track_provider.dart';
 
@@ -49,10 +55,7 @@ class OffTrackState {
 /// L'UI (carte) fournit les libelles traduits via [offTrackMessagesProvider]
 /// pour que la notification parte dans la langue de l'utilisateur.
 class OffTrackMessages {
-  const OffTrackMessages({
-    required this.notifTitle,
-    required this.notifBody,
-  });
+  const OffTrackMessages({required this.notifTitle, required this.notifBody});
 
   /// Titre de la notification a la sortie du trace.
   final String notifTitle;
@@ -73,7 +76,8 @@ class OffTrackMessagesNotifier extends Notifier<OffTrackMessages> {
   OffTrackMessages build() {
     return OffTrackMessages(
       notifTitle: 'Vous quittez le sentier',
-      notifBody: (m) => 'Vous vous eloignez du sentier ($m m). '
+      notifBody: (m) =>
+          'Vous vous eloignez du sentier ($m m). '
           'Verifiez votre position.',
     );
   }
@@ -94,7 +98,8 @@ class OffTrackMessagesNotifier extends Notifier<OffTrackMessages> {
 /// Messages de la notification hors-trace (fallback langue de base par defaut).
 final offTrackMessagesProvider =
     NotifierProvider<OffTrackMessagesNotifier, OffTrackMessages>(
-        OffTrackMessagesNotifier.new);
+      OffTrackMessagesNotifier.new,
+    );
 
 /// Notifier de l'alerte hors-trace.
 ///
@@ -104,11 +109,9 @@ final offTrackMessagesProvider =
 /// un [OffTrackDetector] (hysteresis). A la SORTIE : une seule alerte
 /// (notification locale + vibration courte). Au RETOUR : la notification se leve.
 class OffTrackNotifier extends StateNotifier<OffTrackState> {
-  OffTrackNotifier({
-    required this.ref,
-    OffTrackDetector? detector,
-  })  : _detector = detector ?? OffTrackDetector(),
-        super(const OffTrackState());
+  OffTrackNotifier({required this.ref, OffTrackDetector? detector})
+    : _detector = detector ?? OffTrackDetector(),
+      super(const OffTrackState());
 
   final Ref ref;
   final OffTrackDetector _detector;
@@ -194,7 +197,9 @@ class OffTrackNotifier extends StateNotifier<OffTrackState> {
   Future<void> _sendNotification(double distance) async {
     try {
       final messages = ref.read(offTrackMessagesProvider);
-      await ref.read(notificationServiceProvider).showOffTrackAlert(
+      await ref
+          .read(notificationServiceProvider)
+          .showOffTrackAlert(
             title: messages.notifTitle,
             body: messages.notifBody(distance.round()),
           );
@@ -219,17 +224,14 @@ class OffTrackNotifier extends StateNotifier<OffTrackState> {
   }
 }
 
-/// Flux de positions GPS brut (geolocator), expose comme [Stream].
+/// Flux de positions GPS brut, expose comme [Stream] : celui du robinet unique
+/// GPS ([positionControllerProvider], lot 671-00), profil carte.
 ///
 /// Isole ici (Provider et non StreamProvider) pour passer le Stream tel quel au
 /// notifier hors-trace, independamment de l'ecran carte (le detecteur doit
 /// tourner telephone en poche). Surchargeable dans les tests.
 final offTrackGpsStreamProvider = Provider<Stream<Position>>((ref) {
-  const settings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 10,
-  );
-  return Geolocator.getPositionStream(locationSettings: settings);
+  return ref.watch(positionControllerProvider).positions;
 });
 
 /// Alerte de securite "hors-trace" : surveille l'ecart de la position reelle au
@@ -246,8 +248,9 @@ final offTrackGpsStreamProvider = Provider<Stream<Position>>((ref) {
 /// Desactivable via les reglages ([NotificationSettings.offTrackAlerts], ON par
 /// defaut). `keepAlive` pour ne pas suspendre la surveillance quand aucun widget
 /// n'ecoute (ecran verrouille).
-final offTrackProvider =
-    StateNotifierProvider<OffTrackNotifier, OffTrackState>((ref) {
+final offTrackProvider = StateNotifierProvider<OffTrackNotifier, OffTrackState>((
+  ref,
+) {
   ref.keepAlive();
   final notifier = OffTrackNotifier(ref: ref);
 

@@ -1,3 +1,7 @@
+/// PRIVE PAR DEFAUT : tous les drapeaux a faux, et le marcheur en leve un par
+/// un, finalite par finalite.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -97,5 +101,5 @@ class VisibilitySettingsNotifier extends Notifier<VisibilitySettings> {
 /// Provider des reglages de visibilite sociale (F7D-02).
 final visibilitySettingsProvider =
     NotifierProvider<VisibilitySettingsNotifier, VisibilitySettings>(
-  VisibilitySettingsNotifier.new,
-);
+      VisibilitySettingsNotifier.new,
+    );

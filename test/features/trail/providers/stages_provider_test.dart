@@ -4,7 +4,7 @@ import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/stages_dao.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 

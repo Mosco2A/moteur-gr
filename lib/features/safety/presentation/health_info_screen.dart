@@ -1,44 +1,92 @@
-// E5.16 / E57 -- Ecran formulaire informations sante LOCAL ONLY.
+/// La fiche medicale a son PROPRE fichier, hors sauvegarde du telephone : c'est
+/// ce provider que les tests surchargent, plus la base.
+library;
+
+// E5.16 / E57 -- Ecran formulaire de la FICHE D'URGENCE, LOCAL ONLY.
 //
-// Formulaire 5 champs : groupe sanguin, allergies, traitements,
-// contact medecin, numero assurance.
-// Message explicite : ces donnees restent sur le telephone (art. 9 RGPD,
-// LOCAL ONLY a vie -- jamais de Firestore, jamais de cloud, meme apres P4).
-// Accessible depuis l'ecran d'urgence (EmergencyScreen, route /health).
+// ===========================================================================
+// TACHE 630 — CE QUE CET ECRAN EST DEVENU, ET POURQUOI
+// ===========================================================================
 //
-// LOT D / D1 (refonte UX StepWays) : cablage. Textes portes en Slang
-// (namespace `health`, 5 langues) et couleurs alignees sur le theme -- plus
-// aucun texte ni couleur en dur (spec E57 AM-1 / RM-6). Donnee personnelle
-// independante du sentier (AM-6 : pas de trailId, pas de trailConfigProvider).
+// Il portait CINQ champs : groupe sanguin, allergies, traitements, medecin,
+// assurance. Christophe l'a ouvert sur son telephone le 29/09 et a dit, verbatim :
+// « Je ne vois toujours pas les infos complete dans info sante, dans la version
+// en cours? » puis « Mais on avait dit nom, prenom, info de contact, tu avais
+// fait la liste !!! ». Il avait raison : la liste existait en base depuis le
+// 26/09 (#100661) et n'avait jamais ete codee.
+//
+// L'ECRAN SUIT DESORMAIS L'ORDRE OU UN SECOURISTE LIT, et cet ordre est celui du
+// modele — il n'y en a pas deux dans l'application. La source de chaque champ et
+// la source de l'ordre sont ecrites dans `health_info.dart` ; elles ne sont pas
+// recopiees ici pour qu'il n'y ait qu'un seul endroit a corriger.
+//
+//   [1] QUI          nom et prenom, date de naissance, adresse
+//   [2] QUI PREVENIR les contacts a prevenir, DANS la fiche (ils etaient
+//                    ailleurs, sans ecran de saisie et sans disque)
+//   [3] VITAL        allergies, traitements, antecedents, groupe sanguin,
+//                    don d'organes
+//   [4] ADMINISTRATIF medecin, assurance, et les PHOTOS des deux cartes
+//
+// LE MESSAGE NE CHANGE PAS D'UN MOT : ces donnees restent sur le telephone
+// (art. 9 RGPD, LOCAL ONLY a vie -- jamais de Firestore, jamais de cloud). Le nom
+// et l'adresse sont des donnees personnelles de plus, pas une donnee d'une autre
+// nature : meme fichier, meme dossier exclu, meme effacement.
+//
+// LOT D / D1 (refonte UX StepWays) : textes portes en Slang (namespace `health`,
+// 5 langues) et couleurs alignees sur le theme -- plus aucun texte ni couleur en
+// dur (spec E57 AM-1 / RM-6). Donnee personnelle independante du sentier (AM-6 :
+// pas de trailId, pas de trailConfigProvider).
+
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
-import '../../../core/data/daos/health_info_dao.dart';
-import '../../../core/providers/database_provider.dart';
+import '../../../core/analytics/screen_entry.dart';
+import '../../../core/services/session_demo.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
+import '../data/fiche_volatile_de_demo.dart';
+import '../data/health_info_file.dart';
 import '../data/health_info_repository.dart';
-import '../domain/health_bounds.dart';
+import '../data/card_photo_capture.dart';
 import '../domain/models/health_info.dart';
+import '../providers/health_prepare_providers.dart';
+import '../providers/refus_sauvegarde_systeme_provider.dart';
+import 'health_info_dialogs.dart';
+import 'health_info_form.dart';
+import 'health_info_form_data.dart';
+import 'health_info_inputs.dart';
 
-/// Provider du DAO sante (Drift).
+/// Provider du stockage durable de la fiche medicale.
 ///
-/// Cablage LOT D/D1 : derive de [databaseProvider] (instance unique Drift).
-/// Le DAO est genere (`AppDatabase.healthInfoDao`). L'override par defaut
-/// pointe donc sur la vraie base ; les tests peuvent surcharger
-/// [databaseProvider] (DB in-memory) sans toucher a ce provider.
-final healthInfoDaoProvider = Provider<HealthInfoDao>(
-  (ref) => ref.watch(databaseProvider).healthInfoDao,
-);
+/// TACHE 613 : il a remplace `healthInfoDaoProvider`, qui derivait de la base
+/// Drift commune. La fiche a desormais SON PROPRE FICHIER, sous le dossier
+/// declare exclu de la sauvegarde du telephone — la raison entiere est dans
+/// [HealthInfoFile]. Les tests surchargent CE provider (repertoire
+/// temporaire) ; surcharger `databaseProvider` n'a plus d'effet sur la fiche,
+/// et c'est voulu : plus rien de medical ne passe par la base.
+/// EN DEMO, IL REND UN MAGASIN VOLATIL (tache 760). `/health` est atteignable
+/// pendant une demonstration depuis la section « Preparer », et sans cette
+/// bascule la fiche medicale saisie en demo — groupe sanguin, allergies,
+/// traitements, personne a prevenir, PHOTO DE LA CARTE VITALE — restait sur le
+/// telephone apres la sortie, au moment ou l'application promettait que « rien
+/// n'est enregistre ». Tout le chemin en aval (`healthInfoRepositoryProvider`,
+/// `healthInfoProvider`) le `watch`, donc il se reconstruit avec lui : chaque
+/// demo part vierge, et le reel revient intact a la sortie.
+final healthInfoFileProvider = Provider<HealthInfoFile>((ref) {
+  if (!ref.watch(enDemoProvider)) return HealthInfoFile();
+  // Le NUMERO de la demo, pour qu'une fiche volatile NEUVE soit construite a
+  // chaque entree (voir [generationDeDemoProvider]).
+  ref.watch(generationDeDemoProvider);
+  return FicheVolatileDeDemo();
+});
 
 /// Provider du repository sante (LOCAL ONLY).
 final healthInfoRepositoryProvider = Provider<HealthInfoRepository>(
-  (ref) => HealthInfoRepository(dao: ref.watch(healthInfoDaoProvider)),
+  (ref) => HealthInfoRepository(fichier: ref.watch(healthInfoFileProvider)),
 );
 
 /// Provider des donnees sante actuelles.
@@ -47,11 +95,22 @@ final healthInfoProvider = FutureProvider<HealthInfo>((ref) {
   return repo.get();
 });
 
-/// E5.16 / E57 : Ecran formulaire informations de sante.
+/// LA PRISE DE PHOTO D'UNE CARTE — INJECTABLE (tache 630).
 ///
-/// Formulaire avec 5 champs modifiables + bouton sauvegarder.
-/// Les donnees sont stockees localement (Drift) et ne quittent
-/// JAMAIS le telephone (pas de Firestore, pas de cloud).
+/// Un test de widgets n'a pas d'appareil photo, et un canal de plateforme sans
+/// interlocuteur ne rend JAMAIS la main (mesure du 28/09, tache 612). Passer par
+/// un provider permet de le remplacer par une fonction qui rend des octets, ou
+/// un refus, sans toucher au reste de l'ecran.
+final priseDePhotoCarteProvider = Provider<CardPhotoCapture>(
+  (ref) => takeCardPhoto,
+);
+
+/// E5.16 / E57 / 630 : ecran de la fiche d'urgence.
+///
+/// Les donnees sont stockees localement — dans un FICHIER DEDIE sous le dossier
+/// declare exclu de la sauvegarde du telephone (tache 613, voir
+/// [HealthInfoFile]) — et ne quittent JAMAIS le telephone (pas de
+/// Firestore, pas de cloud, pas de sauvegarde Google ou Apple).
 class HealthInfoScreen extends ConsumerStatefulWidget {
   const HealthInfoScreen({super.key});
 
@@ -61,11 +120,10 @@ class HealthInfoScreen extends ConsumerStatefulWidget {
 
 class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _bloodTypeController = TextEditingController();
-  final _allergiesController = TextEditingController();
-  final _treatmentsController = TextEditingController();
-  final _doctorController = TextEditingController();
-  final _insuranceController = TextEditingController();
+
+  /// Les valeurs de la fiche en cours d'edition ([HealthInfoFormData]) :
+  /// l'etat les possede, les modifie sous `setState` et les libere.
+  final _form = HealthInfoFormData();
 
   bool _isLoading = true;
   bool _isSaving = false;
@@ -78,6 +136,11 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   @override
   void initState() {
     super.initState();
+    // LA MIETTE D'OBSERVABILITE DE CET ECRAN (lot 645-09), posee a l'entree.
+    // Lot 645-06b : elle etait declaree dans la racine d'une bibliotheque a
+    // `part` et posee dans le morceau qui portait l'etat ; l'etat vit de
+    // nouveau dans ce fichier, la miette y est donc declaree ET posee.
+    observeScreenEntry(ref, ScreenBreadcrumb.healthInfo);
     _loadExistingData();
   }
 
@@ -86,68 +149,121 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     final repo = ref.read(healthInfoRepositoryProvider);
     final info = await repo.get();
 
-    if (mounted) {
-      setState(() {
-        _bloodTypeController.text = info.bloodType;
-        _allergiesController.text = info.allergies;
-        _treatmentsController.text = info.treatments;
-        _doctorController.text = info.doctorContact;
-        _insuranceController.text = info.insuranceNumber;
-        _hasContent = _computeHasContent();
-        _isLoading = false;
-      });
-    }
+    if (!mounted) return;
+    setState(() {
+      _form.fill(info);
+      _hasContent = info.hasData;
+      _isLoading = false;
+    });
+    // RE-SYNCHRONISATION DU SIGNAL DE PREPARATION (tache 568, LOT Q).
+    //
+    // La porte de demarrage du trek lit un signal en preferences
+    // ([HealthPrepStep.filled]) et non le fichier de la fiche (cf.
+    // `health_prepare_providers.dart` : la porte est une vue SYNCHRONE). Ce
+    // signal pourrait donc, en theorie, diverger de la donnee reelle — par
+    // exemple une fiche remplie AVANT que ce signal existe, ou effacee par un
+    // chemin qui ne passe pas par cet ecran. On l'aligne ICI, a chaque
+    // ouverture, sur ce que le disque dit vraiment : le signal ne peut pas
+    // mentir durablement.
+    await ref.read(healthPrepareStepsProvider.notifier).setFilled(info.hasData);
   }
-
-  /// Vrai si au moins un champ du formulaire est non vide.
-  bool _computeHasContent() =>
-      _bloodTypeController.text.trim().isNotEmpty ||
-      _allergiesController.text.trim().isNotEmpty ||
-      _treatmentsController.text.trim().isNotEmpty ||
-      _doctorController.text.trim().isNotEmpty ||
-      _insuranceController.text.trim().isNotEmpty;
 
   /// Sauvegarde les donnees du formulaire en local.
   ///
   /// FIX-1 (finding M6) : `validate()` est ENFIN appele. Le `Form` n'est plus
-  /// decoratif — un groupe sanguin invente est refuse avec un message borne, et
-  /// rien n'est enregistre tant que la fiche n'est pas coherente.
+  /// decoratif — et depuis la tache 630 le groupe sanguin ne peut PLUS etre
+  /// invalide, puisqu'il ne se saisit plus. Ce qui reste a valider, ce sont les
+  /// contacts : un nom sans numero ne sert a rien a un secouriste.
   Future<void> _save() async {
     if (_isSaving) return;
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() => _isSaving = true);
 
-    final info = HealthInfo(
-      // Forme canonique (majuscules, sans espaces) : « a+ » est enregistre
-      // « A+ », comme le lira le secouriste.
-      bloodType: normalizeBloodType(_bloodTypeController.text),
-      allergies: _allergiesController.text.trim(),
-      treatments: _treatmentsController.text.trim(),
-      doctorContact: _doctorController.text.trim(),
-      insuranceNumber: _insuranceController.text.trim(),
-    );
-
+    final info = _form.compose();
     final repo = ref.read(healthInfoRepositoryProvider);
     await repo.save(info);
 
     // Rafraichir le provider
     ref.invalidate(healthInfoProvider);
 
-    if (mounted) {
-      setState(() {
-        _isSaving = false;
-        _hasContent = _computeHasContent();
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.health.saved),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          duration: const Duration(seconds: 2),
-        ),
-      );
-      Navigator.of(context).pop();
-    }
+    // La fiche vient de changer : le signal de preparation suit (tache 568). Une
+    // fiche enregistree VIDE ne compte pas comme remplie — `hasData` tranche.
+    await ref.read(healthPrepareStepsProvider.notifier).setFilled(info.hasData);
+
+    // LA COPIE SAUVEGARDABLE SUIT LA FICHE (tache 612). Elle n'existe que si le
+    // randonneur a DECOCHE le refus de sauvegarde systeme ; dans ce cas elle doit
+    // porter la fiche TELLE QU'ELLE EST MAINTENANT. Sans ce re-alignement, une
+    // copie fabriquee hier partirait chez Google avec un traitement que le
+    // randonneur vient d'arreter — une donnee de sante perimee est pire qu'une
+    // donnee absente le jour ou un secouriste s'y fie.
+    //
+    // ON NE L'ATTEND PAS, ET C'EST MESURE. Attendre place un appel de plugin
+    // (resolution du dossier de stockage) DANS le chemin qui confirme
+    // l'enregistrement. Mesure du 28/09 : trois tests d'ecran sont devenus rouges
+    // sur « pumpAndSettle timed out », parce qu'un canal de plateforme sans
+    // interlocuteur ne rend JAMAIS la main. Sur un telephone il repond en une
+    // fraction de milliseconde, mais le principe reste : la confirmation d'un
+    // enregistrement reussi ne doit dependre de RIEN d'autre que de
+    // l'enregistrement. Le trou eventuel (fermeture immediate) est bouche par le
+    // re-alignement d'ouverture ([RefusSauvegardeSystemeNotifier]), qui fait
+    // converger le disque a chaque lancement.
+    unawaited(
+      ref.read(refusSauvegardeSystemeProvider.notifier).realignerLesCopies(),
+    );
+
+    if (mounted) await _confirmSaved(info);
+  }
+
+  /// Ce qui suit un enregistrement reussi, ecran encore monte : confirmer,
+  /// redemander le consentement, puis depiler s'il y a ou revenir.
+  Future<void> _confirmSaved(HealthInfo info) async {
+    setState(() {
+      _isSaving = false;
+      _hasContent = info.hasData;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(t.health.saved),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+
+    // LA FICHE VIENT DE CHANGER : ON REDEMANDE LE CONSENTEMENT (DEM 30/09
+    // 12:33). Decision de Christophe, verbatim : « en cas de modification des
+    // donnees, on redemande le consentement ».
+    //
+    // APRES LA CONFIRMATION D'ENREGISTREMENT, ET AVANT LE DEPILEMENT, et les
+    // deux bornes sont mesurees.
+    //
+    // APRES, parce que placee AVANT, la question laissait le bouton
+    // « Enregistrer » tourner pendant qu'elle attendait une reponse :
+    // `_isSaving` n'etait rabaisse qu'apres, donc le spinner tournait sous le
+    // dialogue. Ce n'est pas qu'inelegant — c'est le defaut deja paye par la
+    // tache 612 sur cet ecran meme, et deux tests l'ont attrape ici encore
+    // (`pumpAndSettle timed out` : un indicateur qui tourne pour toujours ne
+    // laisse jamais l'arbre se stabiliser). LA CONFIRMATION D'UN
+    // ENREGISTREMENT REUSSI NE DOIT DEPENDRE DE RIEN D'AUTRE QUE DE
+    // L'ENREGISTREMENT : la fiche est ecrite, on le dit, PUIS on pose la
+    // question.
+    //
+    // AVANT LE DEPILEMENT, parce qu'une question posee apres le `pop()`
+    // s'ouvrirait sur l'ecran precedent, detachee de ce qui l'a provoquee.
+    await askHealthConsentAgainAfterChange(context, ref);
+    if (!mounted) return;
+
+    // ON NE DEPILE QUE S'IL Y A QUELQUE CHOSE SOUS LA PAGE (tache 579, LOT X).
+    // Ce `pop()` etait inconditionnel. Quand la fiche est ouverte DIRECTEMENT
+    // — lien profond, notification, retour du systeme sur cette route — elle
+    // est la seule page de la pile : le `pop()` la retirait et laissait
+    // l'application sans aucune page ('You have popped the last page off of
+    // the stack'). En release, ou l'assertion ne se declenche pas, l'ecran
+    // restait fige : enregistrer ne produisait rien de visible au-dela du
+    // message. On reste sur la fiche quand il n'y a nulle part ou revenir —
+    // le message, lui, confirme l'enregistrement dans les deux cas.
+    final navigateur = Navigator.of(context);
+    if (navigateur.canPop()) navigateur.pop();
   }
 
   /// Efface la fiche sante (E57) apres confirmation — branche le `delete()`
@@ -155,29 +271,13 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   /// hors-ligne : aucune donnee ne quitte le telephone. Apres effacement, le
   /// widget ecran verrouille cesse tout seul d'afficher la partie sante (le
   /// repository est la source unique).
+  ///
+  /// TACHE 630 : `delete()` emporte AUSSI les deux photos de carte. Un
+  /// effacement qui laisserait une photo de carte Vitale sur le disque serait un
+  /// effacement qui ment.
   Future<void> _confirmAndDelete() async {
     if (_isDeleting) return;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(t.health.delete.confirmTitle),
-        content: Text(t.health.delete.confirmBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.health.delete.cancel),
-          ),
-          // Action DEFINITIVE : bouton rouge (couleur semantique d'urgence).
-          AppButton(
-            variant: AppButtonVariant.filledTone,
-            tone: AppTheme.rougeUrgence,
-            isFullWidth: false,
-            label: t.health.delete.confirm,
-            onPressed: () => Navigator.of(ctx).pop(true),
-          ),
-        ],
-      ),
-    );
+    final confirmed = await confirmHealthInfoDeletion(context);
     if (confirmed != true || !mounted) return;
 
     setState(() => _isDeleting = true);
@@ -185,13 +285,27 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     await repo.delete();
     ref.invalidate(healthInfoProvider);
 
+    // Une fiche effacee n'est plus une fiche remplie : la porte de demarrage se
+    // REFERME (tache 568). Le signal suit la donnee, il ne lui survit pas — c'est
+    // la meme exigence que les LOTS J a O sur le droit a l'effacement.
+    await ref.read(healthPrepareStepsProvider.notifier).setFilled(false);
+
+    // ET LA COPIE SAUVEGARDABLE S'EN VA AVEC ELLE (tache 612). C'est le point le
+    // plus facile a oublier : effacer la fiche en laissant sa copie dans
+    // l'emplacement sauvegarde, c'est un effacement qui ne tient pas. Le
+    // changement de telephone la ferait revenir.
+    //
+    // MEME REGLE QUE L'ENREGISTREMENT : lance, pas attendu. La suppression du
+    // fichier est SYNCHRONE une fois le dossier connu, donc elle ne peut pas
+    // rester a moitie faite ; et si l'application meurt avant que le dossier soit
+    // resolu, le re-alignement d'ouverture la reprend au lancement suivant.
+    unawaited(
+      ref.read(refusSauvegardeSystemeProvider.notifier).realignerLesCopies(),
+    );
+
     if (!mounted) return;
     setState(() {
-      _bloodTypeController.clear();
-      _allergiesController.clear();
-      _treatmentsController.clear();
-      _doctorController.clear();
-      _insuranceController.clear();
+      _form.clear();
       _hasContent = false;
       _isDeleting = false;
     });
@@ -200,21 +314,119 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     ).showSnackBar(SnackBar(content: Text(t.health.delete.done)));
   }
 
-  @override
-  void dispose() {
-    _bloodTypeController.dispose();
-    _allergiesController.dispose();
-    _treatmentsController.dispose();
-    _doctorController.dispose();
-    _insuranceController.dispose();
-    super.dispose();
+  /// Ouvre le selecteur de date de naissance.
+  ///
+  /// LES BORNES NE SONT PAS COSMETIQUES : une date de naissance dans le futur ou
+  /// vieille de deux siecles sur une fiche d'urgence fait douter de TOUTE la
+  /// fiche. Le selecteur les rend impossibles, plutot que de les refuser apres
+  /// coup.
+  Future<void> _choisirDateNaissance() async {
+    final maintenant = DateTime.now();
+    final actuelle = DateTime.tryParse(_form.birthDate);
+    final choisie = await showDatePicker(
+      context: context,
+      initialDate: actuelle ?? DateTime(maintenant.year - 30),
+      firstDate: DateTime(maintenant.year - 120),
+      lastDate: maintenant,
+      helpText: t.health.field.birthDate,
+    );
+    if (choisie == null || !mounted) return;
+    setState(() {
+      // FORME ISO `AAAA-MM-JJ` : stockage neutre, affichage localise. Voir
+      // `health_info.dart`.
+      _form.birthDate =
+          '${choisie.year.toString().padLeft(4, '0')}-'
+          '${choisie.month.toString().padLeft(2, '0')}-'
+          '${choisie.day.toString().padLeft(2, '0')}';
+    });
+  }
+
+  /// Prend (ou remplace) la photo d'une carte.
+  ///
+  /// LE REFUS D'AUTORISATION N'EST PAS UNE PANNE, ET L'ECRAN NE LE TRAITE PAS
+  /// COMME TELLE : on le dit une fois, sans dialogue, sans renvoi vers les
+  /// reglages, et l'ecran continue de fonctionner exactement pareil. C'est la
+  /// condition posee avec la demande.
+  Future<void> _photographCard(String nomFichier, ImageSource source) async {
+    final prise = ref.read(priseDePhotoCarteProvider);
+    final resultat = await prise(source);
+    if (!mounted) return;
+
+    switch (resultat.issue) {
+      case CardPhotoOutcome.annule:
+        return;
+      case CardPhotoOutcome.refus:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(t.health.cards.permissionRefused)),
+        );
+        return;
+      case CardPhotoOutcome.echec:
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(t.health.cards.failed)));
+        return;
+      case CardPhotoOutcome.reussite:
+        break;
+    }
+
+    final fichier = ref.read(healthInfoFileProvider);
+    await fichier.saveCard(nomFichier, resultat.octets!);
+    if (!mounted) return;
+    setState(() {
+      if (nomFichier == HealthInfoFile.nomCarteVitale) {
+        _form.carteVitale = nomFichier;
+      } else {
+        _form.carteMutuelle = nomFichier;
+      }
+      _hasContent = true;
+    });
+  }
+
+  /// Retire la photo d'une carte — du disque ET de la fiche.
+  Future<void> _removeCard(String nomFichier) async {
+    final fichier = ref.read(healthInfoFileProvider);
+    await fichier.eraseCard(nomFichier);
+    if (!mounted) return;
+    setState(() {
+      if (nomFichier == HealthInfoFile.nomCarteVitale) {
+        _form.carteVitale = '';
+      } else {
+        _form.carteMutuelle = '';
+      }
+    });
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
+  void dispose() {
+    _form.dispose();
+    super.dispose();
+  }
 
+  /// Le randomneur a choisi son groupe sanguin.
+  ///
+  /// Le randonneur a tranche : l'avertissement n'a plus lieu d'etre, la valeur
+  /// heritee est remplacee.
+  void _setBloodType(String? v) => setState(() {
+    _form.bloodType = v;
+    _form.bloodTypeHerite = '';
+  });
+
+  /// Le randonneur a dit s'il est donneur d'organes.
+  void _setOrganDonor(String? v) => setState(() => _form.organDonor = v);
+
+  /// Le randonneur a retire sa date de naissance.
+  void _effacerDateNaissance() => setState(() => _form.birthDate = '');
+
+  /// Une ligne de contact vide de plus, a remplir.
+  void _ajouterContact() =>
+      setState(() => _form.contacts.add(ContactLineDraft()));
+
+  /// Retire la ligne de contact [index] et libere ses controleurs.
+  void _retirerContact(int index) =>
+      setState(() => _form.contacts.removeAt(index).dispose());
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       // Ph5 (L6d) : AppHeader universel (back centralise). Leading custom retire.
       appBar: AppHeader(title: t.health.title),
@@ -230,270 +442,42 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Bandeau securite (message de confiance, RF-2).
-                      Container(
-                        padding: const EdgeInsets.all(AppTheme.spacingMd),
-                        decoration: BoxDecoration(
-                          color: colors.primary.withAlpha(30),
-                          borderRadius: BorderRadius.circular(
-                            AppTheme.radiusCard,
-                          ),
-                          border: Border.all(
-                            color: colors.primary.withAlpha(80),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.lock, color: colors.primary, size: 20),
-                            const SizedBox(width: AppTheme.spacingSm),
-                            Expanded(
-                              child: Text(
-                                t.health.privacyBanner,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: colors.primary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      HealthFormTop(
+                        fullNameController: _form.fullNameController,
+                        addressController: _form.addressController,
+                        birthDate: _form.birthDate,
+                        onChoisirDate: _choisirDateNaissance,
+                        onEffacerDate: _effacerDateNaissance,
+                        contacts: _form.contacts,
+                        onRemoveContact: _retirerContact,
+                        onAddContact: _ajouterContact,
                       ),
-                      const SizedBox(height: AppTheme.spacingMd),
-                      // E57 (L6/H1) : rappel de FINALITE + lien vers la gestion du
-                      // consentement (art. 9 RGPD). Forme SOUPLE (reco ARBITRAGES
-                      // H1-a) : aucun envoi n'a lieu (local-only), on rappelle
-                      // l'usage « te secourir » et on offre l'acces a l'ecran
-                      // Confidentialite (finalite healthData) — pas de mur avant
-                      // saisie. Textes Slang.
-                      _ConsentReminder(
-                        onManage: () => context.push('/consent'),
-                      ),
-                      const SizedBox(height: AppTheme.spacingLg),
-                      // Groupe sanguin : liste fermee (ABO + Rhesus). Saisie
-                      // limitee aux lettres A/B/O et aux signes +/-, valeur
-                      // verifiee au save (FIX-1 / M6).
-                      _buildField(
-                        key: const ValueKey('health-blood-type-field'),
-                        controller: _bloodTypeController,
-                        label: t.health.field.bloodType,
-                        hint: t.health.hint.bloodType,
-                        icon: Icons.bloodtype,
-                        maxLines: 1,
-                        maxLength: kBloodTypeMaxLength,
-                        showCounter: false,
-                        textCapitalization: TextCapitalization.characters,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'[ABOabo+\-]')),
-                        ],
-                        validator: (v) {
-                          final s = v?.trim() ?? '';
-                          if (s.isEmpty) return null; // champ optionnel
-                          return isValidBloodType(s)
-                              ? null
-                              : t.health.error.bloodType;
-                        },
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      // Texte libre medical : longueur BORNEE et VISIBLE
-                      // (compteur), plus de champ sans fond (2000 caracteres
-                      // illisibles en urgence).
-                      _buildField(
-                        controller: _allergiesController,
-                        label: t.health.field.allergies,
-                        hint: t.health.hint.allergies,
-                        icon: Icons.warning_amber,
-                        maxLines: 3,
-                        maxLength: kHealthFreeTextMaxLength,
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _buildField(
-                        controller: _treatmentsController,
-                        label: t.health.field.treatments,
-                        hint: t.health.hint.treatments,
-                        icon: Icons.medication,
-                        maxLines: 3,
-                        maxLength: kHealthFreeTextMaxLength,
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _buildField(
-                        controller: _doctorController,
-                        label: t.health.field.doctor,
-                        hint: t.health.hint.doctor,
-                        icon: Icons.local_hospital,
-                        maxLines: 2,
-                        maxLength: kHealthContactMaxLength,
-                      ),
-                      const SizedBox(height: AppTheme.spacingBase),
-                      _buildField(
-                        controller: _insuranceController,
-                        label: t.health.field.insurance,
-                        hint: t.health.hint.insurance,
-                        icon: Icons.shield,
-                        maxLines: 2,
-                        maxLength: kHealthContactMaxLength,
-                      ),
-                      const SizedBox(height: AppTheme.spacingXl),
-                      // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary.
-                      // isLoading porte l'etat _isSaving (AppButton affiche son
-                      // spinner et desactive l'action, cf. grammaire unifiee) ;
-                      // minHeight 52 conserve la cible du CTA pleine largeur.
-                      // key/Semantics(button+label) preserves au-dessus.
-                      Semantics(
-                        button: true,
-                        label: t.health.a11y.saveButton,
-                        child: AppButton(
-                          isLoading: _isSaving,
-                          minHeight: 52,
-                          icon: Icons.save,
-                          label: t.health.save,
-                          onPressed: _isSaving ? null : _save,
-                        ),
-                      ),
-                      // E57 (L6) : bouton « Effacer ma fiche » — branche sur le
-                      // delete() DEJA present. Visible uniquement si la fiche
-                      // contient quelque chose (rien a effacer sinon). Action
-                      // DEFINITIVE annoncee aux lecteurs d'ecran, confirmation
-                      // obligatoire (rouge).
-                      if (_hasContent) ...[
-                        const SizedBox(height: AppTheme.spacingBase),
-                        Semantics(
-                          button: true,
-                          label: t.health.delete.a11yButton,
-                          child: AppButton(
-                            variant: AppButtonVariant.outline,
-                            tone: AppTheme.rougeUrgence,
-                            isLoading: _isDeleting,
-                            minHeight: 52,
-                            icon: Icons.delete_outline,
-                            label: t.health.delete.button,
-                            onPressed: _isDeleting ? null : _confirmAndDelete,
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: AppTheme.spacingBase),
-                      Text(
-                        t.health.emergencyHint,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: colors.onSurface.withAlpha(140),
-                          fontStyle: FontStyle.italic,
-                        ),
+                      HealthFormBottom(
+                        allergiesController: _form.allergiesController,
+                        treatmentsController: _form.treatmentsController,
+                        conditionsController: _form.conditionsController,
+                        bloodType: _form.bloodType,
+                        bloodTypeHerite: _form.bloodTypeHerite,
+                        onBloodTypeChanged: _setBloodType,
+                        organDonor: _form.organDonor,
+                        onOrganDonorChanged: _setOrganDonor,
+                        doctorController: _form.doctorController,
+                        insuranceController: _form.insuranceController,
+                        carteVitale: _form.carteVitale,
+                        carteMutuelle: _form.carteMutuelle,
+                        onTakeCard: _photographCard,
+                        onRemoveCard: _removeCard,
+                        isSaving: _isSaving,
+                        isDeleting: _isDeleting,
+                        hasContent: _hasContent,
+                        onSave: _save,
+                        onDelete: _confirmAndDelete,
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-    );
-  }
-
-  Widget _buildField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    int maxLines = 1,
-    Key? key,
-    int? maxLength,
-    bool showCounter = true,
-    List<TextInputFormatter>? inputFormatters,
-    TextCapitalization textCapitalization = TextCapitalization.none,
-    String? Function(String?)? validator,
-  }) {
-    final colors = Theme.of(context).colorScheme;
-    return TextFormField(
-      key: key,
-      controller: controller,
-      maxLines: maxLines,
-      maxLength: maxLength,
-      inputFormatters: inputFormatters,
-      textCapitalization: textCapitalization,
-      validator: validator,
-      style: TextStyle(color: colors.onSurface),
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        // Compteur VISIBLE par defaut sur les champs bornes : la limite doit se
-        // voir, une coupe muette serait le meme mensonge qu'un clamp muet.
-        counterText: showCounter ? null : '',
-        // Le message liste les 8 groupes valides : il doit tenir en entier,
-        // sinon la reponse a « quoi saisir » se perd dans les points de suite.
-        errorMaxLines: 3,
-        hintStyle: TextStyle(
-          color: colors.onSurface.withAlpha(90),
-          fontSize: 13,
-        ),
-        prefixIcon: Icon(icon, color: colors.primary),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-          borderSide: BorderSide(color: colors.onSurface.withAlpha(60)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-          borderSide: BorderSide(color: colors.primary, width: 2),
-        ),
-      ),
-    );
-  }
-}
-
-/// Rappel de FINALITE + lien vers la gestion du consentement sante (E57/H1).
-///
-/// Forme souple (ARBITRAGES H1-a) : rappelle que ces infos servent a secourir et
-/// restent sur le telephone, et offre un acces a l'ecran Confidentialite
-/// (finalite healthData). Ne bloque PAS la saisie (local-only, pas de
-/// « traitement » au sens strict). Textes Slang (5 langues).
-class _ConsentReminder extends StatelessWidget {
-  const _ConsentReminder({required this.onManage});
-
-  final VoidCallback onManage;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingMd),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest.withAlpha(60),
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.info_outline,
-                size: 18,
-                color: colors.onSurface.withAlpha(160),
-              ),
-              const SizedBox(width: AppTheme.spacingSm),
-              Expanded(
-                child: Text(
-                  t.health.consent.purpose,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colors.onSurface.withAlpha(200),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              key: const ValueKey('health-consent-manage'),
-              onPressed: onManage,
-              icon: const Icon(Icons.privacy_tip_outlined, size: 18),
-              label: Text(t.health.consent.manage),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

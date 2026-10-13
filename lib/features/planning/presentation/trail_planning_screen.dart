@@ -1,28 +1,37 @@
+/// Le programme jour par jour, EDITABLE : reorganisation, regroupement, jours
+/// de repos, replanification — pas une simple lecture.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/models/stage.dart';
+import '../../../core/analytics/screen_entry.dart';
+import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../feasibility/providers/trek_feasibility_provider.dart';
-import '../../hub/providers/cockpit_start_providers.dart';
-import '../models/planned_day.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show feasibilityAssessmentProvider;
+import '../../hub/hub_facade.dart' show PrepCoreStep, prepareCoreStepsProvider;
+import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../providers/planning_provider.dart';
 import '../widgets/day_action_chip.dart';
 import '../widgets/duration_selector.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran PROGRAMME (parite GR20 `PlanningScreen`).
 ///
 /// Programme detaille jour par jour du sentier courant : chaque jour porte ses
-/// etapes (nom, distance, D+, D-, duree), une pastille teintee par difficulte et
-/// un acces au DETAIL de l'etape (tap -> `/stages/:num`). Le programme est
-/// EDITABLE a l'identique de GR20 : reorganisation (drag & drop), regroupement /
-/// separation d'etapes, ajout / suppression de jours de repos, replanification,
-/// validation. En-tete de statistiques (distance, D+, jours, etapes), profil
-/// altimetrique par jour et legende des difficultes completent l'ecran.
+/// etapes (nom, distance, D+, D-, duree), une pastille teintee par difficulte
+/// et un acces au DETAIL de l'etape (tap -> `/stages/:num`). Le programme est
+/// EDITABLE a l'identique de GR20 : reorganisation (drag & drop), regroupement
+/// / separation d'etapes, ajout / suppression de jours de repos,
+/// replanification, validation. En-tete de statistiques (distance, D+, jours,
+/// etapes), profil altimetrique par jour et legende des difficultes completent
+/// l'ecran.
 ///
 /// Generique : alimente par [plannedDaysProvider] (etapes du sentier actif),
 /// ZERO hardcode de localite. Hors systeme de peaux (AppCard implicite via
@@ -30,10 +39,10 @@ import '../widgets/duration_selector.dart';
 /// Tout libelle passe par Slang (t.programme.* / t.stage.*).
 ///
 /// SENS de marche (retour QA polish) : le programme honore desormais le sens
-/// choisi ([selectedDirectionProvider]) a l'identique de l'itineraire — quand le
-/// sens est inverse, l'ordre des jours suit (Jour 1 = etape de depart du sens
-/// choisi). La logique est portee par [plannedDaysProvider] (aucun flag invente,
-/// meme donnee de sens que l'itineraire).
+/// choisi ([selectedDirectionProvider]) a l'identique de l'itineraire — quand
+/// le sens est inverse, l'ordre des jours suit (Jour 1 = etape de depart du
+/// sens choisi). La logique est portee par [plannedDaysProvider] (aucun flag
+/// invente, meme donnee de sens que l'itineraire).
 ///
 /// NOTE (ecart de modele assume, cf. rapport) : le modele de donnees StepWays
 /// ([StageModel]) ne porte ni date de depart, ni mode de confort / hebergement.
@@ -48,6 +57,10 @@ class TrailPlanningScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.trailPlanning, trail: trailId);
     final days = ref.watch(plannedDaysProvider(trailId));
     final stats = ref.watch(planningStatsProvider(trailId));
 
@@ -66,7 +79,7 @@ class TrailPlanningScreen extends ConsumerWidget {
         title: t.programme.title,
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const StepIcon(StepwaysIcons.info),
             onPressed: () => _showInfoSheet(context),
             tooltip: t.programme.helpTooltip,
           ),
@@ -109,7 +122,11 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                Icon(Icons.calendar_today, color: scheme.primary, size: 24),
+                StepIcon(
+                  StepwaysIcons.calendrier,
+                  color: scheme.primary,
+                  size: 24,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   t.programme.info.title,
@@ -123,7 +140,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             _richInfoItem(
               theme,
-              Icons.view_list,
+              StepwaysIcons.programme,
               t.programme.info.days.title,
               t.programme.info.days.body,
               scheme.primary,
@@ -131,7 +148,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _richInfoItem(
               theme,
-              Icons.drag_handle,
+              StepwaysIcons.poignee,
               t.programme.info.reorder.title,
               t.programme.info.reorder.body,
               AppTheme.vertFacile,
@@ -139,7 +156,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _richInfoItem(
               theme,
-              Icons.hotel,
+              StepwaysIcons.hebergement,
               t.programme.info.rest.title,
               t.programme.info.rest.body,
               AppTheme.orangeDifficile,
@@ -147,7 +164,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _richInfoItem(
               theme,
-              Icons.link,
+              StepwaysIcons.lien,
               t.programme.info.mergeSplit.title,
               t.programme.info.mergeSplit.body,
               scheme.primary,
@@ -155,7 +172,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _richInfoItem(
               theme,
-              Icons.circle,
+              StepwaysIcons.pastille,
               t.programme.info.colors.title,
               t.programme.info.colors.body,
               AppTheme.vertFacile,
@@ -171,7 +188,11 @@ class TrailPlanningScreen extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.show_chart, size: 18, color: scheme.primary),
+                  StepIcon(
+                    StepwaysIcons.statistiques,
+                    size: 18,
+                    color: scheme.primary,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -187,12 +208,12 @@ class TrailPlanningScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Center(
-              child: TextButton(
+              child: AppButton(
+                variant: AppButtonVariant.text,
+                label: t.programme.info.close,
+                labelFontSize: 16,
+                isFullWidth: false,
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(
-                  t.programme.info.close,
-                  style: const TextStyle(fontSize: 16),
-                ),
               ),
             ),
           ],
@@ -203,7 +224,7 @@ class TrailPlanningScreen extends ConsumerWidget {
 
   static Widget _richInfoItem(
     ThemeData theme,
-    IconData icon,
+    String icon,
     String title,
     String description,
     Color accentColor,
@@ -217,7 +238,7 @@ class TrailPlanningScreen extends ConsumerWidget {
             color: accentColor.withAlpha(25),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 22, color: accentColor),
+          child: StepIcon(icon, size: 22, color: accentColor),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -267,7 +288,8 @@ class _PlanningContent extends ConsumerWidget {
 
     // Choix du nombre de jours (parite GR20) : bornes DERIVEES du nombre
     // d'etapes du sentier, duree courante pilotee par selectedDurationProvider.
-    // Le programme (plannedDaysProvider) watch cette duree et se recalcule seul.
+    // Le programme (plannedDaysProvider) watch cette duree et se recalcule
+    // seul.
     final bounds = ref.watch(durationBoundsProvider(trailId));
     final selectedDuration = ref.watch(selectedDurationProvider);
 
@@ -278,10 +300,9 @@ class _PlanningContent extends ConsumerWidget {
     // couleur du curseur. `maybeWhen` : un verdict encore en calcul ou
     // indisponible (profil incomplet) ne colore rien et ne casse rien — le
     // curseur reprend alors son ratio etapes/jour.
-    final verdict = ref.watch(feasibilityAssessmentProvider).maybeWhen(
-          data: (a) => a?.globalVerdict,
-          orElse: () => null,
-        );
+    final verdict = ref
+        .watch(feasibilityAssessmentProvider)
+        .maybeWhen(data: (a) => a?.globalVerdict, orElse: () => null);
 
     return Column(
       children: [
@@ -296,8 +317,9 @@ class _PlanningContent extends ConsumerWidget {
             stageCount: stats.stageCount,
             walkingDays: stats.trekDays,
             // Retour Chris #9 : le compteur de jours affiche suit le programme
-            // REEL (marche + repos) -> il se met a jour quand on ajoute un repos
-            // ou qu'on separe une etape. Source unique = les stats du programme.
+            // REEL (marche + repos) -> il se met a jour quand on ajoute un
+            // repos ou qu'on separe une etape. Source unique = les stats du
+            // programme.
             totalDays: stats.totalDays,
             restDays: stats.restDays,
             // Le verdict du decoupage courant colore le curseur (retour 6c).
@@ -318,9 +340,9 @@ class _PlanningContent extends ConsumerWidget {
             // s'etonner, et le silence de l'ecran etait le vrai defaut : depuis
             // GO-61 le verdict vaut la PIRE JOURNEE et elle seule, donc ajouter
             // du repos ne pouvait MATHEMATIQUEMENT rien y changer. Ces phrases
-            // disent quel levier agit (couper une journee) et quel levier n'agit
-            // pas (le repos), pour qu'on ne pousse plus un curseur en esperant
-            // l'effet d'un autre.
+            // disent quel levier agit (couper une journee) et quel levier
+            // n'agit pas (le repos), pour qu'on ne pousse plus un curseur en
+            // esperant l'effet d'un autre.
             //
             // DANS LE `header` DE LA LISTE, ET C'EST VOULU : pose au-dessus, en
             // hauteur fixe, ce paragraphe faisait deborder la colonne sur un
@@ -331,7 +353,7 @@ class _PlanningContent extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const _DurationNote(
-                  icon: Icons.call_split,
+                  icon: StepwaysIcons.allerRetour,
                   textKey: _DurationNoteKind.split,
                 ),
                 // ET QUAND IL N'Y A PLUS RIEN A COUPER, ON LE DIT. Sans cela,
@@ -339,7 +361,7 @@ class _PlanningContent extends ConsumerWidget {
                 // rien pour lui — la situation exacte ou Chris s'est retrouve.
                 if (!stats.canSplitFurther)
                   const _DurationNote(
-                    icon: Icons.report_problem_outlined,
+                    icon: StepwaysIcons.signaler,
                     textKey: _DurationNoteKind.exhausted,
                     emphasis: true,
                   ),
@@ -393,24 +415,26 @@ class _PlanningContent extends ConsumerWidget {
         if (notifier.hasManualRestDays)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.rafraichir,
+              iconSize: 18,
+              label: t.programme.replanButton,
               onPressed: () => _showReplanConfirmation(context, ref),
-              icon: const Icon(Icons.refresh, size: 18),
-              label: Text(t.programme.replanButton),
             ),
           ),
         Padding(
           padding: const EdgeInsets.all(AppTheme.spacingLg),
-          child: ElevatedButton(
+          child: AppButton(
+            label: t.programme.validateNext,
             // Retour Chris #10 (LOT 2) : FIN DE LA BOUCLE Dates<->Programme. Le
             // flux de preparation est ORDONNE : Programme -> Dates -> cockpit.
-            // « Valider » AVANCE donc vers le choix des dates (push /calendar) au
-            // lieu de faire un simple pop (qui, quand on arrivait depuis le
+            // « Valider » AVANCE donc vers le choix des dates (push /calendar)
+            // au lieu de faire un simple pop (qui, quand on arrivait depuis le
             // calendrier, renvoyait AU calendrier -> boucle). Depuis le
             // calendrier, « Valider les dates » clot le sous-flux en retournant
             // au cockpit (voir calendar_screen.dart) : aucun retour circulaire.
             onPressed: () => context.push('/trail/$trailId/calendar'),
-            child: Text(t.programme.validateNext),
           ),
         ),
       ],
@@ -424,18 +448,20 @@ class _PlanningContent extends ConsumerWidget {
         title: Text(t.programme.replanDialog.title),
         content: Text(t.programme.replanDialog.message),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.programme.replanDialog.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.pop(ctx),
-            child: Text(t.programme.replanDialog.cancel),
           ),
-          ElevatedButton(
+          AppButton(
+            label: t.programme.replanDialog.confirm,
             onPressed: () {
               Navigator.pop(ctx);
               ref
                   .read(plannedDaysProvider(trailId).notifier)
                   .regeneratePreservingRestDays();
             },
-            child: Text(t.programme.replanDialog.confirm),
           ),
         ],
       ),
@@ -459,7 +485,7 @@ class _DurationNote extends StatelessWidget {
     this.emphasis = false,
   });
 
-  final IconData icon;
+  final String icon;
   final _DurationNoteKind textKey;
 
   /// Vrai pour l'impasse (plus rien a couper) : la phrase passe en orange
@@ -469,8 +495,9 @@ class _DurationNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color =
-        emphasis ? AppTheme.orangeDifficile : theme.colorScheme.onSurfaceVariant;
+    final color = emphasis
+        ? AppTheme.orangeDifficile
+        : theme.colorScheme.onSurfaceVariant;
     final text = switch (textKey) {
       _DurationNoteKind.split => t.programme.duration.splitNote,
       _DurationNoteKind.exhausted => t.programme.duration.splitExhausted,
@@ -481,7 +508,7 @@ class _DurationNote extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: color),
+          StepIcon(icon, size: 16, color: color),
           const SizedBox(width: AppTheme.spacingXs),
           Expanded(
             child: Text(
@@ -569,12 +596,7 @@ class _StatItem extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 2),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        Text(label, style: theme.textTheme.bodySmall),
       ],
     );
   }
@@ -646,7 +668,8 @@ class _LegendItem extends StatelessWidget {
 }
 
 /// Profil altimetrique simplifie par jour (parite GR20 `_ElevationProfile`).
-/// Barre par jour, hauteur ~ D+, couleur ~ difficulte ; repos = barre basse "R".
+/// Barre par jour, hauteur ~ D+, couleur ~ difficulte ; repos = barre basse
+/// "R".
 class _ElevationProfile extends StatelessWidget {
   const _ElevationProfile({required this.days});
 
@@ -742,9 +765,9 @@ class _ElevationProfile extends StatelessWidget {
 /// Carte d'un jour du programme (parite GR20 `_DayCard`).
 ///
 /// Jour de marche : pastille numero teintee par difficulte, nom(s) d'etape(s),
-/// mini-stats (distance, D+, D-), duree ; tap -> detail de la 1re etape du jour ;
-/// actions Regrouper / Separer / Repos + poignee de drag. Jour de repos : carte
-/// dediee avec suppression.
+/// mini-stats (distance, D+, D-), duree ; tap -> detail de la 1re etape du jour
+/// ; actions Regrouper / Separer / Repos + poignee de drag. Jour de repos :
+/// carte dediee avec suppression.
 class _DayCard extends ConsumerWidget {
   const _DayCard({
     super.key,
@@ -797,14 +820,13 @@ class _DayCard extends ConsumerWidget {
 
   /// Traduit le code de blocage de SEPARER en libelle i18n (R12, LOT L9).
   ///
-  /// `portion` est arrive avec la tache 558 : une etape deja coupee en deux ne
-  /// se recoupe pas, et il faut le DIRE — c'est different de « rien a couper ».
+  /// Le code `portion` a disparu avec le decoupage d'etape (tache 634,
+  /// DEM-260929-1327) : il n'existe plus de demi-etape, donc plus de cas
+  /// « deja coupee ».
   String _splitBlockedLabel(String? code) {
     switch (code) {
       case 'locked':
         return t.programme.splitBlocked.locked;
-      case 'portion':
-        return t.programme.splitBlocked.portion;
       default:
         return t.programme.splitBlocked.single;
     }
@@ -881,8 +903,6 @@ class _DayCard extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(height: AppTheme.spacingXs),
@@ -892,16 +912,16 @@ class _DayCard extends ConsumerWidget {
                       runSpacing: AppTheme.spacingXs,
                       children: [
                         DayMiniStat(
-                          icon: Icons.straighten,
+                          icon: StepwaysIcons.distance,
                           value: '${day.totalDistanceKm.toStringAsFixed(1)} km',
                         ),
                         DayMiniStat(
-                          icon: Icons.arrow_upward,
+                          icon: StepwaysIcons.flecheHaut,
                           value: '${day.totalElevationGainM} m D+',
                           color: AppTheme.rougeExtreme,
                         ),
                         DayMiniStat(
-                          icon: Icons.arrow_downward,
+                          icon: StepwaysIcons.flecheBas,
                           value: '${day.totalElevationLossM} m D-',
                           color: theme.colorScheme.primary,
                         ),
@@ -909,27 +929,27 @@ class _DayCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppTheme.spacingXs),
                     // Duree.
-                    DayMiniStat(icon: Icons.schedule, value: durationStr),
+                    DayMiniStat(icon: StepwaysIcons.clock, value: durationStr),
                   ],
                 ),
               ),
               // Actions du jour + poignee de drag.
               //
-              // Regrouper ET Separer sont TOUJOURS visibles (parite GR20 pour le
-              // merge, etendu au split) : quand l'action est impossible, le
+              // Regrouper ET Separer sont TOUJOURS visibles (parite GR20 pour
+              // le merge, etendu au split) : quand l'action est impossible, le
               // bouton est grise et un tap explique pourquoi (snackbar). Ainsi
               // chaque jour montre clairement ce qu'il peut faire — la liste ne
               // reste jamais « inerte ».
               Column(
                 children: [
-                  const Icon(
-                    Icons.drag_handle,
+                  const StepIcon(
+                    StepwaysIcons.poignee,
                     color: AppTheme.grisGranite,
                     size: 20,
                   ),
                   const SizedBox(height: 4),
                   DayActionChip(
-                    icon: Icons.compress,
+                    icon: StepwaysIcons.compresser,
                     label: t.programme.actions.merge,
                     tone: DayActionTone.principal,
                     enabled: canMerge,
@@ -941,7 +961,7 @@ class _DayCard extends ConsumerWidget {
                           ),
                   ),
                   DayActionChip(
-                    icon: Icons.call_split,
+                    icon: StepwaysIcons.allerRetour,
                     label: t.programme.actions.split,
                     tone: DayActionTone.secondaire,
                     enabled: canSplit,
@@ -953,7 +973,7 @@ class _DayCard extends ConsumerWidget {
                           ),
                   ),
                   DayActionChip(
-                    icon: Icons.self_improvement,
+                    icon: StepwaysIcons.preparationPhysique,
                     label: t.programme.actions.rest,
                     tone: DayActionTone.principal,
                     onPressed: onAddRestDay,
@@ -1004,8 +1024,8 @@ class _DayCard extends ConsumerWidget {
             Expanded(
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.self_improvement,
+                  const StepIcon(
+                    StepwaysIcons.preparationPhysique,
                     size: 20,
                     color: restColor,
                   ),
@@ -1017,8 +1037,6 @@ class _DayCard extends ConsumerWidget {
                         fontWeight: FontWeight.w600,
                         color: restColor,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -1026,16 +1044,16 @@ class _DayCard extends ConsumerWidget {
             ),
             Column(
               children: [
-                const Icon(
-                  Icons.drag_handle,
+                const StepIcon(
+                  StepwaysIcons.poignee,
                   color: AppTheme.grisGranite,
                   size: 20,
                 ),
                 if (onRemoveRestDay != null) ...[
                   const SizedBox(height: 4),
                   IconButton(
-                    icon: const Icon(Icons.remove_circle_outline, size: 20),
-                    color: AppTheme.rougeUrgence,
+                    icon: const StepIcon(StepwaysIcons.moins, size: 20),
+                    color: AppTheme.emergencyRed,
                     tooltip: t.programme.actions.removeRest,
                     onPressed: onRemoveRestDay,
                     padding: EdgeInsets.zero,
@@ -1079,8 +1097,8 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.route,
+            StepIcon(
+              StepwaysIcons.itineraire,
               size: 80,
               color: AppTheme.grisGranite.withAlpha(80),
             ),
@@ -1101,10 +1119,11 @@ class _EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingXl),
-            ElevatedButton.icon(
+            AppButton(
+              icon: StepwaysIcons.itineraire,
+              iconSize: 18,
+              label: t.programme.empty.action,
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const Icon(Icons.route),
-              label: Text(t.programme.empty.action),
             ),
           ],
         ),

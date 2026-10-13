@@ -1,3 +1,7 @@
+/// Le porteur des valeurs d'une peau dans ThemeData : degrade, filet
+/// topographique ou photo — jamais un choix fait ecran par ecran.
+library;
+
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
@@ -164,14 +168,14 @@ class SkinTheme extends ThemeExtension<SkinTheme> {
 
   @override
   int get hashCode => Object.hash(
-        skin,
-        titleFontFamily,
-        headerStyle,
-        cardStyle,
-        usesImagery,
-        usesMonoData,
-        scrimOpacity,
-      );
+    skin,
+    titleFontFamily,
+    headerStyle,
+    cardStyle,
+    usesImagery,
+    usesMonoData,
+    scrimOpacity,
+  );
 
   @override
   String toString() => 'SkinTheme(${skin.name})';

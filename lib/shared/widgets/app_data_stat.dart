@@ -1,7 +1,12 @@
+/// Le « gros chiffre » de l'app : valeur a chasse fixe, unite plus petite,
+/// libelle discret — pour que les chiffres s'alignent d'un ecran a l'autre.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/skin_theme.dart';
+import '../../core/branding/stepways_icons.dart';
 
 /// Bloc data "gros chiffre" reutilisable (SW-SKIN-L5).
 ///
@@ -19,8 +24,8 @@ import '../../core/theme/skin_theme.dart';
 ///
 /// A11y : la valeur, l'unite et le label forment UN seul noeud semantique
 /// (`Semantics(label: "$label : $value $unit")`) et le visuel est masque aux
-/// lecteurs d'ecran (`ExcludeSemantics`) — meme contrat que l'ancien `_StatTile`
-/// du HUD tracking. Le texte visible reste soumis au [textScale].
+/// lecteurs d'ecran (`ExcludeSemantics`) — meme contrat que l'ancien
+/// `_StatTile` du HUD tracking. Le texte visible reste soumis au [textScale].
 class AppDataStat extends StatelessWidget {
   const AppDataStat({
     super.key,
@@ -49,7 +54,7 @@ class AppDataStat extends StatelessWidget {
   /// Icone optionnelle au-dessus de la valeur (teintee accent). Reprend le
   /// pictogramme des tuiles du HUD tracking ; `null` => pas d'icone (hub,
   /// fiche etape).
-  final IconData? icon;
+  final String? icon;
 
   /// Force le rendu mono tabular de la valeur. `null` => on suit la peau active
   /// (`SkinTheme.usesMonoData`). Expose pour tester / forcer le cockpit sans
@@ -88,13 +93,15 @@ class AppDataStat extends StatelessWidget {
       fontWeight: FontWeight.w600,
     );
 
-    final labelStyle = theme.textTheme.bodySmall?.copyWith(
+    final labelStyle =
+        theme.textTheme.bodySmall?.copyWith(
           color: labelColor ?? AppTheme.grisTexteSecondaire,
           fontSize: 12,
         ) ??
         TextStyle(color: labelColor ?? AppTheme.grisTexteSecondaire);
 
-    // Semantique : un seul noeud "label : value unit" (unite incluse si fournie).
+    // Semantique : un seul noeud "label : value unit" (unite incluse si
+    // fournie).
     final semanticsValue = unit == null ? value : '$value $unit';
 
     return Semantics(
@@ -105,11 +112,11 @@ class AppDataStat extends StatelessWidget {
           crossAxisAlignment: crossAxisAlignment,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 18, color: theme.colorScheme.primary),
+              StepIcon(icon!, size: 18, color: theme.colorScheme.primary),
               const SizedBox(height: 2),
             ],
-            // Valeur + unite sur la meme ligne de base : l'unite s'aligne sur la
-            // base alphabetique de la valeur (Row baseline).
+            // Valeur + unite sur la meme ligne de base : l'unite s'aligne sur
+            // la base alphabetique de la valeur (Row baseline).
             Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -133,8 +140,6 @@ class AppDataStat extends StatelessWidget {
             Text(
               label,
               style: labelStyle,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
               textAlign: crossAxisAlignment == CrossAxisAlignment.center
                   ? TextAlign.center
                   : TextAlign.start,

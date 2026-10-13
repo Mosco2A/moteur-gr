@@ -11,5 +11,5 @@ enum ShareCardTemplate {
   journey,
 
   /// Template "Étape" : focus sur une étape spécifique
-  stage;
+  stage,
 }

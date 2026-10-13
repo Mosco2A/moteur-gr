@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/trek/data/arrival_detection_service.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
-import 'package:moteur_gr/features/trek/domain/trek_completion.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/domain/trek_completion.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 
@@ -25,7 +25,7 @@ import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 void main() {
   /// Cree une session active minimale, eventuellement avec des etapes deja
   /// completees (retro-compat : defaut = aucune).
-  TrekSession _activeSession({List<String> completed = const []}) {
+  TrekSession activeSession({List<String> completed = const []}) {
     return TrekSession(
       id: 'sess-gate-001',
       trailId: 'sentier-test',
@@ -36,17 +36,17 @@ void main() {
   }
 
   /// Etat de tracking « en cours » portant [session].
-  TrackingSessionState _recording(TrekSession session) => TrackingSessionState(
-        status: TrackingSessionStatus.recording,
-        session: session,
-      );
+  TrackingSessionState recording(TrekSession session) => TrackingSessionState(
+    status: TrackingSessionStatus.recording,
+    session: session,
+  );
 
   group('recordStageCompleted — persistance ALPHA des etapes marchees', () {
     test('ajoute chaque etape completee sur la session (sans doublon)', () {
       final container = ProviderContainer(
         overrides: [
           trekSessionManagerProvider.overrideWith(
-            () => _GateNotifier(_recording(_activeSession())),
+            () => _GateNotifier(recording(activeSession())),
           ),
         ],
       );
@@ -87,7 +87,7 @@ void main() {
         overrides: [
           trekSessionManagerProvider.overrideWith(
             () => _GateNotifier(
-              _recording(_activeSession(completed: ['s1', 's2', 's3'])),
+              recording(activeSession(completed: ['s1', 's2', 's3'])),
             ),
           ),
         ],
@@ -100,48 +100,64 @@ void main() {
       notifier.completeOnArrival(fullyWalked: true);
 
       // La porte s'est ouverte : parcoursFullyWalked fige a vrai AVANT stop...
-      expect(notifier.fullyWalkedAtStop, isTrue,
-          reason: 'Le finisher legitime doit marquer la session fully walked.');
+      expect(
+        notifier.fullyWalkedAtStop,
+        isTrue,
+        reason: 'Le finisher legitime doit marquer la session fully walked.',
+      );
       // ... et le trek a bien ete finalise (stop appele une fois).
       expect(notifier.stopCallCount, 1);
     });
 
-    test('demi-tour (fullyWalked=false) -> AUCUN finish, session preservee', () {
-      // Derniere etape touchee mais intermediaires manquantes : gate fermee.
-      final container = ProviderContainer(
-        overrides: [
-          trekSessionManagerProvider.overrideWith(
-            () => _GateNotifier(
-              _recording(_activeSession(completed: ['s1', 's3'])),
+    test(
+      'demi-tour (fullyWalked=false) -> AUCUN finish, session preservee',
+      () {
+        // Derniere etape touchee mais intermediaires manquantes : gate fermee.
+        final container = ProviderContainer(
+          overrides: [
+            trekSessionManagerProvider.overrideWith(
+              () => _GateNotifier(
+                recording(activeSession(completed: ['s1', 's3'])),
+              ),
             ),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
+          ],
+        );
+        addTearDown(container.dispose);
 
-      final notifier =
-          container.read(trekSessionManagerProvider.notifier) as _GateNotifier;
+        final notifier =
+            container.read(trekSessionManagerProvider.notifier)
+                as _GateNotifier;
 
-      notifier.completeOnArrival(fullyWalked: false);
+        notifier.completeOnArrival(fullyWalked: false);
 
-      // Porte fermee : pas de stop, pas de felicitations.
-      expect(notifier.stopCallCount, 0,
-          reason: 'Un demi-tour ne doit jamais terminer le trek.');
-      final session = container.read(trekSessionManagerProvider).session;
-      expect(session, isNotNull);
-      expect(session!.status, 'active',
-          reason: 'La session reste active apres un demi-tour.');
-      expect(session.parcoursFullyWalked, isFalse,
-          reason: 'Pas de finisher => parcoursFullyWalked reste faux.');
-    });
+        // Porte fermee : pas de stop, pas de felicitations.
+        expect(
+          notifier.stopCallCount,
+          0,
+          reason: 'Un demi-tour ne doit jamais terminer le trek.',
+        );
+        final session = container.read(trekSessionManagerProvider).session;
+        expect(session, isNotNull);
+        expect(
+          session!.status,
+          'active',
+          reason: 'La session reste active apres un demi-tour.',
+        );
+        expect(
+          session.parcoursFullyWalked,
+          isFalse,
+          reason: 'Pas de finisher => parcoursFullyWalked reste faux.',
+        );
+      },
+    );
 
     test('idempotent hors session active (deja arrete) -> no-op', () {
       final container = ProviderContainer(
         overrides: [
           trekSessionManagerProvider.overrideWith(
-            () => _GateNotifier(const TrackingSessionState(
-              status: TrackingSessionStatus.stopped,
-            )),
+            () => _GateNotifier(
+              const TrackingSessionState(status: TrackingSessionStatus.stopped),
+            ),
           ),
         ],
       );
@@ -158,85 +174,102 @@ void main() {
   // Bout-en-bout du PONT d'arrivee (arrivalCompletionListenerProvider) : on
   // pilote de vrais ArrivalEvent dans le sens de marche et on verifie que la
   // porte du finisher n'est franchie que si toutes les etapes sont marchees.
-  group('arrivalCompletionListenerProvider — pont arrivee -> gate finisher', () {
-    // Parcours NS a 3 etapes : s1 -> s2 -> s3 (s3 = derniere reelle).
-    const plan = TrekPlan(
-      orderedStageIds: ['s1', 's2', 's3'],
-      direction: 'NS',
-      isFullTrail: true,
-    );
-
-    ProviderContainer makeContainer(StreamController<ArrivalEvent> ctrl) {
-      final container = ProviderContainer(
-        overrides: [
-          currentTrekPlanProvider.overrideWithValue(plan),
-          arrivalEventsProvider.overrideWith((ref) => ctrl.stream),
-          trekSessionManagerProvider.overrideWith(
-            () => _GateNotifier(_recording(_activeSession())),
-          ),
-        ],
+  group(
+    'arrivalCompletionListenerProvider — pont arrivee -> gate finisher',
+    () {
+      // Parcours NS a 3 etapes : s1 -> s2 -> s3 (s3 = derniere reelle).
+      const plan = TrekPlan(
+        orderedStageIds: ['s1', 's2', 's3'],
+        direction: 'NS',
+        isFullTrail: true,
       );
-      // Active le pont (sinon le listener ne tourne pas).
-      container.listen(arrivalCompletionListenerProvider, (_, __) {});
-      return container;
-    }
 
-    ArrivalEvent evt(String stageId, {required bool isFinal}) => ArrivalEvent(
-          type: isFinal ? 'trailEnd' : 'stageEnd',
-          stageId: stageId,
-          timestamp: DateTime.now(),
+      ProviderContainer makeContainer(StreamController<ArrivalEvent> ctrl) {
+        final container = ProviderContainer(
+          overrides: [
+            currentTrekPlanProvider.overrideWithValue(plan),
+            arrivalEventsProvider.overrideWith((ref) => ctrl.stream),
+            trekSessionManagerProvider.overrideWith(
+              () => _GateNotifier(recording(activeSession())),
+            ),
+          ],
         );
+        // Active le pont (sinon le listener ne tourne pas).
+        container.listen(arrivalCompletionListenerProvider, (_, __) {});
+        return container;
+      }
 
-    test('parcours entier marche (s1,s2 puis trailEnd s3) -> FINISH', () async {
-      final ctrl = StreamController<ArrivalEvent>();
-      final container = makeContainer(ctrl);
-      addTearDown(() {
-        container.dispose();
-        ctrl.close();
-      });
-      final notifier =
-          container.read(trekSessionManagerProvider.notifier) as _GateNotifier;
-
-      ctrl.add(evt('s1', isFinal: false));
-      ctrl.add(evt('s2', isFinal: false));
-      ctrl.add(evt('s3', isFinal: true)); // derniere reelle
-      await Future<void>.delayed(const Duration(milliseconds: 20));
-
-      expect(
-        container.read(trekSessionManagerProvider).session?.completedStages,
-        containsAll(<String>['s1', 's2', 's3']),
+      ArrivalEvent evt(String stageId, {required bool isFinal}) => ArrivalEvent(
+        type: isFinal ? 'trailEnd' : 'stageEnd',
+        stageId: stageId,
+        timestamp: DateTime.now(),
       );
-      expect(notifier.stopCallCount, 1,
-          reason: 'Parcours complet marche -> la porte s ouvre, finish.');
-      expect(notifier.fullyWalkedAtStop, isTrue);
-    });
 
-    test('demi-tour (s1 puis trailEnd s3, s2 jamais marchee) -> AUCUN finish',
+      test(
+        'parcours entier marche (s1,s2 puis trailEnd s3) -> FINISH',
         () async {
-      final ctrl = StreamController<ArrivalEvent>();
-      final container = makeContainer(ctrl);
-      addTearDown(() {
-        container.dispose();
-        ctrl.close();
-      });
-      final notifier =
-          container.read(trekSessionManagerProvider.notifier) as _GateNotifier;
+          final ctrl = StreamController<ArrivalEvent>();
+          final container = makeContainer(ctrl);
+          addTearDown(() {
+            container.dispose();
+            ctrl.close();
+          });
+          final notifier =
+              container.read(trekSessionManagerProvider.notifier)
+                  as _GateNotifier;
 
-      // Le randonneur marche s1, revient a s3 par un raccourci/arrivee
-      // opportuniste : s2 (intermediaire) n'est JAMAIS completee.
-      ctrl.add(evt('s1', isFinal: false));
-      ctrl.add(evt('s3', isFinal: true));
-      await Future<void>.delayed(const Duration(milliseconds: 20));
+          ctrl.add(evt('s1', isFinal: false));
+          ctrl.add(evt('s2', isFinal: false));
+          ctrl.add(evt('s3', isFinal: true)); // derniere reelle
+          await Future<void>.delayed(const Duration(milliseconds: 20));
 
-      final session = container.read(trekSessionManagerProvider).session;
-      expect(session?.completedStages, containsAll(<String>['s1', 's3']));
-      expect(session?.completedStages, isNot(contains('s2')));
-      expect(notifier.stopCallCount, 0,
-          reason: 'Etape intermediaire manquante -> porte fermee, pas de '
-              'finish ni felicitations.');
-      expect(session?.status, 'active');
-    });
-  });
+          expect(
+            container.read(trekSessionManagerProvider).session?.completedStages,
+            containsAll(<String>['s1', 's2', 's3']),
+          );
+          expect(
+            notifier.stopCallCount,
+            1,
+            reason: 'Parcours complet marche -> la porte s ouvre, finish.',
+          );
+          expect(notifier.fullyWalkedAtStop, isTrue);
+        },
+      );
+
+      test(
+        'demi-tour (s1 puis trailEnd s3, s2 jamais marchee) -> AUCUN finish',
+        () async {
+          final ctrl = StreamController<ArrivalEvent>();
+          final container = makeContainer(ctrl);
+          addTearDown(() {
+            container.dispose();
+            ctrl.close();
+          });
+          final notifier =
+              container.read(trekSessionManagerProvider.notifier)
+                  as _GateNotifier;
+
+          // Le randonneur marche s1, revient a s3 par un raccourci/arrivee
+          // opportuniste : s2 (intermediaire) n'est JAMAIS completee.
+          ctrl.add(evt('s1', isFinal: false));
+          ctrl.add(evt('s3', isFinal: true));
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+
+          final session = container.read(trekSessionManagerProvider).session;
+          expect(session?.completedStages, containsAll(<String>['s1', 's3']));
+          expect(session?.completedStages, isNot(contains('s2')));
+          expect(
+            notifier.stopCallCount,
+            0,
+            reason:
+                'Etape intermediaire manquante -> porte fermee, pas de '
+                'finish ni felicitations.',
+          );
+          expect(session?.status, 'active');
+        },
+      );
+    },
+  );
 
   group('TrekSession — serialisation retro-compatible (persistance ALPHA)', () {
     test('JSON legacy sans nouveaux champs -> defauts surs (pas de faux '

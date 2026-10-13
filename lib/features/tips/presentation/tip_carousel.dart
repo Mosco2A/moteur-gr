@@ -1,15 +1,22 @@
+/// Le defilement des fiches conseil, filtrees par categorie et triees par
+/// priorite decroissante.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/mesure_de_texte.dart';
 import '../data/tip_card_repository.dart';
 import '../data/tip_category_config.dart';
-import '../domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 import 'tip_detail_sheet.dart';
 import 'tip_points_list.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Provider des fiches conseil filtrees par categorie.
 ///
@@ -100,7 +107,8 @@ class _CategoryChips extends StatelessWidget {
             child: FilterChip(
               // « Toutes » etait ecrit en dur en francais alors que
               // `t.tips.allCategories` porte le mot dans les cinq langues
-              // (tache 557, meme famille de defaut que les intitules du detail).
+              // (tache 557, meme famille de defaut que les intitules du
+              // detail).
               label: Text(t.tips.allCategories),
               selected: selectedCategory == null,
               onSelected: (_) => onCategorySelected(null),
@@ -117,7 +125,7 @@ class _CategoryChips extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.only(right: AppTheme.spacingSm),
               child: FilterChip(
-                avatar: Icon(
+                avatar: StepIcon(
                   resolveIcon(meta.icon),
                   size: 16,
                   color: selectedCategory == cat
@@ -142,6 +150,59 @@ class _CategoryChips extends StatelessWidget {
   }
 }
 
+/// HAUTEUR DU CARROUSEL, MESUREE SUR LE TITRE LE PLUS LONG (tache 749).
+///
+/// Part de la hauteur d'origine ([_hauteurPlancherDuCarrousel]) et y ajoute ce
+/// que le titre le plus exigeant reclame AU-DELA d'une premiere ligne. Une
+/// fiche dont le titre tient sur une ligne ne change rien ; un titre de trois
+/// lignes fait grandir le carrousel de deux lignes, au lieu d'etre coupe.
+double _hauteurDuCarrousel(
+  BuildContext context, {
+  required List<TipCard> cards,
+}) {
+  final theme = Theme.of(context);
+  final styleTitre = theme.textTheme.titleMedium;
+  if (styleTitre == null || cards.isEmpty) {
+    return _hauteurPlancherDuCarrousel;
+  }
+
+  final media = MediaQuery.of(context);
+  // Largeur offerte au titre : la fiche occupe 85 % de la fenetre
+  // (`viewportFraction`), moins ses marges et son padding interne.
+  final largeurTexte =
+      media.size.width * _fractionDeFenetreDUneFiche -
+      AppTheme.spacingSm * 2 -
+      AppTheme.spacingMd * 2;
+  if (largeurTexte <= 0) return _hauteurPlancherDuCarrousel;
+
+  final echelle = media.textScaler;
+  final hauteurDUneLigne = hauteurDesTextes(
+    blocs: [(texte: 'M', style: styleTitre, maxLignes: 1)],
+    largeurTexte: largeurTexte,
+    echelle: echelle,
+    direction: Directionality.of(context),
+  );
+
+  var supplement = 0.0;
+  for (final card in cards) {
+    final hauteurDuTitre = hauteurDesTextes(
+      blocs: [(texte: card.localizedTitle, style: styleTitre, maxLignes: null)],
+      largeurTexte: largeurTexte,
+      echelle: echelle,
+      direction: Directionality.of(context),
+    );
+    final delta = hauteurDuTitre - hauteurDUneLigne;
+    if (delta > supplement) supplement = delta;
+  }
+  return _hauteurPlancherDuCarrousel + supplement + margeDArrondiDuPeintre;
+}
+
+/// Hauteur du carrousel d'avant le lot 749 — devenue son plancher.
+const double _hauteurPlancherDuCarrousel = 220;
+
+/// Part de la largeur de fenetre qu'occupe une fiche (`viewportFraction`).
+const double _fractionDeFenetreDUneFiche = 0.85;
+
 /// Vue carrousel PageView.builder swipeable.
 ///
 /// Affiche les fiches conseil en pages horizontales.
@@ -155,8 +216,17 @@ class _CarouselView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // LE CARROUSEL GRANDIT AVEC LE TITRE LE PLUS LONG (tache 749).
+    //
+    // La boite faisait 220 px quoi qu'il arrive, et le titre de fiche etait
+    // donc coupe a deux lignes pour y tenir. Un carrousel horizontal a besoin
+    // d'une hauteur COMMUNE a toutes ses fiches — c'est l'un des rares
+    // endroits ou une hauteur unique se justifie vraiment — mais cette hauteur
+    // peut etre MESUREE sur le titre le plus exigeant au lieu d'etre ecrite a
+    // la main. 220 px reste le plancher : une fiche a titre court est au pixel
+    // identique a ce qu'elle etait.
     return SizedBox(
-      height: 220,
+      height: _hauteurDuCarrousel(context, cards: cards),
       child: PageView.builder(
         controller: PageController(viewportFraction: 0.85),
         itemCount: cards.length,
@@ -182,7 +252,11 @@ class _CarouselView extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(resolveIcon(meta.icon), color: color, size: 20),
+                        StepIcon(
+                          resolveIcon(meta.icon),
+                          color: color,
+                          size: 20,
+                        ),
                         const SizedBox(width: AppTheme.spacingSm),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -205,26 +279,35 @@ class _CarouselView extends StatelessWidget {
                         ),
                         const Spacer(),
                         if (card.priority >= 8)
-                          const Icon(
-                            Icons.priority_high,
-                            color: AppTheme.rougeUrgence,
+                          const StepIcon(
+                            StepwaysIcons.danger,
+                            color: AppTheme.emergencyRed,
                             size: 18,
                           ),
                       ],
                     ),
                     const SizedBox(height: AppTheme.spacingMd),
+                    // Titre ECRIT EN ENTIER (tache 749) : il etait coupe a
+                    // deux lignes, et c'est le carrousel qui grandit
+                    // desormais (voir [_hauteurDuCarrousel]).
                     Text(
                       card.localizedTitle,
                       style: theme.textTheme.titleMedium,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: AppTheme.spacingSm),
                     // APERCU : les deux premiers points de la fiche (calibre
                     // 555). Le detail complet ouvre les cinq points.
+                    //
+                    // TACHE 749 — CE BLOC DEFILE VRAIMENT MAINTENANT. Il
+                    // portait `NeverScrollableScrollPhysics` : la zone etait
+                    // donc un COUPOIR SILENCIEUX, qui rognait la fin du
+                    // deuxieme point sans points de suspension et sans aucun
+                    // geste pour aller voir la suite. Montrer DEUX points sur
+                    // cinq est un choix de produit assume (calibre 555) et il
+                    // ne change pas ; couper le deuxieme au milieu d'une
+                    // phrase n'en etait pas un.
                     Expanded(
                       child: SingleChildScrollView(
-                        physics: const NeverScrollableScrollPhysics(),
                         child: TipPointsList.fromCard(
                           card: card,
                           maxPoints: 2,
@@ -237,8 +320,8 @@ class _CarouselView extends StatelessWidget {
                     ),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Icon(
-                        Icons.swipe,
+                      child: StepIcon(
+                        StepwaysIcons.geste,
                         size: 16,
                         color: theme.colorScheme.onSurface.withAlpha(100),
                       ),
@@ -268,8 +351,8 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.lightbulb_outline,
+            StepIcon(
+              StepwaysIcons.ficheConseil,
               size: 48,
               color: theme.colorScheme.onSurface.withAlpha(100),
             ),
@@ -293,38 +376,38 @@ class _EmptyState extends StatelessWidget {
 Color categoryColor(String category, ThemeData theme) {
   switch (category) {
     case "preparation":
-      return const Color(0xFF42A5F5);
+      return CouleursSemantiques.conseilPreparation;
     case "equipment":
-      return const Color(0xFFFF7043);
+      return CouleursSemantiques.conseilEquipement;
     case "nutrition":
-      return const Color(0xFF66BB6A);
+      return CouleursSemantiques.conseilNutrition;
     case "safety":
-      return const Color(0xFFEF5350);
+      return CouleursSemantiques.conseilSecurite;
     case "nature":
-      return const Color(0xFF26A69A);
+      return CouleursSemantiques.conseilNature;
     case "recovery":
-      return const Color(0xFFAB47BC);
+      return CouleursSemantiques.conseilRecuperation;
     default:
       return theme.colorScheme.primary;
   }
 }
 
 /// Resout un nom d icone Material en IconData.
-IconData resolveIcon(String iconName) {
+String resolveIcon(String iconName) {
   switch (iconName) {
     case "checklist":
-      return Icons.checklist;
+      return StepwaysIcons.sacADos;
     case "backpack":
-      return Icons.backpack;
+      return StepwaysIcons.sacADos;
     case "restaurant":
-      return Icons.restaurant;
+      return StepwaysIcons.restauration;
     case "health_and_safety":
-      return Icons.health_and_safety;
+      return StepwaysIcons.ficheMedicale;
     case "forest":
-      return Icons.forest;
+      return StepwaysIcons.foret;
     case "self_improvement":
-      return Icons.self_improvement;
+      return StepwaysIcons.preparationPhysique;
     default:
-      return Icons.info;
+      return StepwaysIcons.info;
   }
 }

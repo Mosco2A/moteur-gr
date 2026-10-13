@@ -1,3 +1,7 @@
+/// Le test de marche de six minutes, date : seul le DERNIER resultat est garde,
+/// puisqu'on le refait pour suivre ses progres.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'walk_test_result.freezed.dart';

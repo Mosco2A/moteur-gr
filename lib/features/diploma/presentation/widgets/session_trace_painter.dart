@@ -56,11 +56,12 @@ class SessionTracePainter extends CustomPainter {
 
     // Latitude croissante = vers le haut -> inversion de l'axe y.
     Offset project(Offset p) => Offset(
-          offsetX + (p.dx - minX) * scale,
-          offsetY + (maxY - p.dy) * scale,
-        );
+      offsetX + (p.dx - minX) * scale,
+      offsetY + (maxY - p.dy) * scale,
+    );
 
-    final path = Path()..moveTo(project(points.first).dx, project(points.first).dy);
+    final path = Path()
+      ..moveTo(project(points.first).dx, project(points.first).dy);
     for (final p in points.skip(1)) {
       final proj = project(p);
       path.lineTo(proj.dx, proj.dy);

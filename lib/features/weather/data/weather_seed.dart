@@ -36,16 +36,22 @@ abstract final class WeatherSeed {
       final wind = 5.0 + ((seed + i * 7) % 30); // 5–34 km/h
       final precip = code >= 61 ? (5.0 + (i % 4) * 6) : 0.0;
       final prob = code >= 80 ? 70.0 : (code >= 61 ? 40.0 : 5.0);
-      list.add(DayForecast(
-        date: DateTime(base.year, base.month, base.day).add(Duration(days: i)),
-        temperatureMax: tMax.toDouble(),
-        temperatureMin: tMin.toDouble(),
-        precipitationMm: precip,
-        windSpeedKmh: wind.toDouble(),
-        uvIndex: (2 + (seed + i) % 8).toDouble(), // 2–9
-        weatherCode: code,
-        precipitationProbabilityMax: prob,
-      ));
+      list.add(
+        DayForecast(
+          date: DateTime(
+            base.year,
+            base.month,
+            base.day,
+          ).add(Duration(days: i)),
+          temperatureMax: tMax.toDouble(),
+          temperatureMin: tMin.toDouble(),
+          precipitationMm: precip,
+          windSpeedKmh: wind.toDouble(),
+          uvIndex: (2 + (seed + i) % 8).toDouble(), // 2–9
+          weatherCode: code,
+          precipitationProbabilityMax: prob,
+        ),
+      );
     }
 
     return WeatherForecast(

@@ -8,8 +8,10 @@ void main() {
         // Paris : 48.8566, 2.3522
         // Marseille : 43.2965, 5.3698
         final distance = GeoUtils.haversineDistance(
-          48.8566, 2.3522,
-          43.2965, 5.3698,
+          48.8566,
+          2.3522,
+          43.2965,
+          5.3698,
         );
 
         // La distance a vol d'oiseau est d'environ 660 km
@@ -18,18 +20,17 @@ void main() {
       });
 
       test('distance entre deux points identiques vaut 0', () {
-        final distance = GeoUtils.haversineDistance(
-          45.0, 3.0,
-          45.0, 3.0,
-        );
+        final distance = GeoUtils.haversineDistance(45.0, 3.0, 45.0, 3.0);
         expect(distance, equals(0.0));
       });
 
       test('distance courte entre deux points proches', () {
         // Deux points separes d'environ 1 km
         final distance = GeoUtils.haversineDistance(
-          45.0000, 3.0000,
-          45.0090, 3.0000,
+          45.0000,
+          3.0000,
+          45.0090,
+          3.0000,
         );
 
         // ~1 km en latitude (1 degre lat ~ 111 km, 0.009 ~ 1 km)
@@ -63,9 +64,12 @@ void main() {
         // Segment horizontal (meme latitude)
         // Point au-dessus du milieu du segment
         final result = GeoUtils.projectPointOnSegment(
-          45.001, 3.005, // point decale au nord
-          45.000, 3.000, // segA
-          45.000, 3.010, // segB
+          45.001,
+          3.005, // point decale au nord
+          45.000,
+          3.000, // segA
+          45.000,
+          3.010, // segB
         );
 
         // La projection devrait etre a peu pres au milieu du segment
@@ -78,9 +82,12 @@ void main() {
       test('projection hors segment clampe a l extremite A', () {
         // Point avant le debut du segment
         final result = GeoUtils.projectPointOnSegment(
-          45.000, 2.990, // point avant segA
-          45.000, 3.000, // segA
-          45.000, 3.010, // segB
+          45.000,
+          2.990, // point avant segA
+          45.000,
+          3.000, // segA
+          45.000,
+          3.010, // segB
         );
 
         // Devrait clamper sur segA
@@ -91,9 +98,12 @@ void main() {
       test('projection hors segment clampe a l extremite B', () {
         // Point apres la fin du segment
         final result = GeoUtils.projectPointOnSegment(
-          45.000, 3.020, // point apres segB
-          45.000, 3.000, // segA
-          45.000, 3.010, // segB
+          45.000,
+          3.020, // point apres segB
+          45.000,
+          3.000, // segA
+          45.000,
+          3.010, // segB
         );
 
         // Devrait clamper sur segB

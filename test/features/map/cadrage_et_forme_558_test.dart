@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/map/domain/stage_focus.dart';
 import 'package:moteur_gr/features/map/widgets/stage_progress_bar.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// TACHE 558 — LA CARTE : OU ELLE S'OUVRE, ET A QUOI ELLE RESSEMBLE.
 ///
@@ -19,19 +20,24 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 ///    pour cet ecran! » — les six chiffres etaient poses a plat dans un `Wrap`,
 ///    sous une phrase qui expliquait les tirets.
 void main() {
-  StageModel stage(int num, double lat0, double lng0, double lat1, double lng1) =>
-      StageModel(
-        trailId: 'test-trail',
-        stageNumber: num,
-        name: 'Etape $num',
-        distanceKm: 10,
-        elevationGainM: 400,
-        elevationLossM: 300,
-        startLat: lat0,
-        startLng: lng0,
-        endLat: lat1,
-        endLng: lng1,
-      );
+  StageModel stage(
+    int num,
+    double lat0,
+    double lng0,
+    double lat1,
+    double lng1,
+  ) => StageModel(
+    trailId: 'test-trail',
+    stageNumber: num,
+    name: 'Etape $num',
+    distanceKm: 10,
+    elevationGainM: 400,
+    elevationLossM: 300,
+    startLat: lat0,
+    startLng: lng0,
+    endLat: lat1,
+    endLng: lng1,
+  );
 
   // Trois etapes qui se suivent le long d'un meridien : de quoi distinguer sans
   // ambiguite le troncon d'une etape du sentier entier.
@@ -42,14 +48,14 @@ void main() {
   ];
 
   List<TrackPoint> trace() => [
-        for (var i = 0; i <= 30; i++)
-          TrackPoint(
-            lat: 42.00 + i * 0.01,
-            lng: 9.00,
-            altitude: 500,
-            distanceFromStart: i * 1000,
-          ),
-      ];
+    for (var i = 0; i <= 30; i++)
+      TrackPoint(
+        lat: 42.00 + i * 0.01,
+        lng: 9.00,
+        altitude: 500,
+        distanceFromStart: i * 1000,
+      ),
+  ];
 
   // ---------------------------------------------------------------------------
   group('mapFocusStage — l etape sur laquelle la carte s ouvre', () {
@@ -63,10 +69,13 @@ void main() {
       expect(mapFocusStage(stages, 3)!.stageNumber, 3);
     });
 
-    test('un numero hors du sentier ne fait rien inventer : premiere etape', () {
-      expect(mapFocusStage(stages, 99)!.stageNumber, 1);
-      expect(mapFocusStage(stages, 0)!.stageNumber, 1);
-    });
+    test(
+      'un numero hors du sentier ne fait rien inventer : premiere etape',
+      () {
+        expect(mapFocusStage(stages, 99)!.stageNumber, 1);
+        expect(mapFocusStage(stages, 0)!.stageNumber, 1);
+      },
+    );
 
     test('« premiere » = plus petit NUMERO, pas premiere de la liste', () {
       // La base peut rendre les lignes dans n importe quel ordre.
@@ -74,11 +83,13 @@ void main() {
       expect(mapFocusStage(desordre, null)!.stageNumber, 1);
     });
 
-    test('aucune etape chargee : on ne cadre sur rien plutot que sur un devine',
-        () {
-      expect(mapFocusStage(const [], 1), isNull);
-      expect(mapFocusStage(null, 1), isNull);
-    });
+    test(
+      'aucune etape chargee : on ne cadre sur rien plutot que sur un devine',
+      () {
+        expect(mapFocusStage(const [], 1), isNull);
+        expect(mapFocusStage(null, 1), isNull);
+      },
+    );
   });
 
   // ---------------------------------------------------------------------------
@@ -88,8 +99,11 @@ void main() {
       final segment = stageTrackSegment(points, stages[0]);
 
       expect(segment, isNotEmpty);
-      expect(segment.length, lessThan(points.length),
-          reason: 'sinon on cadre encore sur tout le sentier');
+      expect(
+        segment.length,
+        lessThan(points.length),
+        reason: 'sinon on cadre encore sur tout le sentier',
+      );
       // Etape 1 = du point 0 au point 10 sur 30 : environ un tiers du trace.
       expect(segment.first.lat, closeTo(42.00, 1e-6));
       expect(segment.last.lat, closeTo(42.10, 1e-6));
@@ -103,15 +117,20 @@ void main() {
       expect(s3.last.lat, closeTo(42.30, 1e-6));
     });
 
-    test('trace absent ou etape hors trace : liste VIDE, et l appelant se rabat',
-        () {
-      expect(stageTrackSegment(const [], stages[0]), isEmpty);
-      expect(stageTrackSegment([trace().first], stages[0]), isEmpty);
-      // Depart et arrivee qui tombent sur le meme point de trace : rien
-      // d'exploitable, on ne fabrique pas un cadrage sur une donnee manquante.
-      final degenere = stage(9, 42.00, 9.00, 42.001, 9.00);
-      expect(stageTrackSegment([trace().first, trace()[1]], degenere), isEmpty);
-    });
+    test(
+      'trace absent ou etape hors trace : liste VIDE, et l appelant se rabat',
+      () {
+        expect(stageTrackSegment(const [], stages[0]), isEmpty);
+        expect(stageTrackSegment([trace().first], stages[0]), isEmpty);
+        // Depart et arrivee qui tombent sur le meme point de trace : rien
+        // d'exploitable, on ne fabrique pas un cadrage sur une donnee manquante.
+        final degenere = stage(9, 42.00, 9.00, 42.001, 9.00);
+        expect(
+          stageTrackSegment([trace().first, trace()[1]], degenere),
+          isEmpty,
+        );
+      },
+    );
 
     test('nearestTrackPointIndex trouve bien le point le plus proche', () {
       final points = trace();
@@ -127,21 +146,42 @@ void main() {
   // seule ligne ou le defaut peut revenir.
   group('la carte ne s ouvre plus sur le sentier entier', () {
     test('le cadrage d ouverture passe par le troncon de l etape', () {
-      final source =
-          File('lib/features/trek/presentation/map/map_screen.dart')
-              .readAsStringSync();
-      expect(source.contains('stageTrackSegment'), isTrue,
-          reason: 'le cadrage doit porter sur le troncon de l etape');
-      expect(source.contains('currentStageNumberProvider'), isTrue,
-          reason: 'et suivre l etape courante quand la base en connait une');
-      expect(source.contains('focusBounds ?? bounds'), isTrue,
-          reason: 'avec un repli EXPLICITE sur le sentier entier');
+      final source = _sourceAvecSesVoisines(
+        'lib/features/trek/presentation/map/map_screen.dart',
+      );
+      expect(
+        source.contains('stageTrackSegment'),
+        isTrue,
+        reason: 'le cadrage doit porter sur le troncon de l etape',
+      );
+      expect(
+        source.contains('currentStageNumberProvider'),
+        isTrue,
+        reason: 'et suivre l etape courante quand la base en connait une',
+      );
+      expect(
+        source.contains('focusBounds ?? bounds'),
+        isTrue,
+        reason: 'avec un repli EXPLICITE sur le sentier entier',
+      );
     });
 
     test('le laius sur les tirets a quitte l ecran', () {
-      final source =
-          File('lib/features/trek/presentation/map/map_screen.dart')
-              .readAsStringSync();
+      // LOT 645-06, VAGUE 2 : cette garde est NEGATIVE — elle affirme une
+      // ABSENCE. Elle lisait la racine `map_screen.dart` en direct, ce qui
+      // suffisait quand la racine portait les 1236 lignes de l'ecran. Depuis la
+      // scission en `part`, la racine ne porte plus que ses imports et ses six
+      // directives : la garde ne lisait plus que 62 lignes, et le voisinage
+      // qu'elle surveille a demenage dans `map_screen_barres.dart`. Elle ne
+      // pouvait donc PLUS JAMAIS rougir — verte en silence, le pire etat d'une
+      // garde. On lit desormais la bibliotheque ENTIERE, racine et morceaux.
+      // LOT 645-06b : plus de `part` (regle 12) ; l'ecran et ses bibliotheques
+      // voisines du meme dossier sont lus ensemble, le voisinage surveille vit
+      // dans `map_content.dart`.
+      // L'attente ne bouge pas d'un caractere : ce laius n'est nulle part.
+      final source = _sourceAvecSesVoisines(
+        'lib/features/trek/presentation/map/map_screen.dart',
+      );
       expect(source.contains('t.map.statsPendingNote'), isFalse);
     });
   });
@@ -149,31 +189,32 @@ void main() {
   // ---------------------------------------------------------------------------
   group('StageProgressBar — FORME GR20 : six cases, deux lignes, centrees', () {
     Widget bar({bool pending = true}) => MaterialApp(
-          home: Scaffold(
-            body: StageProgressBar(
-              stageName: 'Etape 1',
-              distanceRemainingKm: 12,
-              progressRatio: 0,
-              isOffTrack: false,
-              totalDistanceKm: 120.5,
-              distanceCoveredKm: 4.2,
-              elevationGainM: 800,
-              elevationLossM: 600,
-              avgSpeedKmh: 3.4,
-              altitudeM: 1465,
-              showPendingValues: pending,
-            ),
-          ),
-        );
+      home: Scaffold(
+        body: StageProgressBar(
+          stageName: 'Etape 1',
+          distanceRemainingKm: 12,
+          progressRatio: 0,
+          isOffTrack: false,
+          totalDistanceKm: 120.5,
+          distanceCoveredKm: 4.2,
+          elevationGainM: 800,
+          elevationLossM: 600,
+          avgSpeedKmh: 3.4,
+          altitudeM: 1465,
+          showPendingValues: pending,
+        ),
+      ),
+    );
 
-    testWidgets('les six chiffres tiennent sur DEUX lignes de trois',
-        (tester) async {
+    testWidgets('les six chiffres tiennent sur DEUX lignes de trois', (
+      tester,
+    ) async {
       await tester.pumpWidget(bar());
       await tester.pumpAndSettle();
 
       // Les six libelles sont la...
       for (final label in [
-        t.tracking.total,
+        t.tracking.remaining,
         t.tracking.covered,
         t.tracking.avgSpeed,
         t.tracking.dPlus,
@@ -186,7 +227,7 @@ void main() {
       // ... sur DEUX hauteurs distinctes, trois par hauteur.
       final hauteurs = <double, int>{};
       for (final label in [
-        t.tracking.total,
+        t.tracking.remaining,
         t.tracking.covered,
         t.tracking.avgSpeed,
         t.tracking.dPlus,
@@ -197,30 +238,37 @@ void main() {
         hauteurs[y] = (hauteurs[y] ?? 0) + 1;
       }
       expect(hauteurs.length, 2, reason: 'deux lignes, pas un Wrap a plat');
-      expect(hauteurs.values.every((n) => n == 3), isTrue,
-          reason: 'trois cases par ligne, comme la navigation de reference');
+      expect(
+        hauteurs.values.every((n) => n == 3),
+        isTrue,
+        reason: 'trois cases par ligne, comme la navigation de reference',
+      );
     });
 
-    testWidgets('l icone est GROSSE (28 px, parite GR20) et non plus 14',
-        (tester) async {
+    testWidgets('l icone est GROSSE (28 px, parite GR20) et non plus 14', (
+      tester,
+    ) async {
       await tester.pumpWidget(bar());
       await tester.pumpAndSettle();
 
       for (final icone in [
-        Icons.straighten,
-        Icons.directions_walk,
-        Icons.speed,
-        Icons.trending_up,
-        Icons.trending_down,
-        Icons.terrain,
+        StepwaysIcons.distance,
+        StepwaysIcons.pas,
+        StepwaysIcons.vitesse,
+        StepwaysIcons.denivelePlus,
+        StepwaysIcons.deniveleMoins,
+        StepwaysIcons.sommet,
       ]) {
-        final widget = tester.widget<Icon>(find.byIcon(icone));
+        final widget = tester.widget<StepIcon>(
+          find.byWidgetPredicate((w) => w is StepIcon && w.asset == icone),
+        );
         expect(widget.size, 28.0, reason: 'grosse icone, lisible en marchant');
       }
     });
 
-    testWidgets('chaque case est CENTREE et occupe le tiers de la largeur',
-        (tester) async {
+    testWidgets('chaque case est CENTREE et occupe le tiers de la largeur', (
+      tester,
+    ) async {
       await tester.pumpWidget(bar());
       await tester.pumpAndSettle();
 
@@ -228,7 +276,7 @@ void main() {
       // centres sont equidistants. C'est ce qui donne la disposition centree de
       // la reference, et ce qu'un Wrap « spaceBetween » ne garantissait pas.
       final centres = [
-        tester.getCenter(find.text(t.tracking.total)).dx,
+        tester.getCenter(find.text(t.tracking.remaining)).dx,
         tester.getCenter(find.text(t.tracking.covered)).dx,
         tester.getCenter(find.text(t.tracking.avgSpeed)).dx,
       ];
@@ -238,22 +286,25 @@ void main() {
       expect(ecart2, closeTo(ecart1, 1.0));
     });
 
-    testWidgets('AUCUNE phrase d explication des tirets sous les chiffres',
-        (tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: StageProgressBar(
-            stageName: 'Etape 1',
-            distanceRemainingKm: 12,
-            progressRatio: 0,
-            isOffTrack: false,
-            totalDistanceKm: 120.5,
-            elevationGainM: 800,
-            elevationLossM: 600,
-            showPendingValues: true,
+    testWidgets('AUCUNE phrase d explication des tirets sous les chiffres', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: StageProgressBar(
+              stageName: 'Etape 1',
+              distanceRemainingKm: 12,
+              progressRatio: 0,
+              isOffTrack: false,
+              totalDistanceKm: 120.5,
+              elevationGainM: 800,
+              elevationLossM: 600,
+              showPendingValues: true,
+            ),
           ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       // L acquis du lot 554 tient : les cases absentes portent un TIRET, jamais
@@ -264,4 +315,37 @@ void main() {
       expect(find.textContaining('tiret'), findsNothing);
     });
   });
+}
+
+/// Lit un fichier de `lib/` ET les bibliotheques du MEME dossier qu'il importe
+/// ou re-exporte, de proche en proche, dans l ordre des directives.
+///
+/// LOT 645-06b : les plus gros fichiers de `lib/` ne sont plus des `part`
+/// (regle 12) mais de vraies bibliotheques voisines, chacune avec ses imports.
+/// Le code mesure ici est le meme, au caractere pres — il vit juste dans
+/// plusieurs fichiers du meme dossier. On les recolle donc, l ecran d abord,
+/// ce qui preserve l ordre des lignes a l interieur de chaque fichier, dont
+/// dependent les mesures de position. Seule la LECTURE change ; aucune attente
+/// de ces tests n a ete touchee.
+String _sourceAvecSesVoisines(String chemin) {
+  final dossier = chemin.substring(0, chemin.lastIndexOf('/'));
+  final lus = <String>[];
+  void lire(String fichier) {
+    if (lus.contains(fichier)) return;
+    lus.add(fichier);
+    final source = File(fichier).readAsStringSync();
+    final voisines =
+        RegExp(r"^(?:import|export) '([a-z0-9_]+\.dart)'", multiLine: true)
+            .allMatches(source)
+            .map((m) => '$dossier/${m.group(1)}')
+            .where(
+              (n) => !n.endsWith('.g.dart') && !n.endsWith('.freezed.dart'),
+            );
+    for (final n in voisines) {
+      lire(n);
+    }
+  }
+
+  lire(chemin);
+  return [for (final f in lus) File(f).readAsStringSync()].join('\n');
 }

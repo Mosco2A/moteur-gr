@@ -1,12 +1,17 @@
+/// Le fil lu depuis le CACHE local, avec des pseudonymes et jamais un nom reel.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/data/database.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/activity_feed_providers.dart';
 import '../providers/kudos_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran du fil d'activite (F7B-04, Phase 7 social).
 ///
@@ -36,6 +41,10 @@ class ActivityFeedScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.activityFeed);
     final t = Translations.of(context);
     final feedAsync = ref.watch(visibleActivitiesProvider);
 
@@ -152,8 +161,8 @@ class _ActivityCard extends ConsumerWidget {
                 CircleAvatar(
                   radius: 16,
                   backgroundColor: theme.colorScheme.primaryContainer,
-                  child: Icon(
-                    Icons.person_outline,
+                  child: StepIcon(
+                    StepwaysIcons.myAccount,
                     size: 18,
                     color: theme.colorScheme.onPrimaryContainer,
                   ),
@@ -183,15 +192,18 @@ class _ActivityCard extends ConsumerWidget {
               Semantics(
                 button: true,
                 label: t.social.kudos,
-                child: TextButton.icon(
+                child: AppButton(
                   key: ValueKey('kudos-${activity.id}'),
-                  onPressed: () => _giveKudo(ref),
-                  icon: const Icon(Icons.favorite_border, size: 18),
+                  variant: AppButtonVariant.text,
+                  icon: StepwaysIcons.favori,
+                  iconSize: 18,
                   label: kudosAsync.when(
-                    data: (n) => Text(t.social.kudosCount(n: n)),
-                    loading: () => Text(t.social.kudos),
-                    error: (_, __) => Text(t.social.kudos),
+                    data: (n) => t.social.kudosCount(n: n),
+                    loading: () => t.social.kudos,
+                    error: (_, __) => t.social.kudos,
                   ),
+                  isFullWidth: false,
+                  onPressed: () => _giveKudo(ref),
                 ),
               ),
               const Spacer(),
@@ -199,11 +211,14 @@ class _ActivityCard extends ConsumerWidget {
               Semantics(
                 button: true,
                 label: t.social.report,
-                child: TextButton.icon(
+                child: AppButton(
                   key: ValueKey('report-${activity.id}'),
+                  variant: AppButtonVariant.text,
+                  icon: StepwaysIcons.depart,
+                  iconSize: 18,
+                  label: t.social.report,
+                  isFullWidth: false,
                   onPressed: onReport,
-                  icon: const Icon(Icons.flag_outlined, size: 18),
-                  label: Text(t.social.report),
                 ),
               ),
             ],
@@ -295,8 +310,8 @@ class _EmptyFeed extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.forum_outlined,
+            StepIcon(
+              StepwaysIcons.suiveurs,
               size: 64,
               color: theme.colorScheme.outline,
             ),

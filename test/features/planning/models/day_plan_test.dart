@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/planning/models/day_plan.dart';
 
 /// Tests du modèle DayPlan — sérialisation et calculs.
@@ -85,10 +85,8 @@ void main() {
 
       expect(restored.dayNumber, original.dayNumber);
       expect(restored.totalDistanceKm, original.totalDistanceKm);
-      expect(restored.totalElevationGainM,
-          original.totalElevationGainM);
-      expect(restored.estimatedDurationHours,
-          original.estimatedDurationHours);
+      expect(restored.totalElevationGainM, original.totalElevationGainM);
+      expect(restored.estimatedDurationHours, original.estimatedDurationHours);
       expect(restored.isRestDay, original.isRestDay);
       expect(restored.stages.length, original.stages.length);
     });

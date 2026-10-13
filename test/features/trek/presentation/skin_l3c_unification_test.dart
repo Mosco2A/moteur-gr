@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/presentation/planning/itinerary_config_screen.dart';
 import 'package:moteur_gr/features/trek/presentation/stages/stage_card.dart';
 import 'package:moteur_gr/features/trek/providers/itinerary_providers.dart';
@@ -11,6 +11,7 @@ import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/features/trek/presentation/map/overlay/tracking_overlay.dart';
 import 'package:moteur_gr/shared/widgets/app_button.dart';
 import 'package:moteur_gr/shared/widgets/app_card.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests transverses SW-SKIN-L3c (unification composants trek + planning).
 ///
@@ -76,7 +77,12 @@ void main() {
 
       // Iso-rendu du contenu (numero + chevron toujours la).
       expect(find.text('3'), findsOneWidget);
-      expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronDroite,
+        ),
+        findsOneWidget,
+      );
 
       // Tap fonctionnel (onTap porte par l'InkWell interne d'AppCard).
       await tester.tap(find.byType(StageCard));
@@ -161,12 +167,22 @@ void main() {
         expect(pause, findsOneWidget);
         expect(stop, findsOneWidget);
         expect(backgroundOf(tester, pause), AppTheme.actionPause);
-        expect(backgroundOf(tester, stop), AppTheme.rougeUrgence);
+        expect(backgroundOf(tester, stop), AppTheme.emergencyRed);
         expect(foregroundOf(tester, pause), Colors.white);
 
         // Icones conservees.
-        expect(find.byIcon(Icons.pause), findsOneWidget);
-        expect(find.byIcon(Icons.stop), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.pause,
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.stop,
+          ),
+          findsOneWidget,
+        );
       },
     );
 
@@ -194,9 +210,9 @@ void main() {
       );
 
       // AppButton filledTone conserve minHeight 44 (cible tactile a11y AA).
-      final demarrer = find.widgetWithText(ElevatedButton, 'Démarrer');
+      final start = find.widgetWithText(ElevatedButton, 'Démarrer');
       final minSize = tester
-          .widget<ElevatedButton>(demarrer)
+          .widget<ElevatedButton>(start)
           .style
           ?.minimumSize
           ?.resolve(<WidgetState>{});

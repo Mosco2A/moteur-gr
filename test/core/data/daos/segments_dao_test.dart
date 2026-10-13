@@ -99,19 +99,21 @@ void main() {
       expect(forSeg.first.remoteId, 'remote-xyz');
     });
 
-    test('markEffortFailed incremente attempts puis requeue repasse pending',
-        () async {
-      final id = await dao.insertEffort(makeEffort());
-      await dao.markEffortFailed(id, 'timeout');
-      var all = await dao.effortsForSegment('seg-1');
-      expect(all.first.syncState, 'failed');
-      expect(all.first.attempts, 1);
-      expect(all.first.lastError, 'timeout');
+    test(
+      'markEffortFailed incremente attempts puis requeue repasse pending',
+      () async {
+        final id = await dao.insertEffort(makeEffort());
+        await dao.markEffortFailed(id, 'timeout');
+        var all = await dao.effortsForSegment('seg-1');
+        expect(all.first.syncState, 'failed');
+        expect(all.first.attempts, 1);
+        expect(all.first.lastError, 'timeout');
 
-      await dao.requeueEffort(id);
-      final pending = await dao.pendingEfforts();
-      expect(pending.length, 1);
-    });
+        await dao.requeueEffort(id);
+        final pending = await dao.pendingEfforts();
+        expect(pending.length, 1);
+      },
+    );
 
     test('dequeueBatch borne le lot et countPendingEfforts compte', () async {
       for (var i = 0; i < 5; i++) {

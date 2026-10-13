@@ -1,17 +1,28 @@
+/// Langue, unites, theme, cache, notifications, version — avec select() pour ne
+/// reconstruire que la ligne qui change.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/firebase/firebase_service.dart';
+import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/temperature_unit.dart' show TemperatureUnitValues;
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../notifications/providers/notification_provider.dart';
+import '../../auth/auth_facade.dart' show identifiantDeCompteProvider;
+import '../../notifications/notifications_facade.dart'
+    show notificationSettingsProvider;
+import '../../trek/trek_facade.dart' show PodometerSettingsTile;
 import '../providers/settings_provider.dart';
 import 'data_erasure_section.dart';
-import 'skin_selector.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran des parametres complets.
 ///
@@ -23,6 +34,10 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.settings);
     final theme = Theme.of(context);
     final tr = Translations.of(context);
 
@@ -32,6 +47,27 @@ class SettingsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         children: [
+          // --- Abonnement & achats — EN TETE (tache 601) ----------------------
+          //
+          // ELLE ETAIT NEUVIEME SUR DIX, juste avant le numero de version :
+          // derriere la langue, les unites, le theme, le cache, les
+          // notifications, le nuage, la vie privee, l'effacement et la
+          // reconnexion. C'est-a-dire exactement ce que Chris appelle
+          // « planque au fin fond de l appli » (27/09 13:09).
+          //
+          // POURQUOI ELLE PASSE PREMIERE, ET CE N'EST PAS UNE PREFERENCE DE
+          // GOUT. L'article L215-1-1 du code de la consommation exige que la
+          // resiliation soit GRATUITE, DIRECTE, PERMANENTE et FACILE D'ACCES
+          // (en vigueur depuis le 1er juin 2023 ; sources en base #100700).
+          // « Facile d'acces » et « neuvieme rubrique d'un ecran qui defile »
+          // ne vont pas ensemble. Et c'est aussi la rubrique la plus
+          // consequente pour celui qui paie : son argent.
+          //
+          // Le compte de gestes est verrouille par un test qui les COMPTE
+          // (`resiliation_trois_clics_601_test.dart`), pas par cette intention.
+          _buildPurchasesSection(context, theme, tr),
+          const SizedBox(height: AppTheme.spacingLg),
+
           // --- Langue ---
           _buildLanguageSection(context, ref, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
@@ -44,9 +80,14 @@ class SettingsScreen extends ConsumerWidget {
           _buildThemeSection(context, ref, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // --- Apparence (peau visuelle, SW-SKIN-L7) ---
-          _buildAppearanceSection(context, theme, tr),
-          const SizedBox(height: AppTheme.spacingLg),
+          // --- PLUS DE SECTION APPARENCE (tache 570, S4) ---
+          // Elle offrait le choix entre trois peaux dont deux n'existent pas :
+          // sur les trois proprietes qui les distinguent, `headerStyle` est lue
+          // par un seul widget, `cardStyle` et `photoScrimOpacity` par personne,
+          // et Grand Air n'a meme pas ses photos. Decision de Chris du 26/09,
+          // un mot : « retire ». Le MOTEUR de peaux, lui, reste en place (voir
+          // `core/theme/skin_theme.dart`) pour que le choix puisse revenir le
+          // jour ou les trois peaux existent vraiment.
 
           // --- Cache ---
           _buildCacheSection(context, ref, theme, tr),
@@ -75,8 +116,22 @@ class SettingsScreen extends ConsumerWidget {
           _buildRecoverySection(context, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
 
+          // --- La section ACHATS a remonte EN TETE de cet ecran (tache 601).
+          // Elle etait ici, en avant-derniere position. Voir la raison en haut.
+
+          // --- Compte des pas (lot 671-02) : l'etat en clair, et le SEUL
+          // chemin pour accepter plus tard. Pose sous tout geste existant,
+          // pour ne decaler aucun des gestes que la garde 573 parcourt.
+          _sectionHeader(
+            theme,
+            StepwaysIcons.pas,
+            tr.tracking.stepCounting.settingsTitle,
+          ),
+          const PodometerSettingsTile(),
+          const SizedBox(height: AppTheme.spacingLg),
+
           // --- Version ---
-          _buildVersionSection(context, theme, tr),
+          _buildVersionSection(context, ref, theme, tr),
           const SizedBox(height: AppTheme.spacingXl),
         ],
       ),
@@ -90,14 +145,12 @@ class SettingsScreen extends ConsumerWidget {
     ThemeData theme,
     Translations tr,
   ) {
-    final language = ref.watch(
-      settingsProvider.select((s) => s.language),
-    );
+    final language = ref.watch(settingsProvider.select((s) => s.language));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.language, tr.settings.language),
+        _sectionHeader(theme, StepwaysIcons.langue, tr.settings.language),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -105,10 +158,8 @@ class SettingsScreen extends ConsumerWidget {
               final selected = lang == language;
               return ListTile(
                 title: Text(AppLanguageValues.labelFor(lang)),
-                leading: Icon(
-                  selected
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_unchecked,
+                leading: StepIcon(
+                  selected ? StepwaysIcons.radioCoche : StepwaysIcons.radio,
                   color: selected ? theme.colorScheme.primary : null,
                 ),
                 onTap: () {
@@ -139,7 +190,7 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.straighten, tr.settings.units),
+        _sectionHeader(theme, StepwaysIcons.distance, tr.settings.units),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -149,10 +200,12 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(tr.settings.distance),
                 trailing: SegmentedButton<String>(
                   segments: DistanceUnitValues.values
-                      .map((u) => ButtonSegment(
-                            value: u,
-                            label: Text(DistanceUnitValues.symbolFor(u)),
-                          ))
+                      .map(
+                        (u) => ButtonSegment(
+                          value: u,
+                          label: Text(DistanceUnitValues.symbolFor(u)),
+                        ),
+                      )
                       .toList(),
                   selected: {distanceUnit},
                   onSelectionChanged: (values) {
@@ -168,10 +221,12 @@ class SettingsScreen extends ConsumerWidget {
                 title: Text(tr.settings.temperature),
                 trailing: SegmentedButton<String>(
                   segments: TemperatureUnitValues.values
-                      .map((u) => ButtonSegment(
-                            value: u,
-                            label: Text(TemperatureUnitValues.symbolFor(u)),
-                          ))
+                      .map(
+                        (u) => ButtonSegment(
+                          value: u,
+                          label: Text(TemperatureUnitValues.symbolFor(u)),
+                        ),
+                      )
                       .toList(),
                   selected: {temperatureUnit},
                   onSelectionChanged: (values) {
@@ -195,9 +250,7 @@ class SettingsScreen extends ConsumerWidget {
     ThemeData theme,
     Translations tr,
   ) {
-    final themeMode = ref.watch(
-      settingsProvider.select((s) => s.themeMode),
-    );
+    final themeMode = ref.watch(settingsProvider.select((s) => s.themeMode));
 
     /// Labels Slang pour chaque mode de theme.
     String themeModeLabel(String mode) {
@@ -212,7 +265,7 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.palette, tr.settings.theme),
+        _sectionHeader(theme, StepwaysIcons.palette, tr.settings.theme),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -220,10 +273,8 @@ class SettingsScreen extends ConsumerWidget {
               final selected = mode == themeMode;
               return ListTile(
                 title: Text(themeModeLabel(mode)),
-                leading: Icon(
-                  selected
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_unchecked,
+                leading: StepIcon(
+                  selected ? StepwaysIcons.radioCoche : StepwaysIcons.radio,
                   color: selected ? theme.colorScheme.primary : null,
                 ),
                 onTap: () {
@@ -233,34 +284,6 @@ class SettingsScreen extends ConsumerWidget {
             }).toList(),
           ),
         ),
-      ],
-    );
-  }
-
-  /// Section apparence - selecteur de peau visuelle (SW-SKIN-L7).
-  ///
-  /// En-tete « Apparence » + sous-titre, puis le [SkinSelector] (3 tuiles peau
-  /// avec vignette schematique). Le selecteur porte deja ses propres tuiles
-  /// (cartes) et gere l'etat selectionne + le grisage de Grand Air non eligible.
-  Widget _buildAppearanceSection(
-    BuildContext context,
-    ThemeData theme,
-    Translations tr,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _sectionHeader(theme, Icons.brush_outlined, tr.appearance.title),
-        Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-          child: Text(
-            tr.appearance.subtitle,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        const SkinSelector(),
       ],
     );
   }
@@ -282,7 +305,7 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.storage, tr.settings.cache),
+        _sectionHeader(theme, StepwaysIcons.horsLigne, tr.settings.cache),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -338,9 +361,62 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         _sectionHeader(
           theme,
-          Icons.notifications,
+          StepwaysIcons.notifications,
           tr.settings.notifications,
         ),
+        // LE TELEPHONE REFUSE LES NOTIFICATIONS — ET L ECRAN LE DIT (596 C3).
+        //
+        // `checkPermissions()` valait `async => true` : l'appli croyait
+        // TOUJOURS avoir le droit de notifier, et `permissionGranted` n'etait
+        // lu par personne. Le randonneur pouvait donc regler quatre rappels
+        // avec soin alors qu'aucun ne lui parviendrait jamais.
+        if (!notifications.permissionGranted)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+            child: AppCard(
+              padding: const EdgeInsets.all(AppTheme.spacingBase),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const StepIcon(
+                        StepwaysIcons.notifications,
+                        color: AppTheme.orangeDifficile,
+                        size: 22,
+                      ),
+                      const SizedBox(width: AppTheme.spacingSm),
+                      Expanded(
+                        child: Text(
+                          tr.notifications.permissionBlockedTitle,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppTheme.spacingSm),
+                  Text(
+                    tr.notifications.permissionBlockedBody,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: AppTheme.spacingSm),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: AppButton(
+                      variant: AppButtonVariant.outline,
+                      icon: StepwaysIcons.notifications,
+                      iconSize: 18,
+                      label: tr.notifications.permissionAsk,
+                      onPressed: () => ref
+                          .read(notificationSettingsProvider.notifier)
+                          .requestPermissions(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -416,14 +492,14 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         _sectionHeader(
           theme,
-          available ? Icons.cloud_done : Icons.cloud_off,
+          available ? StepwaysIcons.synchronise : StepwaysIcons.horsLigne,
           tr.cloud.statusSection,
         ),
         AppCard(
           padding: EdgeInsets.zero,
           child: ListTile(
-            leading: Icon(
-              available ? Icons.cloud_done : Icons.cloud_off,
+            leading: StepIcon(
+              available ? StepwaysIcons.synchronise : StepwaysIcons.horsLigne,
               color: available
                   ? theme.colorScheme.primary
                   : AppTheme.grisGranite,
@@ -453,21 +529,17 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(
-          theme,
-          Icons.privacy_tip_outlined,
-          tr.consent.settingsEntry,
-        ),
+        _sectionHeader(theme, StepwaysIcons.bouclier, tr.consent.settingsEntry),
         AppCard(
           padding: EdgeInsets.zero,
           child: Semantics(
             button: true,
             label: tr.consent.settingsEntry,
             child: ListTile(
-              leading: const Icon(Icons.shield_outlined),
+              leading: const StepIcon(StepwaysIcons.bouclier),
               title: Text(tr.consent.settingsEntry),
               subtitle: Text(tr.consent.settingsEntryDesc),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: const StepIcon(StepwaysIcons.chevronDroite),
               onTap: () => context.push('/consent'),
             ),
           ),
@@ -489,17 +561,25 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.vpn_key_outlined, tr.recovery.section),
+        _sectionHeader(theme, StepwaysIcons.cle, tr.recovery.section),
         AppCard(
           padding: EdgeInsets.zero,
           child: Semantics(
             button: true,
             label: tr.recovery.title,
             child: ListTile(
-              leading: const Icon(Icons.vpn_key_outlined),
+              leading: const StepIcon(StepwaysIcons.cle),
               title: Text(tr.recovery.title),
-              subtitle: Text(tr.recovery.sectionDesc),
-              trailing: const Icon(Icons.chevron_right),
+              // TACHE 596 (C2) : la porte reste — c'est une invariante du LOT Q
+              // — mais son sous-titre ne promet plus un code qui ne sera pas
+              // affiche. Tant que le coffre n'est pas alimente, il annonce
+              // l'etat reel, que l'ecran detaille ensuite.
+              subtitle: Text(
+                ReconnectionVault.alimente
+                    ? tr.recovery.sectionDesc
+                    : tr.recovery.noVaultTitle,
+              ),
+              trailing: const StepIcon(StepwaysIcons.chevronDroite),
               onTap: () => context.push('/recovery-code'),
             ),
           ),
@@ -508,8 +588,12 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  /// Section version - affiche version + build depuis PackageInfo.
-  Widget _buildVersionSection(
+  /// Section ACHATS : recharger le compte-etapes, s'abonner, restaurer.
+  ///
+  /// Trois portes qui n'existaient nulle part avant la tache 594 : la grille
+  /// des packs etait ecrite dans le code sans ecran, `subscribe()` n'avait
+  /// aucun appelant, et il n'y avait pas de bouton « Restaurer mes achats ».
+  Widget _buildPurchasesSection(
     BuildContext context,
     ThemeData theme,
     Translations tr,
@@ -517,7 +601,65 @@ class SettingsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(theme, Icons.info_outline, tr.settings.version),
+        _sectionHeader(
+          theme,
+          StepwaysIcons.portefeuille,
+          tr.monetization.walletTitle,
+        ),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              ListTile(
+                key: const ValueKey('reglages-recharge'),
+                leading: const StepIcon(StepwaysIcons.plus),
+                title: Text(tr.monetization.rechargeTitle),
+                subtitle: Text(tr.monetization.rechargeSubtitle),
+                trailing: const StepIcon(StepwaysIcons.chevronDroite),
+                onTap: () => context.push('/wallet'),
+              ),
+              ListTile(
+                key: const ValueKey('reglages-abonnement'),
+                leading: const StepIcon(StepwaysIcons.diploma),
+                title: Text(tr.monetization.subscriptionTitle),
+                subtitle: Text(tr.monetization.subscriptionSubtitle),
+                trailing: const StepIcon(StepwaysIcons.chevronDroite),
+                onTap: () => context.push('/subscription'),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Section version - affiche version + build depuis PackageInfo, ET
+  /// L IDENTIFIANT DU COMPTE (tache 631).
+  ///
+  /// POURQUOI L IDENTIFIANT EST ICI, ET PAS SOUS « Abonnement & achats » COMME
+  /// DEMANDE. Mesure, pas preference : la section des achats est la PREMIERE de
+  /// l ecran (le lot 601 l y a remontee pour l article L215-1-1), donc au-dessus
+  /// du selecteur de langue. La garde `aucun_geste_mort_573` parcourt les gestes
+  /// d un ecran PAR POSITION ; toute ligne ajoutee au-dessus du selecteur
+  /// decalait ce qu elle croyait taper, et une langue deja choisie passait alors
+  /// pour un bouton mort. Verifie dans les deux sens : le meme bloc pose dans la
+  /// section des achats fait rougir la garde, pose ici il ne la touche pas.
+  ///
+  /// ET CE N EST PAS UN PIS-ALLER. Les deux faits qu on donne quand on demande
+  /// de l aide sont exactement ceux-la : quelle version, et quel compte. Ils
+  /// sont maintenant cote a cote, au meme endroit que celui ou l on va deja
+  /// chercher un numero de version.
+  Widget _buildVersionSection(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations tr,
+  ) {
+    final accountId = ref.watch(identifiantDeCompteProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeader(theme, StepwaysIcons.info, tr.settings.version),
         AppCard(
           padding: EdgeInsets.zero,
           child: FutureBuilder<PackageInfo>(
@@ -526,14 +668,60 @@ class SettingsScreen extends ConsumerWidget {
               final version = snapshot.hasData
                   ? '${snapshot.data!.version}+${snapshot.data!.buildNumber}'
                   : '...';
+              // LOT 671-01 : l'APPUI LONG sur le numero de version ouvre
+              // l'ecran cache de mesure batterie. Aucun appui court, aucune
+              // entree de menu : c'est sa seule porte.
               return ListTile(
+                key: const ValueKey('reglages-numero-de-version'),
                 title: Text(tr.settings.versionLabel),
-                trailing: Text(
-                  version,
-                  style: theme.textTheme.bodySmall,
-                ),
+                trailing: Text(version, style: theme.textTheme.bodySmall),
+                onLongPress: () => context.push('/mesure-batterie'),
               );
             },
+          ),
+        ),
+        const SizedBox(height: AppTheme.spacingSm),
+        // L IDENTIFIANT DU COMPTE — LA SEULE FACON DE DESIGNER CE RANDONNEUR.
+        //
+        // StepWays n a AUCUN compte nominatif : ni nom, ni adresse, ni courriel,
+        // ni numero. C est un choix de produit, et il a une consequence qu on ne
+        // voit qu au moment du depannage — quand un achat est a rattraper ou des
+        // droits a restaurer sur un nouveau telephone, PERSONNE ne peut dire de
+        // quel compte on parle. Cette ligne est la reponse : le randonneur la
+        // lit et la donne.
+        //
+        // ELLE NE DIT RIEN DE LUI. C est un numero tire par Firebase pour un
+        // compte anonyme : aucune donnee personnelle ne s y trouve.
+        //
+        // PAS UNE TUILE, PAS UN GESTE : une ligne qui ne fait que MONTRER n a
+        // pas besoin d etre appuyee, et le texte est SELECTIONNABLE — un
+        // identifiant de 28 caracteres ne se recopie pas a la main.
+        AppCard(
+          child: Padding(
+            key: const ValueKey('reglages-identifiant-compte'),
+            padding: const EdgeInsets.all(AppTheme.spacingBase),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.badge_outlined, size: 20),
+                const SizedBox(width: AppTheme.spacingBase),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Identifiant de compte'),
+                      const SizedBox(height: 2),
+                      SelectableText(
+                        accountId ??
+                            'indisponible (aucun compte serveur sur cet '
+                                'appareil)',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -541,12 +729,12 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   /// En-tete de section avec icone et titre.
-  Widget _sectionHeader(ThemeData theme, IconData icon, String title) {
+  Widget _sectionHeader(ThemeData theme, String icon, String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: theme.colorScheme.primary),
+          StepIcon(icon, size: 20, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingSm),
           Text(
             title,
@@ -559,4 +747,3 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 }
-

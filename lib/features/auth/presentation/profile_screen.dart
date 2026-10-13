@@ -1,7 +1,14 @@
+/// Pseudonyme et avatar choisi parmi huit icones locales : il n'y a rien
+/// d'autre a saisir, et c'est voulu.
+library;
+
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/firebase/cloud_unavailable_notice.dart';
 import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
@@ -9,23 +16,30 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/app_logo.dart';
 import '../../../shared/widgets/section_header.dart';
-import '../../settings/providers/settings_provider.dart';
+import '../../../core/services/pilote_demo.dart';
+import '../../../core/services/session_demo.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
+import '../../safety/safety_facade.dart' show RefusSauvegardeSystemeDialog;
+import '../../settings/settings_facade.dart'
+    show DominantHand, DominantHandValues, settingsProvider;
 import '../domain/auth_service.dart';
 import '../providers/auth_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Liste des icones d'avatars locaux predefinis.
 ///
 /// 8 avatars thematiques randonnee, accessibles par index (0-7).
-const _avatarIcons = <IconData>[
-  Icons.hiking,
-  Icons.landscape,
-  Icons.terrain,
-  Icons.forest,
-  Icons.wb_sunny,
-  Icons.star,
-  Icons.explore,
-  Icons.nature_people,
+const _avatarIcons = <String>[
+  StepwaysIcons.chaussure,
+  StepwaysIcons.sommet,
+  StepwaysIcons.sommet,
+  StepwaysIcons.foret,
+  StepwaysIcons.soleil,
+  StepwaysIcons.favori,
+  StepwaysIcons.trailCatalog,
+  StepwaysIcons.sommet,
 ];
 
 /// Ecran de profil utilisateur.
@@ -51,6 +65,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _isEditingPseudo = false;
 
   @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.profile);
+  }
+
+  @override
   void dispose() {
     _pseudoController.dispose();
     super.dispose();
@@ -66,7 +86,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       // Ph5 (L6d) : AppHeader universel (Mon compte — §4 header standard).
       appBar: AppHeader(title: i18n.auth.profile),
       body: userAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        // L'ATTENTE EST BORNEE (tache 649). Mesure sur l'emulateur du 30/09 :
+        // « Mon compte » ouvert depuis le menu du trek tournait SANS FIN — le
+        // flux d'identite n'emettait jamais (Firestore repondait
+        // `permission-denied` en boucle dans le journal), donc `loading` ne se
+        // terminait pas et le randonneur n'avait plus qu'a tuer l'application.
+        // La cause du refus Firestore n'est PAS traitee ici : ce lot ferme le
+        // silence, pas le refus.
+        loading: () => _AttenteBornee(
+          message: i18n.auth.errorTimeout,
+          libelleReessayer: i18n.common.retry,
+          onReessayer: () => ref.invalidate(currentUserProvider),
+        ),
         error: (_, __) => Center(child: Text(i18n.auth.errorLoading)),
         data: (user) => _buildProfile(context, ref, theme, i18n, user),
       ),
@@ -98,9 +129,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: AppTheme.spacingLg),
 
           // Section « Mon compte » (connexion / deconnexion).
-          SectionHeader(title: i18n.auth.profile, icon: Icons.person_outline),
+          SectionHeader(
+            title: i18n.auth.profile,
+            icon: StepwaysIcons.myAccount,
+          ),
           const SizedBox(height: AppTheme.spacingSm),
-          _buildAccountSection(context, ref, theme, i18n, user),
+          // GRISEE EN DEMO (tache 638, bug 14) : se connecter a Google, se
+          // deconnecter, changer son pseudo ou son avatar touchent a l'IDENTITE
+          // du randonneur, et l'identite n'est pas une demonstration. La section
+          // reste lisible, ses gestes sont visiblement indisponibles.
+          GriseEnDemo(
+            child: _buildAccountSection(context, ref, theme, i18n, user),
+          ),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Section « Main dominante » (lateralite, R9/R10) : place le SOS et
@@ -108,21 +148,38 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           // Donnee NON sensible, defaut droitier. Persiste via settingsProvider.
           SectionHeader(
             title: i18n.navPilote.dominantHand,
-            icon: Icons.pan_tool_outlined,
+            icon: StepwaysIcons.geste,
           ),
           const SizedBox(height: AppTheme.spacingSm),
-          _buildDominantHandSection(context, ref, theme, i18n),
+          GriseEnDemo(
+            child: _buildDominantHandSection(context, ref, theme, i18n),
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // SECTION « MODE DEMO » (tache 638, bug 18 — precision de Christophe du
+          // 30/09 10:30, verbatim : « on pourra le retrouver dans Mon compte »).
+          //
+          // C'est l'autre porte d'entree de la demo, et la SEULE quand le
+          // randonneur a coche « Cacher le mode demo » en sortant. Elle ne parle
+          // jamais de droits : la demo ne debloque rien, elle montre.
+          SectionHeader(
+            title: i18n.demo.compteTitre,
+            icon: StepwaysIcons.eprouvette,
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _buildDemoSection(context, ref, i18n),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Zone dangereuse — suppression de compte (parite GR20 : section
           // dediee en rouge, requise par les stores).
           SectionHeader(
             title: i18n.auth.deleteAccount,
-            icon: Icons.warning_amber_rounded,
-            iconColor: AppTheme.rougeUrgence,
+            icon: StepwaysIcons.danger,
+            iconColor: AppTheme.emergencyRed,
           ),
           const SizedBox(height: AppTheme.spacingSm),
-          _buildDangerZone(context, ref, theme, i18n),
+          // GRISEE EN DEMO : on ne supprime pas un compte depuis une demo.
+          GriseEnDemo(child: _buildDangerZone(context, ref, theme, i18n)),
           const SizedBox(height: AppTheme.spacingXl),
 
           // Version + build en bas de page (parite GR20, tache 517) :
@@ -146,9 +203,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   ) {
     return Column(
       children: [
-        _buildAvatarSection(context, ref, theme, i18n, user),
+        // GRISES EN DEMO (bug 14) : avatar et pseudo s'ecrivent dans le compte.
+        GriseEnDemo(
+          child: _buildAvatarSection(context, ref, theme, i18n, user),
+        ),
         const SizedBox(height: AppTheme.spacingXs),
-        _buildPseudoSection(context, ref, theme, i18n, user),
+        GriseEnDemo(
+          child: _buildPseudoSection(context, ref, theme, i18n, user),
+        ),
         const SizedBox(height: AppTheme.spacingSm),
         Center(
           child: Container(
@@ -189,15 +251,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       // SW-SKIN-L3e : Card -> AppCard. padding zero car le ListTile porte
       // deja son padding interne (iso-rendu de la tuile cliquable).
       return AppCard(
+        // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+        interactif: true,
         padding: EdgeInsets.zero,
         child: ListTile(
-          leading: const Icon(Icons.login),
+          key: const ValueKey('profil-connexion-google'),
+          leading: const StepIcon(StepwaysIcons.signIn),
           title: Text(i18n.auth.signInGoogle),
           subtitle: Text(i18n.auth.signInGoogleDesc),
-          trailing: const Icon(Icons.chevron_right),
+          trailing: const StepIcon(StepwaysIcons.chevronDroite),
           onTap: () async {
             final service = ref.read(authServiceProvider);
             await service.signInWithGoogleSilent();
+            // LA CASE PRE-COCHEE DE REFUS, ICI ET PAS AILLEURS (tache 612).
+            // Decision de Christophe du 28/09 10:49 : « quand il se connecte ».
+            // Posee APRES la connexion, parce qu'une question posee avant
+            // aurait ete posee aussi a qui renonce a se connecter — et il n'y a
+            // rien a lui demander, la protection s'applique deja pour lui.
+            // Elle ne se repose pas une fois tranchee.
+            if (context.mounted) {
+              await RefusSauvegardeSystemeDialog.poserSiNecessaire(
+                context,
+                ref,
+              );
+            }
           },
         ),
       );
@@ -205,13 +282,67 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     // Connecte : proposer la deconnexion.
     return AppCard(
+      // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+      interactif: true,
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: const Icon(Icons.logout),
+        leading: const StepIcon(StepwaysIcons.signOut),
         title: Text(i18n.auth.signOut),
         subtitle: Text(i18n.auth.signOutDesc),
         onTap: () => _confirmSignOut(context, ref, i18n),
       ),
+    );
+  }
+
+  /// Section « Mode demo » (tache 638, bug 18 ; tache 649).
+  ///
+  /// DEUX LIGNES, ET PAS PLUS. « Revoir la demo » la relance (elle est toujours
+  /// relancable, un nombre illimite de fois : rien ne s'ecrit, donc il n'y a rien
+  /// a epuiser).
+  ///
+  /// LA SECONDE LIGNE EST DEVENUE UN INTERRUPTEUR, ET ELLE EST TOUJOURS LA
+  /// (tache 649). Elle n'apparaissait qu'une fois le bouton CACHE, parce que le
+  /// seul endroit ou l'on pouvait le cacher etait le dialogue de fin de demo. Ce
+  /// dialogue ne s'ouvrait JAMAIS — il etait pose au-dessus du `Navigator` — donc
+  /// le reglage etait en pratique inatteignable dans les deux sens. Il vit
+  /// desormais ici en permanence, ou Christophe a dit qu'on retrouve la demo, et
+  /// il se defait aussi bien qu'il se fait.
+  Widget _buildDemoSection(
+    BuildContext context,
+    WidgetRef ref,
+    Translations i18n,
+  ) {
+    final cache = ref.watch(boutonDemoCacheProvider);
+    return Column(
+      children: [
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: ListTile(
+            key: const ValueKey('compte-revoir-demo'),
+            leading: const StepIcon(StepwaysIcons.eprouvette),
+            title: Text(i18n.demo.compteRelancer),
+            subtitle: Text(i18n.demo.compteRelancerSous),
+            trailing: const StepIcon(StepwaysIcons.chevronDroite),
+            onTap: () => restartDemoFromAccount(ref, context),
+          ),
+        ),
+        const SizedBox(height: AppTheme.spacingSm),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: SwitchListTile(
+            key: const ValueKey('compte-reafficher-bouton-demo'),
+            secondary: const StepIcon(StepwaysIcons.trailCatalog),
+            title: Text(i18n.demo.compteReafficher),
+            subtitle: Text(i18n.demo.compteReafficherSous),
+            // L'INTERRUPTEUR DIT « AFFICHER », LE REGLAGE STOCKE « CACHER » :
+            // il est donc l'inverse de la valeur en base, et il faut le lire
+            // comme ca pour que l'etiquette ne mente pas.
+            value: !cache,
+            onChanged: (show) =>
+                ref.read(boutonDemoCacheProvider.notifier).definir(!show),
+          ),
+        ),
+      ],
     );
   }
 
@@ -220,28 +351,40 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   /// Lue dynamiquement via package_info_plus. Format mandate :
   /// « StepWays v0.1.0 (build 1) ». Fallback discret « ... » le temps du
   /// chargement du plugin (jamais de spinner — coherent avec l'offline-first).
+  /// TACHE 632 — LE LOGO AU-DESSUS DE LA VERSION. Ce pied de page etait le seul
+  /// endroit de toute l'application ou le mot « StepWays » etait ecrit, et il
+  /// n'y avait aucune marque a cote. L'application n'a pas d'ecran « a propos »
+  /// (aucune route) : ce bloc en tient lieu, c'est donc ici que la marque se
+  /// montre en clair.
   Widget _buildVersionFooter(ThemeData theme, Translations i18n) {
     return Center(
-      child: FutureBuilder<PackageInfo>(
-        future: PackageInfo.fromPlatform(),
-        builder: (context, snapshot) {
-          final String versionText;
-          if (snapshot.hasData) {
-            final info = snapshot.data!;
-            versionText = i18n.auth.appVersion(
-              version: info.version,
-              build: info.buildNumber,
-            );
-          } else {
-            versionText = '...';
-          }
-          return Text(
-            versionText,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-          );
-        },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const AppLogo.horizontal(hauteur: 28),
+          const SizedBox(height: AppTheme.spacingSm),
+          FutureBuilder<PackageInfo>(
+            future: PackageInfo.fromPlatform(),
+            builder: (context, snapshot) {
+              final String versionText;
+              if (snapshot.hasData) {
+                final info = snapshot.data!;
+                versionText = i18n.auth.appVersion(
+                  version: info.version,
+                  build: info.buildNumber,
+                );
+              } else {
+                versionText = '...';
+              }
+              return Text(
+                versionText,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -275,12 +418,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ButtonSegment<DominantHand>(
                 value: DominantHandValues.right,
                 label: Text(i18n.navPilote.dominantHandRight),
-                icon: const Icon(Icons.back_hand_outlined),
+                icon: const StepIcon(StepwaysIcons.geste),
               ),
               ButtonSegment<DominantHand>(
                 value: DominantHandValues.left,
                 label: Text(i18n.navPilote.dominantHandLeft),
-                icon: const Icon(Icons.front_hand_outlined),
+                icon: const StepIcon(StepwaysIcons.geste),
               ),
             ],
             selected: {DominantHandValues.fromString(hand)},
@@ -304,16 +447,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   ) {
     // SW-SKIN-L3e : Card -> AppCard (padding zero, ListTile interne).
     return AppCard(
+      // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+      interactif: true,
       padding: EdgeInsets.zero,
-      borderColor: AppTheme.rougeUrgence.withValues(alpha: 0.4),
+      borderColor: AppTheme.emergencyRed.withValues(alpha: 0.4),
       child: ListTile(
-        leading: const Icon(
-          Icons.delete_forever,
-          color: AppTheme.rougeUrgence,
+        leading: const StepIcon(
+          StepwaysIcons.corbeille,
+          color: AppTheme.emergencyRed,
         ),
         title: Text(
           i18n.auth.deleteAccount,
-          style: const TextStyle(color: AppTheme.rougeUrgence),
+          style: const TextStyle(color: AppTheme.emergencyRed),
         ),
         subtitle: Text(i18n.auth.deleteAccountDesc),
         onTap: () => _confirmDelete(context, ref, i18n),
@@ -337,7 +482,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: CircleAvatar(
               radius: 48,
               backgroundColor: theme.colorScheme.primaryContainer,
-              child: Icon(
+              child: StepIcon(
                 _avatarIcons[user.avatarIndex.clamp(
                   0,
                   _avatarIcons.length - 1,
@@ -402,7 +547,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     backgroundColor: isSelected
                         ? theme.colorScheme.primary
                         : theme.colorScheme.surfaceContainerHighest,
-                    child: Icon(
+                    child: StepIcon(
                       _avatarIcons[index],
                       color: isSelected
                           ? theme.colorScheme.onPrimary
@@ -461,11 +606,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               spacing: AppTheme.spacingSm,
               runSpacing: AppTheme.spacingXs,
               children: [
-                TextButton(
+                AppButton(
+                  variant: AppButtonVariant.text,
+                  label: i18n.auth.cancel,
+                  isFullWidth: false,
                   onPressed: () {
                     setState(() => _isEditingPseudo = false);
                   },
-                  child: Text(i18n.auth.cancel),
                 ),
                 // SW-SKIN-L3e : ElevatedButton -> AppButton primary.
                 // isFullWidth:false pour rester dans la rangee d'actions
@@ -479,8 +626,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       : () {
                           ref
                               .read(authServiceProvider)
-                              .updateDisplayName(
-                                  _pseudoController.text.trim());
+                              .updateDisplayName(_pseudoController.text.trim());
                           setState(() => _isEditingPseudo = false);
                         },
                 ),
@@ -522,7 +668,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ),
             const SizedBox(width: AppTheme.spacingXs),
-            Icon(Icons.edit, size: 18, color: theme.colorScheme.primary),
+            StepIcon(
+              StepwaysIcons.crayon,
+              size: 18,
+              color: theme.colorScheme.primary,
+            ),
           ],
         ),
       ),
@@ -536,9 +686,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         title: Text(i18n.auth.signOutConfirm),
         content: Text(i18n.auth.signOutMessage),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: i18n.auth.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.pop(context),
-            child: Text(i18n.auth.cancel),
           ),
           // SW-SKIN-L3e : ElevatedButton -> AppButton primary, isFullWidth:false
           // (action de dialogue, aux cotes du TextButton Annuler laisse tel quel).
@@ -562,17 +714,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         title: Text(i18n.auth.deleteConfirm),
         content: Text(i18n.auth.deleteMessage),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: i18n.auth.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.pop(context),
-            child: Text(i18n.auth.cancel),
           ),
           // SW-SKIN-L3e : ElevatedButton a fond rouge -> AppButton filledTone
-          // (fond plein = rougeUrgence, texte blanc). Conserve la couleur
+          // (fond plein = emergencyRed, texte blanc). Conserve la couleur
           // SEMANTIQUE de danger de la suppression de compte, isFullWidth:false
           // pour rester une action de dialogue.
           AppButton(
             variant: AppButtonVariant.filledTone,
-            tone: AppTheme.rougeUrgence,
+            tone: AppTheme.emergencyRed,
             isFullWidth: false,
             label: i18n.auth.deleteAccount,
             onPressed: () {
@@ -581,6 +735,101 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// UNE ATTENTE QUI FINIT TOUJOURS PAR DIRE QUELQUE CHOSE (tache 649).
+///
+/// CE QUI A ETE MESURE. Sur l'emulateur, « Mon compte » ouvert depuis le menu du
+/// trek tournait indefiniment : le flux d'identite n'emettait jamais, le journal
+/// repetait des refus Firestore (`permission-denied`), et l'ecran restait un
+/// rond qui tourne. Un rond qui tourne ne dit RIEN : ni « patiente », ni « c'est
+/// casse ». Le randonneur ne pouvait que tuer l'application.
+///
+/// CE WIDGET NE CHANGE RIEN QUAND CA MARCHE : pendant [kAccountFailureDelay]
+/// il montre exactement le meme rond qu'avant, et une reponse qui arrive dans ce
+/// delai le fait disparaitre sans que rien d'autre ne s'affiche. Passe ce delai,
+/// il remplace le rond par un message et un bouton « Reessayer ».
+///
+/// LE DELAI N'EST PAS UN DELAI DE RESEAU, C'EST UN DELAI DE PATIENCE : il ne
+/// coupe aucune requete et n'annule rien. La requete continue ; si elle finit
+/// par repondre, l'ecran se remplit tout seul.
+class _AttenteBornee extends StatefulWidget {
+  const _AttenteBornee({
+    required this.message,
+    required this.libelleReessayer,
+    required this.onReessayer,
+  });
+
+  final String message;
+  final String libelleReessayer;
+  final VoidCallback onReessayer;
+
+  @override
+  State<_AttenteBornee> createState() => _AttenteBorneeState();
+}
+
+/// Au-dela de ce delai, une attente devient un echec qui se dit.
+///
+/// Huit secondes : assez pour un reseau lent et un demarrage a froid de
+/// Firebase, trop peu pour laisser croire que l'ecran est mort.
+const Duration kAccountFailureDelay = Duration(seconds: 8);
+
+class _AttenteBorneeState extends State<_AttenteBornee> {
+  Timer? _minuteur;
+  bool _tropLong = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _armer();
+  }
+
+  void _armer() {
+    _minuteur?.cancel();
+    _minuteur = Timer(kAccountFailureDelay, () {
+      if (mounted) setState(() => _tropLong = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _minuteur?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_tropLong) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return Center(
+      key: const ValueKey('compte-echec-attente'),
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingLg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const StepIcon(StepwaysIcons.danger, size: 40),
+            const SizedBox(height: AppTheme.spacingBase),
+            Text(widget.message, textAlign: TextAlign.center),
+            const SizedBox(height: AppTheme.spacingBase),
+            AppButton(
+              key: const ValueKey('compte-reessayer'),
+              isFullWidth: false,
+              label: widget.libelleReessayer,
+              onPressed: () {
+                // ON REPART POUR UN TOUR, PAS POUR L'ETERNITE : le minuteur est
+                // rearme, donc un second echec se dira aussi.
+                setState(() => _tropLong = false);
+                _armer();
+                widget.onReessayer();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

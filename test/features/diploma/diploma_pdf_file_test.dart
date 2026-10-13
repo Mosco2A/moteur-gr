@@ -38,8 +38,11 @@ void main() {
         directory: sandbox,
       );
 
-      expect(file.existsSync(), isTrue,
-          reason: 'C est TOUT le correctif : un fichier doit exister');
+      expect(
+        file.existsSync(),
+        isTrue,
+        reason: 'C est TOUT le correctif : un fichier doit exister',
+      );
       expect(file.lengthSync(), 2048);
       expect(file.readAsBytesSync().first, 7);
     });

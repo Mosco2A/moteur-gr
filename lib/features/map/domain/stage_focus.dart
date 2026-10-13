@@ -1,5 +1,9 @@
-import '../../../core/geo/track_point.dart';
-import '../../../core/models/stage.dart';
+/// Ou la carte doit s'OUVRIR : sur l'etape du marcheur, pas sur le sentier
+/// entier ou l'on ne distingue plus rien.
+library;
+
+import '../../../core/geo/trace_point.dart';
+import '../../../core/models/stage_row.dart';
 
 /// OU LA CARTE DOIT S'OUVRIR (tache 558).
 ///

@@ -1,3 +1,7 @@
+/// Etapes descendues avec le sentier, relues par sentier ou par numero ; le
+/// decoupage par itineraire vit dans trail_stages_dao.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -23,12 +27,9 @@ class StagesDao extends DatabaseAccessor<AppDatabase> with _$StagesDaoMixin {
 
   /// Recupere une etape par sentier et numero
   Future<Stage?> getByStageNumber(String trailId, int stageNumber) {
-    return (select(stages)
-          ..where(
-            (t) =>
-                t.trailId.equals(trailId) &
-                t.stageNumber.equals(stageNumber),
-          ))
+    return (select(stages)..where(
+          (t) => t.trailId.equals(trailId) & t.stageNumber.equals(stageNumber),
+        ))
         .getSingleOrNull();
   }
 

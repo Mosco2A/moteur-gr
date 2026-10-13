@@ -4,17 +4,18 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';
 import 'package:moteur_gr/features/map/providers/supply_alert_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/trek/presentation/map/map_screen.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Correctif L6-1 — LE MONTAGE de l'alerte ravitaillement sur la carte.
 ///
@@ -23,10 +24,18 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// minuterie, la fermeture a la main, et le rearmement au changement d'etape.
 void main() {
   final mockTrackPoints = [
-    const TrackPoint(lat: 45.77, lng: 2.96, altitude: 1465,
-        distanceFromStart: 0),
-    const TrackPoint(lat: 45.78, lng: 2.97, altitude: 1500,
-        distanceFromStart: 1200),
+    const TrackPoint(
+      lat: 45.77,
+      lng: 2.96,
+      altitude: 1465,
+      distanceFromStart: 0,
+    ),
+    const TrackPoint(
+      lat: 45.78,
+      lng: 2.97,
+      altitude: 1500,
+      distanceFromStart: 1200,
+    ),
   ];
 
   final mockStages = [
@@ -45,11 +54,11 @@ void main() {
   ];
 
   TrekSession recordingSession() => TrekSession(
-        id: 'sess-supply-1',
-        trailId: 'test-trail',
-        startedAt: DateTime.utc(2026, 6, 15, 8),
-        status: 'active',
-      );
+    id: 'sess-supply-1',
+    trailId: 'test-trail',
+    startedAt: DateTime.utc(2026, 6, 15, 8),
+    status: 'active',
+  );
 
   /// Alerte pilotee par le test (permet de changer d etape en cours de route).
   final alerteProvider = StateProvider<SupplyGapAlert?>(
@@ -60,21 +69,27 @@ void main() {
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
-        gpxTrackProvider(testTrailConfig.id)
-            .overrideWith((ref) => Future.value(mockTrackPoints)),
-        gpxTrackProvider('default')
-            .overrideWith((ref) => Future.value(mockTrackPoints)),
-        stagesProvider(testTrailConfig.id)
-            .overrideWith((ref) => Future.value(mockStages)),
-        stagesProvider('default')
-            .overrideWith((ref) => Future.value(mockStages)),
+        gpxTrackProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) => Future.value(mockTrackPoints)),
+        gpxTrackProvider(
+          'default',
+        ).overrideWith((ref) => Future.value(mockTrackPoints)),
+        stagesProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) => Future.value(mockStages)),
+        stagesProvider(
+          'default',
+        ).overrideWith((ref) => Future.value(mockStages)),
         gpsPermissionProvider.overrideWith(
-            (ref) => Future.value(GpsPermissionStateValues.denied)),
+          (ref) => Future.value(GpsPermissionStateValues.denied),
+        ),
         trekSessionManagerProvider.overrideWith(
           () => _FixedStatusNotifier(
             TrackingSessionState(
               status: status,
-              session: status == TrackingSessionStatus.recording ||
+              session:
+                  status == TrackingSessionStatus.recording ||
                       status == TrackingSessionStatus.paused
                   ? recordingSession()
                   : null,
@@ -97,25 +112,28 @@ void main() {
   String texteAlerte(int gap) => t.shop.gapLong(n: gap);
 
   group('Alerte ravitaillement sur la carte (L6-1)', () {
-    testWidgets('visible pendant un trek, libelle TRADUIT et nombre injecte',
-        (tester) async {
-      await tester.pumpWidget(
-          harness(status: TrackingSessionStatus.recording));
+    testWidgets('visible pendant un trek, libelle TRADUIT et nombre injecte', (
+      tester,
+    ) async {
+      await tester.pumpWidget(harness(status: TrackingSessionStatus.recording));
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text(texteAlerte(6)), findsOneWidget);
-      expect(find.byIcon(Icons.warning_amber), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.danger,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('AUCUNE alerte hors trek', (tester) async {
-      await tester.pumpWidget(
-          harness(status: TrackingSessionStatus.idle));
+      await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text(texteAlerte(6)), findsNothing);
     });
 
     testWidgets('s efface SEULE au bout d une minute', (tester) async {
-      await tester.pumpWidget(
-          harness(status: TrackingSessionStatus.recording));
+      await tester.pumpWidget(harness(status: TrackingSessionStatus.recording));
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text(texteAlerte(6)), findsOneWidget);
 
@@ -128,8 +146,7 @@ void main() {
     });
 
     testWidgets('se ferme a la demande et RESTE fermee', (tester) async {
-      await tester.pumpWidget(
-          harness(status: TrackingSessionStatus.recording));
+      await tester.pumpWidget(harness(status: TrackingSessionStatus.recording));
       await tester.pump(const Duration(milliseconds: 100));
 
       await tester.tap(find.byTooltip(t.map.supplyDismiss));
@@ -141,10 +158,10 @@ void main() {
       expect(find.text(texteAlerte(6)), findsNothing);
     });
 
-    testWidgets('se REARME au changement d etape, meme apres fermeture',
-        (tester) async {
-      await tester.pumpWidget(
-          harness(status: TrackingSessionStatus.recording));
+    testWidgets('se REARME au changement d etape, meme apres fermeture', (
+      tester,
+    ) async {
+      await tester.pumpWidget(harness(status: TrackingSessionStatus.recording));
       await tester.pump(const Duration(milliseconds: 100));
 
       await tester.tap(find.byTooltip(t.map.supplyDismiss));
@@ -158,10 +175,10 @@ void main() {
       expect(find.text(texteAlerte(5)), findsOneWidget);
     });
 
-    testWidgets('disparait des que l ecart n est plus alarmant',
-        (tester) async {
-      await tester.pumpWidget(
-          harness(status: TrackingSessionStatus.recording));
+    testWidgets('disparait des que l ecart n est plus alarmant', (
+      tester,
+    ) async {
+      await tester.pumpWidget(harness(status: TrackingSessionStatus.recording));
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text(texteAlerte(6)), findsOneWidget);
 

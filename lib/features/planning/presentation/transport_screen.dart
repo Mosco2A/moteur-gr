@@ -1,14 +1,23 @@
+/// Comment rejoindre le depart et comment repartir de l'arrivee, en deux
+/// onglets, pilotes par les donnees du sentier.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../widgets/refresh_from_database_button.dart';
+import '../../../shared/widgets/maps_link.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/transport_info.dart';
 import '../providers/transport_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran TRANSPORT (parite GR20 `TransportScreen`, data-driven — regle
 /// « donnees en externe » de Christophe #99460).
@@ -37,6 +46,10 @@ class TransportScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.transport, trail: trailId);
     final t = Translations.of(context);
     final endpoints = ref.watch(transportEndpointsProvider(trailId));
     final data = ref.watch(trailTransportProvider(trailId));
@@ -62,6 +75,47 @@ class TransportScreen extends ConsumerWidget {
         ? data.forEndpoint(arrivalName, TransportRole.departure)
         : null;
 
+    // DEUX ONGLETS VIDES SONT DEUX BOUTONS MORTS (tache 579, LOT X).
+    //
+    // La tache 552 avait raison de supprimer les phrases qui promettaient des
+    // horaires pour « bientot » : une donnee absente ne se commente pas. Mais en
+    // les remplacant par un `SizedBox.shrink()`, elle a laisse DEUX ONGLETS
+    // PARFAITEMENT FONCTIONNELS qui font passer d'un ecran vide a un autre ecran
+    // vide. L'invariante V3 les a declares morts, et elle a raison : ils basculent
+    // sans rien produire. Appuyer, regarder, ne rien voir, recommencer sur l'autre
+    // onglet — c'est exactement le defaut que Chris a releve quatre fois le 26/09.
+    //
+    // La reponse n'est pas de remettre une promesse : c'est de RETIRER le geste.
+    // Sans aucune donnee transport, il n'y a plus d'onglet du tout, et l'ecran
+    // enonce un fait — « Aucune information de transport pour ce sentier » — sans
+    // date, sans « prochainement », sans rien a attendre.
+    final aucunContenu =
+        (arrivalTab == null || !arrivalTab.hasContent) &&
+        (departureTab == null || !departureTab.hasContent);
+    if (aucunContenu) {
+      return Scaffold(
+        appBar: AppHeader(
+          title: t.transport.title,
+          // LE GESTE MANUEL EST SURTOUT UTILE ICI : c'est l'ecran que Christophe
+          // a trouve vide. S'il publie le transport en base depuis son PC, ce
+          // bouton le fait arriver tout de suite, sans attendre la cadence de
+          // quatre heures ni redemarrer l'application (tache 641).
+          actions: [RefreshFromDatabaseButton(trailId: trailId)],
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.spacingLg),
+            child: Text(
+              t.transport.noneForTrail,
+              key: const ValueKey('transport-aucune-donnee'),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+        ),
+      );
+    }
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -69,16 +123,11 @@ class TransportScreen extends ConsumerWidget {
         // le parametre `bottom`. Le back custom est retire (comportement repris).
         appBar: AppHeader(
           title: t.transport.title,
+          actions: [RefreshFromDatabaseButton(trailId: trailId)],
           bottom: TabBar(
             tabs: [
-              Tab(
-                icon: const Icon(Icons.flight_land),
-                text: joinLabel,
-              ),
-              Tab(
-                icon: const Icon(Icons.flight_takeoff),
-                text: leaveLabel,
-              ),
+              Tab(icon: const StepIcon(StepwaysIcons.avion), text: joinLabel),
+              Tab(icon: const StepIcon(StepwaysIcons.avion), text: leaveLabel),
             ],
           ),
         ),
@@ -130,9 +179,23 @@ class _TransportTabView extends StatelessWidget {
     final t = Translations.of(context);
     final theme = Theme.of(context);
 
-    // Aucune donnee transport disponible : on n'affiche RIEN (tache 552).
+    // UN ONGLET VIDE ENONCE LE FAIT (tache 579). La tache 552 avait retire les
+    // phrases qui PROMETTAIENT des horaires a venir — c'etait juste. Mais un
+    // onglet qui ne rend rien du tout fait de son onglet un geste mort : on
+    // appuie, l'ecran ne change pas. Le sens unique n'arrive ici que si l'AUTRE
+    // sens, lui, a des donnees (sinon il n'y a plus d'onglets du tout, voir
+    // [TransportScreen]). Une phrase factuelle, sans date et sans attente.
     if (info == null || !info!.hasContent) {
-      return const SizedBox.shrink();
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppTheme.spacingLg),
+          child: Text(
+            t.transport.noneForTrail,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyLarge,
+          ),
+        ),
+      );
     }
     final data = info!;
 
@@ -144,11 +207,11 @@ class _TransportTabView extends StatelessWidget {
         : AppTheme.orangeDifficile;
     final introTitle = role == TransportRole.arrival
         ? (endpointName.isNotEmpty
-            ? t.transport.joinTitle(name: endpointName)
-            : t.transport.tabJoin)
+              ? t.transport.joinTitle(name: endpointName)
+              : t.transport.tabJoin)
         : (endpointName.isNotEmpty
-            ? t.transport.leaveTitle(name: endpointName)
-            : t.transport.tabLeave);
+              ? t.transport.leaveTitle(name: endpointName)
+              : t.transport.tabLeave);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
@@ -165,7 +228,7 @@ class _TransportTabView extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.info_outline, color: accent, size: 20),
+                      StepIcon(StepwaysIcons.info, color: accent, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -188,10 +251,7 @@ class _TransportTabView extends StatelessWidget {
           // Sections d'options (parite GR20 : SectionHeader + cartes).
           for (final section in data.sections)
             if (section.options.isNotEmpty) ...[
-              SectionHeader(
-                title: section.title,
-                icon: _iconFor(section.mode),
-              ),
+              SectionHeader(title: section.title, icon: _iconFor(section.mode)),
               const SizedBox(height: AppTheme.spacingSm),
               for (final option in section.options) ...[
                 _TransportOptionCard(option: option),
@@ -201,8 +261,7 @@ class _TransportTabView extends StatelessWidget {
             ],
 
           // Conseils pratiques (parite GR20 : carte « Conseils »).
-          if (data.advices.isNotEmpty)
-            _AdviceCard(advices: data.advices),
+          if (data.advices.isNotEmpty) _AdviceCard(advices: data.advices),
           const SizedBox(height: AppTheme.spacingXl),
         ],
       ),
@@ -245,7 +304,7 @@ class _TransportOptionCard extends StatelessWidget {
                   color: color.withAlpha(30),
                   borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 ),
-                child: Icon(_iconFor(option.mode), color: color, size: 22),
+                child: StepIcon(_iconFor(option.mode), color: color, size: 22),
               ),
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(
@@ -261,7 +320,9 @@ class _TransportOptionCard extends StatelessWidget {
                     if (option.description.isNotEmpty)
                       Text(
                         option.description,
-                        style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 14,
+                        ),
                       ),
                   ],
                 ),
@@ -269,8 +330,10 @@ class _TransportOptionCard extends StatelessWidget {
               if (option.price.isNotEmpty) ...[
                 const SizedBox(width: AppTheme.spacingSm),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppTheme.vertFacile.withAlpha(30),
                     borderRadius: BorderRadius.circular(AppTheme.radiusChip),
@@ -294,14 +357,17 @@ class _TransportOptionCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFF2C2C2C),
+                color: CouleursSemantiques.fondSombreDesHorairesIndicatifs,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.schedule,
-                      size: 18, color: AppTheme.grisGranite),
+                  const StepIcon(
+                    StepwaysIcons.clock,
+                    size: 18,
+                    color: AppTheme.grisGranite,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
@@ -314,6 +380,32 @@ class _TransportOptionCard extends StatelessWidget {
             ),
           ],
 
+          // ADRESSE ET POINT GPS CLIQUABLE (tache 641, bug 15).
+          //
+          // « appliquer la meme regle a tout lieu physique (ravitaillement, point
+          // d'eau, depart/arrivee, transport) : une adresse + un point GPS
+          // cliquable partout ou il y a un lieu » (Christophe, 30/09 10:23). Un
+          // arret d'autocar, un ponton de navette, un aeroport sont des lieux
+          // qu'on doit rejoindre — le plus souvent en arrivant de loin, sans
+          // connaitre la ville.
+          //
+          // PAS DE LIEN MORT : sans adresse ni point exploitable, ce widget ne
+          // rend RIEN. Les lieux dont la base dit « a completer » n'affichent pas
+          // ce marqueur au randonneur : il est destine a l'editeur du contenu.
+          if (option.hasLieu)
+            Padding(
+              padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+              child: LigneDeLieu(
+                lieu: LieuCliquable(
+                  nom: option.title,
+                  adresse: option.address,
+                  lat: option.lat,
+                  lng: option.lng,
+                ),
+                compact: true,
+              ),
+            ),
+
           // Contact telephonique cliquable + eventuel bouton site (parite GR20).
           if (option.hasContact || option.hasUrl) ...[
             const SizedBox(height: AppTheme.spacingSm),
@@ -323,13 +415,16 @@ class _TransportOptionCard extends StatelessWidget {
                   Expanded(
                     child: Semantics(
                       button: true,
-                      label: t.transport.a11y
-                          .call(label: option.contactLabel),
+                      label: t.transport.a11y.call(label: option.contactLabel),
                       child: InkWell(
                         onTap: () => _call(option.contact),
                         child: Row(
                           children: [
-                            Icon(Icons.phone, size: 18, color: linkColor),
+                            StepIcon(
+                              StepwaysIcons.telephone,
+                              size: 18,
+                              color: linkColor,
+                            ),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Column(
@@ -365,8 +460,11 @@ class _TransportOptionCard extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        const Icon(Icons.info_outline,
-                            size: 18, color: AppTheme.grisGranite),
+                        const StepIcon(
+                          StepwaysIcons.info,
+                          size: 18,
+                          color: AppTheme.grisGranite,
+                        ),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
@@ -385,7 +483,11 @@ class _TransportOptionCard extends StatelessWidget {
                     button: true,
                     label: t.transport.a11y.website,
                     child: IconButton(
-                      icon: Icon(Icons.open_in_new, size: 18, color: linkColor),
+                      icon: StepIcon(
+                        StepwaysIcons.lien,
+                        size: 18,
+                        color: linkColor,
+                      ),
                       tooltip: t.transport.website,
                       onPressed: () => _openUrl(option.url!),
                     ),
@@ -433,8 +535,11 @@ class _AdviceCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.lightbulb_outline,
-                  color: AppTheme.jauneModere, size: 20),
+              const StepIcon(
+                StepwaysIcons.ficheConseil,
+                color: AppTheme.jauneModere,
+                size: 20,
+              ),
               const SizedBox(width: 8),
               Text(
                 t.transport.adviceTitle,
@@ -451,8 +556,10 @@ class _AdviceCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('- ',
-                      style: TextStyle(color: AppTheme.jauneModere)),
+                  const Text(
+                    '- ',
+                    style: TextStyle(color: AppTheme.jauneModere),
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(advice, style: theme.textTheme.bodySmall),
@@ -472,24 +579,24 @@ class _AdviceCard extends StatelessWidget {
 // d'objet — l'onglet rend `SizedBox.shrink()`.
 
 /// Icone Material pour une famille de mode (le domaine ne connait pas Material).
-IconData _iconFor(TransportModeKind mode) {
+String _iconFor(TransportModeKind mode) {
   switch (mode) {
     case TransportModeKind.taxi:
-      return Icons.local_taxi;
+      return StepwaysIcons.taxi;
     case TransportModeKind.bus:
-      return Icons.directions_bus;
+      return StepwaysIcons.transport;
     case TransportModeKind.train:
-      return Icons.train;
+      return StepwaysIcons.train;
     case TransportModeKind.shuttle:
-      return Icons.airport_shuttle;
+      return StepwaysIcons.transport;
     case TransportModeKind.ferry:
-      return Icons.directions_boat;
+      return StepwaysIcons.bateau;
     case TransportModeKind.plane:
-      return Icons.flight;
+      return StepwaysIcons.avion;
     case TransportModeKind.carRental:
-      return Icons.car_rental;
+      return StepwaysIcons.taxi;
     case TransportModeKind.other:
-      return Icons.place_outlined;
+      return StepwaysIcons.repere;
   }
 }
 

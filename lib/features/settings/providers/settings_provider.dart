@@ -1,6 +1,11 @@
+/// Langue, unites, theme : des valeurs extensibles plutot que des enums, pour
+/// qu'une preference inconnue se replie au lieu de casser.
+library;
+
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../domain/temperature_unit.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/settings_service.dart';
 
@@ -50,25 +55,12 @@ abstract class DistanceUnitValues {
       values.contains(value) ? value : fallback;
 }
 
-/// Unites de temperature.
-typedef TemperatureUnit = String;
-
-abstract class TemperatureUnitValues {
-  static const String celsius = 'celsius';
-  static const String fahrenheit = 'fahrenheit';
-  static const String fallback = celsius;
-  static const List<String> values = [celsius, fahrenheit];
-
-  static const Map<String, String> labels = {
-    celsius: 'Celsius',
-    fahrenheit: 'Fahrenheit',
-  };
-  static const Map<String, String> symbols = {celsius: '°C', fahrenheit: '°F'};
-  static String labelFor(String unit) => labels[unit] ?? unit;
-  static String symbolFor(String unit) => symbols[unit] ?? unit;
-  static TemperatureUnit fromString(String value) =>
-      values.contains(value) ? value : fallback;
-}
+// L'UNITE DE TEMPERATURE A DESCENDU DANS `lib/domain/temperature_unit.dart`
+// (P2, #101255 point 2). Elle etait declaree ici, au milieu des reglages, alors
+// que `settings` ne fait que la CHOISIR : ce sont `weather` et `hub` qui
+// l'affichent. Une regle lue par plusieurs features vit dans `lib/domain/`
+// (conventions, regle 11), avec la conversion et le format qui vont avec — un
+// seul endroit ou le symbole « °C » est ecrit, au lieu d'un par widget.
 
 /// Mode de theme.
 typedef AppThemeMode = String;
@@ -102,11 +94,11 @@ abstract class AppThemeModeValues {
   /// `system` suit le telephone. Une valeur inconnue retombe sur le defaut du
   /// produit ([fallback] = sombre), jamais sur une supposition.
   static ThemeMode toThemeMode(AppThemeMode mode) => switch (mode) {
-        light => ThemeMode.light,
-        system => ThemeMode.system,
-        dark => ThemeMode.dark,
-        _ => ThemeMode.dark,
-      };
+    light => ThemeMode.light,
+    system => ThemeMode.system,
+    dark => ThemeMode.dark,
+    _ => ThemeMode.dark,
+  };
 }
 
 /// Main dominante (lateralite) — ergonomie thumb zone (nav V2, R9/R10).
@@ -214,7 +206,9 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = AppSettings(
       language: AppLanguageValues.fromString(_service!.getLanguage()),
       distanceUnit: DistanceUnitValues.fromString(_service!.getDistanceUnit()),
-      temperatureUnit: state.temperatureUnit,
+      temperatureUnit: TemperatureUnitValues.fromString(
+        _service!.getTemperatureUnit(),
+      ),
       themeMode: AppThemeModeValues.fromString(_service!.getThemeMode()),
       cacheEnabled: _service!.getCacheEnabled(),
       cacheSizeMb: _service!.getCacheSizeMb(),
@@ -268,6 +262,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
   /// Met a jour l unite de temperature et persiste.
   void setTemperatureUnit(TemperatureUnit unit) {
     state = state.copyWith(temperatureUnit: unit);
+    _service?.setTemperatureUnit(unit);
   }
 
   /// Met a jour le mode de theme et persiste.

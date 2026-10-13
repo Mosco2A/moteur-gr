@@ -1,13 +1,24 @@
+/// Ou le marcheur se trouve SUR la trace : projection, etape courante et
+/// distances, calculees en une fois pour l'affichage temps reel.
+///
+/// LOT 671-03 : la projection lit la POSITION COURANTE
+/// ([currentPositionProvider]) — le releve reel en profil carte, le point
+/// estime le long du trace entre deux releves en profils batterie. La carte,
+/// la barre d'etape, la distance restante, la detection d'etape et l'alerte
+/// ravitaillement suivent sans etre touchees.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/stage_detector.dart';
+import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_projection.dart';
-import '../../../core/models/stage.dart';
-import '../../trail/providers/stages_provider.dart';
+import '../../trail/trail_facade.dart' show stagesProvider;
+import '../domain/jalons_des_etapes.dart';
+import '../domain/off_track_detector.dart';
+import 'current_position_provider.dart';
 import 'gpx_track_provider.dart';
-import 'location_provider.dart';
 
 /// Position de l'utilisateur sur le trace avec toutes les infos calculees.
 ///
@@ -25,9 +36,10 @@ class TrackPositionState {
     required this.trackIndex,
     required this.stageDetection,
     required this.isOffTrack,
+    this.isEstimated = false,
   });
 
-  /// Position GPS brute de l'utilisateur
+  /// Position GPS brute de l'utilisateur (ou le point estime, sur le trace)
   final double userLat;
   final double userLng;
 
@@ -50,12 +62,17 @@ class TrackPositionState {
   /// Detection de l'etape courante
   final StageDetection stageDetection;
 
-  /// Vrai si l'utilisateur est a plus de 100m du trace
+  /// Vrai si l'utilisateur est hors du trace : le DETECTEUR hors-trace
+  /// ([OffTrackDetector], 80 m pour sortir, 50 m pour revenir), nourri des
+  /// seuls releves reels.
   final bool isOffTrack;
 
+  /// Vrai quand la position est un point ESTIME le long du trace entre deux
+  /// releves (lot 671-03) ; faux pour un releve reel.
+  final bool isEstimated;
+
   /// Distance restante en kilometres, arrondie a 1 decimale
-  double get distanceRemainingKm =>
-      (distanceRemainingM / 100).round() / 10;
+  double get distanceRemainingKm => (distanceRemainingM / 100).round() / 10;
 
   /// Pourcentage de progression sur le trace (0.0 a 1.0)
   double get progressRatio {
@@ -65,8 +82,82 @@ class TrackPositionState {
   }
 }
 
-/// Seuil en metres au-dela duquel l'utilisateur est considere hors trace.
-const double _offTrackThresholdM = 100.0;
+/// L'ETAT « HORS TRACE » DE L'AFFICHAGE, tenu par le detecteur de la carte.
+///
+/// LES TROIS SEUILS SONT DEVENUS DEUX (lot 671-03). Cette barre portait son
+/// propre seuil de 100 m, sans hysteresis, a cote des 80 m et 50 m de
+/// l'alerte : trois chiffres pour une seule question. Elle lit desormais les
+/// MEMES seuils, avec la MEME hysteresis, par la meme classe.
+///
+/// IL NE LIT QUE LES RELEVES REELS, ET C'EST UN RAISONNEMENT, PAS UN DETAIL :
+/// un point estime est PAR CONSTRUCTION sur le trace, sa distance au trace
+/// vaut zero ; un detecteur nourri par l'estime ne se declencherait donc
+/// jamais. Entre deux releves, l'etat reste celui du dernier releve.
+final _offTrackDetectorProvider = Provider<OffTrackDetector>((ref) {
+  ref.watch(trailIdProvider);
+  return OffTrackDetector();
+});
+
+/// LES BORNES DES ETAPES SUR LA TRACE, calculees UNE FOIS par sentier.
+///
+/// POURQUOI UN PROVIDER ET PAS UN CALCUL DANS LA PROJECTION. Le decoupage ne
+/// depend QUE de la trace et des etapes : il ne change pas quand le marcheur
+/// avance. Le calculer dans [_computeProjection] le refarait a chaque releve —
+/// deux fois par seconde en demonstration — pour un resultat identique, et sur
+/// un vrai sentier c'est une recherche de point le plus proche parmi des
+/// dizaines de milliers de points, repetee autant de fois qu'il y a d'etapes.
+/// Ici il est calcule au chargement de la trace, et plus jamais.
+final jalonsDesEtapesProvider = Provider.family<List<JalonDEtape>, String>((
+  ref,
+  trailId,
+) {
+  final trace = ref.watch(gpxTrackProvider(trailId)).value;
+  final etapes = ref.watch(stagesProvider(trailId)).value;
+  if (trace == null || etapes == null) return const [];
+  return jalonsDesEtapes(trace, etapes);
+});
+
+/// L'ETAPE SOUS LES PIEDS, DEDUITE DE L'ABSCISSE (tache 747).
+///
+/// REMPLACE `StageDetector.detect`, ET VOICI LA MESURE QUI L'A DECIDE. Retour
+/// de Christophe du 09/10 08:55 : « Le changement d'etapes ne fonctionne pas,
+/// c'est alleatoire le changement ». L'ancien detecteur classait les etapes par
+/// `distance(depart) + distance(arrivee)`, un score d'ellipse sans ordre ni
+/// appartenance. Rejoue sur la trace reelle du sentier de demonstration, a
+/// l'abscisse 63,0 km — celle de la capture de l'ecran de Christophe — il
+/// repondait l'etape 5 « Zicavo - Cuttoli-Corticchiato » alors que le marcheur
+/// etait sur l'etape 7 « Bastelica - Porticcio » : le nom AFFICHE sur son
+/// telephone. Sa suite de reponses le long du sentier RECULAIT (6 puis 5 puis
+/// 7).
+///
+/// L'ABSCISSE, ELLE, NE RECULE PAS, et c'est tout l'argument : comparee a des
+/// bornes ordonnees et disjointes, elle designe une etape de numero croissant
+/// quand le marcheur avance. Aucune hysteresis n'est necessaire — il n'y a plus
+/// de clignotement a amortir.
+///
+/// L'EVENEMENT GARDE SON SENS, mesure sur l'abscisse plutot qu'a vol d'oiseau :
+/// « entre » dans les [_seuilDeBorneM] premiers metres de l'etape, « sorti »
+/// dans les derniers, « entre les deux » ailleurs.
+StageDetection _etapeSousLesPieds(List<JalonDEtape> jalons, double abscisseM) {
+  final jalon = jalonALAbscisse(jalons, abscisseM);
+  if (jalon == null) {
+    return (stageNumber: 0, event: StageDetectionEventValues.unknown);
+  }
+  final StageDetectionEvent evenement;
+  if (abscisseM - jalon.debutM <= _seuilDeBorneM) {
+    evenement = StageDetectionEventValues.entered;
+  } else if (jalon.finM - abscisseM <= _seuilDeBorneM) {
+    evenement = StageDetectionEventValues.exited;
+  } else {
+    evenement = StageDetectionEventValues.between;
+  }
+  return (stageNumber: jalon.numero, event: evenement);
+}
+
+/// La distance a une borne d'etape en deca de laquelle on se dit « a la
+/// borne » : les 200 m de l'ancien detecteur, conserves tels quels pour que
+/// l'evenement garde exactement le meme sens qu'avant.
+const double _seuilDeBorneM = 200;
 
 /// Notifier pour le dernier index de projection connu (optimisation fenetree).
 class _LastTrackIndexNotifier extends Notifier<int?> {
@@ -76,17 +167,16 @@ class _LastTrackIndexNotifier extends Notifier<int?> {
   void set(int? index) => state = index;
 }
 
-final _lastTrackIndexProvider =
-    NotifierProvider<_LastTrackIndexNotifier, int?>(
-        _LastTrackIndexNotifier.new);
+final _lastTrackIndexProvider = NotifierProvider<_LastTrackIndexNotifier, int?>(
+  _LastTrackIndexNotifier.new,
+);
 
 /// Provider principal : combine position GPS + trace + etapes.
 ///
 /// Calcule la projection en temps reel et expose un [TrackPositionState]
 /// complet pour l'UI (carte + barre de progression).
-final trackPositionProvider =
-    Provider<AsyncValue<TrackPositionState>>((ref) {
-  final positionAsync = ref.watch(locationProvider);
+final trackPositionProvider = Provider<AsyncValue<TrackPositionState>>((ref) {
+  final positionAsync = ref.watch(currentPositionProvider);
 
   return positionAsync.when(
     data: (position) => _computeProjection(ref, position),
@@ -95,10 +185,10 @@ final trackPositionProvider =
   );
 });
 
-/// Calcule la projection a partir d'une position GPS recue.
+/// Calcule la projection a partir de la position courante.
 AsyncValue<TrackPositionState> _computeProjection(
   Ref ref,
-  Position position,
+  CurrentPosition position,
 ) {
   // Sentier ACTIF (correctif L6-2 suite, 21/09/2026).
   //
@@ -114,7 +204,6 @@ AsyncValue<TrackPositionState> _computeProjection(
 
   // Recuperer le trace GPX
   final trackAsync = ref.watch(gpxTrackProvider(trailId));
-  final stagesAsync = ref.watch(stagesProvider(trailId));
 
   return trackAsync.when(
     data: (trackPoints) {
@@ -125,15 +214,7 @@ AsyncValue<TrackPositionState> _computeProjection(
         );
       }
 
-      final lastIndex = ref.read(_lastTrackIndexProvider);
-
-      // Projeter la position sur le trace
-      final projection = TrackProjector.project(
-        userLat: position.latitude,
-        userLng: position.longitude,
-        trackPoints: trackPoints,
-        lastKnownIndex: lastIndex,
-      );
+      final projection = _project(ref, position, trackPoints);
 
       // Memoriser l'index pour l'optimisation fenetree.
       // DIFFERE (microtask) : ecrire un autre provider PENDANT le build de
@@ -147,12 +228,17 @@ AsyncValue<TrackPositionState> _computeProjection(
         ref.read(_lastTrackIndexProvider.notifier).set(memoIndex);
       });
 
-      // Detecter l'etape courante
-      final stages = stagesAsync.value ?? <StageModel>[];
-      final detection = StageDetector.detect(
-        projectedLat: projection.projectedLat,
-        projectedLng: projection.projectedLng,
-        stages: stages,
+      // L'ETAPE COURANTE, DEDUITE DE L'ABSCISSE ET DE RIEN D'AUTRE (747).
+      //
+      // LES ETAPES NE SONT PLUS OBSERVEES ICI : c'est
+      // [jalonsDesEtapesProvider] qui les lit, et observer ce provider suffit
+      // a etre reveille quand elles arrivent. Tant qu'elles manquent, les
+      // jalons sont vides et l'etape vaut 0 — exactement ce que rendait
+      // l'ancien detecteur sans etapes.
+      final jalons = ref.watch(jalonsDesEtapesProvider(trailId));
+      final detection = _etapeSousLesPieds(
+        jalons,
+        projection.distanceFromStartM,
       );
 
       final state = TrackPositionState(
@@ -165,7 +251,8 @@ AsyncValue<TrackPositionState> _computeProjection(
         distanceRemainingM: projection.distanceRemainingM,
         trackIndex: projection.trackIndexPosition,
         stageDetection: detection,
-        isOffTrack: projection.distanceToTrackM > _offTrackThresholdM,
+        isOffTrack: ref.watch(_offTrackDetectorProvider).isOffTrack,
+        isEstimated: position.isEstimated,
       );
 
       return AsyncData(state);
@@ -173,6 +260,45 @@ AsyncValue<TrackPositionState> _computeProjection(
     loading: () => const AsyncLoading(),
     error: (error, stack) => AsyncError(error, stack),
   );
+}
+
+/// La position courante SUR le trace.
+///
+/// Un releve est PROJETE (fenetre de 50 segments autour du dernier index) et
+/// nourrit le detecteur hors-trace. Un point estime porte deja sa distance sur
+/// le trace : il est PLACE a cette abscisse par la fonction pure d'avance
+/// ([TrackProjector.locate]), sans reprojection — une reprojection pourrait le
+/// faire sauter sur le brin voisin d'un lacet — et il ne touche pas au
+/// detecteur.
+TrackProjection _project(
+  Ref ref,
+  CurrentPosition position,
+  List<TrackPoint> trackPoints,
+) {
+  final trackDistance = position.trackDistanceM;
+  if (trackDistance != null) {
+    final located = TrackProjector.locate(
+      trackPoints: trackPoints,
+      distanceFromStartM: trackDistance,
+    );
+    return (
+      projectedLat: located.lat,
+      projectedLng: located.lng,
+      distanceToTrackM: 0,
+      trackIndexPosition: located.segmentIndex,
+      distanceFromStartM: located.distanceFromStartM,
+      distanceRemainingM:
+          trackPoints.last.distanceFromStart - located.distanceFromStartM,
+    );
+  }
+  final projection = TrackProjector.project(
+    userLat: position.latitude,
+    userLng: position.longitude,
+    trackPoints: trackPoints,
+    lastKnownIndex: ref.read(_lastTrackIndexProvider),
+  );
+  ref.watch(_offTrackDetectorProvider).update(projection.distanceToTrackM);
+  return projection;
 }
 
 /// Distance parcourue PROJETEE sur le trace, en metres (source unique).
@@ -190,8 +316,5 @@ AsyncValue<TrackPositionState> _computeProjection(
 /// distance parcourue erronee issue d'une autre source.
 final stageDistanceCoveredProvider = Provider<double>((ref) {
   final trackPos = ref.watch(trackPositionProvider);
-  return trackPos.whenOrNull(
-        data: (state) => state.distanceFromStartM,
-      ) ??
-      0.0;
+  return trackPos.whenOrNull(data: (state) => state.distanceFromStartM) ?? 0.0;
 });

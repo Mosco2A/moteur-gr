@@ -1,7 +1,11 @@
+/// L'ecart, en nombre d'etapes, jusqu'au prochain commerce, et l'etape qui
+/// declenche l'alerte — celle dont le changement la rearme.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../planning/providers/shop_providers.dart';
+import '../../planning/planning_facade.dart' show trailShopsProvider;
 import 'track_position_provider.dart';
 
 /// Alerte « ravitaillement » calculee pour l'etape ou se trouve le randonneur

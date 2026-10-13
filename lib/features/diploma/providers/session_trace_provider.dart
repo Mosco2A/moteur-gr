@@ -1,5 +1,10 @@
+/// La trace REELLE de la derniere session, relue des points persistes au fil de
+/// l'eau par l'enregistrement.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
@@ -9,9 +14,15 @@ import '../../../core/providers/database_provider.dart';
 /// Finitions V8 F3 : points persistés au fil de l'eau par le tracking
 /// (table session_track_points), affichés dans le récap diplôme.
 /// Liste vide si aucune session enregistrée.
-final sessionTraceProvider =
-    FutureProvider<List<SessionTrackPoint>>((ref) async {
+final sessionTraceProvider = FutureProvider<List<SessionTrackPoint>>((
+  ref,
+) async {
   final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
   final db = ref.watch(databaseProvider);
-  return db.sessionTrackPointsDao.getByTrailId(trailId);
+  // La trace DENSE, points estimes compris (lot 671-03) : ce provider ne
+  // fait que la dessiner, il ne calcule aucun chiffre.
+  return db.sessionTrackPointsDao.getByTrailId(
+    trailId,
+    read: TrackPointsRead.withEstimated,
+  );
 });

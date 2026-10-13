@@ -1,3 +1,7 @@
+/// Un sentier tel que le catalogue et la fiche de detail le montrent, avant
+/// tout telechargement.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'trail.freezed.dart';

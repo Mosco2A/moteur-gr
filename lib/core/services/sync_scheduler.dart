@@ -1,135 +1,655 @@
+/// Montee en base des saisies du telephone, reveillee pour de vrai : avant,
+/// cette horloge-ci n'avait aucun appelant dans tout lib/.
+library;
+
 import "dart:async";
 
+import "package:drift/drift.dart" show TableUpdateQuery;
+import "package:flutter/widgets.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:logger/logger.dart";
 
+import "../../features/auth/data/firebase_auth_service.dart";
+import "../../features/auth/providers/auth_provider.dart";
+import "../data/daos/progress_dao.dart";
+import "../data/database.dart";
 import "../firebase/firebase_service.dart";
 import "../models/sync_config.dart";
 import "../network/connectivity_monitor.dart";
+import "../providers/database_provider.dart";
+import "../providers/service_providers.dart";
 import "cloud_sync_service.dart";
+import "device_spec_sheet.dart";
+import "montee_des_consentements.dart";
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
-/// Scheduler de synchronisation cloud periodique.
+/// LA MONTEE EN BASE — LE TELEPHONE ECRIT ENFIN CE QUE CHRISTOPHE SAISIT
+/// (tache 635).
 ///
-/// Gere un timer periodique (batchIntervalMinutes) pour la sync batch,
-/// et ecoute le ConnectivityMonitor pour le rattrapage au retour reseau.
-class SyncScheduler {
+/// LE DEFAUT MESURE, ET IL ETAIT DOUBLE. Toute la mecanique de montee existait
+/// depuis le LOT A5 (`CloudSyncService.syncUserData`), et DEUX ordonnanceurs
+/// etaient censes la reveiller : celui-ci et `BackgroundSyncService`. Recherche
+/// faite dans tout `lib/` le 29/09 : ni l un ni l autre n avait le moindre
+/// appelant. Deux horloges mortes pour un travail que personne ne declenchait —
+/// exactement le meme trou que `syncWallet` avant le lot 631, et que
+/// `UpdateDownloader.scheduleBackgroundDownload` avant le lot 616. Le second
+/// ordonnanceur a ete RETIRE avec ce lot : garder deux mecaniques dont une seule
+/// est branchee, c est garder un piege.
+///
+/// CE QUE CHRISTOPHE ATTEND, MOT POUR MOT (29/09) : « je veux voir toutes les
+/// donnees en base qui se mettent a jour quand je rentre des infos dans
+/// l appli ». Il regarde la console Firestore PENDANT qu il touche son
+/// telephone. Une cadence horaire ne repond pas a cette demande ; il faut que
+/// l ecriture locale POUSSE.
+///
+/// LES QUATRE REVEILS, ET ILS SONT DE NATURES DIFFERENTES :
+///
+///  1. LE DEMARRAGE, apres la connexion anonyme. On pose la fiche technique et
+///     on rattrape TOUT ce qui attendait (la file `sync_queue`), puis on monte
+///     l etat courant de chaque sentier connu. C est ce qui fait qu un
+///     telephone reste hors ligne trois jours n a rien perdu.
+///  2. CHAQUE ECRITURE LOCALE — etape validee, sac coche, rando saisie. C est LE
+///     reveil de Christophe. Il est DEBOUNCE a trois secondes : cocher dix
+///     articles d affilee ne doit pas produire dix montees, et trois secondes
+///     restent sous le seuil ou l on se demande si ca marche.
+///  3. LE RETOUR DU RESEAU. `ConnectivityMonitor.onStatusChange` rend deja un
+///     flux debounce a cinq secondes : un reseau qui clignote en bord de
+///     couverture ne declenche donc pas dix passes.
+///  4. LE RETOUR AU PREMIER PLAN, pour la seule `last_seen_at` de la fiche
+///     technique. Rien d autre : revenir sur l application n est pas un
+///     evenement de donnee.
+///
+/// HORS LIGNE, RIEN NE SE PERD, ET C EST LE CAS NOMINAL EN MONTAGNE. Quand la
+/// montee ne peut pas partir, chaque sentier concerne est INSCRIT DANS LA FILE
+/// (`sync_queue`, action `cloud_sync_batch`) — une seule fois par sentier, pas
+/// une par geste — et le retour du reseau la vide. Sans Firebase du tout (mode
+/// local, aucun `--dart-define`), on n inscrit rien : il n y a pas de
+/// destinataire, et remplir une file qui ne sera jamais lue serait mentir.
+///
+/// CE QUI MONTE ET CE QUI NE MONTE PAS est decide dans [CloudSyncService], pas
+/// ici : cet objet sait QUAND reveiller, pas QUOI envoyer. En deux mots : la
+/// progression, le sac et les randos passees montent ; le journal, la fiche
+/// sante, les photos, les contacts d urgence et la morphologie restent sur le
+/// telephone. Le COMPTE, lui, ne fait que DESCENDRE (tache 631).
+class SyncScheduler with WidgetsBindingObserver {
   SyncScheduler({
     required this.cloudSyncService,
     required this.connectivityMonitor,
     required this.firebaseService,
+    required this.progressDao,
+    this.ficheTechnique,
+    this.monterLesConsentements,
+    this.identiteDuJeton,
+    this.attenteAvantMontee = attenteParDefaut,
+    this.config = const SyncConfig(),
+    this.identifiantLocalDesRandos = "local",
+    this.observerLeCycleDeVie = true,
   });
+
+  /// LE DELAI DE CHRISTOPHE : TROIS SECONDES AU PLUS.
+  ///
+  /// C est la borne haute de sa demande, pas une valeur choisie au hasard : il
+  /// doit voir la console bouger pendant qu il a encore le telephone en main.
+  /// Assez long pour absorber une rafale de cases cochees, assez court pour
+  /// qu on ne se demande pas si ca marche.
+  static const Duration attenteParDefaut = Duration(seconds: 3);
 
   final CloudSyncService cloudSyncService;
   final ConnectivityMonitor connectivityMonitor;
   final FirebaseService firebaseService;
 
-  Timer? _batchTimer;
-  StreamSubscription<ConnectivityStatus>? _connectivitySub;
-  bool _isRunning = false;
-  bool _wasOffline = false;
+  /// Pour savoir QUELS sentiers ce telephone connait. Un randonneur qui a
+  /// commence deux sentiers doit voir les deux au serveur, pas seulement celui
+  /// qu il regarde.
+  final ProgressDao progressDao;
+
+  /// La fiche technique `users/{uid}`. Nullable : une instance de test qui ne
+  /// s y interesse pas n a pas a la fabriquer.
+  final DeviceSpecSheet? ficheTechnique;
+
+  /// LE REGISTRE DE CONSENTEMENT (tache 638), SI IL EST BRANCHE.
+  ///
+  /// UN RAPPEL ET PAS LE SERVICE : cet objet sait QUAND reveiller, pas QUOI
+  /// envoyer — meme raison que `descendreLesDroits` chez l ordonnanceur de la
+  /// tache 616. Le branchement se fait dans le provider, et le registre a besoin
+  /// des preferences, qui sont asynchrones.
+  final Future<int> Function()? monterLesConsentements;
+
+  /// L IDENTIFIANT DU JETON, RELU A CHAQUE PASSE (tache 771).
+  ///
+  /// POURQUOI UNE FONCTION ET PAS UNE VALEUR. [start] recevait un identifiant
+  /// et le gardait : une COPIE, prise une fois, au moment de l armement. Le
+  /// 10/10 cette copie etait fausse — deux comptes anonymes etaient nes a 37 ms
+  /// d ecart, le jeton portait le second et la copie retenait le premier, donc
+  /// toutes les ecritures visaient `users/<le premier>` avec le jeton du
+  /// second. `firestore.rules` exige `request.auth.uid == userId` : refus sur
+  /// toute la ligne.
+  ///
+  /// La cause de ces deux comptes est corrigee chez
+  /// [FirebaseAuthService.garantirUneIdentite] ; cette fonction-ci ferme la
+  /// porte d APRES, et elle la ferme pour de bon : le nom sous lequel on ecrit
+  /// n est plus jamais une valeur retenue, c est une LECTURE du jeton, faite au
+  /// moment d ecrire. Un seul endroit decide de l identite, et c est celui que
+  /// le serveur authentifie.
+  ///
+  /// NULLE, l ancien comportement est conserve : les chemins portent
+  /// l identifiant passe a [start]. C est ce dont se servent les tests qui ne
+  /// s interessent pas a l identite.
+  final Future<String?> Function()? identiteDuJeton;
+
+  /// Le delai de regroupement des ecritures locales.
+  final Duration attenteAvantMontee;
+
+  final SyncConfig config;
+
+  /// La cle sous laquelle les randos passees sont rangees EN LOCAL
+  /// (`kHikerLocalUserId`), a ne pas confondre avec l identifiant du compte.
+  final String identifiantLocalDesRandos;
+
+  /// Faux dans les tests qui n ont pas de liaison Flutter a observer.
+  final bool observerLeCycleDeVie;
+
+  Timer? _attente;
+  StreamSubscription<ConnectivityStatus>? _ecouteReseau;
+  StreamSubscription<void>? _ecouteEcritures;
+  StreamSubscription<void>? _ecouteConsentements;
   String? _userId;
-  String? _trailId;
-  SyncConfig _config = const SyncConfig();
+  bool _enCours = false;
+  bool _redemander = false;
+  int _monteesExecutees = 0;
+  bool _observe = false;
 
-  /// Indique si le scheduler est actif
-  bool get isRunning => _isRunning;
+  /// Vrai quand la montee est armee pour un compte.
+  bool get isRunning => _userId != null;
 
-  /// Demarre le scheduler pour un utilisateur et un sentier.
-  void start({
+  /// Vrai quand une ecriture locale attend son tour de montee.
+  bool get monteeEnAttente => _attente?.isActive ?? false;
+
+  /// Vrai quand une passe est en train de tourner.
+  ///
+  /// Mesure, pas decoration : c est ce qui permet a un test d attendre la fin
+  /// d une passe lancee au demarrage sans deviner une duree, et c est aussi ce
+  /// qui rend visible, en journal, une montee qui tarde.
+  bool get enCours => _enCours;
+
+  /// Nombre de montees REELLEMENT parties. Mesure, pas decoration : c est ce
+  /// qui permet a un test d affirmer qu une rafale de gestes n en produit
+  /// qu une.
+  int get monteesExecutees => _monteesExecutees;
+
+  /// ARME LA MONTEE POUR [userId]. Idempotent : un second appel reprend a zero.
+  ///
+  /// [ecrituresLocales] est le flux des changements de la base locale (les
+  /// tables de progression, de sac et de randos passees). Il est injecte plutot
+  /// que construit ici : cet objet n a pas a connaitre Drift, et un test doit
+  /// pouvoir pousser un evenement sans base.
+  ///
+  /// NE BLOQUE PAS LE DEMARRAGE : la fiche technique et le rattrapage partent
+  /// sans etre attendus. Le premier ecran ne doit pas attendre le reseau.
+  Future<void> start({
     required String userId,
-    required String trailId,
-    SyncConfig config = const SyncConfig(),
-  }) {
-    if (_isRunning) {
-      _log.d("[SyncScheduler] Deja en cours, arret avant redemarrage");
-      stop();
-    }
-
-    // Si Firebase non disponible, ne pas demarrer
-    if (!firebaseService.isAvailable) {
-      _log.d("[SyncScheduler] Firebase non disponible, scheduler inactif");
+    Stream<void>? ecrituresLocales,
+    Stream<void>? consentDecisions,
+  }) async {
+    if (_userId != null) await stop();
+    if (userId.isEmpty) {
+      _log.d("[Montee] Aucun identifiant de compte — montee inactive.");
       return;
     }
-
     _userId = userId;
-    _trailId = trailId;
-    _config = config;
-    _isRunning = true;
 
-    // Timer periodique pour le batch sync
-    _batchTimer = Timer.periodic(
-      Duration(minutes: config.batchIntervalMinutes),
-      (_) => _onBatchTick(),
+    if (observerLeCycleDeVie) {
+      try {
+        WidgetsBinding.instance.addObserver(this);
+        _observe = true;
+      } on Object catch (e) {
+        _log.d("[Montee] Cycle de vie non observable ($e) — ignore.");
+      }
+    }
+
+    _ecouteReseau = connectivityMonitor.onStatusChange.listen(
+      _auChangementDeReseau,
+      onError: (Object e) => _log.w("[Montee] Flux de connectivite : $e"),
     );
 
-    // Ecoute des changements de connectivite
-    _connectivitySub = connectivityMonitor.onStatusChange.listen(
-      _onConnectivityChange,
+    _ecouteEcritures = ecrituresLocales?.listen(
+      (_) => signalerUneEcritureLocale(),
+      onError: (Object e) => _log.w("[Montee] Flux des ecritures locales : $e"),
     );
 
-    _log.d("[SyncScheduler] Demarre (batch=${config.batchIntervalMinutes}min)");
+    // UNE DECISION DE CONSENTEMENT EST UN EVENEMENT DE DONNEE (tache 638).
+    //
+    // Elle ne touche AUCUNE table Drift — elle vit dans les preferences — donc
+    // le flux des ecritures locales ci-dessus ne la voit pas. Sans cette seconde
+    // ecoute, un consentement accorde ne monterait qu au prochain demarrage ou
+    // au prochain geste sur la progression : Christophe coche, regarde la
+    // console, et ne voit rien bouger.
+    _ecouteConsentements = consentDecisions?.listen(
+      (_) => signalerUneEcritureLocale(),
+      onError: (Object e) => _log.w("[Montee] Flux des consentements : $e"),
+    );
+
+    // LA FICHE TECHNIQUE D ABORD, ET SANS DEPENDRE DU RESTE. C est elle qui
+    // fait EXISTER `users/{uid}` — sans elle la console montre l utilisateur en
+    // italique, ce que Christophe a lu comme « pas d utilisateur en base ».
+    unawaited(_poserLaFicheTechnique("demarrage"));
+
+    // PUIS LE RATTRAPAGE. Non attendu, pour la meme raison.
+    unawaited(monterMaintenant("demarrage"));
+
+    _log.d(
+      "[Montee] Armee : demarrage + ecritures locales (debounce "
+      "${attenteAvantMontee.inSeconds} s) + retour du reseau + premier plan.",
+    );
   }
 
-  /// Arrete le scheduler.
-  void stop() {
-    _batchTimer?.cancel();
-    _batchTimer = null;
-    _connectivitySub?.cancel();
-    _connectivitySub = null;
-    _isRunning = false;
-    _wasOffline = false;
-    _log.d("[SyncScheduler] Arrete");
+  /// Desarme tout. Idempotent.
+  ///
+  /// UNE PASSE DEJA EN COURS N EST PAS INTERROMPUE : elle est a mi-chemin entre
+  /// la base locale et le serveur, et l abandonner laisserait un sentier monte
+  /// et le suivant non. Elle finira, puis plus rien ne la relancera. Meme
+  /// raisonnement que l ordonnanceur de la tache 616.
+  Future<void> stop() async {
+    _attente?.cancel();
+    _attente = null;
+    await _ecouteReseau?.cancel();
+    _ecouteReseau = null;
+    await _ecouteEcritures?.cancel();
+    _ecouteEcritures = null;
+    await _ecouteConsentements?.cancel();
+    _ecouteConsentements = null;
+    if (_observe) {
+      try {
+        WidgetsBinding.instance.removeObserver(this);
+      } on Object {
+        // Liaison deja demontee : rien a faire.
+      }
+      _observe = false;
+    }
+    _userId = null;
+    _log.d("[Montee] Desarmee.");
   }
 
-  /// Callback du timer batch periodique.
-  Future<void> _onBatchTick() async {
-    if (_userId == null || _trailId == null) return;
+  /// UNE ECRITURE LOCALE VIENT D AVOIR LIEU — on montera dans trois secondes.
+  ///
+  /// Chaque appel REPOUSSE l echeance : c est ce qui transforme une rafale de
+  /// cases cochees en une seule montee. Le compteur du minuteur est le seul
+  /// etat : pas de file de gestes a tenir, donc rien a perdre.
+  void signalerUneEcritureLocale() {
+    if (_userId == null) return;
+    _attente?.cancel();
+    _attente = Timer(
+      attenteAvantMontee,
+      () => unawaited(monterMaintenant("ecriture locale")),
+    );
+  }
 
-    _log.d("[SyncScheduler] Tick batch sync");
-    await cloudSyncService.pushBatchHourly(_userId!, _trailId!);
-
-    // Tenter la sync immediate si connecte
-    final status = await connectivityMonitor.checkStatus();
-    if (status == ConnectivityStatusValues.online) {
-      await cloudSyncService.syncUserData(
-        _userId!, _trailId!,
-        config: _config,
-      );
+  /// UNE PASSE DE MONTEE. Ne leve jamais. Rend le nombre de documents ecrits.
+  ///
+  /// UNE SEULE A LA FOIS, ET LE VERROU SE POSE AVANT LE PREMIER `await` : les
+  /// reveils peuvent tomber ensemble (une ecriture locale a l instant ou le
+  /// reseau revient). Une passe demandee pendant qu une autre tourne n est pas
+  /// PERDUE — elle est REJOUEE a la fin, sinon le dernier geste du randonneur,
+  /// celui qui a declenche la demande, ne monterait jamais.
+  Future<int> monterMaintenant([String cause = "appel direct"]) async {
+    if (_userId == null) return 0;
+    if (_enCours) {
+      _redemander = true;
+      _log.d("[Montee] Passe ($cause) differee : une montee tourne deja.");
+      return 0;
+    }
+    _enCours = true;
+    try {
+      return await _monter(cause);
+    } catch (e) {
+      // UNE PASSE QUI ECHOUE NE TUE PAS LA MONTEE. Le prochain geste ou le
+      // prochain retour de reseau reessaiera. Avaler sans DIRE serait la faute
+      // inverse.
+      _log.e("[Montee] Passe ($cause) en echec : $e");
+      return 0;
+    } finally {
+      _enCours = false;
+      if (_redemander) {
+        _redemander = false;
+        unawaited(monterMaintenant("$cause (rejouee)"));
+      }
     }
   }
 
-  /// Callback lors d un changement de connectivite.
-  void _onConnectivityChange(ConnectivityStatus status) {
-    if (status == ConnectivityStatusValues.offline) {
-      _wasOffline = true;
-      _log.d("[SyncScheduler] Passage offline");
-      return;
+  Future<int> _monter(String cause) async {
+    if (!firebaseService.isAvailable) {
+      _log.d("[Montee] Passe ($cause) sans effet : Firebase indisponible.");
+      return 0;
     }
 
-    // Retour online
-    if (_wasOffline && _config.syncOnReconnect && _userId != null) {
-      _wasOffline = false;
-      _log.d("[SyncScheduler] Retour online, rattrapage");
-      cloudSyncService.catchUpOnReconnect(
-        _userId!,
-        config: _config,
+    // LE NOM SOUS LEQUEL ON VA ECRIRE SE LIT ICI, PAS A L ARMEMENT (tache 771).
+    // Il est relu APRES la prise du verrou : le commentaire de
+    // [monterMaintenant] en fait une invariante, et une lecture placee avant
+    // aurait rouvert la porte a deux passes simultanees.
+    final userId = await _identitePourLesChemins(cause);
+    if (userId == null) return 0;
+
+    final ConnectivityStatus statut;
+    try {
+      statut = await connectivityMonitor.checkStatus();
+    } on Object catch (e) {
+      _log.w("[Montee] Connectivite illisible ($e) — mise en file.");
+      await _mettreEnFile(userId);
+      return 0;
+    }
+    if (statut == ConnectivityStatusValues.offline) {
+      _log.d("[Montee] Passe ($cause) hors ligne : mise en file.");
+      await _mettreEnFile(userId);
+      return 0;
+    }
+
+    var total = 0;
+
+    // 1. LE RATTRAPAGE D ABORD. Ce qui attendait depuis hier passe avant ce qui
+    //    vient d etre saisi : sinon un telephone longtemps hors ligne verrait sa
+    //    file grossir pendant que le present monte.
+    final rattrapage = await cloudSyncService.catchUpOnReconnect(
+      userId,
+      config: config,
+    );
+    if (rattrapage.status == CloudSyncStatusValues.success) {
+      total += rattrapage.itemsSynced;
+    }
+
+    // 2. TOUS LES SENTIERS CONNUS, pas seulement celui qui est affiche.
+    final connus = await progressDao.getAll();
+    for (final ligne in connus) {
+      final r = await cloudSyncService.syncUserData(
+        userId,
+        ligne.trailId,
+        config: config,
       );
+      if (r.status == CloudSyncStatusValues.success) {
+        total += r.itemsSynced;
+      }
+    }
+
+    // 3. LES RANDOS PASSEES. Deux identifiants distincts, voir
+    //    [CloudSyncService.syncPastHikes] : le chemin au serveur porte
+    //    l identifiant d authentification, la lecture locale une cle locale.
+    final randos = await cloudSyncService.syncPastHikes(
+      userId,
+      identifiantLocal: identifiantLocalDesRandos,
+    );
+    if (randos.status == CloudSyncStatusValues.success) {
+      total += randos.itemsSynced;
+    }
+
+    // 4. LE REGISTRE DE CONSENTEMENT (tache 638). Seules les decisions qui ont
+    //    BOUGE partent : `decided_at` est un horodatage serveur, le renvoyer a
+    //    chaque passe deplacerait la date du consentement a chaque lancement.
+    //    Son echec ne fait pas echouer la passe — ne pas avoir pu publier un
+    //    registre n est pas une raison de ne pas monter une etape validee.
+    final registre = monterLesConsentements;
+    if (registre != null) {
+      try {
+        total += await registre();
+      } on Object catch (e) {
+        _log.w("[Montee] Registre de consentement en echec : $e");
+      }
+    }
+
+    _monteesExecutees++;
+    _log.d("[Montee] Passe ($cause) terminee : $total document(s).");
+    return total;
+  }
+
+  /// INSCRIT CHAQUE SENTIER CONNU DANS LA FILE, UNE SEULE FOIS.
+  ///
+  /// La file n a pas de contrainte d unicite (`id` auto-incremente) : sans ce
+  /// filtre, rester hors ligne une journee en cochant son sac y deposerait des
+  /// centaines de lignes identiques, toutes rejouees au retour du reseau.
+  Future<void> _mettreEnFile(String userId) async {
+    if (!firebaseService.isAvailable) return;
+    final connus = await progressDao.getAll();
+    for (final ligne in connus) {
+      final deja = await cloudSyncService.syncQueueDao.getByTrailId(
+        ligne.trailId,
+      );
+      final dejaEnAttente = deja.any(
+        (a) => a.status == "pending" && a.action == "cloud_sync_batch",
+      );
+      if (dejaEnAttente) continue;
+      await cloudSyncService.pushBatchHourly(userId, ligne.trailId);
+    }
+  }
+
+  void _auChangementDeReseau(ConnectivityStatus statut) {
+    if (statut != ConnectivityStatusValues.online) return;
+    if (!config.syncOnReconnect) return;
+    unawaited(monterMaintenant("retour du reseau"));
+  }
+
+  /// LE RETOUR AU PREMIER PLAN NE MONTE QUE LA DERNIERE VENUE.
+  ///
+  /// Revenir sur l application n est pas un evenement de donnee : rien n a
+  /// change en base pendant qu elle etait derriere. Y declencher une montee
+  /// complete ferait du va-et-vient entre deux applications un generateur de
+  /// trafic.
+  Future<void> auRetourAuPremierPlan() =>
+      _poserLaFicheTechnique("premier plan");
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(auRetourAuPremierPlan());
+    }
+  }
+
+  /// SOUS QUEL NOM CETTE PASSE ECRIT — LE JETON, ET RIEN D AUTRE (tache 771).
+  ///
+  /// Rend `null` quand il n y a pas d identite a presenter : la passe ne fait
+  /// alors RIEN. C est volontaire et c est le point entier. Ecrire sous la
+  /// derniere copie connue, c est au mieux se faire refuser par
+  /// `firestore.rules`, au pire deposer les donnees de ce randonneur dans le
+  /// compte d un autre.
+  ///
+  /// Sans [identiteDuJeton] (tests qui ne s interessent pas a l identite), on
+  /// garde l identifiant de l armement : le comportement d avant, identique.
+  Future<String?> _identitePourLesChemins(String cause) async {
+    final lecture = identiteDuJeton;
+    if (lecture == null) return _userId;
+
+    final String? jeton;
+    try {
+      jeton = await lecture();
+    } on Object catch (e) {
+      _log.w('[Montee] Jeton illisible ($e) — passe ($cause) sans effet.');
+      return null;
+    }
+    if (jeton == null || jeton.isEmpty) {
+      _log.d('[Montee] Passe ($cause) sans effet : aucune identite au jeton.');
+      return null;
+    }
+    if (jeton != _userId) {
+      // L ARMEMENT AVAIT RETENU AUTRE CHOSE, et c est exactement ce qui s est
+      // produit le 10/10. On suit le jeton, et on le DIT : un changement
+      // d identite en cours de route est une anomalie qui doit se lire dans un
+      // journal, pas une situation a absorber en silence.
+      _log.w(
+        '[Montee] L identite a change depuis l armement — les chemins '
+        'suivent le jeton (passe $cause).',
+      );
+      _userId = jeton;
+    }
+    return jeton;
+  }
+
+  Future<void> _poserLaFicheTechnique(String cause) async {
+    final fiche = ficheTechnique;
+    if (fiche == null || _userId == null) return;
+    try {
+      final posee = await fiche.poser();
+      _log.d(
+        "[Montee] Fiche technique ($cause) : ${posee ? "posee" : "sans effet"}",
+      );
+    } on Object catch (e) {
+      _log.w("[Montee] Fiche technique ($cause) en echec : $e");
     }
   }
 }
 
-/// Provider Riverpod pour le scheduler de sync.
+/// Provider de la montee. Il ne demarre PAS tout seul : un provider lu par un
+/// test ne doit pas se mettre a ecrire au serveur.
 final syncSchedulerProvider = Provider<SyncScheduler>((ref) {
-  final cloudSync = ref.watch(cloudSyncServiceProvider);
-  final connectivity = ref.watch(connectivityMonitorProvider);
-  final firebase = ref.watch(firebaseServiceProvider);
-  return SyncScheduler(
-    cloudSyncService: cloudSync,
-    connectivityMonitor: connectivity,
-    firebaseService: firebase,
+  final db = ref.watch(databaseProvider);
+  final montee = SyncScheduler(
+    cloudSyncService: ref.watch(cloudSyncServiceProvider),
+    connectivityMonitor: ref.watch(connectivityMonitorProvider),
+    firebaseService: ref.watch(firebaseServiceProvider),
+    progressDao: ProgressDao(db),
+    ficheTechnique: ref.watch(ficheTechniqueDuTelephoneProvider),
+    // LE REGISTRE DE CONSENTEMENT SE BRANCHE ICI (tache 638), et la montee n en
+    // sait rien d autre que « appelle ca quand tu te reveilles ». `ref.read`
+    // DANS le rappel : le service se construit au premier reveil, pas a la
+    // creation de la montee — il a besoin des preferences, qui sont asynchrones.
+    monterLesConsentements: () async {
+      final registre = await ref.read(monteeDesConsentementsProvider.future);
+      return registre.monter();
+    },
+    // L IDENTITE DES CHEMINS SE LIT AU JETON, A CHAQUE PASSE (tache 771).
+    //
+    // `FirebaseAuthService.accountId` EST LA SEULE AUTORITE, et c est deja son
+    // role declare (tache 631) : il rend l identifiant d AUTHENTIFICATION, lu
+    // en direct sur l utilisateur courant du SDK — exactement la source dont
+    // Firestore tire son jeton. Un identifiant retenu ailleurs, meme une
+    // seconde plus tot, peut deja etre le mauvais : c est precisement ce qui
+    // s est produit le 10/10.
+    //
+    // DANS UNE FERMETURE, DONC JAMAIS A LA CONSTRUCTION. Lire
+    // `authServiceProvider` ici CONSTRUIRAIT le service, donc toucherait le
+    // greffon natif dans le `create` de ce provider — et la lecon de la tache
+    // 637 est que cette erreur-la remonte jusqu a noircir tous les ecrans. La
+    // lecture n a lieu qu au moment d ecrire, et
+    // `SyncScheduler._identitePourLesChemins` la protege : ce qui leve ici ne
+    // coute que la passe.
+    identiteDuJeton: () async {
+      final service = ref.read(authServiceProvider);
+      return service is FirebaseAuthService ? service.accountId : null;
+    },
   );
+  ref.onDispose(montee.stop);
+  return montee;
 });
+
+/// LES TROIS TABLES DONT UN CHANGEMENT DOIT FAIRE MONTER QUELQUE CHOSE.
+///
+/// POURQUOI ON ECOUTE LA BASE PLUTOT QUE D INSTRUMENTER LES ECRANS. La
+/// progression, le sac et les randos passees s ecrivent depuis une vingtaine
+/// d endroits (`checklist_provider` a lui seul ouvre le DAO dix fois). Appeler
+/// la montee a chacun d eux, c est vingt occasions d en oublier un — et un
+/// oubli ne se voit pas : la donnee reste simplement sur le telephone, en
+/// silence, ce qui est EXACTEMENT le defaut que ce lot corrige. Drift signale
+/// tout changement de table ; un seul branchement couvre donc tous les gestes,
+/// presents et futurs.
+///
+/// LE JOURNAL N Y EST PAS, et c est volontaire : il ne monte plus (tache 635).
+TableUpdateQuery _tablesQuiFontMonter(AppDatabase db) {
+  return TableUpdateQuery.allOf([
+    TableUpdateQuery.onTable(db.userProgressEntries),
+    TableUpdateQuery.onTable(db.checklistItems),
+    TableUpdateQuery.onTable(db.pastHikeEntries),
+  ]);
+}
+
+/// LE GESTE QUI BRANCHE LA MONTEE, ET IL N EXISTAIT PAS.
+///
+/// Observe par `_BootstrapGate` dans `main.dart` — la garde qui vit au-dessus du
+/// `Navigator` et ne se demonte JAMAIS. C est la seule place correcte, pour la
+/// meme raison que la cadence (tache 616) et l ecoute des droits (tache 631) :
+/// Riverpod met en PAUSE les abonnements d un ecran qui n est plus a
+/// l avant-plan, et une montee qui s arrete quand on navigue n est pas une
+/// montee.
+///
+/// IL ATTEND L IDENTITE, ET C EST TOUT CE QU IL ATTEND. Sans identifiant de
+/// compte il n y a pas de `users/{uid}` a ecrire : la montee ne s arme pas, en
+/// silence, et l application marche sur sa base locale exactement comme avant.
+/// `garantirUneIdentite()` est idempotente et ne leve pas (tache 631).
+///
+/// EN MODE LOCAL (aucun `--dart-define=STEPWAYS_FIREBASE_PROJECT_ID`), le
+/// service d authentification n est pas celui de Firebase : rien ne s arme, et
+/// c est le comportement attendu, pas une panne.
+/// TACHE 637 (VOLET 2) — LA LECTURE DE L IDENTITE POUVAIT NOIRCIR TOUTE
+/// L APPLICATION, ET « NON BLOQUANT » ETAIT FAUX.
+///
+/// `authServiceProvider` CONSTRUIT `FirebaseAuthService`, donc il touche
+/// `FirebaseAuth.instance` pendant son `create`. Tout ce qui leve la — Firebase
+/// non initialise, services Google Play absents ou trop vieux, authentification
+/// non activee sur le projet — sortait de ce provider, remontait dans le
+/// `ref.watch` que [BootstrapGate] fait de lui, et faisait LEVER LE `build` de la
+/// garde qui enveloppe TOUS les ecrans. Flutter remplace alors l arbre entier par
+/// un `ErrorWidget` : en release, un rectangle noir sans une ligne de texte. Et
+/// comme la garde se reconstruit a chaque changement de provider, il revient.
+///
+/// C est la forme exacte du « Mon compte depuis le menu trek = ecran noir » de
+/// Christophe (DEM-260930-1103), et c est aussi pourquoi « depuis la demo ca
+/// fonctionne » : la montee en base est l un des services que le mode demo
+/// n arme pas.
+///
+/// LA MONTEE EST UN SERVICE DE FOND : son echec doit couter LA MONTEE, jamais
+/// l ecran. On renonce, on le dit au journal, et l application vit.
+final monteeEnBaseDemarreeProvider = Provider<void>((ref) {
+  final montee = ref.watch(syncSchedulerProvider);
+  final db = ref.watch(databaseProvider);
+
+  // `Object` et non `AuthService` : le type de l interface n est pas importe ici.
+  final Object service;
+  try {
+    service = ref.read(authServiceProvider);
+  } catch (erreur) {
+    _log.d("[Montee] Identite indisponible ($erreur) — montee non armee.");
+    return;
+  }
+
+  if (service is! FirebaseAuthService) {
+    _log.d("[Montee] Mode local : aucune identite serveur, montee inactive.");
+    return;
+  }
+  // Recopie APRES la promotion : une variable promue ne garde pas son type a
+  // l interieur d une fermeture.
+  final auth = service;
+
+  unawaited(() async {
+    try {
+      await auth.garantirUneIdentite();
+      final uid = auth.accountId;
+      if (uid == null || uid.isEmpty) {
+        _log.d("[Montee] Identite absente au demarrage — montee non armee.");
+        return;
+      }
+      await montee.start(
+        userId: uid,
+        ecrituresLocales: db.tableUpdates(_tablesQuiFontMonter(db)),
+        // CHAQUE DECISION DE CONSENTEMENT FAIT MONTER LE REGISTRE (tache 638).
+        // Le flux `changes` du service porte la finalite tranchee ; on ne s en
+        // sert que comme d un reveil, la montee relit l etat complet.
+        consentDecisions: _consentDecisions(ref),
+      );
+    } catch (erreur) {
+      // MEME REGLE DANS LA SUITE ASYNCHRONE. Une erreur laissee libre ici part
+      // dans le gestionnaire de zone et remonte en plantage ; elle ne coute
+      // pourtant que la montee, qui se rearmera a la prochaine ouverture.
+      _log.d("[Montee] Armement abandonne ($erreur).");
+    }
+  }());
+});
+
+/// Le flux des decisions de consentement, ou un flux vide si le service n est
+/// pas joignable.
+///
+/// MEME REGLE QUE CI-DESSUS : construire le service de consentement ne doit pas
+/// pouvoir faire echouer l armement de la montee, et encore moins l ecran.
+Stream<void> _consentDecisions(Ref ref) {
+  try {
+    return ref.read(consentServiceProvider).changes;
+  } catch (erreur) {
+    _log.d("[Montee] Flux des consentements indisponible ($erreur).");
+    return const Stream<void>.empty();
+  }
+}

@@ -1,20 +1,28 @@
+/// Le DEROULE des etapes du sentier courant, jour par jour, avec les chiffres
+/// de chaque journee.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/analytics/screen_entry.dart';
 import '../../../../core/engine/trail_engine.dart';
-import '../../../../core/models/stage.dart';
+import '../../../../core/models/stage_row.dart';
 import '../../../../core/models/stage_duration.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_header.dart';
-import '../../../hub/providers/cockpit_start_providers.dart';
+import '../../../hub/hub_facade.dart'
+    show PrepCoreStep, prepareCoreStepsProvider;
 import '../../domain/models/itinerary_day.dart';
 import '../../providers/gps_providers.dart';
 import '../../providers/itinerary_providers.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Ecran ITINERAIRE (parite GR20).
 ///
@@ -38,6 +46,10 @@ class ItineraryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.itinerary, trail: trailId);
     final itineraryAsync = ref.watch(itineraryProvider.select((a) => a));
 
     // Q1 (§12.5) : ouvrir l'écran Itinéraire marque l'étape cœur « Itinéraire »
@@ -50,9 +62,9 @@ class ItineraryScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      // Ph5 (L6b) : AppHeader universel ([Retour]+[Accueil] contextuel). Ecran de
-      // preparation (fiche pushee depuis le cockpit) -> pas de barre contextuelle
-      // dediee (§4 ne prevoit pas d'actions specifiques ici).
+      // Ph5 (L6b) : AppHeader universel ([Retour]+[Accueil] contextuel). Ecran
+      // de preparation (fiche pushee depuis le cockpit) -> pas de barre
+      // contextuelle dediee (§4 ne prevoit pas d'actions specifiques ici).
       appBar: AppHeader(title: t.itinerary.title),
       body: itineraryAsync.when(
         loading: () => LoadingView(message: t.itinerary.loading),
@@ -82,8 +94,8 @@ class _EmptyItinerary extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.route_outlined,
+            StepIcon(
+              StepwaysIcons.itineraire,
               size: 72,
               color: theme.colorScheme.onSurface.withAlpha(80),
             ),
@@ -120,6 +132,10 @@ class _ItineraryContent extends ConsumerWidget {
     final totalKm = days.fold<double>(0, (s, d) => s + d.totalDistance);
     final totalGain = days.fold<int>(0, (s, d) => s + d.totalElevation);
     final stageCount = days.fold<int>(0, (s, d) => s + d.stageCount);
+    // Un jour d'itineraire sans etape EST un jour de repos (projection de
+    // [PlannedDay.isRestDay] par [itineraryProvider]) : c'est ce qui permet de
+    // dire ce que le compteur de jours compte (tache 569, R2).
+    final restDayCount = days.where((d) => d.stages.isEmpty).length;
 
     // Retour Chris #12b : le controle du SENS n'a de sens que si le sentier
     // propose au moins deux sens de parcours (`TrailConfig.directions`).
@@ -134,6 +150,7 @@ class _ItineraryContent extends ConsumerWidget {
           totalKm: totalKm,
           totalGain: totalGain,
           dayCount: days.length,
+          restDayCount: restDayCount,
           stageCount: stageCount,
         ),
         if (showDirection) _DirectionControl(days: days),
@@ -150,22 +167,24 @@ class _ItineraryContent extends ConsumerWidget {
 }
 
 /// Controle du SENS de la rando (retour Chris #12b) : affiche Depart -> Arrivee
-/// (noms des extremites dans le sens courant) et un bouton « Inverser le sens ».
+/// (noms des extremites dans le sens courant) et un bouton « Inverser le sens
+/// ».
 ///
 /// N'INVENTE aucune donnee : le sens est porte par [selectedDirectionProvider]
 /// (deja utilise par tout le pipeline direction-aware — plan de marche, GPS,
-/// arrivee) et les sens possibles par `TrailConfig.directions`. Inverser bascule
-/// la valeur entre le sens de reference (1er code) et l'autre ; l'itineraire se
-/// recalcule tout seul ([itineraryProvider] watch ce provider) et l'ordre des
-/// etapes s'inverse. Les noms d'extremites sont lus sur l'itineraire courant
-/// (1re etape du 1er jour = depart ; derniere etape du dernier jour = arrivee).
+/// arrivee) et les sens possibles par `TrailConfig.directions`. Inverser
+/// bascule la valeur entre le sens de reference (1er code) et l'autre ;
+/// l'itineraire se recalcule tout seul ([itineraryProvider] watch ce provider)
+/// et l'ordre des etapes s'inverse. Les noms d'extremites sont lus sur
+/// l'itineraire courant (1re etape du 1er jour = depart ; derniere etape du
+/// dernier jour = arrivee).
 class _DirectionControl extends ConsumerWidget {
   const _DirectionControl({required this.days});
 
   final List<ItineraryDay> days;
 
-  /// Nom de l'etape de DEPART dans le sens courant (1re etape du 1er jour porteur
-  /// d'etape), ou null si indisponible.
+  /// Nom de l'etape de DEPART dans le sens courant (1re etape du 1er jour
+  /// porteur d'etape), ou null si indisponible.
   String? get _startName {
     for (final d in days) {
       if (d.stages.isNotEmpty) return d.stages.first.name;
@@ -209,7 +228,7 @@ class _DirectionControl extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.swap_horiz, size: 18, color: scheme.primary),
+              StepIcon(StepwaysIcons.inverser, size: 18, color: scheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
                 t.itinerary.direction.title,
@@ -234,8 +253,8 @@ class _DirectionControl extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.spacingSm,
                   ),
-                  child: Icon(
-                    Icons.arrow_forward,
+                  child: StepIcon(
+                    StepwaysIcons.flecheAvant,
                     size: 18,
                     color: scheme.onSurface.withAlpha(140),
                   ),
@@ -254,7 +273,11 @@ class _DirectionControl extends ConsumerWidget {
           // l'autre code declare par le sentier.
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.inverser,
+              iconSize: 18,
+              label: t.itinerary.direction.reverse,
               onPressed: forward == null
                   ? null
                   : () {
@@ -268,8 +291,6 @@ class _DirectionControl extends ConsumerWidget {
                       );
                       ref.read(selectedDirectionProvider.notifier).state = next;
                     },
-              icon: const Icon(Icons.swap_horiz, size: 18),
-              label: Text(t.itinerary.direction.reverse),
             ),
           ),
         ],
@@ -310,8 +331,6 @@ class _Endpoint extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
           textAlign: alignEnd ? TextAlign.end : TextAlign.start,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
@@ -319,17 +338,36 @@ class _Endpoint extends StatelessWidget {
 }
 
 /// En-tete de statistiques globales (parite GR20 _StatsHeader).
+///
+/// TACHE 569 (R2) — LE COMPTEUR DE JOURS DIT CE QU'IL COMPTE.
+///
+/// LE RETOUR DE CHRIS, MOT POUR MOT : « faisabilite dit 11 et itineraire
+/// propose 9 ». Les deux chiffres etaient JUSTES et ne parlaient pas de la meme
+/// chose : la Faisabilite conseillait 11 jours AU TOTAL, cet en-tete affichait
+/// les 9 jours du programme courant sous un libelle « Jour » qui ne disait ni
+/// marche, ni repos, ni total. Deux nombres sans unite, c'est une contradiction
+/// pour celui qui lit.
+///
+/// Ce compteur compte des TOTAUX — un jour de repos est une journee de
+/// l'itineraire — et il le dit, avec le detail marche / repos juste en dessous.
 class _ItineraryStatsHeader extends StatelessWidget {
   const _ItineraryStatsHeader({
     required this.totalKm,
     required this.totalGain,
     required this.dayCount,
+    required this.restDayCount,
     required this.stageCount,
   });
 
   final double totalKm;
   final int totalGain;
+
+  /// Jours TOTAUX de l'itineraire (marche + repos).
   final int dayCount;
+
+  /// Jours de REPOS parmi eux.
+  final int restDayCount;
+
   final int stageCount;
 
   @override
@@ -338,16 +376,32 @@ class _ItineraryStatsHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       color: theme.colorScheme.primary.withAlpha(20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Column(
         children: [
-          _Stat(
-            label: t.itinerary.totalDistance,
-            value: '${totalKm.toStringAsFixed(0)} km',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _Stat(
+                label: t.itinerary.totalDistance,
+                value: '${totalKm.toStringAsFixed(0)} km',
+              ),
+              _Stat(label: t.itinerary.totalElevation, value: '$totalGain m'),
+              _Stat(label: t.itinerary.daysTotal, value: '$dayCount'),
+              _Stat(label: t.itinerary.stages, value: '$stageCount'),
+            ],
           ),
-          _Stat(label: t.itinerary.totalElevation, value: '$totalGain m'),
-          _Stat(label: t.itinerary.day, value: '$dayCount'),
-          _Stat(label: t.itinerary.stages, value: '$stageCount'),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            t.itinerary.daysBreakdown(
+              walk: dayCount - restDayCount,
+              rest: restDayCount,
+            ),
+            key: const ValueKey('itinerary-days-breakdown'),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withAlpha(170),
+            ),
+          ),
         ],
       ),
     );
@@ -411,13 +465,13 @@ class _DayCard extends StatelessWidget {
         subtitle: Text(
           day.stageCount == 0
               ? t.itinerary.restDay
-              // PLURIEL PORTE PAR SLANG, PLUS PAR UN replaceAll (tache 560, N4).
-              // La cle etait « {count} etapes » et le nombre y etait substitue a
-              // la main : un jour a une seule etape affichait « 1 etapes ». La
-              // cle est desormais un pluriel Slang, donc chaque langue applique
-              // SA regle CLDR (en francais `one` couvre 0 et 1, en anglais 1
-              // seul) — un accord de plus a maintenir aurait ete un accord de
-              // plus a oublier.
+              // PLURIEL PORTE PAR SLANG, PLUS PAR UN replaceAll (tache 560,
+              // N4). La cle etait « {count} etapes » et le nombre y etait
+              // substitue a la main : un jour a une seule etape affichait « 1
+              // etapes ». La cle est desormais un pluriel Slang, donc chaque
+              // langue applique SA regle CLDR (en francais `one` couvre 0 et 1,
+              // en anglais 1 seul) — un accord de plus a maintenir aurait ete
+              // un accord de plus a oublier.
               : '${t.itinerary.stageCount(n: day.stageCount)}'
                     '  -  ${day.totalDistance.toStringAsFixed(1)} km'
                     '  -  D+ ${day.totalElevation} m',
@@ -517,16 +571,16 @@ class _StageTile extends StatelessWidget {
                     runSpacing: AppTheme.spacingXs,
                     children: [
                       _MiniStat(
-                        icon: Icons.straighten,
+                        icon: StepwaysIcons.distance,
                         label: '${stage.distanceKm.toStringAsFixed(1)} km',
                       ),
                       _MiniStat(
-                        icon: Icons.arrow_upward,
+                        icon: StepwaysIcons.flecheHaut,
                         label: '${stage.elevationGainM} m',
                         color: AppTheme.rougeExtreme,
                       ),
                       _MiniStat(
-                        icon: Icons.arrow_downward,
+                        icon: StepwaysIcons.flecheBas,
                         label: '${stage.elevationLossM} m',
                         color: theme.colorScheme.primary,
                       ),
@@ -536,7 +590,7 @@ class _StageTile extends StatelessWidget {
                       // du sentier si fournie, sinon estimation Naismith. Un
                       // sentier sans la donnee reste affiche (repli propre).
                       _MiniStat(
-                        icon: Icons.schedule,
+                        icon: StepwaysIcons.clock,
                         label: formatDurationMinutes(
                           stageDurationMinutes(stage),
                         ),
@@ -570,8 +624,8 @@ class _StageTile extends StatelessWidget {
                       const Spacer(),
                       // Action (parite GR20) : ouvrir le detail de l'etape.
                       // Affordance de navigation vers le detail.
-                      Icon(
-                        Icons.chevron_right,
+                      StepIcon(
+                        StepwaysIcons.chevronDroite,
                         color: theme.colorScheme.onSurface.withAlpha(120),
                       ),
                     ],
@@ -590,7 +644,7 @@ class _StageTile extends StatelessWidget {
 class _MiniStat extends StatelessWidget {
   const _MiniStat({required this.icon, required this.label, this.color});
 
-  final IconData icon;
+  final String icon;
   final String label;
   final Color? color;
 
@@ -601,7 +655,7 @@ class _MiniStat extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: c),
+        StepIcon(icon, size: 16, color: c),
         const SizedBox(width: 3),
         Text(label, style: theme.textTheme.bodySmall?.copyWith(color: color)),
       ],

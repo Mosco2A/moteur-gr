@@ -1,11 +1,17 @@
+/// Progression personnelle calculee en local, classement par tranche venu du
+/// serveur, et des pseudonymes jamais des noms.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/defi_ranking.dart';
 import '../domain/defi_saisonnier.dart';
 import '../providers/gamification_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran d'un defi saisonnier (F7C-03, Phase 7 gamification).
 ///
@@ -24,6 +30,10 @@ class DefiScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.defi);
     final t = Translations.of(context);
     final stats = ref.watch(userStatsProvider);
     final service = ref.watch(defiServiceProvider);
@@ -36,7 +46,10 @@ class DefiScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
-            Text(defi.description, style: Theme.of(context).textTheme.bodyMedium),
+            Text(
+              defi.description,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             const SizedBox(height: AppTheme.spacingMd),
             _ProgressCard(progress: progress),
             const SizedBox(height: AppTheme.spacingLg),
@@ -52,8 +65,7 @@ class DefiScreen extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingMd),
             rankingAsync.when(
               data: (ranking) => _DefiRankingView(ranking: ranking),
-              loading: () =>
-                  const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: CircularProgressIndicator()),
               error: (_, __) => _Notice(message: t.gamification.defi.noDefi),
             ),
           ],
@@ -64,8 +76,10 @@ class DefiScreen extends ConsumerWidget {
 }
 
 /// Classement du defi, indexe par defiId (lecture cache, R2).
-final _defiRankingProvider =
-    FutureProvider.family<DefiRanking?, String>((ref, defiId) {
+final _defiRankingProvider = FutureProvider.family<DefiRanking?, String>((
+  ref,
+  defiId,
+) {
   return ref.watch(defiServiceProvider).ranking(defiId);
 });
 
@@ -93,8 +107,10 @@ class _ProgressCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(t.gamification.defi.inProgress,
-                style: theme.textTheme.labelMedium),
+            Text(
+              t.gamification.defi.inProgress,
+              style: theme.textTheme.labelMedium,
+            ),
             const SizedBox(height: AppTheme.spacingSm),
             LinearProgressIndicator(value: progress.ratio),
             const SizedBox(height: AppTheme.spacingSm),
@@ -137,9 +153,7 @@ class _DefiRankingView extends StatelessWidget {
               ),
             )
           else
-            ...tranche.entries.map(
-              (e) => _DefiEntryRow(entry: e),
-            ),
+            ...tranche.entries.map((e) => _DefiEntryRow(entry: e)),
           const SizedBox(height: AppTheme.spacingMd),
         ],
       ],
@@ -157,7 +171,8 @@ class _DefiEntryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Semantics(
-      label: '${entry.rank} ${entry.pseudonym} ${entry.value.toStringAsFixed(0)}',
+      label:
+          '${entry.rank} ${entry.pseudonym} ${entry.value.toStringAsFixed(0)}',
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
         child: Row(
@@ -173,12 +188,12 @@ class _DefiEntryRow extends StatelessWidget {
             ),
             const SizedBox(width: AppTheme.spacingSm),
             Expanded(
-              child: Text(entry.pseudonym,
-                  style: theme.textTheme.bodyLarge,
-                  overflow: TextOverflow.ellipsis),
+              child: Text(entry.pseudonym, style: theme.textTheme.bodyLarge),
             ),
-            Text(entry.value.toStringAsFixed(0),
-                style: theme.textTheme.bodyMedium),
+            Text(
+              entry.value.toStringAsFixed(0),
+              style: theme.textTheme.bodyMedium,
+            ),
           ],
         ),
       ),
@@ -203,8 +218,11 @@ class _Notice extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline,
-              size: 18, color: theme.colorScheme.onSecondaryContainer),
+          StepIcon(
+            StepwaysIcons.info,
+            size: 18,
+            color: theme.colorScheme.onSecondaryContainer,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(

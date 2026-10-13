@@ -1,15 +1,21 @@
+/// Poser un repere ou commenter l'etat d'un repere existant, hors ligne : la
+/// contribution part plus tard, elle n'attend pas le reseau.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
-import '../../map/providers/location_provider.dart';
+import '../../map/map_facade.dart' show locationProvider;
 import '../data/waypoint_service.dart';
 import '../domain/waypoint_type_config.dart';
 import '../providers/waypoint_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Formulaire de CONTRIBUTION communautaire OFFLINE (F8A-05).
 ///
@@ -54,6 +60,16 @@ class _WaypointContributionScreenState
   bool _submitted = false;
 
   bool get _isCommentMode => widget.targetWaypointId != null;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(
+      ref,
+      ScreenBreadcrumb.waypointContribution,
+      trail: widget.trailId,
+    );
+  }
 
   @override
   void dispose() {
@@ -192,7 +208,7 @@ class _WaypointContributionScreenState
                         key: const ValueKey('waypoint-contribution-submit'),
                         isLoading: _submitting,
                         minHeight: 52,
-                        icon: Icons.save_outlined,
+                        icon: StepwaysIcons.save,
                         label: t.waypoints.contribution.submit,
                         onPressed: _submitting ? null : _submit,
                       ),
@@ -225,7 +241,7 @@ class _WaypointContributionScreenState
             label: label,
             child: ChoiceChip(
               key: ValueKey('contribution-type-$type'),
-              avatar: Icon(
+              avatar: StepIcon(
                 style.icon,
                 size: 18,
                 color: selected ? Colors.white : style.color,
@@ -337,8 +353,8 @@ class _LatencyBanner extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.cloud_off_outlined,
+            StepIcon(
+              StepwaysIcons.horsLigne,
               size: 20,
               color: theme.colorScheme.onSecondaryContainer,
             ),
@@ -374,8 +390,8 @@ class _SubmittedView extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.check_circle_outline,
+          StepIcon(
+            StepwaysIcons.cocheCercle,
             size: 72,
             color: theme.colorScheme.primary,
           ),

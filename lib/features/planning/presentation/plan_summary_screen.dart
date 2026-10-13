@@ -1,20 +1,28 @@
+/// La synthese du plan n'INVENTE aucune donnee : elle agrege le programme, les
+/// etapes, les nuitees et les dates deja calcules ailleurs.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../booking/domain/models/nuitee_type.dart';
-import '../../booking/providers/nuitee_selections_provider.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
-import '../../trek/providers/gps_providers.dart';
-import '../models/planned_day.dart';
+import '../../booking/booking_facade.dart'
+    show NuiteeType, NuiteeTypeUi, nuiteeSelectionsProvider;
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
+import '../../trek/trek_facade.dart' show selectedDirectionProvider;
+import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran RESUME / SYNTHESE du plan (parite GR20 `PlanSummaryScreen`).
 ///
@@ -62,11 +70,16 @@ class PlanSummaryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.planSummary, trail: trailId);
     final theme = Theme.of(context);
     final days = ref.watch(plannedDaysProvider(trailId));
     final stats = ref.watch(planningStatsProvider(trailId));
-    final startDate =
-        ref.watch(downloadReminderProvider(trailId)).departureDate;
+    final startDate = ref
+        .watch(downloadReminderProvider(trailId))
+        .departureDate;
 
     return Scaffold(
       // Ph5 (L6b) : AppHeader universel. Le back custom (pop sinon go '/home') est
@@ -133,11 +146,7 @@ class _SummaryContent extends StatelessWidget {
             // Date du jour : depart + index chronologique (le modele StepWays ne
             // porte pas de date propre, cf. Calendrier). Null si pas de depart.
             final date = startDate?.add(Duration(days: i));
-            return _DaySummaryTile(
-              trailId: trailId,
-              day: days[i],
-              date: date,
-            );
+            return _DaySummaryTile(trailId: trailId, day: days[i], date: date);
           }),
 
           const SizedBox(height: AppTheme.spacingLg),
@@ -168,8 +177,11 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.summarize,
+            // L'ETAT VIDE DU RESUME MONTRE LE DESSIN DU RESUME (tache 772). Il
+            // montrait celui du Programme : l'ecran du Resume s'annoncait avec
+            // l'icone d'un autre ecran.
+            StepIcon(
+              StepwaysIcons.resume,
               size: 80,
               color: AppTheme.grisGranite.withAlpha(80),
             ),
@@ -190,10 +202,11 @@ class _EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingXl),
-            ElevatedButton.icon(
+            AppButton(
+              icon: StepwaysIcons.itineraire,
+              iconSize: 18,
+              label: t.summary.empty.action,
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const Icon(Icons.route),
-              label: Text(t.summary.empty.action),
             ),
           ],
         ),
@@ -225,8 +238,9 @@ class _ConfigSummaryCard extends ConsumerWidget {
     final config = ref.watch(trailConfigProvider);
     // Sens de marche : 1er sens declare par le sentier par defaut (jamais un
     // code en dur), meme regle que Transport / moteur de fin de trek.
-    final forward =
-        config.directions.isNotEmpty ? config.directions.first : 'NS';
+    final forward = config.directions.isNotEmpty
+        ? config.directions.first
+        : 'NS';
     final direction = ref.watch(selectedDirectionProvider) ?? forward;
 
     final durationValue = stats.restDays > 0
@@ -240,10 +254,7 @@ class _ConfigSummaryCard extends ConsumerWidget {
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            scheme.primary.withAlpha(60),
-            scheme.primary.withAlpha(30),
-          ],
+          colors: [scheme.primary.withAlpha(60), scheme.primary.withAlpha(30)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -256,7 +267,7 @@ class _ConfigSummaryCard extends ConsumerWidget {
           // Titre « Mon {sentier} ».
           Row(
             children: [
-              Icon(Icons.terrain, size: 28, color: scheme.primary),
+              StepIcon(StepwaysIcons.sommet, size: 28, color: scheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -272,14 +283,14 @@ class _ConfigSummaryCard extends ConsumerWidget {
 
           // Direction (sens de marche choisi).
           _ConfigRow(
-            icon: Icons.navigation,
+            icon: StepwaysIcons.maPosition,
             label: t.summary.direction,
             value: direction,
           ),
 
           // Duree.
           _ConfigRow(
-            icon: Icons.calendar_today,
+            icon: StepwaysIcons.calendrier,
             label: t.summary.duration,
             value: durationValue,
           ),
@@ -287,13 +298,13 @@ class _ConfigSummaryCard extends ConsumerWidget {
           // Dates (si une date de depart est posee).
           if (startDate != null) ...[
             _ConfigRow(
-              icon: Icons.event,
+              icon: StepwaysIcons.calendrier,
               label: t.summary.startDate,
               value: _formatDate(startDate!, 'd MMMM yyyy'),
             ),
             if (stats.totalDays > 0)
               _ConfigRow(
-                icon: Icons.event_available,
+                icon: StepwaysIcons.calendrier,
                 label: t.summary.endDate,
                 value: _formatDate(
                   startDate!.add(Duration(days: stats.totalDays - 1)),
@@ -315,7 +326,7 @@ class _ConfigRow extends StatelessWidget {
     required this.value,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -327,7 +338,7 @@ class _ConfigRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: AppTheme.grisGranite),
+          StepIcon(icon, size: 16, color: AppTheme.grisGranite),
           const SizedBox(width: AppTheme.spacingSm),
           // LARGEUR PLANCHER, PLUS LARGEUR FIXE (retour Chris #8, tache 553).
           // Mot pour mot : « resume du plan: direction le mot est sur 2 lignes ».
@@ -361,9 +372,7 @@ class _ConfigRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(value, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(value, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
@@ -403,7 +412,7 @@ class _GlobalStatsCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _BigStat(
-                  icon: Icons.straighten,
+                  icon: StepwaysIcons.distance,
                   value: stats.totalDistance.toStringAsFixed(1),
                   unit: 'km',
                   label: t.summary.stats.distance,
@@ -412,7 +421,7 @@ class _GlobalStatsCard extends StatelessWidget {
               ),
               Expanded(
                 child: _BigStat(
-                  icon: Icons.arrow_upward,
+                  icon: StepwaysIcons.flecheHaut,
                   value: '${stats.totalElevationGain}',
                   unit: 'm',
                   label: t.summary.stats.elevationGain,
@@ -426,7 +435,7 @@ class _GlobalStatsCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _BigStat(
-                  icon: Icons.arrow_downward,
+                  icon: StepwaysIcons.flecheBas,
                   value: '${stats.totalElevationLoss}',
                   unit: 'm',
                   label: t.summary.stats.elevationLoss,
@@ -435,7 +444,7 @@ class _GlobalStatsCard extends StatelessWidget {
               ),
               Expanded(
                 child: _BigStat(
-                  icon: Icons.schedule,
+                  icon: StepwaysIcons.clock,
                   value: stats.totalHours.toStringAsFixed(0),
                   unit: 'h',
                   label: t.summary.stats.duration,
@@ -449,7 +458,7 @@ class _GlobalStatsCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _BigStat(
-                  icon: Icons.hiking,
+                  icon: StepwaysIcons.chaussure,
                   value: '${stats.stageCount}',
                   unit: '',
                   label: t.summary.stats.stages,
@@ -458,7 +467,7 @@ class _GlobalStatsCard extends StatelessWidget {
               ),
               Expanded(
                 child: _BigStat(
-                  icon: Icons.self_improvement,
+                  icon: StepwaysIcons.preparationPhysique,
                   value: '${stats.restDays}',
                   unit: '',
                   label: t.summary.stats.restDays,
@@ -483,7 +492,7 @@ class _BigStat extends StatelessWidget {
     required this.color,
   });
 
-  final IconData icon;
+  final String icon;
   final String value;
   final String unit;
   final String label;
@@ -495,7 +504,7 @@ class _BigStat extends StatelessWidget {
 
     return Column(
       children: [
-        Icon(icon, size: 20, color: color),
+        StepIcon(icon, size: 20, color: color),
         const SizedBox(height: 2),
         RichText(
           text: TextSpan(
@@ -554,8 +563,9 @@ class _DaySummaryTile extends ConsumerWidget {
 
     // Sens de marche courant (defaut = 1er sens du sentier).
     final config = ref.watch(trailConfigProvider);
-    final forward =
-        config.directions.isNotEmpty ? config.directions.first : 'NS';
+    final forward = config.directions.isNotEmpty
+        ? config.directions.first
+        : 'NS';
     final selected = ref.watch(selectedDirectionProvider) ?? forward;
     final isForward = selected == forward;
 
@@ -572,8 +582,9 @@ class _DaySummaryTile extends ConsumerWidget {
         .toList(growable: false);
 
     // Icone hebergement (lot Nuitees) : type choisi pour ce jour (defaut refuge).
-    final nuiteeType =
-        ref.watch(nuiteeSelectionsProvider).typeFor(day.dayNumber);
+    final nuiteeType = ref
+        .watch(nuiteeSelectionsProvider)
+        .typeFor(day.dayNumber);
 
     return Semantics(
       button: true,
@@ -623,8 +634,9 @@ class _DaySummaryTile extends ConsumerWidget {
                     if (date != null)
                       Text(
                         _formatDate(date!, 'EEE d MMM'),
-                        style:
-                            theme.textTheme.bodySmall?.copyWith(fontSize: 14),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 14,
+                        ),
                       ),
                   ],
                 ),
@@ -661,7 +673,7 @@ class _DaySummaryTile extends ConsumerWidget {
 
               // Icone hebergement (type de nuitee du jour).
               const SizedBox(width: AppTheme.spacingSm),
-              Icon(
+              StepIcon(
                 nuiteeType.icon,
                 size: 20,
                 color: nuiteeType == NuiteeType.refuge
@@ -671,8 +683,11 @@ class _DaySummaryTile extends ConsumerWidget {
 
               // Chevron (affordance tap).
               const SizedBox(width: AppTheme.spacingXs),
-              const Icon(Icons.chevron_right,
-                  size: 20, color: AppTheme.grisGranite),
+              const StepIcon(
+                StepwaysIcons.chevronDroite,
+                size: 20,
+                color: AppTheme.grisGranite,
+              ),
             ],
           ),
         ),
@@ -688,8 +703,9 @@ class _DaySummaryTile extends ConsumerWidget {
   ) {
     // Type de nuitee du jour de repos (lot Nuitees) pour l'afficher dans la
     // fiche (equivalent du « Lieu » GR20, generique : type d'hebergement).
-    final nuiteeType =
-        ref.watch(nuiteeSelectionsProvider).typeFor(day.dayNumber);
+    final nuiteeType = ref
+        .watch(nuiteeSelectionsProvider)
+        .typeFor(day.dayNumber);
 
     return Semantics(
       button: true,
@@ -707,8 +723,11 @@ class _DaySummaryTile extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.self_improvement,
-                            size: 24, color: scheme.secondary),
+                        StepIcon(
+                          StepwaysIcons.preparationPhysique,
+                          size: 24,
+                          color: scheme.secondary,
+                        ),
                         const SizedBox(width: AppTheme.spacingSm),
                         Text(
                           t.summary.restDayTitle(n: day.dayNumber.toString()),
@@ -757,7 +776,11 @@ class _DaySummaryTile extends ConsumerWidget {
                   ),
                 ),
               ),
-              Icon(Icons.self_improvement, size: 20, color: scheme.secondary),
+              StepIcon(
+                StepwaysIcons.preparationPhysique,
+                size: 20,
+                color: scheme.secondary,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
                 t.summary.restDay,
@@ -778,8 +801,11 @@ class _DaySummaryTile extends ConsumerWidget {
                 ),
               ],
               const SizedBox(width: AppTheme.spacingXs),
-              const Icon(Icons.chevron_right,
-                  size: 20, color: AppTheme.grisGranite),
+              const StepIcon(
+                StepwaysIcons.chevronDroite,
+                size: 20,
+                color: AppTheme.grisGranite,
+              ),
             ],
           ),
         ),
@@ -822,16 +848,21 @@ class _ActionButtons extends ConsumerWidget {
         Semantics(
           button: true,
           label: t.summary.a11y.share,
-          child: OutlinedButton.icon(
+          child: AppButton(
+            variant: AppButtonVariant.outline,
+            tone: scheme.secondary,
+            icon: StepwaysIcons.partager,
+            iconSize: 18,
+            label: t.summary.actions.share,
             onPressed: () {
               final config = ref.read(trailConfigProvider);
               final forward = config.directions.isNotEmpty
                   ? config.directions.first
                   : 'NS';
-              final selected =
-                  ref.read(selectedDirectionProvider) ?? forward;
-              final startDate =
-                  ref.read(downloadReminderProvider(trailId)).departureDate;
+              final selected = ref.read(selectedDirectionProvider) ?? forward;
+              final startDate = ref
+                  .read(downloadReminderProvider(trailId))
+                  .departureDate;
               final text = _buildShareText(
                 trailName: config.displayName,
                 isForward: selected == forward,
@@ -839,12 +870,6 @@ class _ActionButtons extends ConsumerWidget {
               );
               Share.share(text);
             },
-            icon: const Icon(Icons.share),
-            label: Text(t.summary.actions.share),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: scheme.secondary,
-              side: BorderSide(color: scheme.secondary, width: 2),
-            ),
           ),
         ),
       ],
@@ -883,31 +908,30 @@ class _ActionButtons extends ConsumerWidget {
     buffer.writeln('');
 
     if (startDate != null && stats.totalDays > 0) {
-      buffer.writeln(t.summary.share.dates(
-        start: _formatDate(startDate, 'd MMMM yyyy'),
-        end: _formatDate(
-          startDate.add(Duration(days: stats.totalDays - 1)),
-          'd MMMM yyyy',
+      buffer.writeln(
+        t.summary.share.dates(
+          start: _formatDate(startDate, 'd MMMM yyyy'),
+          end: _formatDate(
+            startDate.add(Duration(days: stats.totalDays - 1)),
+            'd MMMM yyyy',
+          ),
         ),
-      ));
+      );
       buffer.writeln('');
     }
 
     buffer.writeln(t.summary.share.planning);
     for (final day in days) {
       if (day.isRestDay) {
-        buffer.writeln(
-          t.summary.share.dayRest(n: day.dayNumber.toString()),
-        );
+        buffer.writeln(t.summary.share.dayRest(n: day.dayNumber.toString()));
       } else {
         // Titre depart -> arrivee du jour DANS LE SENS de marche (parite GR20).
         final label = day.stages
             .map((s) => directionalStageTitle(s, isForward: isForward))
             .join(' + ');
-        buffer.writeln(t.summary.share.dayStages(
-          n: day.dayNumber.toString(),
-          stages: label,
-        ));
+        buffer.writeln(
+          t.summary.share.dayStages(n: day.dayNumber.toString(), stages: label),
+        );
       }
     }
 

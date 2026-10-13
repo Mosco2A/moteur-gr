@@ -1,6 +1,11 @@
+/// Le vide dit avec une icone, un titre, une explication et parfois une action
+/// : un ecran sans donnee ne doit jamais etre un ecran blanc.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/branding/stepways_icons.dart';
 
 class EmptyState extends StatelessWidget {
   const EmptyState({
@@ -13,7 +18,7 @@ class EmptyState extends StatelessWidget {
     this.iconColor,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String? subtitle;
   final Widget? action;
@@ -26,18 +31,38 @@ class EmptyState extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacingXl),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(icon, size: iconSize, color: iconColor ?? AppTheme.grisTexteSecondaire.withAlpha(120)),
-          const SizedBox(height: AppTheme.spacingBase),
-          Text(title, style: theme.textTheme.titleLarge?.copyWith(color: AppTheme.grisTexteSecondaire),
-            textAlign: TextAlign.center),
-          if (subtitle != null) ...[
-            const SizedBox(height: AppTheme.spacingSm),
-            Text(subtitle!, style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppTheme.grisTexteSecondaire.withAlpha(180)), textAlign: TextAlign.center),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            StepIcon(
+              icon,
+              size: iconSize,
+              color: iconColor ?? AppTheme.grisTexteSecondaire.withAlpha(120),
+            ),
+            const SizedBox(height: AppTheme.spacingBase),
+            Text(
+              title,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: AppTheme.grisTexteSecondaire,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (subtitle != null) ...[
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(
+                subtitle!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.grisTexteSecondaire.withAlpha(180),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            if (action != null) ...[
+              const SizedBox(height: AppTheme.spacingLg),
+              action!,
+            ],
           ],
-          if (action != null) ...[const SizedBox(height: AppTheme.spacingLg), action!],
-        ]),
+        ),
       ),
     );
   }

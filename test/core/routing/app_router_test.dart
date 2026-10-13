@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/routing/app_router.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests du routeur GoRouter (E2.9b + HUB E07/AM-1 — bottom nav 5 onglets).
 ///
@@ -25,22 +26,41 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/my-treks');
     });
 
-    test('Ph4 hub-and-push : PLUS de StatefulShellRoute, tout en routes racine',
-        () {
-      // Big-bang (SPEC §5) : le StatefulShellRoute.indexedStack + AppShell est
-      // SUPPRIME. Les 6 ex-onglets deviennent des routes racine plein ecran.
-      final routes = appRouter.configuration.routes;
-      expect(routes.whereType<StatefulShellRoute>(), isEmpty,
-          reason: 'plus d onglets persistants (hub-and-push)');
-      expect(routes.every((r) => r is GoRoute), isTrue,
-          reason: 'toutes les routes de 1er niveau sont des GoRoute');
-      // Ex-shell (my-treks/home/map/stages/journal) + racines = 25.
-      // StepWays L8 : la route de demo '/nav-pilote' a ete retiree (25 -> 24).
-      // Finitions V1 (point 4) : ajout de '/recovery-code' (24 -> 25).
-      // Refonte nav (hub-and-push pur) : la route '/more' (MoreScreen orphelin)
-      // est SUPPRIMEE (25 -> 24).
-      expect(routes.whereType<GoRoute>().length, 24);
-    });
+    test(
+      'Ph4 hub-and-push : PLUS de StatefulShellRoute, tout en routes racine',
+      () {
+        // Big-bang (SPEC §5) : le StatefulShellRoute.indexedStack + AppShell est
+        // SUPPRIME. Les 6 ex-onglets deviennent des routes racine plein ecran.
+        final routes = appRouter.configuration.routes;
+        expect(
+          routes.whereType<StatefulShellRoute>(),
+          isEmpty,
+          reason: 'plus d onglets persistants (hub-and-push)',
+        );
+        expect(
+          routes.every((r) => r is GoRoute),
+          isTrue,
+          reason: 'toutes les routes de 1er niveau sont des GoRoute',
+        );
+        // Ex-shell (my-treks/home/map/stages/journal) + racines = 25.
+        // StepWays L8 : la route de demo '/nav-pilote' a ete retiree (25 -> 24).
+        // Finitions V1 (point 4) : ajout de '/recovery-code' (24 -> 25).
+        // Refonte nav (hub-and-push pur) : la route '/more' (MoreScreen orphelin)
+        // est SUPPRIMEE (25 -> 24).
+        // V1 ARGENT (tache 594, A3) : ajout de '/wallet' (recharge du
+        // compte-etapes) et '/subscription' (abonnement sans pub) — les deux
+        // ecrans de paiement qui manquaient (24 -> 26).
+        // LOT PRODUIT P1 (#101255) : la route '/booking' est RETIREE avec son
+        // ecran (26 -> 25). Elle n avait ni porte dans l application, ni
+        // donnee, ni test, et son drapeau n a jamais ete ouvert : un chemin que
+        // personne ne pouvait prendre et qui, pris de force, renvoyait au
+        // catalogue.
+        // LOT 671-01 : ajout de '/mesure-batterie', l'ecran cache de mesure
+        // batterie, atteint par un appui long sur le numero de version des
+        // reglages (25 -> 26).
+        expect(routes.whereType<GoRoute>().length, 26);
+      },
+    );
 
     test('les 5 ex-onglets sont desormais des routes racine', () {
       final paths = appRouter.configuration.routes
@@ -49,8 +69,13 @@ void main() {
           .toList();
       // Les 5 ex-shell, EN TETE (ordre de declaration), puis les racines.
       // '/more' retiree (refonte nav : MoreScreen orphelin supprime).
-      expect(paths.take(5).toList(),
-          ['/my-treks', '/home', '/map', '/stages', '/journal']);
+      expect(paths.take(5).toList(), [
+        '/my-treks',
+        '/home',
+        '/map',
+        '/stages',
+        '/journal',
+      ]);
       // Les racines historiques suivent, inchangees.
       expect(paths.skip(5).toList(), [
         '/trails',
@@ -60,7 +85,6 @@ void main() {
         '/catalog',
         '/trail-selection',
         '/goodies',
-        '/booking',
         '/accommodations-nearby',
         '/emergency',
         // E57 (LOT D/D1) : fiche infos sante LOCAL ONLY (via Urgence E29).
@@ -70,10 +94,15 @@ void main() {
         '/onboarding',
         '/no-data',
         '/settings',
+        // Lot 671-01 : l'ecran cache de mesure batterie.
+        '/mesure-batterie',
         // Finitions V1 (point 4) : ecran « afficher mon code de reconnexion ».
         '/recovery-code',
         '/consent',
         '/profile',
+        // V1 ARGENT (tache 594, A3) : les deux ecrans de paiement.
+        '/wallet',
+        '/subscription',
         // StepWays L8 : la route de demo '/nav-pilote' (ecran-pilote refonte nav,
         // hors-shell) a ete RETIREE du routeur (fichier conserve dormant).
       ]);
@@ -97,7 +126,6 @@ void main() {
         'catalog',
         'trail-selection',
         'goodies',
-        'booking',
         'accommodations-nearby',
         'emergency',
         'health',
@@ -106,10 +134,15 @@ void main() {
         'onboarding',
         'no-data',
         'settings',
+        // Lot 671-01 : l'ecran cache de mesure batterie.
+        'mesure-batterie',
         // Finitions V1 (point 4) : ecran code de reconnexion.
         'recovery-code',
         'consent',
         'profile',
+        // V1 ARGENT (tache 594, A3) : les deux ecrans de paiement.
+        'wallet',
+        'subscription',
         // StepWays L8 : 'nav-pilote' retiree (route de demo supprimee).
       ]);
     });
@@ -128,15 +161,18 @@ void main() {
       expect(rootRoute('/journal').name, 'journal');
     });
 
-    test('la route /more (MoreScreen orphelin) a ete SUPPRIMEE (refonte nav)', () {
-      // Hub-and-push pur : plus aucune navigation vivante n'atteignait /more
-      // (onglet « Plus » disparu au big-bang). La route est retiree, l'ecran
-      // MoreScreen supprime — plus de route morte (S8).
-      final morePaths = appRouter.configuration.routes
-          .whereType<GoRoute>()
-          .where((r) => r.path == '/more');
-      expect(morePaths, isEmpty);
-    });
+    test(
+      'la route /more (MoreScreen orphelin) a ete SUPPRIMEE (refonte nav)',
+      () {
+        // Hub-and-push pur : plus aucune navigation vivante n'atteignait /more
+        // (onglet « Plus » disparu au big-bang). La route est retiree, l'ecran
+        // MoreScreen supprime — plus de route morte (S8).
+        final morePaths = appRouter.configuration.routes
+            .whereType<GoRoute>()
+            .where((r) => r.path == '/more');
+        expect(morePaths, isEmpty);
+      },
+    );
 
     test('/stages conserve sa sous-route /stages/:id', () {
       final stagesRoute = rootRoute('/stages');
@@ -145,12 +181,14 @@ void main() {
       expect((stagesRoute.routes.first as GoRoute).name, 'stage-by-id');
     });
 
-    test('/home (cockpit) et /my-treks (maison) sont 2 routes racine distinctes',
-        () {
-      // Ex-branche Accueil (my-treks + home) : desormais 2 racines separees.
-      expect(rootRoute('/my-treks').name, 'my-treks');
-      expect(rootRoute('/home').name, 'home');
-    });
+    test(
+      '/home (cockpit) et /my-treks (maison) sont 2 routes racine distinctes',
+      () {
+        // Ex-branche Accueil (my-treks + home) : desormais 2 racines separees.
+        expect(rootRoute('/my-treks').name, 'my-treks');
+        expect(rootRoute('/home').name, 'home');
+      },
+    );
   });
 
   group('AppRouter — liens profonds preserves', () {
@@ -158,8 +196,7 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 24 sous-routes (+ faisabilite L4)',
-        () {
+    test('la route /trail/:id conserve ses 25 sous-routes (+ faisabilite L4)', () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
       // +1 : 'itinerary' (PARITE GR20 #99433, deroule des etapes + fix nav).
@@ -185,8 +222,16 @@ void main() {
       // +1 : 'adjust' (R12 LOT L9, « Adapter l'itineraire » : modifier la
       //      rando EN COURS sur les seuls jours/etapes non faits). Placee
       //      juste apres 'planning' (meme programme, autre moment de vie).
+      // +1 : 'cartes' (tache 568 pour la route, tache 640 pour l'ecran). LES
+      //      CARTES HORS LIGNE existaient, localisees en 5 langues et testees,
+      //      sans AUCUNE route : seul un test savait les instancier, aucun
+      //      geste utilisateur ne pouvait les atteindre. Placee juste apres
+      //      'checklist' (meme moment de prepa : ce qu'on emporte).
+      //      La tache 640 a remplace le magasin de quatre demi-circuits par UN
+      //      seul geste — tout le circuit (bug 10, DEM-260930-1017) — d'ou le
+      //      chemin 'cartes' a la place de 'packs'.
       final trail = trailRoute();
-      expect(trail.routes.length, 24);
+      expect(trail.routes.length, 25);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -199,6 +244,7 @@ void main() {
         'summary',
         'itinerary',
         'checklist',
+        'cartes',
         'nuitees',
         'feasibility',
         'hiker-profile',
@@ -230,6 +276,8 @@ void main() {
         'trail-summary',
         'trail-itinerary',
         'trail-checklist',
+        // tache 568 (route) + tache 640 (un geste, tout le circuit).
+        'trail-cartes',
         'trail-nuitees',
         'trail-feasibility',
         'trail-hiker-profile',
@@ -250,9 +298,9 @@ void main() {
     test('la sous-route guides porte le detail /trail/:id/guides/:guideId', () {
       // E34 (LOT D/D2) : deeplink du detail d'un guide ville.
       final trail = trailRoute();
-      final guides = trail.routes
-          .whereType<GoRoute>()
-          .firstWhere((r) => r.path == 'guides');
+      final guides = trail.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == 'guides',
+      );
       expect(guides.routes.length, 1);
       final detail = guides.routes.first as GoRoute;
       expect(detail.path, ':guideId');
@@ -264,36 +312,40 @@ void main() {
     // rendait un second verdict, sans rapport avec le tricolore #100068 que
     // Chris a ordonne de conserver. Ce test interdit sa resurrection, par
     // exemple par un clone d'ecran repris de GR20.
-    test('la route du quiz de faisabilite a disparu et ne peut pas revenir',
-        () {
-      // 1) aucune sous-route de /trail/:id ne porte le chemin du quiz
-      final trail = trailRoute();
-      final subPaths =
-          trail.routes.whereType<GoRoute>().map((r) => r.path).toList();
-      expect(subPaths, isNot(contains('feasibility-quiz')));
+    test(
+      'la route du quiz de faisabilite a disparu et ne peut pas revenir',
+      () {
+        // 1) aucune sous-route de /trail/:id ne porte le chemin du quiz
+        final trail = trailRoute();
+        final subPaths = trail.routes
+            .whereType<GoRoute>()
+            .map((r) => r.path)
+            .toList();
+        expect(subPaths, isNot(contains('feasibility-quiz')));
 
-      // 2) aucune route de l'application, a n'importe quelle profondeur,
-      //    ne porte le nom du quiz — on parcourt l'arbre entier.
-      final noms = <String>[];
-      final chemins = <String>[];
-      void parcourir(List<RouteBase> routes) {
-        for (final route in routes) {
-          if (route is GoRoute) {
-            chemins.add(route.path);
-            if (route.name != null) noms.add(route.name!);
+        // 2) aucune route de l'application, a n'importe quelle profondeur,
+        //    ne porte le nom du quiz — on parcourt l'arbre entier.
+        final noms = <String>[];
+        final chemins = <String>[];
+        void parcourir(List<RouteBase> routes) {
+          for (final route in routes) {
+            if (route is GoRoute) {
+              chemins.add(route.path);
+              if (route.name != null) noms.add(route.name!);
+            }
+            parcourir(route.routes);
           }
-          parcourir(route.routes);
         }
-      }
 
-      parcourir(appRouter.configuration.routes);
-      expect(noms, isNot(contains('trail-feasibility-quiz')));
-      expect(chemins, isNot(contains('feasibility-quiz')));
+        parcourir(appRouter.configuration.routes);
+        expect(noms, isNot(contains('trail-feasibility-quiz')));
+        expect(chemins, isNot(contains('feasibility-quiz')));
 
-      // 3) le moteur conserve, lui, est toujours atteignable
-      expect(noms, contains('trail-feasibility'));
-      expect(subPaths, contains('feasibility'));
-    });
+        // 3) le moteur conserve, lui, est toujours atteignable
+        expect(noms, contains('trail-feasibility'));
+        expect(subPaths, contains('feasibility'));
+      },
+    );
   });
 
   group('AppRouter — comportement', () {
@@ -338,8 +390,11 @@ void main() {
       final trails = appRouter.configuration.routes
           .whereType<GoRoute>()
           .firstWhere((r) => r.path == '/trails');
-      expect(trails.redirect, isNotNull,
-          reason: '/trails doit rediriger, pas afficher TrailListScreen');
+      expect(
+        trails.redirect,
+        isNotNull,
+        reason: '/trails doit rediriger, pas afficher TrailListScreen',
+      );
     });
 
     test('onboarding non fait : toute route renvoie vers /onboarding', () {
@@ -354,15 +409,12 @@ void main() {
       hasDownloadedTrails = false;
       // StepWays LOT 2 (option A) : /my-treks (entree Accueil) + /home (cockpit)
       // sont dans la meme branche, tous deux proteges comme onglets coeur.
-      for (final tab in [
-        '/my-treks',
-        '/home',
-        '/map',
-        '/stages',
-        '/journal',
-      ]) {
-        expect(redirectForPath(tab), '/catalog',
-            reason: '$tab (coeur) doit renvoyer au catalogue sans sentier');
+      for (final tab in ['/my-treks', '/home', '/map', '/stages', '/journal']) {
+        expect(
+          redirectForPath(tab),
+          '/catalog',
+          reason: '$tab (coeur) doit renvoyer au catalogue sans sentier',
+        );
       }
       // Une autre route hors-shell retombe sur l'ecran bloquant historique.
       expect(redirectForPath('/trail/test-trail'), '/no-data');
@@ -400,15 +452,24 @@ void main() {
     // Regression guard : globale true -> /catalog non redirige ; false -> boucle.
     test('LOT 0 — globale onboarding true : /catalog n est plus redirige', () {
       hasCompletedOnboarding = true;
-      expect(redirectForPath('/catalog'), isNull,
-          reason: 'onboarding termine -> /catalog accessible (fin de boucle)');
+      expect(
+        redirectForPath('/catalog'),
+        isNull,
+        reason: 'onboarding termine -> /catalog accessible (fin de boucle)',
+      );
     });
 
-    test('LOT 0 — globale onboarding false : /catalog renvoie a /onboarding', () {
-      hasCompletedOnboarding = false;
-      expect(redirectForPath('/catalog'), '/onboarding',
-          reason: 'onboarding non termine -> retour /onboarding');
-    });
+    test(
+      'LOT 0 — globale onboarding false : /catalog renvoie a /onboarding',
+      () {
+        hasCompletedOnboarding = false;
+        expect(
+          redirectForPath('/catalog'),
+          '/onboarding',
+          reason: 'onboarding non termine -> retour /onboarding',
+        );
+      },
+    );
   });
 
   // ===========================================================================
@@ -435,13 +496,16 @@ void main() {
                   initialLocation: i == navigationShell.currentIndex,
                 ),
                 destinations: const [
-                  NavigationDestination(icon: Icon(Icons.map), label: 'Carte'),
                   NavigationDestination(
-                    icon: Icon(Icons.terrain),
+                    icon: StepIcon(StepwaysIcons.map),
+                    label: 'Carte',
+                  ),
+                  NavigationDestination(
+                    icon: StepIcon(StepwaysIcons.sommet),
                     label: 'Etapes',
                   ),
                   NavigationDestination(
-                    icon: Icon(Icons.more_horiz),
+                    icon: StepIcon(StepwaysIcons.menu),
                     label: 'Plus',
                   ),
                 ],
@@ -553,7 +617,7 @@ class _CounterStubState extends State<_CounterStub> {
             Text('${widget.label}: $_count'),
             IconButton(
               key: ValueKey('inc-${widget.label}'),
-              icon: const Icon(Icons.add),
+              icon: const StepIcon(StepwaysIcons.plus),
               onPressed: () => setState(() => _count++),
             ),
           ],

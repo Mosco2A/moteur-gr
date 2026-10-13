@@ -1,3 +1,7 @@
+/// Le filtre de route : l'anonyme COMPTE comme authentifie, et une absence de
+/// session declenche une connexion anonyme automatique.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,10 +15,7 @@ import '../domain/auth_service.dart';
 /// - Les routes publiques (login, onboarding) ne sont pas protégées.
 /// - L'anonyme EST considéré comme authentifié (design #82877).
 class AuthGuard {
-  const AuthGuard({
-    required this.getCurrentUser,
-    required this.onAutoSignIn,
-  });
+  const AuthGuard({required this.getCurrentUser, required this.onAutoSignIn});
 
   /// Getter de l'utilisateur courant (depuis le provider)
   final AuthUser? Function() getCurrentUser;

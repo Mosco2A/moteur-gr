@@ -19,22 +19,30 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('ConsentService — D4A-01', () {
-    test('etat initial : AUCUNE finalite consentie (acte positif requis)',
-        () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{});
-      final prefs = await SharedPreferences.getInstance();
-      final service = ConsentService(prefs: prefs);
-      addTearDown(service.dispose);
+    test(
+      'etat initial : AUCUNE finalite consentie (acte positif requis)',
+      () async {
+        SharedPreferences.setMockInitialValues(<String, Object>{});
+        final prefs = await SharedPreferences.getInstance();
+        final service = ConsentService(prefs: prefs);
+        addTearDown(service.dispose);
 
-      // Aucune finalite n'est accordee par defaut (opt-in reel).
-      for (final purpose in ConsentPurpose.values) {
-        expect(service.hasConsent(purpose), isFalse,
-            reason: 'Defaut = non accorde pour $purpose');
-        expect(service.needsPrompt(purpose), isTrue,
-            reason: 'Jamais decide => re-demande pour $purpose');
-        expect(service.stateOf(purpose).decidedAt, isNull);
-      }
-    });
+        // Aucune finalite n'est accordee par defaut (opt-in reel).
+        for (final purpose in ConsentPurpose.values) {
+          expect(
+            service.hasConsent(purpose),
+            isFalse,
+            reason: 'Defaut = non accorde pour $purpose',
+          );
+          expect(
+            service.needsPrompt(purpose),
+            isTrue,
+            reason: 'Jamais decide => re-demande pour $purpose',
+          );
+          expect(service.stateOf(purpose).decidedAt, isNull);
+        }
+      },
+    );
 
     test('grant / revoke par finalite (independance des finalites)', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
@@ -56,41 +64,45 @@ void main() {
       expect(service.hasConsent(ConsentPurpose.locationNavigation), isFalse);
       // Un refus explicite sous la version courante n'est PAS re-demande.
       expect(service.needsPrompt(ConsentPurpose.locationNavigation), isFalse);
-      expect(service.stateOf(ConsentPurpose.locationNavigation).decidedAt,
-          isNotNull);
+      expect(
+        service.stateOf(ConsentPurpose.locationNavigation).decidedAt,
+        isNotNull,
+      );
     });
 
-    test('donnee SANTE (art 9) isolee : jamais accordee via une autre finalite',
-        () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{});
-      final prefs = await SharedPreferences.getInstance();
-      final service = ConsentService(prefs: prefs);
-      addTearDown(service.dispose);
+    test(
+      'donnee SANTE (art 9) isolee : jamais accordee via une autre finalite',
+      () async {
+        SharedPreferences.setMockInitialValues(<String, Object>{});
+        final prefs = await SharedPreferences.getInstance();
+        final service = ConsentService(prefs: prefs);
+        addTearDown(service.dispose);
 
-      // healthData est marquee renforcee (art 9), les autres non.
-      expect(ConsentPurpose.healthData.isReinforced, isTrue);
-      expect(ConsentPurpose.locationNavigation.isReinforced, isFalse);
-      expect(ConsentPurpose.socialSharing.isReinforced, isFalse);
-      expect(ConsentPurpose.publicReporting.isReinforced, isFalse);
+        // healthData est marquee renforcee (art 9), les autres non.
+        expect(ConsentPurpose.healthData.isReinforced, isTrue);
+        expect(ConsentPurpose.locationNavigation.isReinforced, isFalse);
+        expect(ConsentPurpose.socialSharing.isReinforced, isFalse);
+        expect(ConsentPurpose.publicReporting.isReinforced, isFalse);
 
-      // On accorde TOUTES les autres finalites.
-      await service.grant(ConsentPurpose.locationNavigation);
-      await service.grant(ConsentPurpose.socialSharing);
-      await service.grant(ConsentPurpose.publicReporting);
+        // On accorde TOUTES les autres finalites.
+        await service.grant(ConsentPurpose.locationNavigation);
+        await service.grant(ConsentPurpose.socialSharing);
+        await service.grant(ConsentPurpose.publicReporting);
 
-      // La SANTE reste non accordee : consentement separe et explicite requis.
-      expect(service.hasConsent(ConsentPurpose.healthData), isFalse);
-      expect(service.needsPrompt(ConsentPurpose.healthData), isTrue);
+        // La SANTE reste non accordee : consentement separe et explicite requis.
+        expect(service.hasConsent(ConsentPurpose.healthData), isFalse);
+        expect(service.needsPrompt(ConsentPurpose.healthData), isTrue);
 
-      // Accord explicite et separe de la sante.
-      await service.grant(ConsentPurpose.healthData);
-      expect(service.hasConsent(ConsentPurpose.healthData), isTrue);
+        // Accord explicite et separe de la sante.
+        await service.grant(ConsentPurpose.healthData);
+        expect(service.hasConsent(ConsentPurpose.healthData), isTrue);
 
-      // Retirer la sante n'affecte pas les autres finalites.
-      await service.revoke(ConsentPurpose.healthData);
-      expect(service.hasConsent(ConsentPurpose.healthData), isFalse);
-      expect(service.hasConsent(ConsentPurpose.locationNavigation), isTrue);
-    });
+        // Retirer la sante n'affecte pas les autres finalites.
+        await service.revoke(ConsentPurpose.healthData);
+        expect(service.hasConsent(ConsentPurpose.healthData), isFalse);
+        expect(service.hasConsent(ConsentPurpose.locationNavigation), isTrue);
+      },
+    );
 
     test('chaque decision est horodatee et versionnee', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
@@ -117,8 +129,7 @@ void main() {
       );
     });
 
-    test(
-        'versionnement : un accord sous une politique anterieure est caduc '
+    test('versionnement : un accord sous une politique anterieure est caduc '
         '(re-demande)', () async {
       // L'utilisateur a accorde sous la politique v1...
       SharedPreferences.setMockInitialValues(<String, Object>{});
@@ -131,10 +142,16 @@ void main() {
       // ...puis la politique evolue en v2 : l'accord v1 devient caduc.
       final serviceV2 = ConsentService(prefs: prefsV1, policyVersion: 2);
       addTearDown(serviceV2.dispose);
-      expect(serviceV2.hasConsent(ConsentPurpose.locationNavigation), isFalse,
-          reason: 'Accord sous v1 invalide sous v2');
-      expect(serviceV2.needsPrompt(ConsentPurpose.locationNavigation), isTrue,
-          reason: 'La nouvelle politique exige une re-demande');
+      expect(
+        serviceV2.hasConsent(ConsentPurpose.locationNavigation),
+        isFalse,
+        reason: 'Accord sous v1 invalide sous v2',
+      );
+      expect(
+        serviceV2.needsPrompt(ConsentPurpose.locationNavigation),
+        isTrue,
+        reason: 'La nouvelle politique exige une re-demande',
+      );
 
       // Re-accord sous v2 : valide a nouveau.
       await serviceV2.grant(ConsentPurpose.locationNavigation);

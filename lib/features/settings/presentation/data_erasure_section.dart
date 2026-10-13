@@ -1,3 +1,7 @@
+/// La commande d'effacement de l'article 17, derriere un dialogue qui DIT
+/// d'abord ce qui part, puis exige un acte positif.
+library;
+
 // TACHE 562 (LOT K, K1) — LA COMMANDE D'EFFACEMENT, LA OU LE RANDONNEUR LA
 // CHERCHE.
 //
@@ -26,6 +30,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../providers/account_erasure_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -52,13 +57,17 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
           padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
           child: Row(
             children: [
-              Icon(Icons.delete_forever_outlined,
-                  size: 20, color: theme.colorScheme.primary),
+              StepIcon(
+                StepwaysIcons.corbeille,
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
                 tr.section,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(color: theme.colorScheme.primary),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
               ),
             ],
           ),
@@ -69,8 +78,10 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
             button: true,
             label: tr.a11y.entry,
             child: ListTile(
-              leading: const Icon(Icons.delete_forever_outlined,
-                  color: AppTheme.rougeUrgence),
+              leading: const StepIcon(
+                StepwaysIcons.corbeille,
+                color: AppTheme.emergencyRed,
+              ),
               title: Text(tr.entry),
               subtitle: Text(tr.entryDesc),
               trailing: _erasing
@@ -79,7 +90,7 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.chevron_right),
+                  : const StepIcon(StepwaysIcons.chevronDroite),
               onTap: _erasing ? null : _confirmAndErase,
             ),
           ),
@@ -102,10 +113,12 @@ class _DataErasureSectionState extends ConsumerState<DataErasureSection> {
     String message;
     try {
       final report = await ref.read(accountErasureProvider)();
-      _log.i('[Erasure] Art. 17 : ${report.tablesWiped} table(s), '
-          '${report.localRowsDeleted} ligne(s), '
-          '${report.prefsKeysDeleted} cle(s) de prefs, '
-          '${report.secureKeysDeleted} cle(s) de keystore');
+      _log.i(
+        '[Erasure] Art. 17 : ${report.tablesWiped} table(s), '
+        '${report.localRowsDeleted} ligne(s), '
+        '${report.prefsKeysDeleted} cle(s) de prefs, '
+        '${report.secureKeysDeleted} cle(s) de keystore',
+      );
       message = tr.done;
     } catch (e) {
       // Pas de catch silencieux : l'echec est journalise ET dit au randonneur.
@@ -137,16 +150,16 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
     final tr = Translations.of(context).erasure;
 
     Widget bloc(String titre, String corps) => Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.spacingMd),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(titre, style: theme.textTheme.titleSmall),
-              const SizedBox(height: AppTheme.spacingXs),
-              Text(corps, style: theme.textTheme.bodyMedium),
-            ],
-          ),
-        );
+      padding: const EdgeInsets.only(bottom: AppTheme.spacingMd),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(titre, style: theme.textTheme.titleSmall),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(corps, style: theme.textTheme.bodyMedium),
+        ],
+      ),
+    );
 
     return AlertDialog(
       title: Text(tr.dialogTitle),
@@ -158,8 +171,9 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
             bloc(tr.staysTitle, tr.stays),
             Text(
               tr.finalWarning,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.rougeUrgence),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.emergencyRed,
+              ),
             ),
             const SizedBox(height: AppTheme.spacingSm),
             // L'ACTE POSITIF. Sans lui, le bouton d'a cote ne fait rien.
@@ -168,26 +182,29 @@ class _ErasureConfirmDialogState extends State<_ErasureConfirmDialog> {
               onChanged: (v) => setState(() => _understood = v ?? false),
               controlAffinity: ListTileControlAffinity.leading,
               contentPadding: EdgeInsets.zero,
-              title: Text(tr.confirmCheckbox,
-                  style: theme.textTheme.bodyMedium),
+              title: Text(
+                tr.confirmCheckbox,
+                style: theme.textTheme.bodyMedium,
+              ),
             ),
           ],
         ),
       ),
       actions: [
-        TextButton(
+        AppButton(
+          variant: AppButtonVariant.text,
+          label: tr.cancel,
+          isFullWidth: false,
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(tr.cancel),
         ),
         // Action DEFINITIVE : rouge, et INERTE tant que la case n'est pas
         // cochee (meme grammaire que l'effacement de la fiche sante).
         AppButton(
           variant: AppButtonVariant.filledTone,
-          tone: AppTheme.rougeUrgence,
+          tone: AppTheme.emergencyRed,
           isFullWidth: false,
           label: tr.confirm,
-          onPressed:
-              _understood ? () => Navigator.of(context).pop(true) : null,
+          onPressed: _understood ? () => Navigator.of(context).pop(true) : null,
         ),
       ],
     );

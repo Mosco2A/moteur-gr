@@ -1,7 +1,11 @@
+/// Cinq points autonomes et chiffres en PUCES, avec repli sur le paragraphe
+/// historique quand une fiche n'est pas encore convertie.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 
 /// Liste a PUCES des points d'une fiche conseil (tache 555).
 ///

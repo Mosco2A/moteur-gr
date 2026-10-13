@@ -5,6 +5,7 @@ import 'package:moteur_gr/core/theme/app_skin.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/core/theme/skin_theme.dart';
 import 'package:moteur_gr/shared/widgets/app_gradient_header.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget d'AppGradientHeader (SW-SKIN-L5).
 ///
@@ -33,20 +34,22 @@ void main() {
       expect(WcagContrast.meetsAA(Colors.white, grad.colors.last), isTrue);
     });
 
-    test('accent tres clair -> degrade ASSOMBRI pour garder le blanc lisible',
-        () {
-      final t = resolveHeaderTextTreatment(
-        headerStyle: SkinHeaderStyle.gradient,
-        primary: lightAccent,
-        paperSurface: AppTheme.blancNeige,
-      );
-      final grad = t.gradient! as LinearGradient;
-      // Le texte reste lisible (AA) sur les DEUX extremites du degrade final,
-      // quelle que soit la couleur choisie (blanc apres assombrissement, ou
-      // encre en repli). C'est la garantie du §1.6.
-      expect(WcagContrast.meetsAA(t.textColor, grad.colors.first), isTrue);
-      expect(WcagContrast.meetsAA(t.textColor, grad.colors.last), isTrue);
-    });
+    test(
+      'accent tres clair -> degrade ASSOMBRI pour garder le blanc lisible',
+      () {
+        final t = resolveHeaderTextTreatment(
+          headerStyle: SkinHeaderStyle.gradient,
+          primary: lightAccent,
+          paperSurface: AppTheme.blancNeige,
+        );
+        final grad = t.gradient! as LinearGradient;
+        // Le texte reste lisible (AA) sur les DEUX extremites du degrade final,
+        // quelle que soit la couleur choisie (blanc apres assombrissement, ou
+        // encre en repli). C'est la garantie du §1.6.
+        expect(WcagContrast.meetsAA(t.textColor, grad.colors.first), isTrue);
+        expect(WcagContrast.meetsAA(t.textColor, grad.colors.last), isTrue);
+      },
+    );
 
     test('accent moyen -> contraste AA garanti sur tout le degrade', () {
       final t = resolveHeaderTextTreatment(
@@ -59,18 +62,20 @@ void main() {
       expect(WcagContrast.meetsAA(t.textColor, grad.colors.last), isTrue);
     });
 
-    test('mode papier (topoFilet) -> fond surface, pas de degrade, AA garanti',
-        () {
-      final t = resolveHeaderTextTreatment(
-        headerStyle: SkinHeaderStyle.topoFilet,
-        primary: darkAccent,
-        paperSurface: const Color(0xFFF4F1EA), // papier topo
-      );
-      expect(t.gradient, isNull);
-      expect(t.solidBackground, const Color(0xFFF4F1EA));
-      // Sur papier clair -> encre, contraste AA.
-      expect(WcagContrast.meetsAA(t.textColor, t.solidBackground!), isTrue);
-    });
+    test(
+      'mode papier (topoFilet) -> fond surface, pas de degrade, AA garanti',
+      () {
+        final t = resolveHeaderTextTreatment(
+          headerStyle: SkinHeaderStyle.topoFilet,
+          primary: darkAccent,
+          paperSurface: const Color(0xFFF4F1EA), // papier topo
+        );
+        expect(t.gradient, isNull);
+        expect(t.solidBackground, const Color(0xFFF4F1EA));
+        // Sur papier clair -> encre, contraste AA.
+        expect(WcagContrast.meetsAA(t.textColor, t.solidBackground!), isTrue);
+      },
+    );
 
     test('mode photo sans image -> FALLBACK degrade (jamais de trou)', () {
       final t = resolveHeaderTextTreatment(
@@ -99,14 +104,16 @@ void main() {
       );
     }
 
-    testWidgets('affiche titre + sous-titre + trailing + child', (tester) async {
+    testWidgets('affiche titre + sous-titre + trailing + child', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(
           skin: AppSkin.sentierVivant,
           child: const AppGradientHeader(
             title: 'Refuge Arremoulit',
             subtitle: 'GR20',
-            trailing: Icon(Icons.flag),
+            trailing: StepIcon(StepwaysIcons.depart),
             child: Text('contenu-enfant'),
           ),
         ),
@@ -115,14 +122,21 @@ void main() {
 
       expect(find.text('Refuge Arremoulit'), findsOneWidget);
       expect(find.text('GR20'), findsOneWidget);
-      expect(find.byIcon(Icons.flag), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.depart,
+        ),
+        findsOneWidget,
+      );
       expect(find.text('contenu-enfant'), findsOneWidget);
       // Le fond degrade est peint (DecoratedBox avec gradient).
       expect(
-        find.byWidgetPredicate((w) =>
-            w is DecoratedBox &&
-            w.decoration is BoxDecoration &&
-            (w.decoration as BoxDecoration).gradient != null),
+        find.byWidgetPredicate(
+          (w) =>
+              w is DecoratedBox &&
+              w.decoration is BoxDecoration &&
+              (w.decoration as BoxDecoration).gradient != null,
+        ),
         findsWidgets,
       );
     });
@@ -140,23 +154,27 @@ void main() {
       expect(textWidget.style?.color, Colors.white);
     });
 
-    testWidgets('peau topographique -> filet bas + fond papier (pas de gradient)',
-        (tester) async {
-      await tester.pumpWidget(
-        wrap(
-          skin: AppSkin.topographique,
-          child: const AppGradientHeader(title: 'Titre topo'),
-        ),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'peau topographique -> filet bas + fond papier (pas de gradient)',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(
+            skin: AppSkin.topographique,
+            child: const AppGradientHeader(title: 'Titre topo'),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('Titre topo'), findsOneWidget);
-      // En mode papier, aucun DecoratedBox du header ne porte de gradient.
-      final gradientBoxes = find.byWidgetPredicate((w) =>
-          w is DecoratedBox &&
-          w.decoration is BoxDecoration &&
-          (w.decoration as BoxDecoration).gradient != null);
-      expect(gradientBoxes, findsNothing);
-    });
+        expect(find.text('Titre topo'), findsOneWidget);
+        // En mode papier, aucun DecoratedBox du header ne porte de gradient.
+        final gradientBoxes = find.byWidgetPredicate(
+          (w) =>
+              w is DecoratedBox &&
+              w.decoration is BoxDecoration &&
+              (w.decoration as BoxDecoration).gradient != null,
+        );
+        expect(gradientBoxes, findsNothing);
+      },
+    );
   });
 }

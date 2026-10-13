@@ -18,10 +18,12 @@ void main() {
 
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
-    container = ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      trailConfigProvider.overrideWithValue(testTrailConfig),
-    ]);
+    container = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        trailConfigProvider.overrideWithValue(testTrailConfig),
+      ],
+    );
   });
 
   tearDown(() async {
@@ -38,24 +40,31 @@ void main() {
       await ready();
       final state = container.read(checklistProvider);
       for (final cat in checklistCategories) {
-        expect(state.items.any((i) => i.template.category == cat), true,
-            reason: 'categorie $cat vide');
+        expect(
+          state.items.any((i) => i.template.category == cat),
+          true,
+          reason: 'categorie $cat vide',
+        );
       }
       expect(state.items.length, 84);
     });
 
-    test('categories GR20 specifiques presentes (Femme/Homme/Chien/Cuisine)',
-        () async {
-      container.read(checklistProvider);
-      await ready();
-      final cats = container
-          .read(checklistProvider)
-          .items
-          .map((i) => i.template.category)
-          .toSet();
-      expect(cats.containsAll(['women', 'men', 'dog', 'cooking', 'electronics']),
-          true);
-    });
+    test(
+      'categories GR20 specifiques presentes (Femme/Homme/Chien/Cuisine)',
+      () async {
+        container.read(checklistProvider);
+        await ready();
+        final cats = container
+            .read(checklistProvider)
+            .items
+            .map((i) => i.template.category)
+            .toSet();
+        expect(
+          cats.containsAll(['women', 'men', 'dog', 'cooking', 'electronics']),
+          true,
+        );
+      },
+    );
   });
 
   group('Quantite (parite GR20 B-06a / B143)', () {
@@ -100,56 +109,64 @@ void main() {
   });
 
   group('Articles personnalises (parite GR20)', () {
-    test('ajout d un article custom : coche, persiste, compte dans le total',
-        () async {
-      container.read(checklistProvider);
-      await ready();
-      final notifier = container.read(checklistProvider.notifier);
-      await notifier.addCustomItem('misc', 'Gourde perso', 250);
+    test(
+      'ajout d un article custom : coche, persiste, compte dans le total',
+      () async {
+        container.read(checklistProvider);
+        await ready();
+        final notifier = container.read(checklistProvider.notifier);
+        await notifier.addCustomItem('misc', 'Gourde perso', 250);
 
-      final state = container.read(checklistProvider);
-      final custom = state.items.firstWhere((i) => i.isCustom);
-      expect(custom.customName, 'Gourde perso');
-      expect(custom.isChecked, true);
-      expect(custom.weightGrams, 250);
-      expect(state.checkedWeightGrams, 250);
+        final state = container.read(checklistProvider);
+        final custom = state.items.firstWhere((i) => i.isCustom);
+        expect(custom.customName, 'Gourde perso');
+        expect(custom.isChecked, true);
+        expect(custom.weightGrams, 250);
+        expect(state.checkedWeightGrams, 250);
 
-      // Persistance DB.
-      final rows = await ChecklistDao(db).getByTrailId(testTrailConfig.id);
-      expect(rows.any((r) => r.isCustom && r.customName == 'Gourde perso'),
-          true);
-    });
+        // Persistance DB.
+        final rows = await ChecklistDao(db).getByTrailId(testTrailConfig.id);
+        expect(
+          rows.any((r) => r.isCustom && r.customName == 'Gourde perso'),
+          true,
+        );
+      },
+    );
 
-    test('suppression d un article custom le retire (et pas les autres)',
-        () async {
-      container.read(checklistProvider);
-      await ready();
-      final notifier = container.read(checklistProvider.notifier);
-      await notifier.addCustomItem('misc', 'A supprimer', 100);
-      final custom = container
-          .read(checklistProvider)
-          .items
-          .firstWhere((i) => i.isCustom);
-      final before = container.read(checklistProvider).items.length;
+    test(
+      'suppression d un article custom le retire (et pas les autres)',
+      () async {
+        container.read(checklistProvider);
+        await ready();
+        final notifier = container.read(checklistProvider.notifier);
+        await notifier.addCustomItem('misc', 'A supprimer', 100);
+        final custom = container
+            .read(checklistProvider)
+            .items
+            .firstWhere((i) => i.isCustom);
+        final before = container.read(checklistProvider).items.length;
 
-      await notifier.deleteCustomItem(custom.template.id);
-      final after = container.read(checklistProvider).items;
-      expect(after.length, before - 1);
-      expect(after.any((i) => i.template.id == custom.template.id), false);
-    });
+        await notifier.deleteCustomItem(custom.template.id);
+        final after = container.read(checklistProvider).items;
+        expect(after.length, before - 1);
+        expect(after.any((i) => i.template.id == custom.template.id), false);
+      },
+    );
 
-    test('renommer un article du template est sans effet (nom verrouille)',
-        () async {
-      container.read(checklistProvider);
-      await ready();
-      final notifier = container.read(checklistProvider.notifier);
-      await notifier.setCustomName('backpack', 'Nouveau nom');
-      final item = container
-          .read(checklistProvider)
-          .items
-          .firstWhere((i) => i.template.id == 'backpack');
-      expect(item.customName, isNull);
-    });
+    test(
+      'renommer un article du template est sans effet (nom verrouille)',
+      () async {
+        container.read(checklistProvider);
+        await ready();
+        final notifier = container.read(checklistProvider.notifier);
+        await notifier.setCustomName('backpack', 'Nouveau nom');
+        final item = container
+            .read(checklistProvider)
+            .items
+            .firstWhere((i) => i.template.id == 'backpack');
+        expect(item.customName, isNull);
+      },
+    );
   });
 
   group('Liste de courses (parite GR20)', () {
@@ -162,18 +179,20 @@ void main() {
       await notifier.toggleShoppingList('tickRemover');
       expect(container.read(checklistProvider).shoppingListCount, 1);
       expect(
-          container
-              .read(checklistProvider)
-              .items
-              .firstWhere((i) => i.template.id == 'tickRemover')
-              .inShoppingList,
-          true);
+        container
+            .read(checklistProvider)
+            .items
+            .firstWhere((i) => i.template.id == 'tickRemover')
+            .inShoppingList,
+        true,
+      );
 
       // Persistance DB.
       final rows = await ChecklistDao(db).getByTrailId(testTrailConfig.id);
       expect(
-          rows.firstWhere((r) => r.itemId == 'tickRemover').inShoppingList,
-          true);
+        rows.firstWhere((r) => r.itemId == 'tickRemover').inShoppingList,
+        true,
+      );
 
       await notifier.toggleShoppingList('tickRemover');
       expect(container.read(checklistProvider).shoppingListCount, 0);
@@ -181,21 +200,24 @@ void main() {
   });
 
   group('Exigence & validation du sac (parite GR20)', () {
-    test('requiredCount > 0 et allRequiredChecked bascule quand tout coche',
-        () async {
-      container.read(checklistProvider);
-      await ready();
-      final state0 = container.read(checklistProvider);
-      expect(state0.requiredCount, greaterThan(0));
-      expect(state0.allRequiredChecked, false);
+    test(
+      'requiredCount > 0 et allRequiredChecked bascule quand tout coche',
+      () async {
+        container.read(checklistProvider);
+        await ready();
+        final state0 = container.read(checklistProvider);
+        expect(state0.requiredCount, greaterThan(0));
+        expect(state0.allRequiredChecked, false);
 
-      final notifier = container.read(checklistProvider.notifier);
-      for (final item in state0.items.where((i) =>
-          i.template.requirement == ChecklistRequirement.required)) {
-        await notifier.toggle(item.template.id);
-      }
-      expect(container.read(checklistProvider).allRequiredChecked, true);
-    });
+        final notifier = container.read(checklistProvider.notifier);
+        for (final item in state0.items.where(
+          (i) => i.template.requirement == ChecklistRequirement.required,
+        )) {
+          await notifier.toggle(item.template.id);
+        }
+        expect(container.read(checklistProvider).allRequiredChecked, true);
+      },
+    );
 
     test('validateBag / cancelValidation basculent le flag', () async {
       container.read(checklistProvider);
@@ -214,20 +236,22 @@ void main() {
       final notifier = container.read(checklistProvider.notifier);
       await notifier.toggle('whistle');
       expect(
-          container
-              .read(checklistProvider)
-              .items
-              .firstWhere((i) => i.template.id == 'whistle')
-              .isChecked,
-          true);
+        container
+            .read(checklistProvider)
+            .items
+            .firstWhere((i) => i.template.id == 'whistle')
+            .isChecked,
+        true,
+      );
       await notifier.forceUncheck('whistle');
       expect(
-          container
-              .read(checklistProvider)
-              .items
-              .firstWhere((i) => i.template.id == 'whistle')
-              .isChecked,
-          false);
+        container
+            .read(checklistProvider)
+            .items
+            .firstWhere((i) => i.template.id == 'whistle')
+            .isChecked,
+        false,
+      );
     });
   });
 }

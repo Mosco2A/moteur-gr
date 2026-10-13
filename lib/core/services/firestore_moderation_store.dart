@@ -1,3 +1,7 @@
+/// Branchement Firestore du notice-and-action : la notification est ecrite, et
+/// l'etat de moderation du contenu cible est bascule.
+library;
+
 // D4C-01 — Implementation Firestore du ModerationStore (design D4 CORDO
 // #86166). Branche le mecanisme notice-and-action (art 16) sur Firestore :
 //   - ecrit les notifications dans la collection `reports_moderation` (regles
@@ -14,6 +18,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../firebase/cloud_indisponible.dart';
+import '../firebase/firebase_service.dart';
 import 'moderation_service.dart';
 
 /// Nom de la collection des notifications de moderation (cf. firestore.rules
@@ -22,13 +28,28 @@ const String kReportsModerationCollection = 'reports_moderation';
 
 /// Implementation [ModerationStore] adossee a Cloud Firestore.
 class FirestoreModerationStore implements ModerationStore {
-  FirestoreModerationStore({FirebaseFirestore? firestore})
-      : _firestore = firestore;
+  FirestoreModerationStore({
+    required FirebaseService firebaseService,
+    FirebaseFirestore? firestore,
+  }) : _firebaseService = firebaseService,
+       _firestore = firestore;
+
+  /// 596 C4 — GARDE DE DISPONIBILITE. Les trois ecritures de ce magasin
+  /// (`saveReport`, `updateReport`, `applyContentState`) dereferencaient
+  /// `FirebaseFirestore.instance` sans aucune verification : c'est le chemin
+  /// « Signaler » d'un contenu, construit inconditionnellement par les
+  /// providers. Il ne plantait que parce que Firebase etait eteint partout.
+  final FirebaseService _firebaseService;
 
   FirebaseFirestore? _firestore;
 
   /// Accesseur Firestore (lazy init, comme [CloudSyncService], pour les tests).
-  FirebaseFirestore get _db => _firestore ??= FirebaseFirestore.instance;
+  FirebaseFirestore get _db {
+    if (!_firebaseService.isAvailable) {
+      throw const CloudIndisponibleException('moderation d un contenu');
+    }
+    return _firestore ??= FirebaseFirestore.instance;
+  }
 
   @override
   Future<void> saveReport(ModerationReport report) async {
@@ -60,9 +81,8 @@ class FirestoreModerationStore implements ModerationStore {
     // Transition A POSTERIORI du moderationState du contenu cible. Les regles
     // (D4C-02) garantissent que SEUL un moderateur peut muter ce champ, et que
     // seul moderationState bouge (contenu utilisateur immuable).
-    await _db
-        .collection(contentType.collectionName)
-        .doc(contentRef)
-        .update(<String, dynamic>{'moderationState': state.wireValue});
+    await _db.collection(contentType.collectionName).doc(contentRef).update(
+      <String, dynamic>{'moderationState': state.wireValue},
+    );
   }
 }

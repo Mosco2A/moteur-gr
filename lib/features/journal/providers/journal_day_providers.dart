@@ -1,9 +1,18 @@
+/// Les journees du carnet, de la plus ancienne a la plus recente : une journee
+/// existe des qu'elle porte une entree.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/geo/recorded_track_stats.dart';
+import '../../../core/geo/trace_point.dart';
 import '../../../core/geo/track_segment_stats.dart';
-import '../../../core/providers/database_provider.dart';
+import '../../map/map_facade.dart' show statsTraceProvider;
+import '../../trek/trek_facade.dart'
+    show cadenceDesRelevesSimulesProvider, sourceDesRelevesProvider;
 import '../domain/models/journal_entry.dart';
 import 'journal_providers.dart';
 
@@ -24,12 +33,26 @@ DateTime journalDayOf(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
 /// Une journee existe des qu'elle porte au moins une entree. L'ordre
 /// croissant est celui de la marche : le navigateur avance dans le temps
 /// quand on appuie sur la fleche droite.
+/// TACHE 742 — ET EN DEMO, UNE JOURNEE MARCHEE EST UNE JOURNEE DU CARNET.
+///
+/// CE QUI MANQUAIT, MESURE. Les journees du journal viennent des ENTREES du
+/// carnet. Or une demo n'ecrit aucune entree (tache 634, « rien en base ») :
+/// la liste restait donc VIDE, [journalSelectedDayProvider] rendait `null`, et
+/// la trace du jour comme les chiffres du jour rendaient le vide AVANT MEME de
+/// chercher un releve. Brancher la source des releves sans corriger cela
+/// n'aurait rien change a l'ecran : c'etait le deuxieme verrou, et le premier
+/// dans l'ordre.
+///
+/// Une journee ou l'on a marche existe, meme sans note — c'est vrai en vrai, et
+/// en demo c'est la seule qu'il y ait. Hors demo, `journeesEnMemoire()` rend
+/// une liste vide et ce provider se comporte EXACTEMENT comme avant.
 final journalDaysProvider = Provider<List<DateTime>>((ref) {
   final entries = ref.watch(journalScreenProvider.select((s) => s.entries));
   final days = <DateTime>{};
   for (final e in entries) {
     days.add(journalDayOf(e.createdAt));
   }
+  days.addAll(ref.watch(sourceDesRelevesProvider).journeesEnMemoire());
   final list = days.toList()..sort();
   return list;
 });
@@ -52,8 +75,8 @@ class JournalSelectedDayNotifier extends Notifier<DateTime?> {
 
 final journalSelectedDayRawProvider =
     NotifierProvider<JournalSelectedDayNotifier, DateTime?>(
-  JournalSelectedDayNotifier.new,
-);
+      JournalSelectedDayNotifier.new,
+    );
 
 /// Journee REELLEMENT affichee.
 ///
@@ -82,9 +105,7 @@ final journalEntriesOfDayProvider = Provider<List<JournalEntryModel>>((ref) {
   final day = ref.watch(journalSelectedDayProvider);
   if (day == null) return const <JournalEntryModel>[];
   final entries = ref.watch(journalScreenProvider.select((s) => s.entries));
-  final ofDay = entries
-      .where((e) => journalDayOf(e.createdAt) == day)
-      .toList()
+  final ofDay = entries.where((e) => journalDayOf(e.createdAt) == day).toList()
     ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   return ofDay;
 });
@@ -94,13 +115,22 @@ final journalEntriesOfDayProvider = Provider<List<JournalEntryModel>>((ref) {
 /// Depend du socle L3-1 : avant lui, la table de trace n'etait indexee que
 /// par sentier et etait EFFACEE a chaque nouvelle randonnee — la trace
 /// d'une journee passee n'existait tout simplement plus.
-final journalDayTraceProvider =
-    FutureProvider<List<SessionTrackPoint>>((ref) async {
+final journalDayTraceProvider = FutureProvider<List<SessionTrackPoint>>((
+  ref,
+) async {
   final day = ref.watch(journalSelectedDayProvider);
   if (day == null) return const <SessionTrackPoint>[];
   final trailId = ref.watch(trailIdProvider);
-  final db = ref.watch(databaseProvider);
-  return db.sessionTrackPointsDao.getByCalendarDay(trailId, day);
+  // TACHE 742 : la base en vrai, la memoire du marcheur simule en demo. Le
+  // signal de cadence fait relire la trace a chaque pas simule — sans lui elle
+  // resterait figee a l'instant ou l'ecran s'est ouvert.
+  ref.watch(cadenceDesRelevesSimulesProvider);
+  // La trace DENSE, points estimes compris (lot 671-03) : elle se dessine.
+  // Les chiffres de la journee, eux, se lisent a part, sur les seuls releves
+  // reels ([journalDayStatsProvider]).
+  return ref
+      .watch(sourceDesRelevesProvider)
+      .parJourCalendaire(trailId, day, read: TrackPointsRead.withEstimated);
 });
 
 /// Chiffres d'une journee de marche, mesures sur la trace GPS.
@@ -111,14 +141,35 @@ final journalDayTraceProvider =
 /// garde ses noms d'origine, le socle vit dans [TrackSegmentStats].
 typedef JournalDayStats = TrackSegmentStats;
 
-/// Calcule les chiffres d'une suite de points GPS (cf. [computeTrackStats]).
-JournalDayStats computeDayStats(List<SessionTrackPoint> points) =>
-    computeTrackStats(points);
+/// Calcule les chiffres d'une journee : sur la tranche de [trace] que ses
+/// releves reels [points] bornent et datent (lot 671-06), sur les releves
+/// eux-memes sans trace (cf. [computeTrackStatsOnTrace]).
+JournalDayStats computeDayStats(
+  List<SessionTrackPoint> points, {
+  List<TrackPoint>? trace,
+}) => computeTrackStatsOnTrace(readings: points, trace: trace);
 
 /// Chiffres de la journee affichee (correctif L4-3).
+///
+/// LOT 671-03 : bornes et duree sur les SEULS RELEVES REELS, et non sur la
+/// trace dessinee : un point estime ne date ni ne borne rien.
+///
+/// LOT 671-06 : distance et denivele SUR LE TRACE, entre le premier et le
+/// dernier releve reel de la journee, projetes. LE PERIMETRE NE CHANGE PAS :
+/// la journee CIVILE, de minuit a minuit, celle de [getByCalendarDay].
 final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
-  final points = await ref.watch(journalDayTraceProvider.future);
-  return computeDayStats(points);
+  // La trace dessinee reste la source de rafraichissement (meme journee,
+  // memes invalidations) ; les chiffres se relisent sur les releves seuls.
+  await ref.watch(journalDayTraceProvider.future);
+  final day = ref.watch(journalSelectedDayProvider);
+  if (day == null) return const JournalDayStats();
+  final trailId = ref.watch(trailIdProvider);
+  final trace = ref.watch(statsTraceProvider.future);
+  // TACHE 742 : meme [computeDayStats] qu'avant, entree differente en demo.
+  final points = await ref
+      .watch(sourceDesRelevesProvider)
+      .parJourCalendaire(trailId, day, read: TrackPointsRead.gpsOnly);
+  return computeDayStats(points, trace: await trace);
 });
 
 /// Cumul depuis le depart, jusqu'a la journee affichee INCLUSE (L4-3).
@@ -127,13 +178,23 @@ final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
 /// des journees distinctes evite de compter le trajet qui relie le dernier
 /// point d'un soir au premier point du lendemain matin (souvent un transfert
 /// en voiture, parfois des dizaines de kilometres).
-final journalCumulativeStatsProvider =
-    FutureProvider<JournalDayStats>((ref) async {
+///
+/// LOT 671-06 : chaque journee du cumul se calcule comme la journee affichee,
+/// sur sa tranche de trace — le cumul du premier jour est le chiffre du jour.
+final journalCumulativeStatsProvider = FutureProvider<JournalDayStats>((
+  ref,
+) async {
   final day = ref.watch(journalSelectedDayProvider);
   if (day == null) return const JournalDayStats();
   final trailId = ref.watch(trailIdProvider);
-  final db = ref.watch(databaseProvider);
-  final all = await db.sessionTrackPointsDao.getByTrailId(trailId);
+  final traceFuture = ref.watch(statsTraceProvider.future);
+  // Les seuls releves reels : un cumul de chiffres (lot 671-03).
+  // TACHE 742 : la base en vrai, la memoire en demo — le cumul se calcule
+  // ensuite exactement de la meme facon, journee par journee.
+  final all = await ref
+      .watch(sourceDesRelevesProvider)
+      .parSentier(trailId, read: TrackPointsRead.gpsOnly);
+  final trace = await traceFuture;
 
   final byDay = <DateTime, List<SessionTrackPoint>>{};
   for (final p in all) {
@@ -143,7 +204,7 @@ final journalCumulativeStatsProvider =
   }
   var total = const JournalDayStats();
   for (final points in byDay.values) {
-    total = total.plus(computeDayStats(points));
+    total = total.plus(computeDayStats(points, trace: trace));
   }
   return total;
 });

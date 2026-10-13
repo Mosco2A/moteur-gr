@@ -23,12 +23,10 @@ class UserProgressEntries extends Table {
       integer().withDefault(const Constant(0))();
 
   /// Temps total de marche en minutes (ajoute en v2)
-  IntColumn get totalTimeMinutes =>
-      integer().withDefault(const Constant(0))();
+  IntColumn get totalTimeMinutes => integer().withDefault(const Constant(0))();
 
   /// Sentier complete ou non
-  BoolColumn get isCompleted =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
 
   /// Date de debut du sentier (nullable)
   DateTimeColumn get startedAt => dateTime().nullable()();

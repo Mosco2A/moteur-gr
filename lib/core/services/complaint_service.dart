@@ -1,3 +1,7 @@
+/// Contestation d'une decision de moderation (DSA art. 20), tenue pure et sans
+/// Firebase pour rester testable : la persistance passe par un puits.
+library;
+
 // D4C-03 — Service de plaintes / contestations DSA art 20 (design D4 CORDO
 // #86166). Systeme INTERNE de traitement des plaintes : un utilisateur peut
 // contester une decision de moderation le concernant. La plainte est
@@ -39,12 +43,12 @@ class ModerationComplaint {
   /// Serialise la plainte (sans l'UID du plaignant, ajoute par le sink qui
   /// connait l'utilisateur authentifie — anti-usurpation cote regles D4C-02).
   Map<String, dynamic> toMap() => <String, dynamic>{
-        'contentType': contentType.collectionName,
-        'contentRef': contentRef,
-        'expose': expose,
-        'createdAt': createdAt,
-        'status': status,
-      };
+    'contentType': contentType.collectionName,
+    'contentRef': contentRef,
+    'expose': expose,
+    'createdAt': createdAt,
+    'status': status,
+  };
 }
 
 /// Exception levee quand une plainte est invalide (expose vide).
@@ -67,11 +71,9 @@ abstract class ComplaintSink {
 
 /// Service de plaintes art 20 (D4C-03).
 class ComplaintService {
-  ComplaintService({
-    required ComplaintSink sink,
-    DateTime Function()? now,
-  })  : _sink = sink,
-        _now = now ?? DateTime.now;
+  ComplaintService({required ComplaintSink sink, DateTime Function()? now})
+    : _sink = sink,
+      _now = now ?? DateTime.now;
 
   final ComplaintSink _sink;
   final DateTime Function() _now;

@@ -1,3 +1,7 @@
+/// Les reglages de montee vers le cloud et l'etat de la derniere
+/// synchronisation, tels que l'ecran les montre.
+library;
+
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
@@ -8,7 +12,7 @@ import "../../../core/services/cloud_sync_service.dart";
 class SyncSettingsKeys {
   static const String syncEnabled = "sync_cloud_enabled";
   static const String batchInterval = "sync_batch_interval_minutes";
-  static const String syncOnRefuge = "sync_on_refuge_arrival";
+  static const String syncOnHut = "sync_on_refuge_arrival";
   static const String syncOnReconnect = "sync_on_reconnect";
   static const String lastSyncTimestamp = "sync_last_timestamp";
   static const String lastSyncStatus = "sync_last_status";
@@ -60,13 +64,14 @@ class SyncConfigNotifier extends Notifier<SyncConfig> {
     _prefs = prefs;
 
     final interval = _prefs?.getInt(SyncSettingsKeys.batchInterval) ?? 60;
-    final onRefuge = _prefs?.getBool(SyncSettingsKeys.syncOnRefuge) ?? true;
-    final onReconnect = _prefs?.getBool(SyncSettingsKeys.syncOnReconnect) ?? true;
+    final onHut = _prefs?.getBool(SyncSettingsKeys.syncOnHut) ?? true;
+    final onReconnect =
+        _prefs?.getBool(SyncSettingsKeys.syncOnReconnect) ?? true;
     final lastSync = _prefs?.getString(SyncSettingsKeys.lastSyncTimestamp);
 
     state = SyncConfig(
       batchIntervalMinutes: interval,
-      syncOnRefugeArrival: onRefuge,
+      syncOnRefugeArrival: onHut,
       syncOnReconnect: onReconnect,
       lastSyncTimestamp: lastSync,
     );
@@ -79,9 +84,9 @@ class SyncConfigNotifier extends Notifier<SyncConfig> {
   }
 
   /// Active/desactive la sync a l arrivee refuge.
-  void setSyncOnRefuge(bool enabled) {
+  void setSyncOnHut(bool enabled) {
     state = state.copyWith(syncOnRefugeArrival: enabled);
-    _prefs?.setBool(SyncSettingsKeys.syncOnRefuge, enabled);
+    _prefs?.setBool(SyncSettingsKeys.syncOnHut, enabled);
   }
 
   /// Active/desactive la sync au retour reseau.
@@ -98,8 +103,9 @@ class SyncConfigNotifier extends Notifier<SyncConfig> {
 }
 
 /// Provider de la configuration sync cloud.
-final syncConfigProvider =
-    NotifierProvider<SyncConfigNotifier, SyncConfig>(SyncConfigNotifier.new);
+final syncConfigProvider = NotifierProvider<SyncConfigNotifier, SyncConfig>(
+  SyncConfigNotifier.new,
+);
 
 /// Notifier pour le statut de synchronisation.
 class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
@@ -127,8 +133,11 @@ class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
 
     state = SyncStatusInfo(
       lastSyncTimestamp: timestamp,
-      lastStatus: CloudSyncStatusValues.values[
-          statusIndex.clamp(0, CloudSyncStatusValues.values.length - 1)],
+      lastStatus:
+          CloudSyncStatusValues.values[statusIndex.clamp(
+            0,
+            CloudSyncStatusValues.values.length - 1,
+          )],
       isEnabled: enabled,
     );
   }
@@ -139,7 +148,10 @@ class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
       lastStatus: status,
       lastSyncTimestamp: timestamp ?? state.lastSyncTimestamp,
     );
-    _prefs?.setInt(SyncSettingsKeys.lastSyncStatus, CloudSyncStatusValues.values.indexOf(status));
+    _prefs?.setInt(
+      SyncSettingsKeys.lastSyncStatus,
+      CloudSyncStatusValues.values.indexOf(status),
+    );
     if (timestamp != null) {
       _prefs?.setString(SyncSettingsKeys.lastSyncTimestamp, timestamp);
     }
@@ -153,9 +165,9 @@ class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
 }
 
 /// Provider du statut de synchronisation.
-final syncStatusProvider =
-    NotifierProvider<SyncStatusNotifier, SyncStatusInfo>(
-        SyncStatusNotifier.new);
+final syncStatusProvider = NotifierProvider<SyncStatusNotifier, SyncStatusInfo>(
+  SyncStatusNotifier.new,
+);
 
 /// Provider pour activer/desactiver la sync cloud.
 final toggleSyncProvider = Provider<void Function(bool)>((ref) {

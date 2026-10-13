@@ -1,0 +1,20 @@
+# CONFIGURATION DE LA SUITE DE TESTS (tache 648).
+#
+# POURQUOI CE FICHIER APPARAIT MAINTENANT. La tache 648 ajoute le premier test
+# qui va CHERCHER UN VRAI FICHIER SUR INTERNET : il prouve que la carte hors
+# ligne publiee descend bien par la chaine de production, depuis le vrai espace
+# de stockage. Sans declaration, `package:test` avertit a chaque passage qu il
+# rencontre une marque inconnue.
+#
+# LA MARQUE NE PORTE PAS LE `skip`, ET C EST UNE MESURE, PAS UN OUBLI : un
+# `skip` pose ici s applique AUSSI quand on demande explicitement `--tags
+# reseau`, ce qui rend la preuve injouable (verifie le 30/09). La decision de
+# sauter est donc prise DANS le test, sur une variable d environnement, et elle
+# se lit sur la ligne de commande :
+#
+#   STEPWAYS_TEST_RESEAU=1 flutter test test/outillage/cartes_publiees_648_test.dart
+#
+# Les six appels a `flutter test` de `codemagic.yaml` restent inchanges et
+# verts : sans la variable, le test se saute en disant pourquoi.
+tags:
+  reseau:

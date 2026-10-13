@@ -1,3 +1,7 @@
+/// Le cablage des services, dont le mode demo delegue a la SOURCE UNIQUE des
+/// droits plutot qu'a un calcul parallele.
+library;
+
 // Providers des services transverses du moteur.
 //
 // Branche sur Riverpod les services purs (SharedPreferences-based)
@@ -8,6 +12,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/trek/data/widget_data_service.dart';
+import '../firebase/firebase_service.dart';
 import '../services/consent_service.dart';
 import '../services/demo_mode_service.dart';
 import '../services/monetization_service.dart';
@@ -16,13 +21,18 @@ import '../services/firestore_moderation_store.dart';
 import '../services/heart_rate_ble_service.dart';
 import '../services/moderation_service.dart';
 import '../services/sensor_fusion_service.dart';
+import '../services/session_demo.dart';
 
 /// Provider du service mode demo universel (E5.18).
 ///
 /// RECONCILIE (StepWays LOT 1, ST4) : le mode demo est delegue a la SOURCE
 /// UNIQUE `MonetizationService` (droits Drift) via [DemoModeService.isDemoModeAsync],
-/// supprimant le doublon avec la cle prefs legacy `purchased_trail_ids`. La
-/// detection vitrine (`isShowcaseTrail`) reste autonome (catalogue).
+/// supprimant le doublon avec la cle prefs legacy `purchased_trail_ids`.
+///
+/// PLUS AUCUNE DETECTION AUTONOME (tache 601) : ce service portait une detection
+/// « vitrine » a lui, qui exemptait un sentier du mode demo sans passer par les
+/// droits. Les sentiers GRATUITS sont desormais resolus jouables par la source
+/// unique, qui lit leur prix — une seule reponse, un seul endroit.
 final demoModeServiceProvider = Provider<DemoModeService>(
   (ref) => DemoModeService(
     demoResolver: (trailId) =>
@@ -56,8 +66,19 @@ final healthReaderServiceProvider = Provider<HealthReaderService>(
 /// SharedPreferences) via [consentServiceProvider] ; ce provider synchrone
 /// expose l'instance pour les appels imperatifs (grant/revoke). Il libere
 /// le StreamController au dispose du scope.
+/// LA BARRIERE DE DEMO Y EST CABLEE (tache 760) : pendant une demo, les
+/// decisions de consentement et le compteur de revision des donnees vont sur
+/// une ardoise en memoire au lieu des preferences du telephone.
+///
+/// L'instance N'EST PAS reconstruite a la bascule — elle porte un flux que
+/// l'ordonnanceur de synchronisation ecoute. L'ardoise se perime donc toute
+/// seule sur le NUMERO de la demo : une demo ne repart jamais avec les
+/// decisions de la precedente, et rien ne survit a la sortie.
 final consentServiceProvider = Provider<ConsentService>((ref) {
-  final service = ConsentService();
+  final service = ConsentService(
+    enDemo: () => ref.read(enDemoProvider),
+    generationDeDemo: () => ref.read(generationDeDemoProvider),
+  );
   ref.onDispose(service.dispose);
   return service;
 });
@@ -77,7 +98,12 @@ final consentServiceReadyProvider = FutureProvider<ConsentService>((ref) async {
 /// Backend reel adosse a la collection `reports_moderation` (regles D4C-02).
 /// Overridable en test par un faux [ModerationStore] en memoire.
 final moderationStoreProvider = Provider<ModerationStore>(
-  (ref) => FirestoreModerationStore(),
+  // 596 C4 : le service Firebase est desormais injecte — le magasin refuse
+  // proprement (CloudIndisponibleException) au lieu de dereferencer
+  // `FirebaseFirestore.instance` a l'aveugle.
+  (ref) => FirestoreModerationStore(
+    firebaseService: ref.watch(firebaseServiceProvider),
+  ),
 );
 
 /// Provider du service de moderation hebergeur DSA art 16 (D4C-01).

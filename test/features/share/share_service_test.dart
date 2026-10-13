@@ -61,22 +61,24 @@ void main() {
       expect(card.badgeTitle!.contains('@'), isFalse);
     });
 
-    test('la carte ne porte AUCUN champ de trace fine (stats agregees A4-2)',
-        () {
-      final card = service.buildStageCard(
-        optedIn: true,
-        authorUidHash: 'hash1234',
-        stageName: 'Etape 3',
-        distanceKm: 10,
-        elevationGainM: 500,
-        durationSeconds: 3600,
-      );
-      // Le modele n'expose que des stats agregees + pseudonyme.
-      expect(card, isNotNull);
-      expect(card!.distanceKm, 10);
-      expect(card.elevationGainM, 500);
-      expect(card.durationSeconds, 3600);
-    });
+    test(
+      'la carte ne porte AUCUN champ de trace fine (stats agregees A4-2)',
+      () {
+        final card = service.buildStageCard(
+          optedIn: true,
+          authorUidHash: 'hash1234',
+          stageName: 'Etape 3',
+          distanceKm: 10,
+          elevationGainM: 500,
+          durationSeconds: 3600,
+        );
+        // Le modele n'expose que des stats agregees + pseudonyme.
+        expect(card, isNotNull);
+        expect(card!.distanceKm, 10);
+        expect(card.elevationGainM, 500);
+        expect(card.durationSeconds, 3600);
+      },
+    );
 
     test('hash vide -> pseudonyme de repli neutre', () {
       expect(ShareService.pseudonymFromHash(''), 'rndr-0000');

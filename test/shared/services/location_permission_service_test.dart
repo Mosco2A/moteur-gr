@@ -14,13 +14,16 @@ import 'package:moteur_gr/shared/services/location_permission_service.dart';
 void main() {
   group('BackgroundLocationStatus (contrat)', () {
     test('couvre tous les statuts attendus du re-portage socle', () {
-      expect(BackgroundLocationStatus.values, containsAll(const [
-        BackgroundLocationStatus.granted,
-        BackgroundLocationStatus.whileInUseOnly,
-        BackgroundLocationStatus.permanentlyDenied,
-        BackgroundLocationStatus.denied,
-        BackgroundLocationStatus.serviceDisabled,
-      ]));
+      expect(
+        BackgroundLocationStatus.values,
+        containsAll(const [
+          BackgroundLocationStatus.granted,
+          BackgroundLocationStatus.whileInUseOnly,
+          BackgroundLocationStatus.permanentlyDenied,
+          BackgroundLocationStatus.denied,
+          BackgroundLocationStatus.serviceDisabled,
+        ]),
+      );
       expect(BackgroundLocationStatus.values.length, 5);
     });
 
@@ -32,13 +35,18 @@ void main() {
         BackgroundLocationStatus.granted,
         BackgroundLocationStatus.whileInUseOnly,
       };
-      expect(captureEnvisageable.contains(BackgroundLocationStatus.granted),
-          isTrue);
       expect(
-          captureEnvisageable.contains(BackgroundLocationStatus.whileInUseOnly),
-          isTrue);
-      expect(captureEnvisageable.contains(BackgroundLocationStatus.denied),
-          isFalse);
+        captureEnvisageable.contains(BackgroundLocationStatus.granted),
+        isTrue,
+      );
+      expect(
+        captureEnvisageable.contains(BackgroundLocationStatus.whileInUseOnly),
+        isTrue,
+      );
+      expect(
+        captureEnvisageable.contains(BackgroundLocationStatus.denied),
+        isFalse,
+      );
     });
   });
 

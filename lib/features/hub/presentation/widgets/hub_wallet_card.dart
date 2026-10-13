@@ -1,11 +1,17 @@
+/// L'affichage du solde d'etapes, qui manquait alors que tout le portefeuille
+/// existait : on depensait sans voir ce qui restait.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/services/monetization_service.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Solde du COMPTE-ÉTAPES en tête du cockpit (correctif L7-1).
 ///
@@ -30,58 +36,85 @@ class HubWalletCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final accent = CategoryIconColors.of(context).green;
 
+    // LA CARTE EST UNE PORTE (tache 594, A3). Elle affichait un solde et ne
+    // menait nulle part : il n'existait aucun ecran de recharge. Maintenant
+    // qu'il existe, c'est ici qu'on y entre — a l'endroit ou l'on constate
+    // qu'il manque des etapes.
     return AppCard(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingBase,
-        vertical: AppTheme.spacingMd,
-      ),
-      child: Semantics(
-        label: '${t.monetization.walletTitle} $solde ${t.monetization.walletUnit}',
-        excludeSemantics: true,
-        child: Row(
-          children: [
-            Icon(Icons.account_balance_wallet_outlined, color: accent),
-            const SizedBox(width: AppTheme.spacingMd),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    t.monetization.walletTitle,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    t.monetization.walletSubtitle,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppTheme.grisTexteSecondaire,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: AppTheme.spacingSm),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+      // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+      interactif: true,
+      padding: EdgeInsets.zero,
+      child: InkWell(
+        key: const ValueKey('hub-wallet-recharge'),
+        onTap: () => context.push('/wallet'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.spacingBase,
+            vertical: AppTheme.spacingMd,
+          ),
+          child: Semantics(
+            label:
+                '${t.monetization.walletTitle} $solde ${t.monetization.walletUnit}',
+            excludeSemantics: true,
+            child: Row(
               children: [
-                Text(
-                  '$solde',
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: accent,
+                // TACHE 639 (bug 3) — « Compte etapes » EN BICOLORE.
+                //
+                // Verbatim de Christophe (30/09 10:09) : « Compte etapes et pret
+                // a partir non plus ». Le portefeuille portait la couleur verte
+                // categorielle, donc le trace monochrome teinte. Le chiffre du
+                // solde, lui, GARDE cette couleur : c'est une donnee, pas un
+                // dessin d'identite.
+                const StepIcon.tuile(StepwaysIcons.portefeuille),
+                const SizedBox(width: AppTheme.spacingMd),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        t.monetization.walletTitle,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        t.monetization.walletSubtitle,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: AppTheme.grisTexteSecondaire,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  t.monetization.walletUnit,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: AppTheme.grisTexteSecondaire,
-                  ),
+                const SizedBox(width: AppTheme.spacingSm),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '$solde',
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: accent,
+                      ),
+                    ),
+                    Text(
+                      t.monetization.walletUnit,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: AppTheme.grisTexteSecondaire,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: AppTheme.spacingXs),
+                const StepIcon(
+                  StepwaysIcons.chevronDroite,
+                  size: 18,
+                  color: AppTheme.grisTexteSecondaire,
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

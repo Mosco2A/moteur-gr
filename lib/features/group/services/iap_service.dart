@@ -1,3 +1,7 @@
+/// Le pass de suivi web achete au store, derriere un kill-switch : coupe, aucun
+/// appel reel ne peut partir.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:logger/logger.dart';
@@ -119,6 +123,16 @@ class IapService {
   /// Apres verification de l achat, genere un [ShareLink] web
   /// permanent sans pub pour la session donnee.
   /// Retourne le [ShareLink] genere, ou null si l achat est invalide.
+  ///
+  /// RETOURNE AUSSI `null` QUAND LE CANAL WEB N'A PAS D'ADRESSE DANS CE BUILD
+  /// (tache 623), ET C'ETAIT LE PIRE ENDROIT DE TOUT LE DEFAUT. Cette methode
+  /// s'appelle APRES un paiement. Elle interpolait le resultat de `webLink` dans
+  /// une chaine : avec une base absente, elle rendait desormais l'URL litterale
+  /// `null?pass=1`, et avec l'ancienne adresse en dur elle rendait une adresse
+  /// qui repondait 404. Dans les deux cas le randonneur AVAIT PAYE pour un lien
+  /// que personne ne pouvait ouvrir. Un pass sans page n'est pas un pass : on ne
+  /// rend donc rien, et l'appelant doit traiter ce cas comme un achat a
+  /// rembourser ou a rejouer, pas comme un succes.
   ShareLink? handlePurchaseComplete({
     required String sessionId,
     required String shareCode,
@@ -129,11 +143,21 @@ class IapService {
       return null;
     }
 
+    final base = linksConfig.webLink(shareCode);
+    if (base == null) {
+      _log.e(
+        '[IapService] Pass suivi web achete mais le canal web n a AUCUNE '
+        'adresse dans ce build (${FollowLinksConfig.variableWebBase}) : '
+        'aucun lien remis pour la session $sessionId',
+      );
+      return null;
+    }
+
     final link = ShareLink(
       id: _uuid.v4(),
       sessionId: sessionId,
       type: ShareLinkTypeValues.web,
-      url: '${linksConfig.webLink(shareCode)}?pass=1',
+      url: '$base?pass=1',
       activatedAt: DateTime.now().toIso8601String(),
     );
 

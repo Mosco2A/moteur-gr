@@ -1,3 +1,7 @@
+/// Signalements de terrain ecrits en local d'abord puis pousses par une file
+/// pending -> synced/failed : l'insertion marche sans reseau.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -39,9 +43,9 @@ class ReportLocalDao extends DatabaseAccessor<AppDatabase>
 
   /// Tous les signalements (cache local pour la lecture), recents d'abord.
   Future<List<ReportLocalData>> allReports() {
-    return (select(reportLocal)
-          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
-        .get();
+    return (select(
+      reportLocal,
+    )..orderBy([(t) => OrderingTerm.desc(t.createdAt)])).get();
   }
 
   /// Marque un signalement comme synchronise (avec l'id Firestore distant).
@@ -56,9 +60,9 @@ class ReportLocalDao extends DatabaseAccessor<AppDatabase>
 
   /// Marque un signalement en echec et stocke l'erreur (incremente attempts).
   Future<void> markFailed(int reportId, String error) async {
-    final row = await (select(reportLocal)
-          ..where((t) => t.id.equals(reportId)))
-        .getSingleOrNull();
+    final row = await (select(
+      reportLocal,
+    )..where((t) => t.id.equals(reportId))).getSingleOrNull();
     if (row == null) return;
     await (update(reportLocal)..where((t) => t.id.equals(reportId))).write(
       ReportLocalCompanion(
@@ -84,7 +88,8 @@ class ReportLocalDao extends DatabaseAccessor<AppDatabase>
 
   /// Supprime les signalements synchronises (nettoyage du cache local).
   Future<int> deleteSynced() {
-    return (delete(reportLocal)..where((t) => t.syncState.equals('synced')))
-        .go();
+    return (delete(
+      reportLocal,
+    )..where((t) => t.syncState.equals('synced'))).go();
   }
 }

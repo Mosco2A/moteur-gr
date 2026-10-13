@@ -1,1 +1,1 @@
-Wandern,Trekking,Weg,GPS,offline,Karte,GPX,Track,Etappe,Planung,Höhenmeter,Hütte,Biwak,Berg,Outdoor
+Trekking,Wanderweg,Fernwanderweg,Karte,GPX,Track,Planung,Höhenmeter,Hütte,Biwak,Berg,Wetter,SOS

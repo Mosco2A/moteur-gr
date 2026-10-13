@@ -11,29 +11,27 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// Verifie le badge d'etat (un par [TrekLifecycleState]) et la barre de
 /// progression (masquee si termine/vierge), ainsi que le geste de selection.
 TrailConfig _config(String id, {int stages = 10}) => TrailConfig(
-      id: id,
-      name: id,
-      displayName: 'Trek $id',
-      tagline: 't',
-      totalStages: stages,
-      totalDistanceKm: 100,
-      totalElevationGain: 5000,
-      region: 'Corse',
-      country: 'France',
-      primaryColorValue: 0xFF2E7D32,
-      secondaryColorValue: 0xFF1565C0,
-      gpxAssetPath: 'assets/gpx/$id.gpx',
-    );
+  id: id,
+  name: id,
+  displayName: 'Trek $id',
+  tagline: 't',
+  totalStages: stages,
+  totalDistanceKm: 100,
+  totalElevationGain: 5000,
+  region: 'Corse',
+  country: 'France',
+  primaryColorValue: 0xFF2E7D32,
+  secondaryColorValue: 0xFF1565C0,
+  gpxAssetPath: 'assets/gpx/$id.gpx',
+);
 
 void main() {
   Widget wrap(Widget child) => TranslationProvider(
-        child: MaterialApp(home: Scaffold(body: child)),
-      );
+    child: MaterialApp(home: Scaffold(body: child)),
+  );
 
-  TrekSummary summary(TrekLifecycleState state) => TrekSummary(
-        config: _config('gr20'),
-        state: state,
-      );
+  TrekSummary summary(TrekLifecycleState state) =>
+      TrekSummary(config: _config('gr20'), state: state);
 
   testWidgets('badge affiche le libelle de chaque etat', (tester) async {
     for (final entry in <TrekLifecycleState, String>{
@@ -47,20 +45,28 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text(entry.value), findsOneWidget,
-          reason: 'badge attendu pour ${entry.key}');
-      expect(find.byKey(ValueKey('trek-state-badge-${entry.key.name}')),
-          findsOneWidget);
+      expect(
+        find.text(entry.value),
+        findsOneWidget,
+        reason: 'badge attendu pour ${entry.key}',
+      );
+      expect(
+        find.byKey(ValueKey('trek-state-badge-${entry.key.name}')),
+        findsOneWidget,
+      );
     }
   });
 
-  testWidgets('titre + region + stats rendus (calque catalogue)',
-      (tester) async {
+  testWidgets('titre + region + stats rendus (calque catalogue)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      wrap(TrekSummaryCard(
-        summary: summary(TrekLifecycleState.owned),
-        onTap: () {},
-      )),
+      wrap(
+        TrekSummaryCard(
+          summary: summary(TrekLifecycleState.owned),
+          onTap: () {},
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -73,27 +79,33 @@ void main() {
     );
   });
 
-  testWidgets('barre de progression ABSENTE pour un trek termine',
-      (tester) async {
+  testWidgets('barre de progression ABSENTE pour un trek termine', (
+    tester,
+  ) async {
     // completed -> progressFraction = 1.0, mais on masque la barre (badge suffit).
     await tester.pumpWidget(
-      wrap(TrekSummaryCard(
-        summary: summary(TrekLifecycleState.completed),
-        onTap: () {},
-      )),
+      wrap(
+        TrekSummaryCard(
+          summary: summary(TrekLifecycleState.completed),
+          onTap: () {},
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
     expect(find.byType(LinearProgressIndicator), findsNothing);
   });
 
-  testWidgets('barre de progression ABSENTE pour un trek vierge (0 %)',
-      (tester) async {
+  testWidgets('barre de progression ABSENTE pour un trek vierge (0 %)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      wrap(TrekSummaryCard(
-        summary: summary(TrekLifecycleState.owned),
-        onTap: () {},
-      )),
+      wrap(
+        TrekSummaryCard(
+          summary: summary(TrekLifecycleState.owned),
+          onTap: () {},
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -103,10 +115,12 @@ void main() {
   testWidgets('onTap declenche la selection', (tester) async {
     var tapped = 0;
     await tester.pumpWidget(
-      wrap(TrekSummaryCard(
-        summary: summary(TrekLifecycleState.prepared),
-        onTap: () => tapped++,
-      )),
+      wrap(
+        TrekSummaryCard(
+          summary: summary(TrekLifecycleState.prepared),
+          onTap: () => tapped++,
+        ),
+      ),
     );
     await tester.pumpAndSettle();
 

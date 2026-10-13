@@ -1,14 +1,16 @@
+/// Accumule les points GPS en memoire et ne les ecrit en base que par lots :
+/// c'est ce tampon qui evite une ecriture par position.
+library;
+
 import 'package:uuid/uuid.dart';
 
 import '../../../core/error/error_handler.dart';
-import '../domain/models/track_point.dart';
-import '../domain/models/trek_session.dart';
+import '../../../domain/track_point.dart';
+import '../../../domain/trek_session.dart';
 
 /// Callback pour persister un batch de TrackPoints en Drift.
-typedef FlushCallback = Future<void> Function(
-  String sessionId,
-  List<TrackPoint> points,
-);
+typedef FlushCallback =
+    Future<void> Function(String sessionId, List<TrackPoint> points);
 
 /// Callback pour persister une TrekSession en Drift.
 typedef SessionPersistCallback = Future<void> Function(TrekSession session);
@@ -27,10 +29,10 @@ class TrekRecorder {
     required SessionPersistCallback onSessionPersist,
     int bufferSize = defaultBufferSize,
     Uuid? uuid,
-  })  : _onFlush = onFlush,
-        _onSessionPersist = onSessionPersist,
-        _bufferSize = bufferSize,
-        _uuid = uuid ?? const Uuid();
+  }) : _onFlush = onFlush,
+       _onSessionPersist = onSessionPersist,
+       _bufferSize = bufferSize,
+       _uuid = uuid ?? const Uuid();
 
   /// Taille du buffer par defaut avant flush.
   static const int defaultBufferSize = 10;
@@ -202,8 +204,4 @@ class TrekRecorder {
 }
 
 /// Etats internes du recorder.
-enum _RecorderState {
-  stopped,
-  recording,
-  paused,
-}
+enum _RecorderState { stopped, recording, paused }

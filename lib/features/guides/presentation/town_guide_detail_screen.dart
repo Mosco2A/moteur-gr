@@ -1,6 +1,11 @@
+/// Le detail d'une localite, consultable 100 % hors ligne, avec des liens qui
+/// ouvrent le site du prestataire.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -8,6 +13,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../domain/town_guide.dart';
 import '../providers/guide_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Detail d'un town guide : sections pratiques + liens facilitateur (F8C-02).
 ///
@@ -44,6 +50,10 @@ class TownGuideDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.townGuideDetail, trail: trailId);
     final t = Translations.of(context);
     final guide =
         this.guide ?? townGuideByIdForContext(context, trailId, guideId);
@@ -196,7 +206,7 @@ class _GuideItemTile extends ConsumerWidget {
                   key: ValueKey('guide-deeplink-${item.nom}'),
                   variant: AppButtonVariant.outline,
                   isFullWidth: false,
-                  icon: Icons.open_in_new,
+                  icon: StepwaysIcons.lien,
                   label: t.guides.openSite,
                   onPressed: () => _openSite(context, ref),
                 ),

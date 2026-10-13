@@ -1,7 +1,12 @@
+/// « Comprendre la meteo » : contenu editorial en cinq langues, sans aucune
+/// dependance au sentier affiche.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Bottom-sheet « Comprendre la météo » (guide (i), RF-1).
 ///
@@ -31,11 +36,13 @@ class WeatherGuideSheet extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.help_outline, color: theme.colorScheme.primary),
+                StepIcon(StepwaysIcons.aide, color: theme.colorScheme.primary),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
-                  child: Text(t.weather.guideTitle,
-                      style: theme.textTheme.titleLarge),
+                  child: Text(
+                    t.weather.guideTitle,
+                    style: theme.textTheme.titleLarge,
+                  ),
                 ),
               ],
             ),

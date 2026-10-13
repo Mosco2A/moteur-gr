@@ -1,3 +1,7 @@
+/// Les trois canaux de suivi — application, web, et lien direct — avec un type
+/// extensible plutot qu'un enum ferme.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'share_link.freezed.dart';

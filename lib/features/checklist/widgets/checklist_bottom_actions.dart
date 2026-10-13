@@ -1,12 +1,18 @@
+/// Les cinq gestes du bas du sac : valider (obligatoires verifies), devalider,
+/// liste de courses, partage au groupe, export.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import 'checklist_shopping_modal.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Boutons en bas de la checklist — CLONE GR20 (_BottomActions).
 ///
@@ -32,7 +38,15 @@ class ChecklistBottomActions extends ConsumerWidget {
         children: [
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.filledTone,
+              tone: allRequiredChecked
+                  ? AppTheme.vertFacile
+                  : AppTheme.orangeDifficile,
+              icon: allRequiredChecked
+                  ? StepwaysIcons.cochePleine
+                  : StepwaysIcons.danger,
+              label: allRequiredChecked ? ui.bagOk : ui.validateBag,
               onPressed: () => _showBagOkDialog(
                 context,
                 ref,
@@ -40,24 +54,18 @@ class ChecklistBottomActions extends ConsumerWidget {
                 state.requiredCount,
                 state.requiredCheckedCount,
               ),
-              icon: Icon(
-                allRequiredChecked ? Icons.check_circle : Icons.warning_amber,
-                size: 20,
-              ),
-              label: Text(allRequiredChecked ? ui.bagOk : ui.validateBag),
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    allRequiredChecked ? AppTheme.vertFacile : AppTheme.orangeDifficile,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
             ),
           ),
           if (isValidated) ...[
             const SizedBox(height: AppTheme.spacingSm),
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton.icon(
+              child: AppButton(
+                variant: AppButtonVariant.outline,
+                tone: AppTheme.orangeDifficile,
+                icon: StepwaysIcons.cancel,
+                iconSize: 18,
+                label: ui.cancelValidation,
                 onPressed: () {
                   ref.read(checklistProvider.notifier).cancelValidation();
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -67,41 +75,40 @@ class ChecklistBottomActions extends ConsumerWidget {
                     ),
                   );
                 },
-                icon: const Icon(Icons.undo, size: 18),
-                label: Text(ui.cancelValidation),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.orangeDifficile,
-                  side: const BorderSide(
-                      color: AppTheme.orangeDifficile, width: 2),
-                ),
               ),
             ),
           ],
           const SizedBox(height: AppTheme.spacingSm),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.panier,
+              iconSize: 18,
+              label: ui.shoppingListButton,
               onPressed: () => _openShoppingList(context, ref),
-              icon: const Icon(Icons.add_shopping_cart, size: 18),
-              label: Text(ui.shoppingListButton),
             ),
           ),
           const SizedBox(height: AppTheme.spacingSm),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.suiveurs,
+              iconSize: 18,
+              label: ui.shareGroup,
               onPressed: () => _shareChecklist(context, ref),
-              icon: const Icon(Icons.group, size: 18),
-              label: Text(ui.shareGroup),
             ),
           ),
           const SizedBox(height: AppTheme.spacingSm),
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.partager,
+              iconSize: 18,
+              label: ui.exportList,
               onPressed: () => _shareChecklist(context, ref),
-              icon: const Icon(Icons.share, size: 18),
-              label: Text(ui.exportList),
             ),
           ),
         ],
@@ -117,9 +124,9 @@ class ChecklistBottomActions extends ConsumerWidget {
       byCategory.putIfAbsent(catName, () => []).add(item);
     }
     if (byCategory.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.checklist.ui.shoppingListEmpty)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.checklist.ui.shoppingListEmpty)));
       return;
     }
     showModalBottomSheet<void>(
@@ -128,8 +135,7 @@ class ChecklistBottomActions extends ConsumerWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (ctx) =>
-          ChecklistShoppingModal(uncheckedByCategory: byCategory),
+      builder: (ctx) => ChecklistShoppingModal(uncheckedByCategory: byCategory),
     );
   }
 
@@ -154,18 +160,26 @@ class ChecklistBottomActions extends ConsumerWidget {
         builder: (ctx) => AlertDialog(
           title: Row(
             children: [
-              const Icon(Icons.check_circle, color: AppTheme.vertFacile),
+              const StepIcon(
+                StepwaysIcons.cochePleine,
+                color: AppTheme.vertFacile,
+              ),
               const SizedBox(width: 8),
               Text(ui.bagValidTitle),
             ],
           ),
           content: Text(body),
           actions: [
-            TextButton(
+            AppButton(
+              variant: AppButtonVariant.text,
+              label: ui.checkAgain,
+              isFullWidth: false,
               onPressed: () => Navigator.pop(ctx),
-              child: Text(ui.checkAgain),
             ),
-            ElevatedButton(
+            AppButton(
+              variant: AppButtonVariant.filledTone,
+              tone: AppTheme.vertFacile,
+              label: ui.yesBagOk,
               onPressed: () {
                 Navigator.pop(ctx);
                 ref.read(checklistProvider.notifier).validateBag();
@@ -176,11 +190,6 @@ class ChecklistBottomActions extends ConsumerWidget {
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.vertFacile,
-                foregroundColor: Colors.white,
-              ),
-              child: Text(ui.yesBagOk),
             ),
           ],
         ),
@@ -201,8 +210,9 @@ class ChecklistBottomActions extends ConsumerWidget {
         builder: (ctx) {
           final dialogWidth = MediaQuery.of(context).size.width * 0.85;
           return Dialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: SizedBox(
               width: dialogWidth,
               child: ConstrainedBox(
@@ -217,14 +227,19 @@ class ChecklistBottomActions extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.warning_amber,
-                              color: AppTheme.orangeDifficile),
+                          const StepIcon(
+                            StepwaysIcons.danger,
+                            color: AppTheme.orangeDifficile,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Text(ui.missingTitle,
-                                style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600)),
+                            child: Text(
+                              ui.missingTitle,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -236,25 +251,34 @@ class ChecklistBottomActions extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('$body\n'),
-                              Text(ui.missingList,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600)),
+                              Text(
+                                ui.missingList,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                               const SizedBox(height: 4),
-                              ...missing.map((m) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 2),
-                                    child: Row(
-                                      children: [
-                                        const Icon(Icons.close,
-                                            size: 14,
-                                            color: AppTheme.rougeUrgence),
-                                        const SizedBox(width: 4),
-                                        Flexible(
-                                            child: Text(m,
-                                                style: const TextStyle(
-                                                    fontSize: 16))),
-                                      ],
-                                    ),
-                                  )),
+                              ...missing.map(
+                                (m) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 2),
+                                  child: Row(
+                                    children: [
+                                      const StepIcon(
+                                        StepwaysIcons.croix,
+                                        size: 14,
+                                        color: AppTheme.emergencyRed,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Flexible(
+                                        child: Text(
+                                          m,
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -263,12 +287,18 @@ class ChecklistBottomActions extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          TextButton(
+                          AppButton(
+                            variant: AppButtonVariant.text,
+                            label: ui.understood,
+                            isFullWidth: false,
                             onPressed: () => Navigator.pop(ctx),
-                            child: Text(ui.understood),
                           ),
                           const SizedBox(width: 8),
-                          ElevatedButton(
+                          AppButton(
+                            variant: AppButtonVariant.filledTone,
+                            tone: AppTheme.orangeDifficile,
+                            label: ui.validateAnyway,
+                            isFullWidth: false,
                             onPressed: () {
                               Navigator.pop(ctx);
                               ref
@@ -281,11 +311,6 @@ class ChecklistBottomActions extends ConsumerWidget {
                                 ),
                               );
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.orangeDifficile,
-                              foregroundColor: Colors.white,
-                            ),
-                            child: Text(ui.validateAnyway),
                           ),
                         ],
                       ),
@@ -302,17 +327,28 @@ class ChecklistBottomActions extends ConsumerWidget {
 
   /// Partage texte de la checklist (parite GR20 : partage + export = meme
   /// action). Construit un recap des articles coches par categorie.
-  void _shareChecklist(BuildContext context, WidgetRef ref) {
+  ///
+  /// L'APPEL PARTAIT SANS QUE PERSONNE NE REGARDE CE QU'IL DEVENAIT (tache 579,
+  /// LOT X). `Share.share(...)` etait lance sans `await` et sans `catch` : quand
+  /// la feuille de partage ne peut pas s'ouvrir — aucune application cible, ou le
+  /// canal de la plateforme indisponible — l'echec partait dans le vide et les
+  /// deux boutons « PARTAGER AVEC LE GROUPE » et « EXPORTER LA LISTE » ne
+  /// produisaient RIEN. L'invariante V3 les a trouves morts tous les deux.
+  /// Desormais on attend le resultat, et un echec se dit.
+  Future<void> _shareChecklist(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
     final state = ref.read(checklistProvider);
     final buffer = StringBuffer('${t.checklist.title}\n');
     buffer.writeln(
-        '${t.checklist.weight.total} : ${state.checkedWeightKg.toStringAsFixed(1)} ${t.checklist.weight.kilograms}');
+      '${t.checklist.weight.total} : ${state.checkedWeightKg.toStringAsFixed(1)} ${t.checklist.weight.kilograms}',
+    );
     // DIRE DE QUOI LE POURCENTAGE EST LE POURCENTAGE (#7-e). Le partage
     // sortait un « 17% » nu : sans denominateur nomme ce chiffre ne veut rien
     // dire, et depuis le 22/09 il ne porte plus sur le poids corporel mais sur
     // la base de charge.
     buffer.writeln(
-        '${t.checklist.weight.percentOfReference.replaceAll('{pct}', (state.backpackRatio * 100).toStringAsFixed(0))}\n');
+      '${t.checklist.weight.percentOfReference.replaceAll('{pct}', (state.backpackRatio * 100).toStringAsFixed(0))}\n',
+    );
 
     // Grouper par categorie (ordre du template).
     for (final category in checklistCategories) {
@@ -323,13 +359,21 @@ class ChecklistBottomActions extends ConsumerWidget {
       buffer.writeln('--- ${_resolveCategoryName(category)} ---');
       for (final item in checkedItems) {
         final name = checklistItemDisplayName(item);
-        buffer.writeln(item.quantity > 1
-            ? '  [x] $name x${item.quantity} (${item.totalWeightGrams}${t.checklist.weight.grams})'
-            : '  [x] $name (${item.weightGrams}${t.checklist.weight.grams})');
+        buffer.writeln(
+          item.quantity > 1
+              ? '  [x] $name x${item.quantity} (${item.totalWeightGrams}${t.checklist.weight.grams})'
+              : '  [x] $name (${item.weightGrams}${t.checklist.weight.grams})',
+        );
       }
       buffer.writeln('');
     }
-    Share.share(buffer.toString());
+    try {
+      await Share.share(buffer.toString());
+    } catch (_) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(t.checklist.ui.shareFailed)),
+      );
+    }
   }
 
   String _resolveCategoryName(String categoryKey) {

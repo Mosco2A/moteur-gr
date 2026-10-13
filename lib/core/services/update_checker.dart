@@ -1,23 +1,26 @@
+/// Detection d'une mise a jour cote Firestore, en amont du calcul de delta : il
+/// dit QU'IL y a du neuf, pas ce qu'il faut descendre.
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
 import '../data/daos/trail_manifests_dao.dart';
+import '../data/revision_de_donnee.dart';
 import '../firebase/firebase_service.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Resultat de la detection de mise a jour pour un sentier.
 class UpdateCheckResult {
   const UpdateCheckResult({
     required this.trailId,
     required this.hasUpdate,
-    this.localVersion = 0,
-    this.remoteVersion = 0,
+    this.localVersion = HorodatageServeur.origine,
+    this.remoteVersion = HorodatageServeur.origine,
   });
 
   /// Identifiant du sentier verifie.
@@ -26,11 +29,11 @@ class UpdateCheckResult {
   /// True si une nouvelle version est disponible.
   final bool hasUpdate;
 
-  /// Version actuellement telechargee en local.
-  final int localVersion;
+  /// L INSTANT jusqu auquel ce telephone est a jour.
+  final HorodatageServeur localVersion;
 
-  /// Version disponible sur Firebase.
-  final int remoteVersion;
+  /// L INSTANT de publication annonce cote serveur.
+  final HorodatageServeur remoteVersion;
 }
 
 /// Service de detection des mises a jour de sentiers (E4.11b).
@@ -80,17 +83,20 @@ class UpdateChecker {
       }
 
       final remoteData = doc.data()!;
-      final remoteVersion = remoteData['data_version'] as int? ?? 0;
+      final remoteVersion =
+          HorodatageServeur.annonceParLeServeur(remoteData['data_version']) ??
+          HorodatageServeur.origine;
 
       final localEntry = await dao.getByTrailId(trailId);
-      final localVersion = localEntry?.localVersion ?? 0;
+      final localVersion =
+          localEntry?.localVersion ?? HorodatageServeur.origine;
 
       final hasUpdate = remoteVersion > localVersion;
 
       if (hasUpdate) {
         _log.d(
           '[UpdateChecker] MAJ disponible $trailId: '
-          'v$localVersion -> v$remoteVersion',
+          '$localVersion -> $remoteVersion',
         );
       }
 
@@ -106,7 +112,40 @@ class UpdateChecker {
     }
   }
 
-  /// Verifie les mises a jour pour tous les sentiers connus localement.
+  /// Verifie les mises a jour pour LES SENTIERS TELECHARGES SUR CE TELEPHONE.
+  ///
+  /// LE PERIMETRE EST CELUI DE CHRISTOPHE, 28/09 : « on telecharge tout ce qui
+  /// concerne SES sentiers ». Pas le catalogue, SES sentiers.
+  ///
+  /// LE FILTRE S APPELAIT `getPossedes` ET LE NOM A ETE CORRIGE EN
+  /// `getTelecharges` (tache 616) : il mesure la PRESENCE DES DONNEES, pas le droit
+  /// d achat. Les deux sont deliberement independants, et un nom qui les melange
+  /// invite a brancher la cadence sur les achats — ce qui raterait les sentiers
+  /// gratuits copies et irait chercher les donnees de sentiers payes mais absents.
+  ///
+  /// CE QUE CETTE METHODE NE DIT PAS, ET C EST VOULU : A QUEL NIVEAU resynchroniser.
+  /// Elle repond « lesquels sont en retard ». Le niveau de chaque sentier est relu
+  /// en base par [OrdonnanceurDeSynchronisation], qui le passe a
+  /// [UpdateDownloader.downloadAllUpdates].
+  ///
+  /// LE DEFAUT QUE CE FILTRE FERME, ET IL ETAIT MESURE, PAS SUPPOSE. La lecture du
+  /// catalogue distant ecrit une ligne de `trail_manifests` pour CHAQUE sentier
+  /// publie (`TrailCatalogStateNotifier._conserver`, tache 605) — c est ce qui fait
+  /// survivre le catalogue au hors-ligne, et c est voulu. Mais ces lignes ont
+  /// `localVersion` a NULL, et `needsUpdate` rend vrai des que `localVersion` est
+  /// NULL. Cette methode parcourait `dao.getAll()` : sur un serveur portant
+  /// quarante sentiers, un randonneur qui en possede UN declenchait donc la
+  /// synchronisation des QUARANTE — quarante fichiers de donnees complets sur son
+  /// forfait, et chacun depuis l origine, donc le sentier entier. C est exactement
+  /// ce que Christophe a nomme.
+  ///
+  /// UN REPERE NON NUL EST LE CRITERE DE POSSESSION, et c est le meme fait que
+  /// `TrailAvailability.copieComplete` lit pour l ecran : le sentier a ete
+  /// COPIE au moins une fois sur cet appareil. La premiere copie, elle, ne passe
+  /// pas par ici : c est le geste « telecharger » du randonneur
+  /// (`CatalogNotifier.downloadTrail`), ou [UpdateDownloader.downloadSingleUpdate]
+  /// pour un sentier nomme. Ce chemin-ci est la mise a jour PERIODIQUE, et une mise
+  /// a jour periodique n a rien a telecharger d un sentier qu on ne possede pas.
   Future<List<UpdateCheckResult>> checkAllForUpdates() async {
     if (!firebaseService.isAvailable) {
       return [];
@@ -117,7 +156,7 @@ class UpdateChecker {
       return [];
     }
 
-    final localEntries = await dao.getAll();
+    final localEntries = await dao.getTelecharges();
     final results = <UpdateCheckResult>[];
 
     for (final entry in localEntries) {

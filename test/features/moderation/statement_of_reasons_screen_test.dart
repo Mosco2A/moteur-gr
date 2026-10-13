@@ -19,12 +19,10 @@ void main() {
   final Translations tr = AppLocale.fr.buildSync();
 
   Widget host(StatementOfReasonsView? statement) => ProviderScope(
-        child: TranslationProvider(
-          child: MaterialApp(
-            home: StatementOfReasonsScreen(statement: statement),
-          ),
-        ),
-      );
+    child: TranslationProvider(
+      child: MaterialApp(home: StatementOfReasonsScreen(statement: statement)),
+    ),
+  );
 
   final restricted = StatementOfReasonsView(
     contentType: ModeratedContentType.waypoint,
@@ -35,8 +33,9 @@ void main() {
   );
 
   group('StatementOfReasonsScreen — DSA art 17', () {
-    testWidgets('affiche la decision et le motif communique a l auteur',
-        (tester) async {
+    testWidgets('affiche la decision et le motif communique a l auteur', (
+      tester,
+    ) async {
       await tester.pumpWidget(host(restricted));
       await tester.pumpAndSettle();
 
@@ -51,8 +50,9 @@ void main() {
       await tester.pumpWidget(host(restricted));
       await tester.pumpAndSettle();
 
-      final complaintBtn =
-          find.byKey(const ValueKey('statement-complaint-action'));
+      final complaintBtn = find.byKey(
+        const ValueKey('statement-complaint-action'),
+      );
       expect(complaintBtn, findsOneWidget);
 
       await tester.tap(complaintBtn);
@@ -63,8 +63,9 @@ void main() {
       expect(find.text(tr.moderation.complaintTitle), findsOneWidget);
     });
 
-    testWidgets('aucune restriction : message neutre, pas de carte motifs',
-        (tester) async {
+    testWidgets('aucune restriction : message neutre, pas de carte motifs', (
+      tester,
+    ) async {
       await tester.pumpWidget(host(null));
       await tester.pumpAndSettle();
 

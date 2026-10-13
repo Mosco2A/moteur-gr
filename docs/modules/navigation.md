@@ -20,7 +20,8 @@ core/
     track_projection.dart               -- Projection sur la trace
   map/
     mbtiles_manager.dart                -- Gestion MBTiles offline
-    offline_tile_provider.dart          -- Provider tuiles offline
+    offline_tile_provider.dart          -- Décision du fond : fichier ou réseau
+    fond_de_carte.dart                  -- FondDeCarte, seule couche de tuiles
 features/map/
   presentation/trail_map_screen.dart    -- Écran carte principal
   providers/
@@ -58,6 +59,22 @@ features/map/
 | `gpx_parser.dart` | Parse les fichiers GPX en liste de `TrackPoint` |
 | `stage_detector.dart` | Détection changement d'étape par proximité GPS |
 | `mbtiles_manager.dart` | Chargement et gestion des tuiles offline |
+| `offline_tile_provider.dart` | Décide du fond : le `.mbtiles` du sentier s'il s'ouvre, le réseau sinon |
+| `fond_de_carte.dart` | `FondDeCarte`, le fond de toute carte du randonneur |
+
+## Fond de carte hors ligne
+
+Toute carte de l'application pose `FondDeCarte(trailId: ...)` comme premier
+enfant de sa `FlutterMap`, jamais une `TileLayer` (garde
+`test/structurel/fond_de_carte_decide_test.dart`). La règle :
+
+- `documents/mbtiles/{trailId}.mbtiles` présent et lisible : le fond vient du
+  fichier, **même en ligne**. Au-delà de son zoom le plus haut, ses tuiles
+  sont agrandies ; sous son zoom le plus bas, le réseau prend le relais.
+- Fichier absent, en cours de descente (`.partiel`), abîmé ou illisible : le
+  fond vient du réseau OpenStreetMap, sans exception remontée.
+- Seule exemption : la vue de suivi web des proches, qui n'a ni fichier ni
+  SQLite dans un navigateur.
 
 ## API / Providers
 

@@ -1,6 +1,11 @@
+/// Le detail d'une etape, dont le bloc hebergements regroupe les synonymes du
+/// registre de types — sans aucune localite en dur.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/analytics/screen_entry.dart';
 import '../../../../core/models/poi.dart';
 import '../../../../core/models/stage_duration.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -11,12 +16,19 @@ import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../../shared/widgets/app_gradient_header.dart';
 import '../../../../shared/widgets/app_header.dart';
 import '../../../../shared/widgets/brand_alti_motif.dart';
-import '../../../poi/domain/poi_type_config.dart';
-import '../../../safety/data/signalement_service.dart';
-import '../../../safety/providers/signalement_providers.dart';
-import '../../../trail/providers/pois_provider.dart';
-import '../../../trail/providers/stages_provider.dart';
-import '../../domain/models/stage.dart';
+import '../../../../shared/widgets/maps_link.dart';
+import '../../../../shared/poi/poi_type_config.dart';
+import '../../../safety/safety_facade.dart'
+    show
+        SignalementService,
+        WaterSourceRef,
+        WaterSourceStatus,
+        pendingSignalementCountProvider,
+        signalementServiceProvider,
+        waterSourceStatusProvider;
+import '../../../trail/trail_facade.dart' show poisProvider, stagesProvider;
+import '../../../../domain/stage.dart';
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Types de POI consideres comme un HEBERGEMENT d'etape (parite GR20 bloc
 /// « Hebergements »). Generique multi-sentiers : couvre les libelles du socle
@@ -129,6 +141,15 @@ class TrekStageDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(
+      ref,
+      ScreenBreadcrumb.trekStageDetail,
+      trail: trailId,
+      stage: '$stageId',
+    );
     final stageAsync = ref.watch(
       stageByIdProvider((
         trailId: trailId,
@@ -192,7 +213,9 @@ class _StageDetailContent extends ConsumerWidget {
   /// quand ils sont fournis ; (2) a defaut, on derive les deux extremites du
   /// NOM de l'etape lui-meme (convention socle « Depart — Arrivee », separateur
   /// tiret demi-cadratin ou trait d'union). Aucune localite codee en dur.
-  ({String departure, String arrival})? _departureArrival(BuildContext context) {
+  ({String departure, String arrival})? _departureArrival(
+    BuildContext context,
+  ) {
     final dep = stage.departureName.trim();
     final arr = stage.arrivalName.trim();
     if (dep.isNotEmpty && arr.isNotEmpty) {
@@ -499,7 +522,11 @@ class _DepartureArrivalLine extends StatelessWidget {
           .replaceAll('{to}', arrival),
       child: Row(
         children: [
-          Icon(Icons.play_arrow, size: 22, color: theme.colorScheme.primary),
+          StepIcon(
+            StepwaysIcons.save,
+            size: 22,
+            color: theme.colorScheme.primary,
+          ),
           const SizedBox(width: AppTheme.spacingXs),
           Expanded(
             child: Text(
@@ -538,7 +565,15 @@ class _WaterSourcesSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.water_drop, size: 20, color: waterColor),
+            // L'ICONE VIENT DU REGISTRE, COMME LA COULEUR (tache 772) :
+            // une copie ecrite a la main a cote d'une valeur lue au
+            // registre finit toujours par en diverger, et c'est ce qui
+            // etait arrive — le nuage de la meteo pour une source.
+            StepIcon(
+              PoiTypeConfig.getStyle('water').icon,
+              size: 20,
+              color: waterColor,
+            ),
             const SizedBox(width: AppTheme.spacingSm),
             Text(
               t.stage.waterSources.title,
@@ -571,23 +606,23 @@ class _WaterSourcesSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppTheme.spacingMd),
             decoration: BoxDecoration(
-              color: AppTheme.rougeUrgence.withAlpha(20),
+              color: AppTheme.emergencyRed.withAlpha(20),
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-              border: Border.all(color: AppTheme.rougeUrgence.withAlpha(60)),
+              border: Border.all(color: AppTheme.emergencyRed.withAlpha(60)),
             ),
             child: Row(
               children: [
-                const Icon(
-                  Icons.warning_amber,
+                const StepIcon(
+                  StepwaysIcons.danger,
                   size: 20,
-                  color: AppTheme.rougeUrgence,
+                  color: AppTheme.emergencyRed,
                 ),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
                     t.stage.waterSources.none,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.rougeUrgence,
+                      color: AppTheme.emergencyRed,
                     ),
                   ),
                 ),
@@ -638,8 +673,8 @@ class _WaterPointTile extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 4),
-                child: Icon(
-                  Icons.water_drop_outlined,
+                child: StepIcon(
+                  PoiTypeConfig.getStyle('water').icon,
                   size: 20,
                   color: waterColor,
                 ),
@@ -672,6 +707,25 @@ class _WaterPointTile extends ConsumerWidget {
                 ),
             ],
           ),
+          // LE POINT D'EAU EST UN LIEU, DONC IL S'OUVRE DANS LES CARTES
+          // (tache 641, bug 15).
+          //
+          // « appliquer la meme regle a tout lieu physique (ravitaillement, point
+          // d'eau, depart/arrivee, transport) : une adresse + un point GPS
+          // cliquable partout ou il y a un lieu » (Christophe, 30/09 10:23). Une
+          // fontaine n'a pas d'adresse postale, mais elle a des coordonnees — et
+          // c'est le seul moyen de la retrouver quand on la cherche avec un bidon
+          // vide.
+          //
+          // PAS DE LIEN MORT : un point d'eau sans coordonnees exploitables
+          // (`0,0`) n'affiche aucun lien.
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: LigneDeLieu(
+              lieu: LieuCliquable(nom: poi.name, lat: poi.lat, lng: poi.lng),
+              compact: true,
+            ),
+          ),
           // Statut partage (dernier signalement + compteur) — I1 crowdsourcing.
           statusAsync.maybeWhen(
             data: (status) => status.hasReports
@@ -693,8 +747,8 @@ class _WaterPointTile extends ConsumerWidget {
               child: TextButton.icon(
                 key: ValueKey('water-report-${poi.stageNumber}-${poi.name}'),
                 onPressed: () => _openReportSheet(context, ref),
-                icon: Icon(
-                  Icons.add_location_alt_outlined,
+                icon: StepIcon(
+                  StepwaysIcons.repere,
                   size: 18,
                   color: waterColor,
                 ),
@@ -749,7 +803,7 @@ class _WaterStatusChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 14, color: color),
+            StepIcon(icon, size: 14, color: color),
             const SizedBox(width: 4),
             Text(
               label,
@@ -773,31 +827,35 @@ class _WaterStatusChip extends StatelessWidget {
 }
 
 /// Visuel (libelle i18n, couleur, icone) d'un statut de point d'eau.
-(String, Color, IconData) _statusVisual(String? status) {
+///
+/// LES TROIS ETATS PORTENT LE DESSIN DU POINT D'EAU (tache 772), et c'est la
+/// COULEUR qui dit l'etat — vert disponible, orange bas, rouge a sec. Ils
+/// portaient le nuage de pluie : un point d'eau a sec annonce par une averse.
+(String, Color, String) _statusVisual(String? status) {
   switch (status) {
     case 'water_available':
       return (
         t.signalement.water.states.available,
         AppTheme.vertFacile,
-        Icons.water_drop,
+        StepwaysIcons.pointEau,
       );
     case 'water_low':
       return (
         t.signalement.water.states.low,
         AppTheme.orangeDifficile,
-        Icons.opacity,
+        StepwaysIcons.pointEau,
       );
     case 'water_dry':
       return (
         t.signalement.water.states.dry,
-        AppTheme.rougeUrgence,
-        Icons.water_drop_outlined,
+        AppTheme.emergencyRed,
+        StepwaysIcons.pointEau,
       );
     default:
       return (
         t.signalement.water.states.unknown,
         AppTheme.grisTexteSecondaire,
-        Icons.help_outline,
+        StepwaysIcons.aide,
       );
   }
 }
@@ -931,7 +989,7 @@ class _WaterStateButton extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, color: color),
+              StepIcon(icon, color: color),
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(child: Text(label, style: theme.textTheme.titleMedium)),
             ],
@@ -960,7 +1018,11 @@ class _AccommodationSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.hotel, size: 20, color: AppTheme.orangeDifficile),
+            const StepIcon(
+              StepwaysIcons.hebergement,
+              size: 20,
+              color: AppTheme.orangeDifficile,
+            ),
             const SizedBox(width: AppTheme.spacingSm),
             Text(
               t.stage.accommodation.title,
@@ -1009,7 +1071,7 @@ class _AccommodationTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(style.icon, size: 32, color: color),
+          StepIcon(style.icon, size: 32, color: color),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Column(
@@ -1107,8 +1169,8 @@ class _AdviceSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(
-              Icons.lightbulb_outline,
+            const StepIcon(
+              StepwaysIcons.ficheConseil,
               size: 20,
               color: AppTheme.jauneModere,
             ),
@@ -1134,8 +1196,8 @@ class _AdviceSection extends StatelessWidget {
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(top: 6),
-                      child: Icon(
-                        Icons.circle,
+                      child: StepIcon(
+                        StepwaysIcons.pastille,
                         size: 6,
                         color: AppTheme.jauneModere,
                       ),

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/routing/contextual_actions_provider.dart';
 import 'package:moteur_gr/shared/widgets/contextual_action_bar.dart';
 import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests du mécanisme DÉCLARATIF de la barre contextuelle (StepWays LOT 3, Ph2).
 ///
@@ -11,25 +12,29 @@ import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
 /// set-on-mount / clear-on-dispose via [ContextualActionsMixin] ; cibles ≥ 48 dp.
 void main() {
   ContextualAction action(String label) => ContextualAction(
-        icon: Icons.star,
-        label: label,
-        onPressed: () {},
-      );
+    icon: StepwaysIcons.favori,
+    label: label,
+    onPressed: () {},
+  );
 
   group('ContextualBottomBar — rendu piloté par le provider', () {
-    testWidgets('barre ABSENTE si aucune action (SizedBox.shrink)',
-        (tester) async {
-      await tester.pumpWidget(const ProviderScope(
-        child: MaterialApp(
-          home: Scaffold(bottomNavigationBar: ContextualBottomBar()),
+    testWidgets('barre ABSENTE si aucune action (SizedBox.shrink)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(bottomNavigationBar: ContextualBottomBar()),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       expect(find.byType(BottomAppBar), findsNothing);
     });
 
-    testWidgets('barre affiche les N actions déclarées dans le provider',
-        (tester) async {
+    testWidgets('barre affiche les N actions déclarées dans le provider', (
+      tester,
+    ) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
       container.read(contextualActionsProvider.notifier).set([
@@ -38,12 +43,14 @@ void main() {
         action('C'),
       ]);
 
-      await tester.pumpWidget(UncontrolledProviderScope(
-        container: container,
-        child: const MaterialApp(
-          home: Scaffold(bottomNavigationBar: ContextualBottomBar()),
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: Scaffold(bottomNavigationBar: ContextualBottomBar()),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(BottomAppBar), findsOneWidget);
@@ -57,12 +64,14 @@ void main() {
       addTearDown(container.dispose);
       container.read(contextualActionsProvider.notifier).set([action('A')]);
 
-      await tester.pumpWidget(UncontrolledProviderScope(
-        container: container,
-        child: const MaterialApp(
-          home: Scaffold(bottomNavigationBar: ContextualBottomBar()),
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: Scaffold(bottomNavigationBar: ContextualBottomBar()),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
       expect(find.byType(BottomAppBar), findsOneWidget);
 
@@ -71,20 +80,24 @@ void main() {
       expect(find.byType(BottomAppBar), findsNothing);
     });
 
-    testWidgets('cibles tactiles >= 48 dp (hauteur de la barre)',
-        (tester) async {
+    testWidgets('cibles tactiles >= 48 dp (hauteur de la barre)', (
+      tester,
+    ) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      container
-          .read(contextualActionsProvider.notifier)
-          .set([action('A'), action('B')]);
+      container.read(contextualActionsProvider.notifier).set([
+        action('A'),
+        action('B'),
+      ]);
 
-      await tester.pumpWidget(UncontrolledProviderScope(
-        container: container,
-        child: const MaterialApp(
-          home: Scaffold(bottomNavigationBar: ContextualBottomBar()),
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: Scaffold(bottomNavigationBar: ContextualBottomBar()),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       final barSize = tester.getSize(find.byType(BottomAppBar));
@@ -93,32 +106,38 @@ void main() {
   });
 
   group('ContextualActionsMixin — set-on-mount / clear-on-dispose', () {
-    testWidgets('un écran déclare ses actions au montage, vidées au démontage',
-        (tester) async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
+    testWidgets(
+      'un écran déclare ses actions au montage, vidées au démontage',
+      (tester) async {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
 
-      // Écran hôte qui déclare 2 actions via le mixin.
-      await tester.pumpWidget(UncontrolledProviderScope(
-        container: container,
-        child: const MaterialApp(home: _HostScreen()),
-      ));
-      await tester.pumpAndSettle();
+        // Écran hôte qui déclare 2 actions via le mixin.
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: const MaterialApp(home: _HostScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      // Au montage (post-frame) : la barre porte les 2 actions déclarées.
-      expect(find.byType(BottomAppBar), findsOneWidget);
-      expect(find.text('Preparer'), findsOneWidget);
-      expect(find.text('Randonner'), findsOneWidget);
-      expect(container.read(contextualActionsProvider), hasLength(2));
+        // Au montage (post-frame) : la barre porte les 2 actions déclarées.
+        expect(find.byType(BottomAppBar), findsOneWidget);
+        expect(find.text('Preparer'), findsOneWidget);
+        expect(find.text('Randonner'), findsOneWidget);
+        expect(container.read(contextualActionsProvider), hasLength(2));
 
-      // Démontage de l'écran -> les actions sont vidées (barre absente).
-      await tester.pumpWidget(UncontrolledProviderScope(
-        container: container,
-        child: const MaterialApp(home: Scaffold(body: SizedBox())),
-      ));
-      await tester.pumpAndSettle();
-      expect(container.read(contextualActionsProvider), isEmpty);
-    });
+        // Démontage de l'écran -> les actions sont vidées (barre absente).
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: const MaterialApp(home: Scaffold(body: SizedBox())),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(container.read(contextualActionsProvider), isEmpty);
+      },
+    );
   });
 }
 
@@ -135,17 +154,17 @@ class _HostScreenState extends ConsumerState<_HostScreen>
     with ContextualActionsMixin {
   @override
   List<ContextualAction> buildContextualActions(BuildContext context) => [
-        ContextualAction(
-          icon: Icons.assignment_outlined,
-          label: 'Preparer',
-          onPressed: () {},
-        ),
-        ContextualAction(
-          icon: Icons.hiking,
-          label: 'Randonner',
-          onPressed: () {},
-        ),
-      ];
+    ContextualAction(
+      icon: StepwaysIcons.programme,
+      label: 'Preparer',
+      onPressed: () {},
+    ),
+    ContextualAction(
+      icon: StepwaysIcons.chaussure,
+      label: 'Randonner',
+      onPressed: () {},
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {

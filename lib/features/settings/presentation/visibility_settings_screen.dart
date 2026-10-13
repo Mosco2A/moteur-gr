@@ -1,9 +1,16 @@
+/// PRIVE par defaut : la visibilite sociale s'active finalite par finalite,
+/// jamais d'un seul interrupteur global.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../share/providers/visibility_settings_provider.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../share/share_facade.dart' show visibilitySettingsProvider;
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de reglage de la VISIBILITE sociale (F7D-02, Phase 7).
 ///
@@ -23,6 +30,10 @@ class VisibilitySettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.visibilitySettings);
     final t = Translations.of(context);
     final settings = ref.watch(visibilitySettingsProvider);
     final notifier = ref.read(visibilitySettingsProvider.notifier);
@@ -33,8 +44,10 @@ class VisibilitySettingsScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
-            Text(t.shareVisibility.intro,
-                style: Theme.of(context).textTheme.bodyMedium),
+            Text(
+              t.shareVisibility.intro,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             const SizedBox(height: AppTheme.spacingMd),
             _VisibilityToggle(
               keyValue: 'toggle-stage-results',
@@ -62,10 +75,13 @@ class VisibilitySettingsScreen extends ConsumerWidget {
             Semantics(
               button: true,
               label: t.shareVisibility.consentLink,
-              child: TextButton.icon(
+              child: AppButton(
+                variant: AppButtonVariant.text,
+                icon: StepwaysIcons.bouclier,
+                iconSize: 18,
+                label: t.shareVisibility.consentLink,
+                isFullWidth: false,
                 onPressed: onOpenConsent,
-                icon: const Icon(Icons.privacy_tip_outlined),
-                label: Text(t.shareVisibility.consentLink),
               ),
             ),
           ],

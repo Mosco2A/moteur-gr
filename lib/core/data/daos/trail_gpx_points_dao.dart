@@ -1,3 +1,7 @@
+/// Points d'une trace GPX, relus dans l'ordre de leur index de sequence : c'est
+/// la trace que la carte dessine.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -21,8 +25,9 @@ class TrailGpxPointsDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere un point par son id
   Future<TrailGpxPoint?> getById(int id) {
-    return (select(trailGpxPoints)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      trailGpxPoints,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Recupere les points d'une trace, ordonnes par sequenceIndex

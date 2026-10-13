@@ -1,3 +1,7 @@
+/// Droit d'acces achete, sentier par sentier ; c'est de ce droit que derive la
+/// regle sans-pub de l'application.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -21,8 +25,9 @@ class TrekEntitlementsDao extends DatabaseAccessor<AppDatabase>
 
   /// Relit le droit d'acces du sentier [trailId], ou null si absent.
   Future<TrekEntitlement?> getByTrailId(String trailId) {
-    return (select(trekEntitlements)..where((t) => t.trailId.equals(trailId)))
-        .getSingleOrNull();
+    return (select(
+      trekEntitlements,
+    )..where((t) => t.trailId.equals(trailId))).getSingleOrNull();
   }
 
   /// Relit tous les droits d'acces connus.
@@ -37,16 +42,17 @@ class TrekEntitlementsDao extends DatabaseAccessor<AppDatabase>
   /// QUE les droits `owned` (un trek abandonne — `owned == false` mais
   /// `acquiredStages > 0` — n'est PAS possede ; il se rachete a la reprise).
   Future<List<String>> owned() async {
-    final rows = await (select(trekEntitlements)
-          ..where((t) => t.owned.equals(true)))
-        .get();
+    final rows = await (select(
+      trekEntitlements,
+    )..where((t) => t.owned.equals(true))).get();
     return rows.map((e) => e.trailId).toList(growable: false);
   }
 
   /// Observe le droit d'acces de [trailId] (emet a chaque modification).
   Stream<TrekEntitlement?> watchByTrailId(String trailId) {
-    return (select(trekEntitlements)..where((t) => t.trailId.equals(trailId)))
-        .watchSingleOrNull();
+    return (select(
+      trekEntitlements,
+    )..where((t) => t.trailId.equals(trailId))).watchSingleOrNull();
   }
 
   /// Cree ou met a jour le droit d'acces (upsert par [trailId]).
@@ -56,7 +62,8 @@ class TrekEntitlementsDao extends DatabaseAccessor<AppDatabase>
 
   /// Supprime le droit d'acces du sentier [trailId] (reset).
   Future<int> deleteByTrailId(String trailId) {
-    return (delete(trekEntitlements)..where((t) => t.trailId.equals(trailId)))
-        .go();
+    return (delete(
+      trekEntitlements,
+    )..where((t) => t.trailId.equals(trailId))).go();
   }
 }

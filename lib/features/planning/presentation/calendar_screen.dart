@@ -1,14 +1,22 @@
+/// Le calendrier du programme. Le formatage de date retombe sur un format
+/// independant de la locale : jamais d'exception a l'affichage.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
-import '../models/planned_day.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
+import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Formate une date de facon robuste (parite comportement GR20, mais sans
 /// dependre de `initializeDateFormatting` — l'app StepWays ne l'appelle pas,
@@ -32,14 +40,14 @@ String _formatDate(DateTime date, String pattern, String languageCode) {
 /// l'arrivee sur l'ecran (parite GR20 M-05b).
 ///
 /// Generique multi-sentiers, ZERO hardcode : les jours de marche/repos viennent
-/// du programme du sentier actif ([plannedDaysProvider]) et le total de jours de
-/// [planningStatsProvider]. La date de depart est persistee via
-/// [downloadReminderProvider] (SharedPreferences, par sentier) — c'est la source
-/// de verite des dates cote StepWays (l'equivalent de `itineraryConfig.startDate`
-/// de GR20). Hors systeme de peaux : couleurs semantiques d'AppTheme + du
-/// `colorScheme`. Tout libelle passe par Slang (`t.calendar.*`) et les dates sont
-/// localisees via la locale Slang courante (jamais de format en dur non
-/// localise).
+/// du programme du sentier actif ([plannedDaysProvider]) et le total de jours
+/// de [planningStatsProvider]. La date de depart est persistee via
+/// [downloadReminderProvider] (SharedPreferences, par sentier) — c'est la
+/// source de verite des dates cote StepWays (l'equivalent de
+/// `itineraryConfig.startDate` de GR20). Hors systeme de peaux : couleurs
+/// semantiques d'AppTheme + du `colorScheme`. Tout libelle passe par Slang
+/// (`t.calendar.*`) et les dates sont localisees via la locale Slang courante
+/// (jamais de format en dur non localise).
 ///
 /// ECART DE MODELE ASSUME (cf. rapport) : StepWays n'a pas de provider de
 /// progression de planification global (`planning_progress`) — GR20 marque
@@ -65,6 +73,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   bool _autoPickTried = false;
 
   @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.calendar, trail: widget.trailId);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final reminder = ref.watch(downloadReminderProvider(widget.trailId));
     final days = ref.watch(plannedDaysProvider(widget.trailId));
@@ -73,8 +87,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final startDate = reminder.departureDate;
 
     // Initialise le mois affiche a la date de depart (ou +30 j par defaut),
-    // normalise au premier du mois. Fait ici (et non dans initState) car la date
-    // de depart est chargee de facon asynchrone (SharedPreferences).
+    // normalise au premier du mois. Fait ici (et non dans initState) car la
+    // date de depart est chargee de facon asynchrone (SharedPreferences).
     _displayedMonth ??= DateTime(
       (startDate ?? DateTime.now().add(const Duration(days: 30))).year,
       (startDate ?? DateTime.now().add(const Duration(days: 30))).month,
@@ -90,7 +104,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       );
     }
 
-    // M-05b : si pas de date choisie, ouvrir le DatePicker directement (une fois).
+    // M-05b : si pas de date choisie, ouvrir le DatePicker directement (une
+    // fois).
     if (startDate == null && !_autoPickTried) {
       _autoPickTried = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -102,8 +117,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final endDate = startDate?.add(Duration(days: totalDays - 1));
 
     return Scaffold(
-      // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil + Android),
-      // remplace l'AppBar + _BackButton maison (meme comportement).
+      // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil +
+      // Android), remplace l'AppBar + _BackButton maison (meme comportement).
       appBar: AppHeader(title: t.calendar.title),
       body: SafeArea(
         child: Column(
@@ -152,19 +167,20 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               padding: const EdgeInsets.all(AppTheme.spacingLg),
               child: SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  // Retour Chris #10 (LOT 2) : FIN DE LA BOUCLE Dates<->Programme.
-                  // Le calendrier est la DERNIERE etape du sous-flux ordonne
-                  // (Programme -> Dates -> cockpit). « Valider les dates » clot
-                  // donc le flux en retournant AU COCKPIT du trek (`/home`), et ne
-                  // pousse PLUS le Programme (ce qui, combine au « Valider » du
-                  // Programme, creait la boucle circulaire). `go` (pas push) : on
-                  // ne rempile pas, on revient a la racine du cockpit -> pas de
-                  // retour circulaire possible quel que soit le chemin d'entree.
+                child: AppButton(
+                  label: t.calendar.validate,
+                  // Retour Chris #10 (LOT 2) : FIN DE LA BOUCLE
+                  // Dates<->Programme. Le calendrier est la DERNIERE etape du
+                  // sous-flux ordonne (Programme -> Dates -> cockpit). «
+                  // Valider les dates » clot donc le flux en retournant AU
+                  // COCKPIT du trek (`/home`), et ne pousse PLUS le Programme
+                  // (ce qui, combine au « Valider » du Programme, creait la
+                  // boucle circulaire). `go` (pas push) : on ne rempile pas, on
+                  // revient a la racine du cockpit -> pas de retour circulaire
+                  // possible quel que soit le chemin d'entree.
                   onPressed: startDate != null
                       ? () => context.go('/home')
                       : null,
-                  child: Text(t.calendar.validate),
                 ),
               ),
             ),
@@ -183,9 +199,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final reminder = ref.read(downloadReminderProvider(widget.trailId));
     final now = DateTime.now();
 
-    // Le picker herite deja du theme de l'app (couleur primaire = peau active) :
-    // pas de builder de teinte en dur (GR20 forcait un vert fixe, non desirable
-    // ici — parite comportement, pas parite couleur : « hors peau »).
+    // Le picker herite deja du theme de l'app (couleur primaire = peau active)
+    // : pas de builder de teinte en dur (GR20 forcait un vert fixe, non
+    // desirable ici — parite comportement, pas parite couleur : « hors peau »).
     final picked = await showDatePicker(
       context: context,
       initialDate: reminder.departureDate ?? now.add(const Duration(days: 30)),
@@ -213,7 +229,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          icon: const Icon(Icons.chevron_left),
+          icon: const StepIcon(StepwaysIcons.chevronGauche),
           tooltip: t.calendar.previousMonth,
           onPressed: () {
             setState(() {
@@ -229,7 +245,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           style: theme.textTheme.titleLarge?.copyWith(letterSpacing: 1.0),
         ),
         IconButton(
-          icon: const Icon(Icons.chevron_right),
+          icon: const StepIcon(StepwaysIcons.chevronDroite),
           tooltip: t.calendar.nextMonth,
           onPressed: () {
             setState(() {
@@ -248,10 +264,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   ///
   /// Le modele StepWays [PlannedDay] ne porte pas de date propre (contrairement
   /// a GR20) : chaque jour du programme est date par sa position chronologique
-  /// depuis la date de depart (jour i -> depart + i), coherent avec le calcul de
-  /// la date d'arrivee. On construit donc une map date -> PlannedDay a partir de
-  /// cet index, puis on peint chaque cellule (depart, arrivee, marche, repos,
-  /// passe) exactement comme GR20.
+  /// depuis la date de depart (jour i -> depart + i), coherent avec le calcul
+  /// de la date d'arrivee. On construit donc une map date -> PlannedDay a
+  /// partir de cet index, puis on peint chaque cellule (depart, arrivee,
+  /// marche, repos, passe) exactement comme GR20.
   Widget _buildCalendarGrid(
     ThemeData theme,
     DateTime startDate,
@@ -408,7 +424,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               fontSize: 14,
                             ),
                           ),
-                          // Pas de labels J/R sur les jours passes ni depart/arrivee.
+                          // Pas de labels J/R sur les jours passes ni
+                          // depart/arrivee.
                           if (!isPastDay &&
                               plannedDay != null &&
                               !isStartDay &&
@@ -509,8 +526,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         const SizedBox(height: AppTheme.spacingSm),
         ...hikeDays.map((index) {
           final day = days[index];
-          // Numeros d'etape du jour (le modele StepWays porte la liste d'etapes,
-          // pas une liste de numeros — on la derive, generique).
+          // Numeros d'etape du jour (le modele StepWays porte la liste
+          // d'etapes, pas une liste de numeros — on la derive, generique).
           final stageNumbers = day.stages
               .map((s) => s.stageNumber)
               .toList(growable: false);
@@ -539,7 +556,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 ),
                 if (notifier.canSplit(index))
                   IconButton(
-                    icon: const Icon(Icons.call_split, size: 20),
+                    icon: const StepIcon(StepwaysIcons.allerRetour, size: 20),
                     tooltip: t.calendar.splitStages,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(
@@ -551,7 +568,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
                 if (notifier.canMergeWithNext(index))
                   IconButton(
-                    icon: const Icon(Icons.compress, size: 20),
+                    icon: const StepIcon(StepwaysIcons.compresser, size: 20),
                     tooltip: t.calendar.mergeWithNext,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(
@@ -608,8 +625,8 @@ class _DatePickerSection extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.flight_takeoff,
+                      StepIcon(
+                        StepwaysIcons.avion,
                         size: 16,
                         color: scheme.primary,
                       ),
@@ -639,8 +656,8 @@ class _DatePickerSection extends StatelessWidget {
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: AppTheme.spacingSm),
-          child: Icon(
-            Icons.arrow_forward,
+          child: StepIcon(
+            StepwaysIcons.flecheAvant,
             size: 18,
             color: AppTheme.grisGranite,
           ),
@@ -659,8 +676,8 @@ class _DatePickerSection extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(
-                      Icons.flag,
+                    const StepIcon(
+                      StepwaysIcons.depart,
                       size: 16,
                       color: AppTheme.orangeDifficile,
                     ),
@@ -695,9 +712,9 @@ class _DatePickerSection extends StatelessWidget {
 /// Resume du trek : jours total / marche / repos (parite GR20 `_TrekSummary`).
 ///
 /// ECART DE MODELE : GR20 affiche en 4e colonne le SENS de marche
-/// (`config.direction.label`). Le modele StepWays ne porte pas de sens de marche
-/// (cf. residuels du chantier parite) — cette colonne est donc omise (les 3
-/// autres, jours total / marche / repos, sont identiques a GR20).
+/// (`config.direction.label`). Le modele StepWays ne porte pas de sens de
+/// marche (cf. residuels du chantier parite) — cette colonne est donc omise
+/// (les 3 autres, jours total / marche / repos, sont identiques a GR20).
 class _TrekSummary extends StatelessWidget {
   const _TrekSummary({required this.stats});
 
@@ -767,12 +784,7 @@ class _TrekSummary extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        Text(
-          label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
-        ),
+        Text(label, style: theme.textTheme.bodySmall?.copyWith(fontSize: 14)),
       ],
     );
   }
@@ -792,8 +804,8 @@ class _NoDateState extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: AppTheme.spacingXl),
-          Icon(
-            Icons.calendar_month,
+          StepIcon(
+            StepwaysIcons.calendrier,
             size: 64,
             color: AppTheme.grisGranite.withAlpha(80),
           ),
@@ -813,10 +825,11 @@ class _NoDateState extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppTheme.spacingLg),
-          ElevatedButton.icon(
+          AppButton(
+            icon: StepwaysIcons.calendrier,
+            iconSize: 18,
+            label: t.calendar.chooseDateAction,
             onPressed: onPickStartDate,
-            icon: const Icon(Icons.calendar_today),
-            label: Text(t.calendar.chooseDateAction),
           ),
         ],
       ),
@@ -840,8 +853,8 @@ class _EmptyItineraryState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.calendar_month,
+            StepIcon(
+              StepwaysIcons.calendrier,
               size: 80,
               color: AppTheme.grisGranite.withAlpha(80),
             ),
@@ -862,10 +875,11 @@ class _EmptyItineraryState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingXl),
-            ElevatedButton.icon(
+            AppButton(
+              icon: StepwaysIcons.itineraire,
+              iconSize: 18,
+              label: t.calendar.empty.action,
               onPressed: () => context.push('/trail/$trailId/itinerary'),
-              icon: const Icon(Icons.route),
-              label: Text(t.calendar.empty.action),
             ),
           ],
         ),

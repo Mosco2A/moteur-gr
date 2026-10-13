@@ -1,6 +1,65 @@
 name: moteur_gr
 description: Moteur generique Flutter multi-sentiers
-version: 0.1.2+3
+# Tache 629 : +3 -> +4. Le bundle en version code 3 a ete presente a la Play
+# Console et refuse (cible API 35 au lieu de 36). Google refuse de reprendre un
+# numero de version deja utilise, y compris apres un depot echoue : « the version
+# code must increase with every submission attempt, even if a previous release
+# was rejected ». Le nom de version 0.1.2 reste bon pour un test interne, c est
+# le numero de build qui doit monter a chaque tentative.
+#
+# Tache 627 : +4 -> +5. MEME REGLE, APPLIQUEE A UN NUMERO DEJA CONSOMME. Le +4
+# n a pas ete refuse : il est DEPOSE. Mesure et non supposee, la chaine des
+# numeros deja presentes a Google est : +3 au commit 4146356 (refuse pour cible
+# API 35), +4 au commit 285664d du lot 629 (le bundle que Christophe depose
+# pendant que j ecris). Un bundle qui reprendrait 4 serait rejete pour numero
+# deja utilise, exactement comme 3 l aurait ete. Ce bundle-ci porte donc 5.
+# Le nom 0.1.2 ne bouge pas : c est toujours la meme version fonctionnelle,
+# augmentee des quatre lots reunis par le 627.
+#
+# TACHE 631 — 5 EST PRIS, CE BUNDLE PORTE 6. Le 5 est celui que Christophe a
+# devant lui depuis 11:17. Google refuse de reprendre un numero deja vu, MEME
+# APRES UN DEPOT ECHOUE : le numero monte a chaque tentative, pas a chaque
+# succes. Celui-ci porte en plus le compte de test (`STEPWAYS_COMPTE_DE_TEST`),
+# qui est ETEINT dans le depot et ne s allume qu au build.
+#
+# TACHE 633 — 0.1.3+7, ET LE NOM BOUGE POUR LA PREMIERE FOIS DEPUIS LE 627.
+# Le numero de build monte a 7 parce que 6 est pris : c est le bundle que
+# Christophe a installe depuis le Play Store, celui qu il a juge « une version
+# de merde » — il ne portait QUE le lot 631. 3, 4 et 6 sont donc consommes.
+# Le NOM passe a 0.1.3 et non plus 0.1.2 : ce bundle-ci n est pas le meme
+# perimetre fonctionnel, il reunit pour la premiere fois les trois lots que
+# Christophe attendait ensemble — la descente des droits (631), la fiche
+# d urgence et d identite a 13 champs (630), et l identite visuelle : logo,
+# splash, icone de lancement et les 380 icones (632).
+#
+# TACHE 677 — 0.1.5+9. Le 8 est pris : c est le bundle livre le 30/09 a 21:39
+# (STEPWAYS-V0.1.4-8-202609302139-93796ac.aab), celui que Christophe a installe
+# et teste. Le numero monte donc a 9. Le NOM passe a 0.1.5 parce que le
+# perimetre change : ce bundle-ci porte l assainissement 645 complet — les
+# douze lots reunis sur claude/integration/645-assainissement, dont le 645-09b
+# qui supprime les douze defauts de pile de navigation sur douze et repare le
+# parcours Marc. QA Artemis verte (tache 676).
+#
+# TACHE 686 — 0.1.6+10, LE BUILD PROPRE DE FIN DU PLAN D ASSAINISSEMENT. Le 9
+# est pris : c est le bundle livre le 04/10 a 15:21
+# (STEPWAYS-V0.1.5-9-202610041521-d48d2fd.aab). Le numero monte donc a 10. Le
+# NOM passe a 0.1.6 parce que le perimetre change une derniere fois : ce
+# bundle-ci porte les trois lots que le build 9 n avait pas — le 645-06b (les
+# fichiers part redecoupes en bibliotheques), le 645-12 (le journal du depot,
+# l architecture remise au reel mesure et la garde qui les verifie) et le
+# 645-05c (les cinquante-deux croisements entre features ramenes a zero). QA
+# verte sur les trois, code et ecrans (#101217, #101219, #101237, #101245,
+# #101263).
+#
+# TACHE 694 — 0.1.7+11. Le 10 est pris : c est le bundle livre le 05/10 a 13:56
+# (STEPWAYS-V0.1.6-10-202610051356-a06f500.aab). Le numero monte donc a 11. Le
+# NOM passe a 0.1.7 parce que le perimetre change : ce bundle-ci est le premier
+# a porter du PRODUIT et non plus de l assainissement — le lot P1 (les reglages
+# conserves quand une cle heritee est d un autre type, la temperature affichee
+# dans l unite choisie par une seule fonction du domaine, la route /booking
+# dormante retiree avec son ecran inatteignable) et la recette persona rendue
+# robuste a l attente de l accueil. QA groupee verte, code et ecrans (#101298).
+version: 0.1.7+12
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -23,6 +82,17 @@ dependencies:
   # --- Cartes & GPS ---
   flutter_map: ^8.2.0
   flutter_map_mbtiles: ^1.0.4
+  # `mbtiles` EN DEPENDANCE NORMALE (tache 731) : le decideur du fond de carte
+  # (lib/core/map/offline_tile_provider.dart) ouvre LUI-MEME la base pour
+  # l'examiner, et doit pouvoir la REFERMER quand le fichier est abime.
+  # `flutter_map_mbtiles` ne reexporte que `MbTilesTileProvider`, dont le
+  # constructeur `fromPath` fuyait une connexion SQLite sur chaque carte
+  # illisible. L'ARBRE DES PAQUETS NE GAGNE RIEN : `mbtiles` y arrivait deja
+  # en transitif par `flutter_map_mbtiles`, et en dependance de TEST depuis la
+  # tache 648 (d'ou il est retire, un paquet ne pouvant etre dans les deux
+  # listes). Seule sa VISIBILITE change, ce qu'exige
+  # `depend_on_referenced_packages` pour un import depuis `lib/`.
+  mbtiles: ^0.4.0
   latlong2: ^0.9.0
   geolocator: ^11.0.0
   gpx: ^2.2.0
@@ -54,7 +124,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.28
 
   # --- Reseau ---
-  connectivity_plus: ^5.0.0
+  connectivity_plus: ^7.3.1
   http: ^1.2.0
   path_provider: ^2.1.0
   shared_preferences: ^2.2.0
@@ -77,7 +147,7 @@ dependencies:
 
   # --- Background & Batterie ---
   flutter_local_notifications: ^18.0.0
-  battery_plus: ^6.0.0
+  battery_plus: ^7.1.2
   timezone: ^0.10.0
   # Capture GPS de fond fiabilisee (re-portage socle) : heberge un isolate
   # dedie @pragma('vm:entry-point') qui capture la position ecran eteint via un
@@ -107,7 +177,18 @@ dependencies:
   in_app_review: ^2.0.12
 
   # --- Ads AdMob (E4.13) — IDs de test sandbox uniquement ---
-  google_mobile_ads: ^5.3.0
+  # COMPILATION IPHONE — ^5.3.0 -> ^9.1.0. La premiere compilation iPhone
+  # (07/10, build 1, commit 52fb8ac) est tombee a `pod install` : « A dependency
+  # conflict has occurred because google_mobile_ads uses CocoaPods while
+  # webview_flutter_wkwebview uses Swift Package Manager ». C est CE paquet qui
+  # tire webview_flutter (aucun autre de l arbre ne le fait) : son podspec iOS
+  # depend du pod `webview_flutter_wkwebview`, que Flutter integre par Swift
+  # Package Manager — CocoaPods ne le trouve donc plus. google_mobile_ads adopte
+  # Swift Package Manager a partir de la 8.0.0 (`ios/google_mobile_ads/
+  # Package.swift`) : les deux passent alors par SPM et le conflit disparait,
+  # sans desactiver SPM. Exige Flutter >= 3.38.1 et Dart >= 3.10, deja
+  # en-dessous du plancher du pubspec.lock (Flutter >= 3.38.4, Dart >= 3.11).
+  google_mobile_ads: ^9.1.0
 
   # --- In-App Purchase (E4.14/E4.17) — stubs/sandbox, aucun paiement reel ---
   in_app_purchase: ^3.2.0
@@ -137,11 +218,26 @@ dev_dependencies:
   plugin_platform_interface: ^2.1.8
   flutter_local_notifications_platform_interface: ^8.0.0
   path_provider_platform_interface: ^2.1.2
+  # INTEGRATION 647 — LECTURE DIRECTE D UN .mbtiles DANS UN TEST (tache 648).
+  # `mbtiles` etait declare ICI, en dependance de TEST, pour que
+  # test/outillage/cartes_publiees_648_test.dart puisse ouvrir la carte
+  # publiee et relire une tuile. IL EST MONTE EN DEPENDANCE NORMALE (tache
+  # 731, voir le commentaire dans `dependencies`) : `lib/` l importe
+  # desormais, et un paquet ne peut pas figurer dans les deux listes. Les
+  # tests y gagnent, une dependance normale etant visible depuis `test/`.
   build_runner: ^2.4.0
   drift_dev: ^2.22.1
   freezed: ^3.2.5
   json_serializable: ^6.7.0
   flutter_lints: ^3.0.0
+  # --- Identite visuelle (tache 632, logo et splash livres par Christophe) ---
+  # Outils de GENERATION uniquement : ils fabriquent les mipmaps Android, le
+  # jeu d'icones iOS et les ressources de demarrage natives une fois pour
+  # toutes, puis ne sont plus embarques dans l'application. Configuration dans
+  # flutter_launcher_icons.yaml / flutter_native_splash.yaml a la racine, tous
+  # deux ecrits par `python tool/set_branding.py <famille> <splash>`.
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
   slang_build_runner: ^4.15.0
 
 flutter:
@@ -150,8 +246,39 @@ flutter:
     - assets/gpx/
     - assets/data/
     - assets/data/mare_a_mare_centre/
+    # Sentier de demonstration GRATUIT (tache 601) : ses donnees sont
+    # celles du Mare a Mare limitees aux deux premieres etapes, reversees
+    # sous SON identifiant. Un dossier a lui, comme tout sentier du catalogue.
     - assets/i18n/
     - assets/tips/
+    # IDENTITE VISUELLE (tache 632) — les TROIS familles livrees par Christophe
+    # sont embarquees : ce sont des traces SVG (texte deja converti en courbes,
+    # aucune police requise), quelques centaines d'octets chacune. Les embarquer
+    # toutes rend le changement de famille purement declaratif : `python
+    # tool/set_branding.py marches` suffit, sans toucher a ce fichier.
+    # Les PNG (assets/branding/png, assets/branding/icons) et les images de
+    # demarrage (assets/splash) ne sont PAS embarques : ce sont des sources
+    # consommees a la GENERATION par flutter_launcher_icons et
+    # flutter_native_splash, qui en font des ressources natives.
+    - assets/branding/svg/sentier/
+    - assets/branding/svg/marches/
+    - assets/branding/svg/courbes/
+    # LES 118 ICONES DE CHRISTOPHE (tache 632, zip du 29/09 14:41).
+    # Grille 24 px, trait 2 px, `stroke="currentColor"`. Le dossier racine porte
+    # les 118 traces monochromes. DEUX familles existent en plus en bicolore :
+    # les 20 RUBRIQUES de l'application (rubriques-duo + rubriques-duo-mono) et
+    # les 43 icones ICO-001 a ICO-027 (ico-duo). Les dossiers `-clair`, pour les
+    # fonds sombres, sont DERIVES par `python tool/set_branding.py` et ne sont
+    # jamais edites. Tous sont embarques : basculer entre duo et monochrome est
+    # une constante Dart (AppBranding.iconesEnDuo), pas une modification d'ici.
+    - assets/icons/
+    - assets/icons/rubriques-duo/
+    - assets/icons/rubriques-duo-clair/
+    - assets/icons/rubriques-duo-mono/
+    - assets/icons/ico-duo/
+    - assets/icons/ico-duo-clair/
+    - assets/icons/mat-duo/
+    - assets/icons/mat-duo-clair/
 
   # --- Polices (OFFLINE-FIRST, parite GR20) ---
   # Montserrat EMBARQUEE comme famille Flutter native (comme GR20), et NON via

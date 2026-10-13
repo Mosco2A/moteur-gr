@@ -1,19 +1,27 @@
+/// Le recapitulatif montre les etapes REELLEMENT marchees, tirees de la session
+/// persistee, et non le programme prevu.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/bandeau_matiere_fabriquee.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/section_header.dart';
-import '../../diploma/presentation/widgets/session_trace_painter.dart';
+import '../../diploma/diploma_facade.dart' show SessionTracePainter;
 import '../data/gpx_export_service.dart';
 import '../providers/adventure_recap_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// PARITE GR20, LOT 3 (#99433), point 3.A — Recapitulatif « Mon aventure ».
 ///
@@ -33,6 +41,10 @@ class AdventureRecapScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.adventureRecap);
     final recapT = t.recap;
     final available = ref.watch(isRecapAvailableProvider);
 
@@ -53,10 +65,8 @@ class AdventureRecapScreen extends ConsumerWidget {
       appBar: AppHeader(title: recapT.title),
       body: statsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => _LockedState(
-          title: recapT.lockedTitle,
-          message: recapT.noData,
-        ),
+        error: (_, __) =>
+            _LockedState(title: recapT.lockedTitle, message: recapT.noData),
         data: (stats) => _RecapBody(stats: stats),
       ),
     );
@@ -79,22 +89,39 @@ class _RecapBody extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // EN DEMONSTRATION, L'ECRAN DIT LUI-MEME QUE SA MATIERE EST FABRIQUEE
+          // (tache 810). Le bandeau orange du haut dit qu'on est en demo ; il
+          // ne dit pas que CES chiffres-la sont inventes. Un recapitulatif qui
+          // annonce « 87 km, 7 etapes sur 7 » avec de vraies dates se laisse
+          // prendre pour une vraie randonnee des qu'on le photographie — et la
+          // loi de Christophe veut qu'on voie tout, pas qu'on s'y trompe.
+          const BandeauMatiereFabriquee(),
+
           // Bandeau finisher vs parcours partiel (ton distinct, parite GR20).
           _CongratsBanner(fullyWalked: stats.fullyWalked),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Statistiques REELLES de la session.
-          SectionHeader(title: recapT.statsSection, icon: Icons.bar_chart),
+          SectionHeader(
+            title: recapT.statsSection,
+            icon: StepwaysIcons.statistiques,
+          ),
           _StatsCard(stats: stats),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Trace GPS reelle de la session (offline, sans tuiles).
-          SectionHeader(title: recapT.traceSection, icon: Icons.route),
+          SectionHeader(
+            title: recapT.traceSection,
+            icon: StepwaysIcons.itineraire,
+          ),
           _TraceCard(stats: stats),
           const SizedBox(height: AppTheme.spacingLg),
 
           // CORRECTIF L5-5 : le detail jour par jour, qui n'existait pas.
-          SectionHeader(title: recapT.daysSection, icon: Icons.calendar_month),
+          SectionHeader(
+            title: recapT.daysSection,
+            icon: StepwaysIcons.calendrier,
+          ),
           const _DayByDaySection(),
           const SizedBox(height: AppTheme.spacingLg),
 
@@ -107,7 +134,7 @@ class _RecapBody extends ConsumerWidget {
               // est stable pour que les parcours de test la suivent.
               key: const ValueKey('recap-diploma'),
               label: recapT.viewDiploma,
-              icon: Icons.emoji_events,
+              icon: StepwaysIcons.diploma,
               onPressed: () => context.push('/trail/$trailId/diploma'),
             ),
             const SizedBox(height: AppTheme.spacingMd),
@@ -121,7 +148,7 @@ class _RecapBody extends ConsumerWidget {
           // le journal appartient au randonneur, qu'il ait fini ou abandonne.
           AppButton(
             label: recapT.viewJournal,
-            icon: Icons.menu_book_outlined,
+            icon: StepwaysIcons.journal,
             onPressed: () => context.push('/journal'),
           ),
           const SizedBox(height: AppTheme.spacingMd),
@@ -131,7 +158,15 @@ class _RecapBody extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingMd),
 
           // CORRECTIF L5-4 : l'export GPX, qui n'existait pas.
-          _ExportGpxButton(stats: stats),
+          //
+          // GRISE EN DEMONSTRATION (tache 810) : il ECRIT un fichier GPX dans
+          // les documents du telephone avant de le proposer au partage. Le
+          // recapitulatif s'ouvre desormais en demo avec une trace fabriquee —
+          // laisser ce bouton actif y deposerait un GPX bien reel, d'une
+          // randonnee qui n'a pas eu lieu, a l'endroit meme ou l'application
+          // promet que rien n'est enregistre. Le PARTAGE, juste au-dessus,
+          // reste ACTIF : il n'ecrit rien, il envoie du texte.
+          GriseEnDemo(child: _ExportGpxButton(stats: stats)),
         ],
       ),
     );
@@ -148,10 +183,12 @@ class _CongratsBanner extends StatelessWidget {
     final theme = Theme.of(context);
     final recapT = t.recap;
     final title = fullyWalked ? recapT.finisherTitle : recapT.partialTitle;
-    final subtitle =
-        fullyWalked ? recapT.finisherSubtitle : recapT.partialSubtitle;
-    final color =
-        fullyWalked ? theme.colorScheme.primary : AppTheme.grisTexteSecondaire;
+    final subtitle = fullyWalked
+        ? recapT.finisherSubtitle
+        : recapT.partialSubtitle;
+    final color = fullyWalked
+        ? theme.colorScheme.primary
+        : AppTheme.grisTexteSecondaire;
 
     return Semantics(
       container: true,
@@ -161,8 +198,8 @@ class _CongratsBanner extends StatelessWidget {
         borderColor: color.withAlpha(90),
         child: Column(
           children: [
-            Icon(
-              fullyWalked ? Icons.emoji_events : Icons.terrain,
+            StepIcon(
+              fullyWalked ? StepwaysIcons.diploma : StepwaysIcons.sommet,
               size: 48,
               color: color,
             ),
@@ -221,12 +258,14 @@ class _ShareAdventureButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recapT = t.recap;
-    final trailName = ref.watch(trailConfigProvider.select((c) => c.displayName));
+    final trailName = ref.watch(
+      trailConfigProvider.select((c) => c.displayName),
+    );
     final speed = ref.watch(adventureAverageSpeedProvider).value;
 
     return AppButton(
       label: recapT.shareAdventure,
-      icon: Icons.share_outlined,
+      icon: StepwaysIcons.partager,
       onPressed: () async {
         // Capture AVANT tout await : la feuille de partage prend la main,
         // le `context` ne doit plus servir a afficher l'erreur.
@@ -242,9 +281,7 @@ class _ShareAdventureButton extends ConsumerWidget {
             subject: recapT.shareHeadline(trail: trailName),
           );
         } catch (_) {
-          messenger.showSnackBar(
-            SnackBar(content: Text(recapT.shareError)),
-          );
+          messenger.showSnackBar(SnackBar(content: Text(recapT.shareError)));
         }
       },
     );
@@ -273,8 +310,8 @@ class _DayByDaySection extends ConsumerWidget {
             child: Text(
               recapT.noDays,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.grisTexteSecondaire,
-                  ),
+                color: AppTheme.grisTexteSecondaire,
+              ),
             ),
           );
         }
@@ -310,8 +347,9 @@ class _DayCard extends StatelessWidget {
 
     String fmtDate(DateTime d) {
       try {
-        return DateFormat.yMMMd(LocaleSettings.currentLocale.languageCode)
-            .format(d);
+        return DateFormat.yMMMd(
+          LocaleSettings.currentLocale.languageCode,
+        ).format(d);
       } catch (_) {
         return '${d.year}-${d.month.toString().padLeft(2, '0')}-'
             '${d.day.toString().padLeft(2, '0')}';
@@ -362,13 +400,17 @@ class _DayCard extends StatelessWidget {
             runSpacing: AppTheme.spacingXs,
             children: [
               Text(
-                recapT.distance
-                    .replaceAll('{km}', stats.distanceKm.toStringAsFixed(1)),
+                recapT.distance.replaceAll(
+                  '{km}',
+                  stats.distanceKm.toStringAsFixed(1),
+                ),
                 style: theme.textTheme.bodyMedium,
               ),
               Text(
-                recapT.elevation
-                    .replaceAll('{meters}', '${stats.elevationGainM}'),
+                recapT.elevation.replaceAll(
+                  '{meters}',
+                  '${stats.elevationGainM}',
+                ),
                 style: theme.textTheme.bodyMedium,
               ),
               Text(
@@ -411,7 +453,7 @@ class _ExportGpxButton extends ConsumerWidget {
 
     return AppButton(
       label: recapT.exportGpx,
-      icon: Icons.download_outlined,
+      icon: StepwaysIcons.download,
       onPressed: () async {
         final messenger = ScaffoldMessenger.of(context);
         // Sans point, on le DIT au lieu d'ecrire un fichier vide qui
@@ -447,7 +489,7 @@ class _ExportGpxButton extends ConsumerWidget {
 }
 
 /// Une ligne du recapitulatif : une icone et un libelle deja localise.
-typedef RecapRow = ({IconData icon, String label});
+typedef RecapRow = ({String icon, String label});
 
 /// Lignes chiffrees du recapitulatif, dans l'ordre d'affichage.
 ///
@@ -462,29 +504,31 @@ List<RecapRow> adventureRecapRows(
 }) {
   final rows = <RecapRow>[
     (
-      icon: Icons.flag,
+      icon: StepwaysIcons.depart,
       label: recapT.stages
           .replaceAll('{done}', '${stats.stagesWalked}')
           .replaceAll('{total}', '${stats.totalStages}'),
     ),
     (
-      icon: Icons.straighten,
-      label:
-          recapT.distance.replaceAll('{km}', stats.distanceKm.toStringAsFixed(0)),
+      icon: StepwaysIcons.distance,
+      label: recapT.distance.replaceAll(
+        '{km}',
+        stats.distanceKm.toStringAsFixed(0),
+      ),
     ),
     (
-      icon: Icons.trending_up,
+      icon: StepwaysIcons.denivelePlus,
       label: recapT.elevation.replaceAll('{meters}', '${stats.elevationGainM}'),
     ),
     // CORRECTIF L5-2 : le D- cumule. Il manquait alors que
     // Stage.elevationLoss existait deja — une descente de plusieurs milliers
     // de metres se lit dans les genoux du randonneur.
     (
-      icon: Icons.trending_down,
+      icon: StepwaysIcons.deniveleMoins,
       label: recapT.elevationLoss(meters: stats.elevationLossM),
     ),
     (
-      icon: Icons.timer,
+      icon: StepwaysIcons.clock,
       label: recapT.duration.replaceAll('{days}', '${stats.durationDays}'),
     ),
     // CORRECTIF L5-6 : la vitesse moyenne n'apparait QUE si elle est
@@ -493,7 +537,7 @@ List<RecapRow> adventureRecapRows(
     // aurait l'air vrai — dans ce cas on n'affiche rien du tout.
     if (averageSpeedKmh != null)
       (
-        icon: Icons.speed,
+        icon: StepwaysIcons.vitesse,
         label: recapT.averageSpeed(kmh: averageSpeedKmh.toStringAsFixed(1)),
       ),
   ];
@@ -507,8 +551,9 @@ List<RecapRow> adventureRecapRows(
   if (start != null && end != null) {
     String fmtDate(DateTime d) {
       try {
-        return DateFormat.yMMMd(LocaleSettings.currentLocale.languageCode)
-            .format(d);
+        return DateFormat.yMMMd(
+          LocaleSettings.currentLocale.languageCode,
+        ).format(d);
       } catch (_) {
         return '${d.year}-${d.month.toString().padLeft(2, '0')}-'
             '${d.day.toString().padLeft(2, '0')}';
@@ -516,7 +561,7 @@ List<RecapRow> adventureRecapRows(
     }
 
     rows.add((
-      icon: Icons.date_range,
+      icon: StepwaysIcons.historique,
       label: recapT.dates
           .replaceAll('{start}', fmtDate(start))
           .replaceAll('{end}', fmtDate(end)),
@@ -551,7 +596,7 @@ class _StatsCard extends ConsumerWidget {
 /// Ligne de statistique (icone + libelle), exposee a l'a11y via [Semantics].
 class _StatRow extends StatelessWidget {
   const _StatRow({required this.icon, required this.label});
-  final IconData icon;
+  final String icon;
   final String label;
 
   @override
@@ -561,14 +606,9 @@ class _StatRow extends StatelessWidget {
       label: label,
       child: Row(
         children: [
-          Icon(icon, color: theme.colorScheme.primary, size: 22),
+          StepIcon(icon, color: theme.colorScheme.primary, size: 22),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodyLarge,
-            ),
-          ),
+          Expanded(child: Text(label, style: theme.textTheme.bodyLarge)),
         ],
       ),
     );
@@ -596,8 +636,8 @@ class _TraceCard extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.map,
+                    StepIcon(
+                      StepwaysIcons.map,
                       size: 48,
                       color: theme.colorScheme.primary.withAlpha(120),
                     ),
@@ -613,9 +653,7 @@ class _TraceCard extends StatelessWidget {
               )
             : CustomPaint(
                 painter: SessionTracePainter(
-                  points: [
-                    for (final p in points) Offset(p.lng, p.lat),
-                  ],
+                  points: [for (final p in points) Offset(p.lng, p.lat)],
                   color: theme.colorScheme.primary,
                 ),
               ),
@@ -639,8 +677,8 @@ class _LockedState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.lock_outline,
+            const StepIcon(
+              StepwaysIcons.cadenas,
               size: 64,
               color: AppTheme.grisTexteSecondaire,
             ),

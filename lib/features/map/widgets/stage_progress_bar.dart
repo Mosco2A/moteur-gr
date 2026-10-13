@@ -1,7 +1,15 @@
+/// La ligne de chiffres MESURES en bas de la carte : etape, distance restante,
+/// pourcentage, et le signalement d'un ecart au trace.
+library;
+
 import 'package:flutter/material.dart';
 
+import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/texte_ajuste.dart';
+import 'chiffres_de_la_barre.dart';
+import 'entete_de_la_barre.dart';
 
 /// Barre de progression d'étape affichée en bas de la carte.
 ///
@@ -59,13 +67,33 @@ class StageProgressBar extends StatelessWidget {
     this.altitudeM,
     this.showPendingValues = false,
     this.footer,
+    this.perimetreLabel,
+    this.basculeLabel,
+    this.etapesFaites,
+    this.etapesTotal,
+    this.vueSentier = false,
+    this.onBasculer,
   });
 
   /// Marque d'une valeur qui n'est pas encore mesurable (parite GR20 : `'--'`).
   ///
   /// Volontairement un SIGNE et non un mot : il ne demande aucune traduction et
   /// se lit dans les cinq langues.
-  static const String pendingValueLabel = '--';
+  ///
+  /// IL VIT DESORMAIS AVEC LES CASES QUI L'AFFICHENT (tache 762) et n'est
+  /// repris ici que pour les appelants qui le nommaient deja : UNE seule
+  /// definition, pas deux chaines a garder d'accord.
+  static const String pendingValueLabel = ChiffresDeLaBarre.pendingValueLabel;
+
+  /// La part de la ligne du titre que les marqueurs de droite — pastille et
+  /// puce hors-trace — ne depassent jamais (tache 808).
+  ///
+  /// CE QU'ELLE GARANTIT : le nom de l'etape conserve toujours au moins le
+  /// tiers restant de la ligne. Au-dela, les marqueurs se reduisent d'un bloc
+  /// plutot que de pousser le nom a zero — ce qui est exactement ce qui
+  /// arrivait, mesure au banc, avec une police large ou un reglage
+  /// d'agrandissement des textes.
+  static const double _partDesMarqueurs = 0.62;
 
   /// Nom de l'étape courante
   final String stageName;
@@ -109,29 +137,125 @@ class StageProgressBar extends StatelessWidget {
   /// deviner pourquoi trois cases portent un tiret.
   final Widget? footer;
 
-  /// Vrai dès qu'au moins une valeur de la seconde ligne est disponible.
-  bool get _hasMeasuredLine =>
-      showPendingValues ||
-      totalDistanceKm != null ||
-      distanceCoveredKm != null ||
-      elevationGainM != null ||
-      elevationLossM != null ||
-      avgSpeedKmh != null ||
-      altitudeM != null;
+  /// LE MOT QUI DIT LE PÉRIMÈTRE DES CHIFFRES (tâche 747). `null` = pas de
+  /// mention, et la barre garde l'aspect qu'elle avait avant ce lot.
+  ///
+  /// POURQUOI UN MOT ET PAS SEULEMENT UNE COULEUR. Christophe l'a demandé
+  /// explicitement le 09/10 : la vue sentier est d'une autre couleur, « et tu
+  /// ajoutes AUSSI un mot, parce que la couleur seule ne suffit pas à qui
+  /// distingue mal les couleurs ». Une personne daltonienne — environ un homme
+  /// sur douze — ne verrait aucune différence entre les deux vues, et lirait
+  /// des kilomètres de sentier en croyant lire son étape. Le mot est donc
+  /// l'information ; la couleur n'est qu'un rappel.
+  final String? perimetreLabel;
 
-  /// Libellé d'un chiffre : sa valeur si elle existe, sinon le tiret d'attente.
-  String _valueOrPending(String? formatted) =>
-      formatted ?? pendingValueLabel;
+  /// LE MOT DU BOUTON, ET C'EST SA DESTINATION — PAS L'ENDROIT OU L'ON EST
+  /// (tache 762).
+  ///
+  /// RETOUR DE CHRISTOPHE DU 09/10 16:27, mot pour mot : « Le bouton etape/
+  /// sentier entier est inverse. Quand on est etape le bouton doit etre sentier
+  /// entier et inversement pour l autre ».
+  ///
+  /// CE QUI ETAIT CONFONDU, ET POURQUOI LES DEUX BESOINS SONT VRAIS. La
+  /// pastille [perimetreLabel] disait « Étape » quand on regardait l'etape :
+  /// c'est juste comme INDICATION, et faux comme BOUTON — toute la barre etant
+  /// tactile, ce mot etait aussi l'etiquette de l'action, et il annoncait donc
+  /// l'inverse de ce qu'un appui faisait. Les deux besoins coexistent : il faut
+  /// dire DE QUOI parlent les chiffres, et dire OU MENE l'appui.
+  ///
+  /// ILS SONT DONC SEPARES, et c'est le seul moyen de ne pas recreer le
+  /// malentendu dans l'autre sens : la PASTILLE garde le perimetre affiche, le
+  /// BOUTON porte la destination. Les fusionner — pastille devenue bouton, ou
+  /// bouton portant le perimetre courant — ramenerait un seul mot pour deux
+  /// questions.
+  ///
+  /// `null` = pas de bouton. Sans [onBasculer] il n'est pas rendu non plus : un
+  /// bouton qui ne mene nulle part est un geste mort.
+  final String? basculeLabel;
 
-  /// Vrai si la case doit être rendue : valeur connue, ou mode « en attente ».
-  bool _shows(Object? value) => value != null || showPendingValues;
+  /// COMBIEN D'ETAPES SONT FAITES, et sur combien (tache 762).
+  ///
+  /// REMPLACE L'ALTITUDE EN VUE SENTIER ENTIER, decision de Christophe du 09/10
+  /// 16:29 puis 16:32 : « En sentier entier l altitude pure n a plus lieue
+  /// d etre », et a sa place le nombre d'etapes faites sur le total, forme
+  /// « 3 / 7 ». L'altitude du moment reste en vue ETAPE, ou elle repond a « je
+  /// suis a quelle altitude » ; a l'echelle du sentier entier elle ne dit rien
+  /// du sentier.
+  ///
+  /// LES DEUX ENSEMBLE OU AUCUN : un compte sans total ne se lit pas. Quand
+  /// l'un des deux manque, la case retombe sur l'altitude.
+  final int? etapesFaites;
+
+  /// Le nombre total d'etapes du sentier (voir [etapesFaites]).
+  final int? etapesTotal;
+
+  /// Vrai quand les chiffres sont ceux du SENTIER ENTIER : ils prennent alors
+  /// la teinte [AppTheme.bleuRepos] au lieu de la couleur du sentier.
+  final bool vueSentier;
+
+  /// Bascule l'étape vers le sentier entier, et revient. `null` = barre non
+  /// tactile (état avant départ : il n'y a qu'un périmètre à montrer).
+  final VoidCallback? onBasculer;
+
+  /// La seconde ligne de la barre, SANS sa teinte — qui depend du theme et
+  /// n'est connue qu'au `build`.
+  ///
+  /// SERT A REPONDRE « Y A-T-IL QUELQUE CHOSE A MONTRER ? » hors du `build` et
+  /// sans dupliquer la liste des six valeurs : c'est
+  /// [ChiffresDeLaBarre.aQuelqueChoseAMontrer] qui en repond, a un seul
+  /// endroit. La teinte passee ici n'est jamais celle qui sera affichee ; seul
+  /// [_chiffresAvec] construit le widget rendu.
+  ChiffresDeLaBarre get _chiffres => _chiffresAvec(AppTheme.bleuRepos);
+
+  /// La seconde ligne de la barre, dans la teinte du perimetre affiche.
+  ChiffresDeLaBarre _chiffresAvec(Color accent) => ChiffresDeLaBarre(
+    accent: accent,
+    showPendingValues: showPendingValues,
+    distanceRemainingKm: distanceRemainingKm,
+    distanceCoveredKm: distanceCoveredKm,
+    avgSpeedKmh: avgSpeedKmh,
+    elevationGainM: elevationGainM,
+    elevationLossM: elevationLossM,
+    altitudeM: altitudeM,
+    etapesFaites: etapesFaites,
+    etapesTotal: etapesTotal,
+  );
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final progressPercent = (progressRatio * 100).round();
-    final primaryColor = theme.colorScheme.primary;
+    // LA TEINTE DU PERIMETRE (747) : celle du sentier pour l'etape, un bleu
+    // franc pour le sentier entier. Le mot [perimetreLabel] porte le sens ;
+    // cette couleur ne fait que le rappeler.
+    final primaryColor = vueSentier
+        ? AppTheme.bleuRepos
+        : theme.colorScheme.primary;
 
+    return GestureDetector(
+      // OPAQUE QUAND ELLE EST TACTILE, et seulement alors : la barre entiere
+      // devient la cible, y compris au-dessus des six cases, qui sont dans un
+      // [IgnorePointer] et ne prendraient donc pas le geste. Les enfants
+      // tactiles — le bouton eventuel du [footer] — restent prioritaires :
+      // Flutter interroge les enfants avant le parent.
+      //
+      // SANS BASCULE, ON REVIENT A `deferToChild` : une barre opaque SANS
+      // action absorberait les touchers d'une zone ou elle ne fait rien, et
+      // c'est exactement ce qui fabrique un geste mort.
+      behavior: onBasculer == null
+          ? HitTestBehavior.deferToChild
+          : HitTestBehavior.opaque,
+      onTap: onBasculer,
+      child: _corps(context, theme, primaryColor, progressPercent),
+    );
+  }
+
+  Widget _corps(
+    BuildContext context,
+    ThemeData theme,
+    Color primaryColor,
+    int progressPercent,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingBase,
@@ -154,82 +278,138 @@ class StageProgressBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ligne titre + indicateur hors tracé
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  stageName,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
+          // LIGNE DU TITRE — ET DESORMAIS CE QUI NE BOUGE PAS (tache 808).
+          //
+          // LE NOM EST RENDU PAR [TexteAjuste] ET NON PAR UN [Text] NU, et
+          // c'est ce qui autorise a le grossir sans risque : il passe de 14 a
+          // 18 points, et SI un nom long ne tenait plus, il redescend tout
+          // seul — jamais sous 14, la taille qu'il avait avant ce lot. Le
+          // bandeau ne peut donc pas devenir moins lisible qu'il ne l'etait,
+          // et aucun mot n'est coupe (c'est la regle de la tache 634).
+          // LA LIGNE DU TITRE TIENT SUR UNE LIGNE, QUOI QU'ON Y METTE.
+          //
+          // CE QU'ELLE PORTE DESORMAIS : le nom, la pastille elargie par le
+          // total, et — quand le marcheur sort du trace — la puce
+          // « Hors trace », elle aussi agrandie. Trois choses sur 360,7 points
+          // utiles (mesure faite sur la capture de Christophe : 1080 pixels,
+          // rapport 2,75, moins deux fois la marge de 16).
+          //
+          // LE DEBORDEMENT EST REEL, IL A ETE MESURE. Avec une police dont
+          // chaque glyphe occupe un cadratin — le cas du banc de test, mais
+          // AUSSI le cas d'un randonneur qui a grossi les textes de son
+          // telephone, ce que ce public fait — la rangee debordait de 2,1
+          // points et le nom de l'etape etait comprime a ZERO de large. Une
+          // [Row] nue ne sait pas faire autrement : elle donne ce qui reste,
+          // et quand il ne reste rien, elle deborde.
+          //
+          // LES DEUX PARADES, ET ELLES SE COMPLETENT :
+          //   * LE NOM SE REDUIT PLUTOT QUE DE SE COUPER ([TexteAjuste],
+          //     tache 634) : 18 points s'il tient, jamais moins de 14 — la
+          //     taille qu'il avait avant ce lot. Sur la capture il demande
+          //     245,9 points a 18, et les marqueurs 95,6 : les deux tiennent.
+          //   * LES MARQUEURS NE PRENNENT JAMAIS PLUS DE [_partDesMarqueurs]
+          //     de la ligne, et se reduisent d'un bloc au-dela. Le nom garde
+          //     donc toujours sa part, et plus rien ne peut deborder.
+          //
+          // UN [Wrap] AURAIT AUSSI EMPECHE LE DEBORDEMENT, et il a ete essaye.
+          // Il a ete rejete : il fait TOMBER la pastille a la ligne suivante
+          // des que la marge de 15 points manque — or Christophe a demande
+          // « passer total AVEC le titre », pas sous le titre.
+          LayoutBuilder(
+            builder: (context, contraintes) => Row(
+              children: [
+                Expanded(
+                  child: TexteAjuste(
+                    stageName,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    tailleMin: 14,
+                    textAlign: TextAlign.start,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              if (isOffTrack)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm,
-                    vertical: AppTheme.spacingXs,
+                const SizedBox(width: AppTheme.spacingXs),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: contraintes.maxWidth * _partDesMarqueurs,
                   ),
-                  decoration: BoxDecoration(
-                    color: AppTheme.rougeUrgence.withAlpha(30),
-                    borderRadius: BorderRadius.circular(
-                      AppTheme.radiusChip,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // LA PASTILLE DIT LE PERIMETRE **ET SA LONGUEUR**
+                        // (tache 808). Le total a quitte le tableau pour venir
+                        // ici : il ne bouge pas de toute la marche, et il n'a
+                        // de sens que rapporte a ce dont on parle.
+                        // « Etape 8,1 km » se lit d'un bloc ; les memes deux
+                        // informations separees de dix centimetres d'ecran ne
+                        // se lisent pas. La pastille reste le mot qui porte le
+                        // sens pour qui distingue mal les couleurs (tache
+                        // 747) — elle en porte juste la mesure en plus.
+                        if (perimetreLabel != null || totalDistanceKm != null)
+                          PastilleDuPerimetre(
+                            perimetre: perimetreLabel,
+                            // HORS TRACE, LE TOTAL CEDE LA PLACE, et c'est un
+                            // arbitrage, pas un oubli. Les trois ne tiennent
+                            // pas ensemble sur 360 points : le nom long
+                            // s'abregerait. Ordre de ce dont un marcheur a
+                            // besoin quand il a quitte le sentier : d'abord
+                            // l'avertissement, ensuite le nom du lieu ou il
+                            // se trouve, et en dernier une longueur d'etape
+                            // qui ne bouge pas et qu'il a deja lue. Le total
+                            // revient des qu'il est de nouveau sur la trace.
+                            totalDistanceKm: isOffTrack
+                                ? null
+                                : totalDistanceKm,
+                            teinte: primaryColor,
+                          ),
+                        if (isOffTrack) ...[
+                          const SizedBox(width: AppTheme.spacingXs),
+                          const PuceHorsTrace(),
+                        ],
+                      ],
                     ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.warning_amber_rounded,
-                        size: 14,
-                        color: AppTheme.rougeUrgence,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        t.map.offTrackChip,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppTheme.rougeUrgence,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-            ],
-          ),
-
-          const SizedBox(height: AppTheme.spacingSm),
-
-          // Barre de progression
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progressRatio.clamp(0.0, 1.0),
-              minHeight: 6,
-              backgroundColor: AppTheme.grisClair,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                isOffTrack ? AppTheme.rougeUrgence : primaryColor,
-              ),
+              ],
             ),
           ),
 
           const SizedBox(height: AppTheme.spacingSm),
 
-          // Ligne distance + pourcentage
+          // LA BARRE ET SON POURCENTAGE SUR LA MEME LIGNE (tache 808).
+          //
+          // Le pourcentage BOUGE, et la regle de Christophe voudrait donc le
+          // mettre au tableau. Il reste ici, et voici pourquoi : il n'est pas
+          // une septieme mesure, il est LA LEGENDE DE LA BARRE qu'il touche —
+          // les separer rendrait la barre muette et le tableau bavard. Et le
+          // tableau doit rester a SIX cases : c'est la forme de la navigation
+          // de reference, tranchee par Chris a la tache 558.
+          //
+          // CE QUE CETTE FUSION RAPPORTE EN PLACE : la ligne « X km restants /
+          // Y % » disparait entierement, soit une ligne de texte et son
+          // interligne rendus a la carte. En demo, deux bandeaux mangent deja
+          // le haut de l'ecran ; cette ligne de moins est ce qui permet au
+          // bandeau de tenir sans deborder.
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                t.map.stageRemaining(
-                  km: distanceRemainingKm.toStringAsFixed(1),
-                ),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.grisTexteSecondaire,
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progressRatio.clamp(0.0, 1.0),
+                    minHeight: 6,
+                    backgroundColor: AppTheme.grisClair,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      isOffTrack ? AppTheme.emergencyRed : primaryColor,
+                    ),
+                  ),
                 ),
               ),
+              const SizedBox(width: AppTheme.spacingSm),
               Text(
                 '$progressPercent%',
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -241,75 +421,46 @@ class StageProgressBar extends StatelessWidget {
           ),
 
           // Les SIX chiffres, FORME GR20 (tache 558). Informatifs uniquement.
-          if (_hasMeasuredLine) ...[
+          if (_chiffres.aQuelqueChoseAMontrer) ...[
             const SizedBox(height: AppTheme.spacingSm),
             const Divider(height: 1),
             const SizedBox(height: AppTheme.spacingSm),
-            IgnorePointer(
-              child: Column(
-                children: [
-                  // Ligne 1 — CE QUI AVANCE : total du sentier, parcouru,
-                  // vitesse moyenne.
-                  _StatRow(children: [
-                    if (_shows(totalDistanceKm))
-                      _MeasuredStat(
-                        icon: Icons.straighten,
-                        label: t.tracking.total,
-                        value: _valueOrPending(
-                          totalDistanceKm == null
-                              ? null
-                              : '${totalDistanceKm!.toStringAsFixed(1)} km',
-                        ),
-                      ),
-                    if (_shows(distanceCoveredKm))
-                      _MeasuredStat(
-                        icon: Icons.directions_walk,
-                        label: t.tracking.covered,
-                        value: _valueOrPending(
-                          distanceCoveredKm == null
-                              ? null
-                              : '${distanceCoveredKm!.toStringAsFixed(1)} km',
-                        ),
-                      ),
-                    if (_shows(avgSpeedKmh))
-                      _MeasuredStat(
-                        icon: Icons.speed,
-                        label: t.tracking.avgSpeed,
-                        value: _valueOrPending(
-                          avgSpeedKmh == null
-                              ? null
-                              : '${avgSpeedKmh!.toStringAsFixed(1)} km/h',
-                        ),
-                      ),
-                  ]),
-                  // Ligne 2 — LE RELIEF : D+, D-, altitude.
-                  _StatRow(children: [
-                    if (_shows(elevationGainM))
-                      _MeasuredStat(
-                        icon: Icons.trending_up,
-                        label: t.tracking.dPlus,
-                        value: _valueOrPending(
-                          elevationGainM == null ? null : '$elevationGainM m',
-                        ),
-                      ),
-                    if (_shows(elevationLossM))
-                      _MeasuredStat(
-                        icon: Icons.trending_down,
-                        label: t.tracking.dMinus,
-                        value: _valueOrPending(
-                          elevationLossM == null ? null : '$elevationLossM m',
-                        ),
-                      ),
-                    if (_shows(altitudeM))
-                      _MeasuredStat(
-                        icon: Icons.terrain,
-                        label: t.tracking.altitude,
-                        value: _valueOrPending(
-                          altitudeM == null ? null : '${altitudeM!.round()} m',
-                        ),
-                      ),
-                  ]),
-                ],
+            // Les SIX chiffres, FORME GR20 (tache 558), sortis dans leur
+            // propre fichier a la tache 762 (plafond ECR-15). Informatifs
+            // uniquement : l'[IgnorePointer] leur interdit de voler un geste
+            // a la carte.
+            IgnorePointer(child: _chiffresAvec(primaryColor)),
+          ],
+
+          // LE BOUTON DE BASCULE, ET IL DIT OU IL MENE (tache 762).
+          //
+          // HORS DE L'[IgnorePointer] — il doit recevoir les appuis — et APRES
+          // les chiffres, parce qu'il parle d'eux.
+          //
+          // LA BARRE RESTE TACTILE DANS SON ENSEMBLE, et c'est voulu : ce
+          // raccourci existe depuis la tache 747, il est verifie par ses
+          // gardes, et la recette 753 l'a trouve bon (« la bascule et ses
+          // quatre comportements » etait vert). AUCUN DOUBLE DECLENCHEMENT :
+          // Flutter interroge les enfants avant le parent, donc un appui sur ce
+          // bouton est consomme par lui. Ce que le bouton ajoute n'est pas
+          // l'action, c'est le MOT qui la nomme — et une cible franche pour qui
+          // ne devine pas qu'une barre de chiffres est tactile.
+          if (basculeLabel != null && onBasculer != null) ...[
+            const SizedBox(height: AppTheme.spacingXs),
+            Align(
+              alignment: Alignment.centerRight,
+              // [AppButton] ET NON UN `TextButton` BRUT : la garde ECR-19
+              // (`aucun_bouton_brut_645_test.dart`) a refuse le bouton brut,
+              // a raison — il porterait sa propre taille de cible, son propre
+              // contraste et son propre etat, soit une decision d'interface
+              // prise a part et une correction d'accessibilite a refaire.
+              child: AppButton(
+                label: basculeLabel!,
+                icon: StepwaysIcons.inverser,
+                variant: AppButtonVariant.text,
+                tone: primaryColor,
+                iconSize: 18,
+                onPressed: onBasculer,
               ),
             ),
           ],
@@ -320,87 +471,6 @@ class StageProgressBar extends StatelessWidget {
             const SizedBox(height: AppTheme.spacingSm),
             footer!,
           ],
-        ],
-      ),
-    );
-  }
-}
-
-/// Une LIGNE de trois chiffres, repartis a egalite (tache 558).
-///
-/// Ne se rend PAS quand elle n'a rien a montrer : une ligne vide laisserait un
-/// blanc au milieu de la barre. Chaque case occupe le tiers de la largeur — le
-/// libelle se replie donc sur deux lignes au lieu de deborder ou d'etre coupe,
-/// ce qui compte d'autant plus que les cinq langues n'ont pas la meme longueur
-/// de mots (« Vitesse moy. » / « Durchschn. Geschw. »).
-class _StatRow extends StatelessWidget {
-  const _StatRow({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    if (children.isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppTheme.spacingXs),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (final child in children) Expanded(child: child),
-        ],
-      ),
-    );
-  }
-}
-
-/// Une valeur mesurée : icône, chiffre, libellé — FORME GR20 (tâche 558).
-///
-/// Retour de Chris, mot pour mot : « respecte la FORME GR20 pour cet ecran! ».
-/// Les six chiffres tenaient dans un [Wrap] a plat, icône et texte sur la même
-/// ligne, en petit — la navigation de référence les pose en SIX CASES SUR DEUX
-/// LIGNES centrées (`_buildStatItem` : colonne, grosse icône 28 px, valeur en
-/// gras dessous, libellé plus discret en dernier). On reprend cette forme :
-/// c'est la disposition que Chris a tranchée, et elle se lit d'un coup d'œil en
-/// marchant, ce qu'une ligne de six petites mentions ne permet pas.
-class _MeasuredStat extends StatelessWidget {
-  const _MeasuredStat({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Semantics(
-      label: '$label $value',
-      excludeSemantics: true,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Grosse icône (parité GR20 : 28 px), dans la couleur d'accent du
-          // sentier plutôt qu'en gris : c'est le repère qu'on attrape en
-          // premier sur un écran de terrain.
-          Icon(icon, size: 28, color: theme.colorScheme.primary),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: AppTheme.grisTexteSecondaire,
-            ),
-          ),
         ],
       ),
     );

@@ -14,8 +14,9 @@ import 'package:drift/drift.dart';
 ///   - [updatedAt] : horodatage (last-write-wins du miroir cloud anonyme).
 ///
 /// CONFIDENTIALITE (spec §3.1, FAI-D) : la SOURCE DURABLE est locale
-/// (SharedPreferences aujourd'hui, DB volatile en memoire ; Drift = miroir
-/// hydrate au boot, comme le wallet). Le miroir cloud (CloudSyncService) est
+/// (SharedPreferences aujourd'hui ; Drift = miroir hydrate au boot, comme le
+/// wallet — la base n'est plus volatile depuis la tache 613, voir
+/// `HikerProfileRepository`). Le miroir cloud (CloudSyncService) est
 /// rattache au hash anonyme UNIQUEMENT — ZERO nom, ZERO e-mail. Ce miroir sert
 /// aussi la restauration du profil au changement de telephone. Envoi soumis au
 /// consentement `ConsentPurpose.healthData` (art. 9, finalite morpho etendue).

@@ -44,6 +44,49 @@ abstract final class AdConfig {
     'ADMOB_REWARDED_IOS',
   );
 
+  // --- PUBS DE TEST VISIBLES SUR LE CANAL DE TEST (tache 639, DEM-260930-1224)
+
+  /// Injecte par `--dart-define STEPWAYS_TEST_ADS=true` sur les builds du canal
+  /// de test interne. JAMAIS en production — voir [testAdsForced], qui l'annule
+  /// des qu'un ad-unit de prod est present.
+  static const bool _testAdsRequested = bool.fromEnvironment(
+    'STEPWAYS_TEST_ADS',
+  );
+
+  /// LE MODE « JE VEUX VOIR LES PUBS DE TEST » (tache 639, DEM-260930-1224).
+  ///
+  /// LA DEMANDE DE CHRISTOPHE, MOT POUR MOT (30/09 12:23) : « Et j aimerais voir
+  /// les pubs sur la version de test ».
+  ///
+  /// CE QUI L'EN EMPECHAIT, MESURE. Trois verrous se combinaient, tous corrects
+  /// pris un par un :
+  ///   1. la regle d'or #99404 eteint la banniere sur un sentier ACHETE et
+  ///      pendant les 24 h d'une recompense. Sans sentier gratuit au catalogue et
+  ///      avec un sentier achete pour tester, il ne reste aucun ecran ou une
+  ///      publicite soit autorisee ;
+  ///   2. un build de test ne demande AUCUN consentement publicitaire
+  ///      ([AdsConsentService], verrou 3 de la tache 560 : on ne pose pas une
+  ///      question RGPD pour une regie qui n'est pas branchee). Dans l'EEE, sans
+  ///      consentement enregistre, `canRequestAds()` rend `false` — donc aucune
+  ///      publicite, meme de test. C'etait ECRIT comme consequence assumee ;
+  ///   3. le budget d'amorce de 6 s abandonne la publicite hors ligne.
+  /// Christophe avait vu une publicite le 29/09 parce qu'il testait le sentier de
+  /// DEMONSTRATION, gratuit : le seul endroit ou la regle l'autorisait encore.
+  ///
+  /// CE QUE CE MODE FAIT, ET SES DEUX LIMITES. Il leve le verrou 1 pour tout sauf
+  /// l'abonnement (« banniere et video de test visibles sur tout sentier tant
+  /// qu'on n'est pas abonne ») et le verrou 2 en autorisant le formulaire de
+  /// consentement avec une geographie de DEBUG. Il ne touche pas au verrou 3 :
+  /// hors ligne, il n'y a pas de publicite, et c'est tres bien.
+  ///
+  /// IL NE PEUT PAS ETRE ACTIF EN PRODUCTION, ET CE N'EST PAS UNE PROMESSE MAIS
+  /// UNE CONDITION : des qu'un ad-unit de PROD est injecte
+  /// ([hasProductionUnits]), ce mode rend `false`, quel que soit le
+  /// `--dart-define`. Un build de release porte ses vrais identifiants ; il ne
+  /// peut donc pas emporter ce mode par accident, meme si la commande de build
+  /// garde le drapeau.
+  static bool get testAdsForced => _testAdsRequested && !hasProductionUnits;
+
   /// Vrai si au moins un ad-unit de prod a ete injecte (release).
   static bool get hasProductionUnits =>
       _prodBannerAndroid.isNotEmpty ||

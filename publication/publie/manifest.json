@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "trails": [
+    {
+      "trailId": "gr-pyrenees",
+      "dataVersion": "2026-09-28T07:56:20.026Z",
+      "hash": "",
+      "filePath": "",
+      "fileSize": 0,
+      "status": "draft",
+      "lastUpdated": "2026-09-28T07:56:20.026Z",
+      "fiche": {
+        "name": "GR Pyrenees",
+        "displayName": "Traversee des Pyrenees",
+        "tagline": "D un versant a l autre de la chaine",
+        "region": "Pyrenees",
+        "country": "France",
+        "totalStages": 12,
+        "totalDistanceKm": 248.0,
+        "totalElevationGain": 16800,
+        "primaryColorValue": 4281236786,
+        "secondaryColorValue": 4279592384,
+        "directions": [
+          "EW",
+          "WE"
+        ],
+        "availableDurations": [
+          10,
+          12,
+          14,
+          18
+        ],
+        "defaultDuration": 12,
+        "emergencyNumbers": [
+          {
+            "name": "Secours montagne Pyrenees",
+            "phone": "+33561000000"
+          }
+        ],
+        "privacyPolicyUrl": "https://example.org/gr-pyrenees/privacy"
+      }
+    },
+    {
+      "trailId": "mare-a-mare-centre",
+      "dataVersion": "2026-10-10T16:13:55.033Z",
+      "hash": "1cf3f7c3208daeb6581dd8722c6bdd3bc0ab11efe1cb929a6641fbee315f009a",
+      "filePath": "mare_a_mare_centre/v20261010T161355033Z.json",
+      "fileSize": 812352,
+      "status": "active",
+      "lastUpdated": "2026-10-10T16:13:55.033Z",
+      "fiche": {
+        "name": "Mare a Mare Centre",
+        "displayName": "Mare a Mare Centre",
+        "tagline": "De la mer a la mer, au coeur de la Corse",
+        "region": "Corse",
+        "country": "France",
+        "totalStages": 7,
+        "totalDistanceKm": 87.3,
+        "totalElevationGain": 4274,
+        "primaryColorValue": 4281109298,
+        "secondaryColorValue": 4279592384,
+        "directions": [
+          "NS",
+          "SN"
+        ],
+        "availableDurations": [
+          5,
+          7,
+          9
+        ],
+        "defaultDuration": 7,
+        "emergencyNumbers": [
+          {
+            "name": "Secours montagne Corse",
+            "phone": "+33495613636"
+          },
+          {
+            "name": "PGHM Corte (secours en montagne)",
+            "phone": "+33495477146"
+          },
+          {
+            "name": "Parc naturel regional de Corse",
+            "phone": "+33495345480"
+          }
+        ],
+        "privacyPolicyUrl": "https://only1cent.com/stepways/privacy"
+      },
+      "tilesPath": "mare_a_mare_centre/tuiles_z10-15_v20260930T154231Z.mbtiles",
+      "tilesSize": 26955776,
+      "tilesHash": "ed7f445095bb710cde6de51e51980b8ad5884f5d5825fbdefb4fa09a142b8676"
+    }
+  ]
+}

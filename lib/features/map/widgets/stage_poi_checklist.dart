@@ -1,15 +1,19 @@
+/// « Qu'est-ce que je vais croiser aujourd'hui » : les points de l'etape en
+/// cours, cochables au passage — autre chose qu'un panneau de calques.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/poi.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../poi/domain/poi_type_config.dart';
-import '../../poi/domain/poi_type_label.dart';
-import '../../trail/providers/pois_provider.dart';
-import '../../trail/providers/stages_provider.dart';
+import '../../../shared/poi/poi_type_config.dart';
+import '../../../shared/poi/poi_type_label.dart';
+import '../../trail/trail_facade.dart' show poisProvider, stagesProvider;
 import '../providers/stage_poi_check_provider.dart';
 import '../providers/track_position_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// LISTE DES POINTS DE L'ETAPE EN COURS, cochables au passage (LOT D, 554).
 ///
@@ -26,8 +30,8 @@ import '../providers/track_position_provider.dart';
 /// c'est fait »). Les coches vivent le temps de la session d'application, et
 /// aucun chiffre du trek n'en depend — cf. [stagePoiChecksProvider].
 ///
-/// GENERIQUE, ZERO SENTIER EN DUR : les points viennent de [poisProvider] et les
-/// familles de types de [PoiTypeConfig]. Un sentier sans refuge affiche le
+/// GENERIQUE, ZERO SENTIER EN DUR : les points viennent de [poisProvider] et
+/// les familles de types de [PoiTypeConfig]. Un sentier sans refuge affiche le
 /// message « aucun hebergement reference », deja traduit dans les cinq langues.
 class StagePoiChecklist extends ConsumerWidget {
   const StagePoiChecklist({super.key, required this.trailId});
@@ -65,21 +69,20 @@ class StagePoiChecklist extends ConsumerWidget {
 
     final checked = ref.watch(stagePoiChecksProvider);
     final total = water.length + shelters.length;
-    final done = [...water, ...shelters]
-        .where((p) => checked.contains(p.id))
-        .length;
+    final done = [
+      ...water,
+      ...shelters,
+    ].where((p) => checked.contains(p.id)).length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // En-tete : l'etape concernee + le compteur de points pointes.
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacingBase,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
           child: Row(
             children: [
-              Icon(Icons.checklist, color: theme.colorScheme.primary),
+              StepIcon(StepwaysIcons.sacADos, color: theme.colorScheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -104,7 +107,10 @@ class StagePoiChecklist extends ConsumerWidget {
 
         // --- Points d'eau de l'etape ---
         _ChecklistGroup(
-          icon: Icons.water_drop,
+          // L'ICONE VIENT DU REGISTRE, COMME LA COULEUR (tache 772). Elle
+          // etait ecrite ici a la main, a cote d'une couleur lue au registre —
+          // et c'est cette copie qui avait derive.
+          icon: PoiTypeConfig.getStyle('water').icon,
           color: PoiTypeConfig.getStyle('water').color,
           title: t.stage.waterSources.title,
           // Convention du projet : Slang n'interpole pas `{n}`, on remplace en
@@ -120,7 +126,7 @@ class StagePoiChecklist extends ConsumerWidget {
 
         // --- Hebergements de l'etape ---
         _ChecklistGroup(
-          icon: Icons.house,
+          icon: StepwaysIcons.hebergement,
           color: PoiTypeConfig.getStyle('refuge').color,
           title: t.stage.accommodation.title,
           countLabel: null,
@@ -144,7 +150,7 @@ class _ChecklistGroup extends ConsumerWidget {
     required this.pois,
   });
 
-  final IconData icon;
+  final String icon;
   final Color color;
   final String title;
   final String? countLabel;
@@ -160,16 +166,12 @@ class _ChecklistGroup extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacingBase,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
           child: Row(
             children: [
-              Icon(icon, size: 18, color: color),
+              StepIcon(icon, size: 18, color: color),
               const SizedBox(width: AppTheme.spacingSm),
-              Expanded(
-                child: Text(title, style: theme.textTheme.titleSmall),
-              ),
+              Expanded(child: Text(title, style: theme.textTheme.titleSmall)),
               if (countLabel != null)
                 Text(
                   countLabel!,
@@ -197,15 +199,12 @@ class _ChecklistGroup extends ConsumerWidget {
           for (final poi in pois)
             CheckboxListTile(
               value: checked.contains(poi.id),
-              onChanged: (_) => ref
-                  .read(stagePoiChecksProvider.notifier)
-                  .toggle(poi.id),
+              onChanged: (_) =>
+                  ref.read(stagePoiChecksProvider.notifier).toggle(poi.id),
               controlAffinity: ListTileControlAffinity.leading,
               dense: true,
               title: Text(
                 poi.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: checked.contains(poi.id)
                     ? theme.textTheme.bodyMedium?.copyWith(
                         decoration: TextDecoration.lineThrough,
@@ -223,7 +222,7 @@ class _ChecklistGroup extends ConsumerWidget {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              secondary: Icon(
+              secondary: StepIcon(
                 PoiTypeConfig.getStyle(poi.type).icon,
                 color: color,
               ),

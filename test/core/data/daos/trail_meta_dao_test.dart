@@ -3,6 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/trail_meta_dao.dart';
+import 'package:moteur_gr/core/data/revision_de_donnee.dart';
+
+import '../../../fixtures/horodatage_de_serveur.dart';
+
+/// LA REVISION N DEVIENT L INSTANT REFERENCE + N JOURS (tache 610).
+HorodatageServeur v(int n) => aJPlus(n);
 
 /// Tests du DAO TrailMeta sur une base in-memory.
 void main() {
@@ -29,7 +35,7 @@ void main() {
     return TrailMetaCompanion(
       id: Value(id),
       code: Value(code),
-      dataVersion: Value(dataVersion),
+      dataVersion: Value(v(dataVersion)),
       lastSync: Value(lastSync),
       status: Value(status),
     );
@@ -42,7 +48,7 @@ void main() {
       final result = await dao.getById('tr1');
       expect(result, isNotNull);
       expect(result!.code, 'sentier-bleu');
-      expect(result.dataVersion, 1);
+      expect(result.dataVersion, v(1));
       expect(result.status, 'active');
     });
 
@@ -60,11 +66,15 @@ void main() {
     });
 
     test('insertOrReplace met a jour un sentier existant', () async {
-      await dao.insertOrReplace(makeMeta(id: 'tr1', code: 'sentier-bleu', dataVersion: 1));
-      await dao.insertOrReplace(makeMeta(id: 'tr1', code: 'sentier-bleu', dataVersion: 2));
+      await dao.insertOrReplace(
+        makeMeta(id: 'tr1', code: 'sentier-bleu', dataVersion: 1),
+      );
+      await dao.insertOrReplace(
+        makeMeta(id: 'tr1', code: 'sentier-bleu', dataVersion: 2),
+      );
 
       final result = await dao.getById('tr1');
-      expect(result!.dataVersion, 2);
+      expect(result!.dataVersion, v(2));
     });
 
     test('deleteById supprime le bon sentier', () async {
@@ -92,7 +102,11 @@ void main() {
 
     test('lastSync nullable fonctionne', () async {
       await dao.insertOrReplace(
-        makeMeta(id: 'tr1', code: 'sentier-bleu', lastSync: '2026-05-26T12:00:00Z'),
+        makeMeta(
+          id: 'tr1',
+          code: 'sentier-bleu',
+          lastSync: '2026-05-26T12:00:00Z',
+        ),
       );
 
       final result = await dao.getById('tr1');

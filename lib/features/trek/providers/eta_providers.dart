@@ -1,3 +1,7 @@
+/// L'heure d'arrivee estimee, recalculee sur EVENEMENT et non en continu ; le
+/// flux d'entree est branche par l'ecran de navigation.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/eta_service.dart';
@@ -34,7 +38,9 @@ class EtaController extends Notifier<EtaEstimate?> {
   bool onEvent(EtaInput input, {bool force = false, DateTime? now}) {
     final current = now ?? DateTime.now();
     final last = _lastComputeAt;
-    if (!force && last != null && current.difference(last) < minRecalcInterval) {
+    if (!force &&
+        last != null &&
+        current.difference(last) < minRecalcInterval) {
       return false;
     }
     _lastComputeAt = current;
@@ -50,5 +56,6 @@ class EtaController extends Notifier<EtaEstimate?> {
 }
 
 /// Estimation d'ETA courante, recalculée sur événement (F6B-02).
-final etaControllerProvider =
-    NotifierProvider<EtaController, EtaEstimate?>(EtaController.new);
+final etaControllerProvider = NotifierProvider<EtaController, EtaEstimate?>(
+  EtaController.new,
+);

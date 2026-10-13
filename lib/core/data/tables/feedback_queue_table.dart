@@ -21,8 +21,7 @@ class FeedbackQueue extends Table {
   IntColumn get rating => integer().nullable()();
 
   /// Statut d'envoi ('pending', 'sent', 'failed')
-  TextColumn get status =>
-      text().withDefault(const Constant('pending'))();
+  TextColumn get status => text().withDefault(const Constant('pending'))();
 
   /// Date de création
   DateTimeColumn get createdAt => dateTime()();

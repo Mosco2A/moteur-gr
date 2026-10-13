@@ -1,6 +1,11 @@
+/// Au premier lancement, chaque finalite est presentee SEPAREMENT avec son
+/// explication : rien n'est groupe, rien n'est pre-coche.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -8,6 +13,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../providers/consent_ui_providers.dart';
 import 'consent_purpose_tile.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de consentement affiche au PREMIER LANCEMENT (D4A-02, design #86166).
 ///
@@ -38,16 +44,27 @@ class ConsentOnboardingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.consentOnboarding);
     final tr = Translations.of(context);
     final theme = Theme.of(context);
     final statesAsync = ref.watch(consentStatesProvider);
     final controller = ref.read(consentControllerProvider);
 
     // Finalites standard (hors sante, presentee a part en section renforcee).
+    //
+    // LA PUBLICITE EN FAIT PARTIE DEPUIS LA TACHE 595 (B4). Elle est demandee
+    // des l'accueil, au meme titre que les autres, et en opt-in strict : rien
+    // n'est pre-coche. Refuser ne supprime pas la publicite du niveau gratuit
+    // (c'en est la contrepartie) — cela empeche le CIBLAGE, donc la sortie des
+    // donnees de l'appareil.
     const standardPurposes = <ConsentPurpose>[
       ConsentPurpose.locationNavigation,
       ConsentPurpose.socialSharing,
       ConsentPurpose.publicReporting,
+      ConsentPurpose.advertising,
     ];
 
     return Scaffold(
@@ -59,8 +76,8 @@ class ConsentOnboardingScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(AppTheme.spacingLg),
             children: [
               const SizedBox(height: AppTheme.spacingLg),
-              Icon(
-                Icons.privacy_tip_outlined,
+              StepIcon(
+                StepwaysIcons.bouclier,
                 size: 56,
                 color: theme.colorScheme.primary.withAlpha(180),
               ),
@@ -85,8 +102,7 @@ class ConsentOnboardingScreen extends ConsumerWidget {
                 ConsentPurposeTile(
                   purpose: purpose,
                   granted: states[purpose]?.granted ?? false,
-                  onChanged: (value) =>
-                      controller.set(purpose, granted: value),
+                  onChanged: (value) => controller.set(purpose, granted: value),
                 ),
 
               const SizedBox(height: AppTheme.spacingLg),
@@ -94,10 +110,8 @@ class ConsentOnboardingScreen extends ConsumerWidget {
               // --- Section SANTE isolee (art 9), avertissement renforce ---
               _HealthSection(
                 granted: states[ConsentPurpose.healthData]?.granted ?? false,
-                onChanged: (value) => controller.set(
-                  ConsentPurpose.healthData,
-                  granted: value,
-                ),
+                onChanged: (value) =>
+                    controller.set(ConsentPurpose.healthData, granted: value),
               ),
 
               const SizedBox(height: AppTheme.spacingLg),
@@ -106,10 +120,13 @@ class ConsentOnboardingScreen extends ConsumerWidget {
               Semantics(
                 button: true,
                 label: tr.consent.a11y.policyButton,
-                child: TextButton.icon(
+                child: AppButton(
+                  variant: AppButtonVariant.text,
+                  icon: StepwaysIcons.cgu,
+                  iconSize: 18,
+                  label: tr.consent.privacyPolicyLink,
+                  isFullWidth: false,
                   onPressed: onOpenPrivacyPolicy,
-                  icon: const Icon(Icons.description_outlined),
-                  label: Text(tr.consent.privacyPolicyLink),
                 ),
               ),
 
@@ -160,8 +177,8 @@ class _HealthSection extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.favorite_outline,
+                StepIcon(
+                  StepwaysIcons.favori,
                   size: 20,
                   color: theme.colorScheme.error,
                 ),
@@ -180,10 +197,7 @@ class _HealthSection extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            Text(
-              tr.consent.healthWarning,
-              style: theme.textTheme.bodySmall,
-            ),
+            Text(tr.consent.healthWarning, style: theme.textTheme.bodySmall),
             const SizedBox(height: AppTheme.spacingXs),
             // Le PREMIER refus se joue ici : ce que l'autorisation couvre
             // (morphologie) et ce que le refus coute (la fiche medicale ne sera
@@ -194,10 +208,7 @@ class _HealthSection extends StatelessWidget {
               style: theme.textTheme.bodySmall,
             ),
             const SizedBox(height: AppTheme.spacingXs),
-            Text(
-              tr.consent.healthBackupNote,
-              style: theme.textTheme.bodySmall,
-            ),
+            Text(tr.consent.healthBackupNote, style: theme.textTheme.bodySmall),
             const SizedBox(height: AppTheme.spacingSm),
             ConsentPurposeTile(
               purpose: ConsentPurpose.healthData,

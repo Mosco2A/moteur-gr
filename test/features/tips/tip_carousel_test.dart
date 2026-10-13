@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:moteur_gr/features/tips/data/tip_card_repository.dart';
-import 'package:moteur_gr/features/tips/domain/models/tip_card.dart';
+import 'package:moteur_gr/domain/tip_card.dart';
 import 'package:moteur_gr/features/tips/presentation/tip_carousel.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E3.4c : carrousel swipeable + filtrage par categorie.
 ///
@@ -65,9 +66,7 @@ void main() {
           body: SizedBox(
             width: 1200,
             height: 600,
-            child: SingleChildScrollView(
-              child: TipCarousel(),
-            ),
+            child: SingleChildScrollView(child: TipCarousel()),
           ),
         ),
       ),
@@ -75,7 +74,9 @@ void main() {
   }
 
   group('TipCarousel -- swipe + filtrage', () {
-    testWidgets('affiche toutes les fiches sans filtre et chips categories', (tester) async {
+    testWidgets('affiche toutes les fiches sans filtre et chips categories', (
+      tester,
+    ) async {
       // Surface large pour les chips
       tester.view.physicalSize = const Size(1200, 800);
       tester.view.devicePixelRatio = 1.0;
@@ -106,10 +107,7 @@ void main() {
       expect(find.text('Entrainement progressif'), findsOneWidget);
 
       // Swipe vers la gauche pour passer a la fiche suivante
-      await tester.drag(
-        find.byType(PageView),
-        const Offset(-300, 0),
-      );
+      await tester.drag(find.byType(PageView), const Offset(-300, 0));
       await tester.pumpAndSettle();
 
       // La deuxieme fiche est maintenant visible
@@ -150,10 +148,17 @@ void main() {
 
       // Message vide affiche
       expect(find.text(t.tips.noTips), findsOneWidget);
-      expect(find.byIcon(Icons.lightbulb_outline), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.ficheConseil,
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('indicateur priorite haute sur les fiches prioritaires', (tester) async {
+    testWidgets('indicateur priorite haute sur les fiches prioritaires', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(1200, 800);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -162,7 +167,12 @@ void main() {
       await tester.pumpAndSettle();
 
       // La premiere fiche a priorite 10 >= 8, donc icone priority_high presente
-      expect(find.byIcon(Icons.priority_high), findsWidgets);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.danger,
+        ),
+        findsWidgets,
+      );
     });
 
     testWidgets('categories dynamiques extraites des donnees', (tester) async {

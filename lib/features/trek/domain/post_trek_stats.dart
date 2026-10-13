@@ -1,4 +1,4 @@
-import 'models/track_point.dart';
+import '../../../domain/track_point.dart';
 
 /// Échantillon d'altitude barométrique horodaté (F6B-03).
 ///
@@ -129,8 +129,9 @@ class PostTrekStatsCalculator {
       distanceKm: distanceKm,
       elevationGainM: gain,
       elevationLossM: loss,
-      elevationSource:
-          useBaro ? ElevationSource.barometer : ElevationSource.gps,
+      elevationSource: useBaro
+          ? ElevationSource.barometer
+          : ElevationSource.gps,
       avgSpeedKmh: avgSpeedKmh,
       maxSpeedKmh: maxSpeedKmh,
       activeDuration: active,

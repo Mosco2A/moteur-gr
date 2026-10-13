@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
@@ -28,15 +28,27 @@ import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 /// dur, il tombe.
 void main() {
   final trace = <TrackPoint>[
-    const TrackPoint(lat: 42.0156, lng: 9.4039, altitude: 5,
-        distanceFromStart: 0),
-    const TrackPoint(lat: 42.0100, lng: 9.3900, altitude: 45,
-        distanceFromStart: 1300),
-    const TrackPoint(lat: 42.0020, lng: 9.3780, altitude: 120,
-        distanceFromStart: 2600),
+    const TrackPoint(
+      lat: 42.0156,
+      lng: 9.4039,
+      altitude: 5,
+      distanceFromStart: 0,
+    ),
+    const TrackPoint(
+      lat: 42.0100,
+      lng: 9.3900,
+      altitude: 45,
+      distanceFromStart: 1300,
+    ),
+    const TrackPoint(
+      lat: 42.0020,
+      lng: 9.3780,
+      altitude: 120,
+      distanceFromStart: 2600,
+    ),
   ];
 
-  final etapes = <StageModel>[
+  final stages = <StageModel>[
     const StageModel(
       trailId: 'test-trail',
       stageNumber: 1,
@@ -52,38 +64,40 @@ void main() {
   ];
 
   Position position() => Position(
-        latitude: 42.0150,
-        longitude: 9.4030,
-        timestamp: DateTime.utc(2026, 6, 15, 9),
-        accuracy: 5,
-        altitude: 12,
-        altitudeAccuracy: 5,
-        heading: 0,
-        headingAccuracy: 0,
-        speed: 1.1,
-        speedAccuracy: 0.5,
-      );
+    latitude: 42.0150,
+    longitude: 9.4030,
+    timestamp: DateTime.utc(2026, 6, 15, 9),
+    accuracy: 5,
+    altitude: 12,
+    altitudeAccuracy: 5,
+    heading: 0,
+    headingAccuracy: 0,
+    speed: 1.1,
+    speedAccuracy: 0.5,
+  );
 
   test('la projection aboutit avec la SEULE trace du sentier actif', () async {
     final container = ProviderContainer(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
         // Rien d'autre : pas de `gpxTrackProvider('default')` de complaisance.
-        gpxTrackProvider(testTrailConfig.id)
-            .overrideWith((ref) => Future.value(trace)),
-        stagesProvider(testTrailConfig.id)
-            .overrideWith((ref) => Future.value(etapes)),
+        gpxTrackProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) => Future.value(trace)),
+        stagesProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) => Future.value(stages)),
         locationProvider.overrideWith((ref) => Stream.value(position())),
       ],
     );
     addTearDown(container.dispose);
 
     // Garde la projection vivante pendant que ses sources se resolvent.
-    final abonnement = container.listen<AsyncValue<TrackPositionState>>(
+    final subscription = container.listen<AsyncValue<TrackPositionState>>(
       trackPositionProvider,
       (_, __) {},
     );
-    addTearDown(abonnement.close);
+    addTearDown(subscription.close);
 
     await container.read(gpxTrackProvider(testTrailConfig.id).future);
     await container.read(stagesProvider(testTrailConfig.id).future);

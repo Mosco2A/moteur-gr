@@ -1,11 +1,18 @@
+/// La date de depart, retenue des qu'elle est choisie : il n'y a pas de bouton
+/// « enregistrer » a oublier.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
+import '../../../core/branding/stepways_icons.dart';
 
 /// Widget de selection de la date de depart pour un sentier.
 ///
@@ -31,7 +38,10 @@ class DepartureDatePicker extends ConsumerWidget {
     return AppCard(
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: Icon(Icons.calendar_today, color: theme.colorScheme.primary),
+        leading: StepIcon(
+          StepwaysIcons.calendrier,
+          color: theme.colorScheme.primary,
+        ),
         title: Text(t.settings.departureDate),
         subtitle: Text(
           reminderState.departureDate != null
@@ -43,12 +53,13 @@ class DepartureDatePicker extends ConsumerWidget {
                 : AppTheme.grisGranite,
           ),
         ),
-        trailing: TextButton.icon(
+        trailing: AppButton(
+          variant: AppButtonVariant.text,
+          icon: StepwaysIcons.calendrier,
+          iconSize: 18,
+          label: reminderState.departureDate != null ? 'Modifier' : 'Choisir',
+          isFullWidth: false,
           onPressed: () => _pickDate(context, ref, reminderState.departureDate),
-          icon: const Icon(Icons.edit_calendar, size: 18),
-          label: Text(
-            reminderState.departureDate != null ? 'Modifier' : 'Choisir',
-          ),
         ),
       ),
     );

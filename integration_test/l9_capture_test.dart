@@ -5,14 +5,14 @@ import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/core/theme/skin_provider.dart';
 import 'package:moteur_gr/features/hub/presentation/hub_screen.dart';
 import 'package:moteur_gr/features/planning/presentation/trek_adjust_screen.dart';
 import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
@@ -36,17 +36,17 @@ void main() {
   const hold = Duration(seconds: 40);
 
   StageModel makeStage(int num, String name) => StageModel(
-        trailId: 'test-trail',
-        stageNumber: num,
-        name: name,
-        distanceKm: 9.0 + num,
-        elevationGainM: 400 + num * 60,
-        elevationLossM: 350 + num * 50,
-        startLat: 42.0,
-        startLng: 9.0,
-        endLat: 42.1,
-        endLng: 9.1,
-      );
+    trailId: 'test-trail',
+    stageNumber: num,
+    name: name,
+    distanceKm: 9.0 + num,
+    elevationGainM: 400 + num * 60,
+    elevationLossM: 350 + num * 50,
+    startLat: 42.0,
+    startLng: 9.0,
+    endLat: 42.1,
+    endLng: 9.1,
+  );
 
   // Etapes du sentier FICTIF de test ([testTrailConfig] — « Sentier des
   // Volcans », 5 etapes en Auvergne). CLOISONNEMENT (#326) : aucun toponyme
@@ -73,8 +73,9 @@ void main() {
         positionStreamProvider.overrideWith((ref) => const Stream.empty()),
         currentStageIdProvider.overrideWith((ref) => const Stream.empty()),
         arrivalEventsProvider.overrideWith((ref) => const Stream.empty()),
-        stagesProvider('test-trail')
-            .overrideWith((ref) => Future.value(stages)),
+        stagesProvider(
+          'test-trail',
+        ).overrideWith((ref) => Future.value(stages)),
         // Trek DEMARRE : la section « Randonner » n'existe qu'en phase hike.
         trekSessionManagerProvider.overrideWith(
           () => _HikingNotifier(
@@ -185,10 +186,16 @@ void main() {
     // terrain que la capture doit prouver, pas seulement l'existence du libelle.
     await tester.drag(scrollable, const Offset(0, 340));
     await tester.pumpAndSettle();
-    expect(adjustCard, findsOneWidget,
-        reason: 'la carte d entree R12 doit etre visible en phase Randonner');
-    expect(find.text(t.hub.sections.hike), findsOneWidget,
-        reason: 'la carte doit etre cadree AVEC l intitule de sa section');
+    expect(
+      adjustCard,
+      findsOneWidget,
+      reason: 'la carte d entree R12 doit etre visible en phase Randonner',
+    );
+    expect(
+      find.text(t.hub.sections.hike),
+      findsOneWidget,
+      reason: 'la carte doit etre cadree AVEC l intitule de sa section',
+    );
 
     debugPrint('L9_SHOT_1 randonner_modifier');
     await Future<void>.delayed(hold);

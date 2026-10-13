@@ -1,3 +1,7 @@
+/// La demande d'avis au store apres un trek, une seule fois par sentier, le
+/// souvenir etant garde en base.
+library;
+
 import 'package:in_app_review/in_app_review.dart';
 
 import '../../../core/data/daos/review_requests_dao.dart';
@@ -15,8 +19,8 @@ class InAppReviewService {
   InAppReviewService({
     required ReviewRequestsDao reviewRequestsDao,
     InAppReview? inAppReview,
-  })  : _reviewRequestsDao = reviewRequestsDao,
-        _inAppReview = inAppReview ?? InAppReview.instance;
+  }) : _reviewRequestsDao = reviewRequestsDao,
+       _inAppReview = inAppReview ?? InAppReview.instance;
 
   final ReviewRequestsDao _reviewRequestsDao;
   final InAppReview _inAppReview;

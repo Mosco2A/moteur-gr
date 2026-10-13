@@ -1,15 +1,19 @@
+/// Le pipeline GPS, du flux brut de positions aux etapes comparables par
+/// CONTENU — sans quoi chaque emission reconstruisait tout.
+library;
+
 import 'package:flutter/foundation.dart' show immutable, listEquals;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/models/stage.dart' show StageModel;
+import '../../../core/models/stage_row.dart' show StageModel;
 import '../data/arrival_detection_service.dart';
 import '../data/gps_service.dart';
 import '../data/stage_detection_service.dart';
-import '../domain/models/stage.dart';
-import '../domain/trek_completion.dart';
+import '../../../domain/stage.dart';
+import '../../../domain/trek_completion.dart';
 import 'stage_providers.dart';
 import 'tracking_providers.dart';
 
@@ -25,7 +29,9 @@ export '../data/stage_detection_service.dart'
 
 /// Stream de positions GPS depuis GpsService.
 ///
-/// Fournit le stream brut de Position — point d'entree du pipeline.
+/// Fournit le stream brut de Position — point d'entree du pipeline. Depuis le
+/// lot 671-00, c'est le flux UNIQUE du robinet GPS
+/// (`positionControllerProvider`).
 /// Depend de gpsServiceProvider (select sur la reference, pas sur le stream).
 final positionStreamProvider = StreamProvider<Position>((ref) {
   final gpsService = ref.watch(gpsServiceProvider);
@@ -78,9 +84,9 @@ class _StageModelsByValue {
 /// d'invalidation, ce recalcul parasite — et l'assertion qu'il provoquait —
 /// n'ont plus lieu d'etre.
 final domainStagesProvider = Provider<List<Stage>>((ref) {
-  final stagesAsync = ref.watch(
-    stagesProvider.select((async) => _StageModelsByValue(async.value)),
-  ).value;
+  final stagesAsync = ref
+      .watch(stagesProvider.select((async) => _StageModelsByValue(async.value)))
+      .value;
   final stages = stagesAsync ?? [];
 
   return stages
@@ -148,6 +154,8 @@ final currentTrekPlanProvider = Provider<TrekPlan?>((ref) {
 /// Stream du stageId courant via StageDetectionService.
 ///
 /// Pipeline : positionStream + domainStages -> stageDetection -> stageId.
+/// Le flux de positions est le flux UNIQUE du robinet GPS (lot 671-00) :
+/// `getPositionStream()` n'ouvre plus de souscription a chaque appel.
 /// select() sur domainStagesProvider pour eviter rebuilds inutiles.
 /// Emet des valeurs distinctes uniquement (hysteresis integree au service).
 final currentStageIdProvider = StreamProvider<String>((ref) {
@@ -164,7 +172,8 @@ final currentStageIdProvider = StreamProvider<String>((ref) {
 /// Stream d'evenements d'arrivee via ArrivalDetectionService.
 ///
 /// Pipeline : positionStream + domainStages + plan -> arrivalDetection ->
-/// ArrivalEvent. Emet quand le randonneur atteint la fin d'une etape (stageEnd)
+/// ArrivalEvent, sur le flux UNIQUE du robinet GPS (lot 671-00). Emet quand
+/// le randonneur atteint la fin d'une etape (stageEnd)
 /// ou la **vraie derniere etape du parcours dans le sens de marche** (trailEnd,
 /// direction-aware via [currentTrekPlanProvider]). Aucune arrivee a l'etape de
 /// depart (garde anti-felicitations prematurees). Guard anti-doublon integre.
@@ -233,7 +242,7 @@ final arrivalCompletionListenerProvider = Provider<void>((ref) {
     final plan = ref.read(currentTrekPlanProvider);
     final completed =
         ref.read(trekSessionManagerProvider).session?.completedStages ??
-            const <String>[];
+        const <String>[];
     final fullyWalked = plan?.isFullyWalked(completed.toSet()) ?? false;
 
     notifier.completeOnArrival(fullyWalked: fullyWalked);

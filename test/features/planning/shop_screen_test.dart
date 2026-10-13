@@ -8,6 +8,7 @@ import 'package:moteur_gr/features/planning/domain/shop_info.dart';
 import 'package:moteur_gr/features/planning/presentation/shop_screen.dart';
 import 'package:moteur_gr/features/planning/providers/shop_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20 (#99460) — ecran RAVITAILLEMENT (« Commerces & services par
 /// etape », data-driven).
@@ -47,18 +48,17 @@ void main() {
     double? lon,
     String phone = '',
     String? website,
-  }) =>
-      Shop(
-        name: name,
-        type: type,
-        stageNumber: stage,
-        products: products,
-        openingHours: hours,
-        latitude: lat,
-        longitude: lon,
-        phone: phone,
-        website: website,
-      );
+  }) => Shop(
+    name: name,
+    type: type,
+    stageNumber: stage,
+    products: products,
+    openingHours: hours,
+    latitude: lat,
+    longitude: lon,
+    phone: phone,
+    website: website,
+  );
 
   /// Donnees de test : commerces aux etapes 1 et 4 (gap de 3 apres l'etape 1,
   /// au-dela du seuil 2 -> alerte). Un commerce porte tel + site (extension).
@@ -68,20 +68,26 @@ void main() {
         gapThreshold: gapThreshold,
         limitedSupplyNote: note,
         shops: [
-          shop('Epicerie Alpha', ShopKind.epicerie, 1,
-              products: ['Pain', 'Fromage', 'Eau', 'Gaz', 'Cinquieme produit'],
-              lat: 42.0, lon: 9.0, phone: '+33123456789',
-              website: 'https://example.org/alpha'),
+          shop(
+            'Epicerie Alpha',
+            ShopKind.epicerie,
+            1,
+            products: ['Pain', 'Fromage', 'Eau', 'Gaz', 'Cinquieme produit'],
+            lat: 42.0,
+            lon: 9.0,
+            phone: '+33123456789',
+            website: 'https://example.org/alpha',
+          ),
           shop('Pharmacie Alpha', ShopKind.pharmacie, 1),
           shop('Bar Delta', ShopKind.bar, 4, hours: ''),
         ],
       );
 
   List<Override> overridesWith(TrailShops? data) => [
-        trailShopsProvider(trailId).overrideWithValue(data),
-        // Filtre par defaut « Tous » (aucun filtre) — etat propre par test.
-        shopTypeFilterProvider.overrideWith((ref) => null),
-      ];
+    trailShopsProvider(trailId).overrideWithValue(data),
+    // Filtre par defaut « Tous » (aucun filtre) — etat propre par test.
+    shopTypeFilterProvider.overrideWith((ref) => null),
+  ];
 
   Future<void> settle(WidgetTester tester) async {
     for (var i = 0; i < 8; i++) {
@@ -178,17 +184,20 @@ void main() {
       expect(data.gapAfter(1), 0);
     });
 
-    test('fromJson tolerant : type inconnu -> epicerie, GPS absent -> null', () {
-      final s = Shop.fromJson({
-        'name': 'X',
-        'type': 'inconnu',
-        'stageNumber': 2,
-        'products': ['A'],
-      });
-      expect(s.type, ShopKind.epicerie);
-      expect(s.hasCoordinates, isFalse);
-      expect(s.latitude, isNull);
-    });
+    test(
+      'fromJson tolerant : type inconnu -> epicerie, GPS absent -> null',
+      () {
+        final s = Shop.fromJson({
+          'name': 'X',
+          'type': 'inconnu',
+          'stageNumber': 2,
+          'products': ['A'],
+        });
+        expect(s.type, ShopKind.epicerie);
+        expect(s.hasCoordinates, isFalse);
+        expect(s.latitude, isNull);
+      },
+    );
   });
 
   // --- Catalogue Mare a Mare Centre (donnees reelles, honnetete) -----------
@@ -211,32 +220,71 @@ void main() {
       expect(data.shopsForStage(7), isNotEmpty);
     });
 
-    test('AUCUN commerce corse du GR20 recopie (Calenzana/Vizzavona/Conca...)',
-        () {
-      final data = ShopCatalog.forTrail('mare-a-mare-centre')!;
-      final names = data.shops.map((s) => s.name.toLowerCase()).join(' | ');
-      for (final gr20Place in [
-        'calenzana',
-        'haut-asco',
-        'vizzavona',
-        'bavella',
-        'conca',
-        'castel',
-      ]) {
-        expect(names.contains(gr20Place), isFalse,
-            reason: 'ne doit pas contenir le lieu GR20 "$gr20Place"');
-      }
-    });
+    test(
+      'AUCUN commerce corse du GR20 recopie (Calenzana/Vizzavona/Conca...)',
+      () {
+        final data = ShopCatalog.forTrail('mare-a-mare-centre')!;
+        final names = data.shops.map((s) => s.name.toLowerCase()).join(' | ');
+        for (final gr20Place in [
+          'calenzana',
+          'haut-asco',
+          'vizzavona',
+          'bavella',
+          'conca',
+          'castel',
+        ]) {
+          expect(
+            names.contains(gr20Place),
+            isFalse,
+            reason: 'ne doit pas contenir le lieu GR20 "$gr20Place"',
+          );
+        }
+      },
+    );
 
-    test('honnetete : entrees a completer explicites, pas de GPS 0,0 invente',
-        () {
+    // ATTENTE VOLONTAIREMENT INVERSEE PAR LE LOT 645-08 (voie V2, arbitrage de
+    // Christophe du 02/10/2026). Elle exigeait qu'« au moins une entree »
+    // porte « a completer » dans ses horaires : elle GARDAIT donc le defaut
+    // que l'inventaire 593 avait releve — onze commerces montraient au
+    // randonneur, sous une icone d'horloge, un marqueur destine a l'editeur.
+    // L'honnetete ne change pas de camp, elle change de forme : un horaire
+    // qu'on n'a pas ne s'ecrit plus, il est absent, et la ligne disparait.
+    // Le refus d'inventer un GPS 0,0 — l'autre moitie de cette garde — reste
+    // mot pour mot.
+    test('honnetete : aucun horaire creux livre, pas de GPS 0,0 invente', () {
       final data = ShopCatalog.forTrail('mare-a-mare-centre')!;
-      // Au moins une entree signale honnetement un manque (« a completer » /
-      // « a verifier »), plutot qu'inventer.
-      final hasHonestGap = data.shops.any((s) =>
-          s.openingHours.toLowerCase().contains('completer') ||
-          s.name.toLowerCase().contains('verifier'));
-      expect(hasHonestGap, isTrue);
+      // AUCUNE entree ne livre le marqueur de l'editeur au randonneur.
+      final creux = data.shops
+          .where((s) => s.openingHours.toLowerCase().contains('completer'))
+          .map((s) => '${s.name} : ${s.openingHours}')
+          .toList();
+      expect(
+        creux,
+        isEmpty,
+        reason:
+            'VOIE V2 : un horaire inconnu est RETIRE, jamais remplace par '
+            'une chaine creuse. Un `openingHours` qui dit « a completer » '
+            'rallume une ligne d horaire qui ne dit rien.',
+      );
+      // ET L ABSENCE EST UNE VRAIE ABSENCE, pas un tiret ni un blanc. Onze
+      // entrees ont perdu leur horaire : leur `openingHours` est la chaine
+      // VIDE, seule forme que `shop_screen.dart` ne construit pas
+      // (`if (shop.openingHours.isNotEmpty)`, deux fois : apercu et fiche).
+      final sansHoraire = data.shops.where((s) => s.openingHours.isEmpty);
+      expect(
+        sansHoraire,
+        isNotEmpty,
+        reason: 'le lot 645-08 a retire onze horaires creux',
+      );
+      for (final s in data.shops) {
+        expect(
+          s.openingHours,
+          anyOf(isEmpty, matches(RegExp(r'\S'))),
+          reason:
+              '${s.name} : un horaire est renseigne ou absent, jamais un '
+              'blanc ni un tiret',
+        );
+      }
       // Aucune coordonnee (0,0) bidon : soit GPS absent, soit coords plausibles.
       for (final s in data.shops) {
         if (s.hasCoordinates) {
@@ -253,8 +301,9 @@ void main() {
   // --- Ecran : filtres + liste groupee par etape ---------------------------
 
   group('ecran ravitaillement (filtres + liste)', () {
-    testWidgets('affiche titre, alerte data-driven et cartes commerces',
-        (tester) async {
+    testWidgets('affiche titre, alerte data-driven et cartes commerces', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: overridesWith(testShops())));
       await settle(tester);
 
@@ -268,8 +317,9 @@ void main() {
       expect(find.text('Bar Delta'), findsOneWidget);
     });
 
-    testWidgets('alerte « ravitaillement limite » masquee si pas de note',
-        (tester) async {
+    testWidgets('alerte « ravitaillement limite » masquee si pas de note', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(overrides: overridesWith(testShops(note: ''))),
       );
@@ -280,8 +330,9 @@ void main() {
       expect(find.text('Epicerie Alpha'), findsOneWidget);
     });
 
-    testWidgets('liste groupee par etape (en-tetes d\'etape presents)',
-        (tester) async {
+    testWidgets('liste groupee par etape (en-tetes d\'etape presents)', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: overridesWith(testShops())));
       await settle(tester);
       // En-tetes d'etape (regroupement data-driven) : etape 1 et etape 4
@@ -310,8 +361,9 @@ void main() {
       expect(find.text('Bar Delta'), findsNothing);
     });
 
-    testWidgets('filtre par type : re-taper deselectionne (retour a Tous)',
-        (tester) async {
+    testWidgets('filtre par type : re-taper deselectionne (retour a Tous)', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: overridesWith(testShops())));
       await settle(tester);
 
@@ -326,8 +378,9 @@ void main() {
       expect(find.text('Bar Delta'), findsOneWidget);
     });
 
-    testWidgets('alerte gap affichee sur une carte au-dela du seuil',
-        (tester) async {
+    testWidgets('alerte gap affichee sur une carte au-dela du seuil', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: overridesWith(testShops())));
       await settle(tester);
       // Gap de 3 apres l'etape 1 (> seuil 2) -> texte d'alerte court present.
@@ -338,28 +391,35 @@ void main() {
   // --- Bottom sheet detail -------------------------------------------------
 
   group('bottom sheet detail', () {
-    testWidgets('tap sur une carte ouvre le detail (infos + produits complets)',
-        (tester) async {
-      await tester.pumpWidget(wrap(overrides: overridesWith(testShops())));
-      await settle(tester);
+    testWidgets(
+      'tap sur une carte ouvre le detail (infos + produits complets)',
+      (tester) async {
+        await tester.pumpWidget(wrap(overrides: overridesWith(testShops())));
+        await settle(tester);
 
-      await tester.tap(find.text('Epicerie Alpha'));
-      await settle(tester);
+        await tester.tap(find.text('Epicerie Alpha'));
+        await settle(tester);
 
-      // Sections du detail (parite GR20).
-      expect(find.text(t.shop.sectionInfo), findsOneWidget);
-      expect(find.text(t.shop.sectionProducts), findsOneWidget);
-      // Le 5e produit (non montre dans l'apercu a 4) apparait dans le detail.
-      expect(find.text('Cinquieme produit'), findsOneWidget);
-      // Champ GPS present (coords fournies pour ce commerce).
-      expect(find.text(t.shop.fieldGps), findsOneWidget);
-      // Contact tel (extension StepWays) cliquable.
-      expect(find.text('+33123456789'), findsOneWidget);
-      expect(find.byIcon(Icons.open_in_new), findsOneWidget);
-    });
+        // Sections du detail (parite GR20).
+        expect(find.text(t.shop.sectionInfo), findsOneWidget);
+        expect(find.text(t.shop.sectionProducts), findsOneWidget);
+        // Le 5e produit (non montre dans l'apercu a 4) apparait dans le detail.
+        expect(find.text('Cinquieme produit'), findsOneWidget);
+        // Champ GPS present (coords fournies pour ce commerce).
+        expect(find.text(t.shop.fieldGps), findsOneWidget);
+        // Contact tel (extension StepWays) cliquable.
+        expect(find.text('+33123456789'), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.lien,
+          ),
+          findsOneWidget,
+        );
+      },
+    );
 
-    testWidgets('detail sans GPS : ligne GPS masquee (honnetete #99460)',
-        (tester) async {
+    testWidgets('detail sans GPS ni horaire : les deux lignes sont masquees '
+        '(honnetete #99460, voie V2 du lot 645-08)', (tester) async {
       // Bar Delta n'a pas de coords ni d'horaire (etape 4, plus bas dans la
       // liste) : on l'amene a l'ecran avant de taper (evite un tap manque).
       await tester.pumpWidget(wrap(overrides: overridesWith(testShops())));
@@ -377,6 +437,10 @@ void main() {
       expect(find.text(t.shop.fieldType), findsOneWidget);
       // Pas de ligne GPS (coords null -> masquee, pas de 0,0 faux).
       expect(find.text(t.shop.fieldGps), findsNothing);
+      // NI LIGNE D HORAIRE : c'est le rendu que la donnee livree produit
+      // desormais pour onze commerces du Mare a Mare Centre (lot 645-08).
+      // Pas de libelle « Horaires », donc pas de valeur vide a cote.
+      expect(find.text(t.shop.fieldHours), findsNothing);
     });
   });
 
@@ -408,18 +472,18 @@ void main() {
     // rien ». Les deux cles sont supprimees des cinq langues. Ce qui reste
     // exige : l'AppBar (donc le retour) tient, et rien n'est promis.
     void exigeAucunePromesse() {
-      for (final promesse in <String>[
-        'bientôt',
-        'bientot',
-        'prochainement',
-      ]) {
-        expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
-            reason: 'l ecran ravitaillement vide promet encore « $promesse »');
+      for (final promesse in <String>['bientôt', 'bientot', 'prochainement']) {
+        expect(
+          find.textContaining(promesse, skipOffstage: false),
+          findsNothing,
+          reason: 'l ecran ravitaillement vide promet encore « $promesse »',
+        );
       }
     }
 
-    testWidgets('sentier sans donnees : rien de promis, pas de crash',
-        (tester) async {
+    testWidgets('sentier sans donnees : rien de promis, pas de crash', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: overridesWith(null)));
       await settle(tester);
 
@@ -443,56 +507,72 @@ void main() {
 
   group('navigation', () {
     testWidgets(
-        'la carte HUB « Ravitaillement » ouvre l\'ecran, retour sans crash',
-        (tester) async {
-      // Routeur minimal reproduisant l'entree HUB : une carte
-      // `Icons.shopping_cart` (comme le HUB) qui `push` vers Ravitaillement.
-      final router = GoRouter(
-        initialLocation: '/home',
-        routes: [
-          GoRoute(
-            path: '/home',
-            builder: (context, state) => Scaffold(
-              body: Center(
-                child: InkWell(
-                  onTap: () => context.push('/trail/$trailId/shop'),
-                  child: const Icon(Icons.shopping_cart),
+      'la carte HUB « Ravitaillement » ouvre l\'ecran, retour sans crash',
+      (tester) async {
+        // Routeur minimal reproduisant l'entree HUB : une carte
+        // `Icons.shopping_cart` (comme le HUB) qui `push` vers Ravitaillement.
+        final router = GoRouter(
+          initialLocation: '/home',
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => Scaffold(
+                body: Center(
+                  child: InkWell(
+                    onTap: () => context.push('/trail/$trailId/shop'),
+                    child: const StepIcon(StepwaysIcons.panier),
+                  ),
                 ),
               ),
             ),
-          ),
-          GoRoute(
-            path: '/trail/:id/shop',
-            builder: (context, state) => ShopScreen(
-              trailId: state.pathParameters['id'] ?? '',
+            GoRoute(
+              path: '/trail/:id/shop',
+              builder: (context, state) =>
+                  ShopScreen(trailId: state.pathParameters['id'] ?? ''),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: overridesWith(testShops()),
+            child: TranslationProvider(
+              child: MaterialApp.router(routerConfig: router),
             ),
           ),
-        ],
-      );
+        );
+        await settle(tester);
 
-      await tester.pumpWidget(ProviderScope(
-        overrides: overridesWith(testShops()),
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      ));
-      await settle(tester);
+        // Aller : taper la carte HUB (icone shopping_cart) ouvre Ravitaillement.
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.panier,
+          ),
+          findsOneWidget,
+        );
+        await tester.tap(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.panier,
+          ),
+        );
+        await settle(tester);
+        await pumpUntil(tester, find.text(t.shop.title));
+        expect(find.text(t.shop.title), findsWidgets);
 
-      // Aller : taper la carte HUB (icone shopping_cart) ouvre Ravitaillement.
-      expect(find.byIcon(Icons.shopping_cart), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.shopping_cart));
-      await settle(tester);
-      await pumpUntil(tester, find.text(t.shop.title));
-      expect(find.text(t.shop.title), findsWidgets);
-
-      // Retour : bouton back de l'AppBar (Icons.arrow_back) -> retour au HUB
-      // sans crash (pile preservee, jamais context.go qui viderait la pile).
-      await pumpUntil(tester, find.byIcon(Icons.arrow_back));
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await settle(tester);
-      await pumpUntilGone(tester, find.text(t.shop.title));
-      expect(find.text(t.shop.title), findsNothing);
-      expect(find.byIcon(Icons.shopping_cart), findsOneWidget);
-    });
+        // Retour : bouton back de l'AppBar (Icons.arrow_back) -> retour au HUB
+        // sans crash (pile preservee, jamais context.go qui viderait la pile).
+        await pumpUntil(tester, find.byType(BackButtonIcon));
+        await tester.tap(find.byType(BackButtonIcon));
+        await settle(tester);
+        await pumpUntilGone(tester, find.text(t.shop.title));
+        expect(find.text(t.shop.title), findsNothing);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.panier,
+          ),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

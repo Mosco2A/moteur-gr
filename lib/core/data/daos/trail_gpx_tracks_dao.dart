@@ -1,3 +1,7 @@
+/// En-tetes des traces GPX d'un itineraire ; leurs points, eux, vivent dans
+/// trail_gpx_points_dao.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -20,8 +24,9 @@ class TrailGpxTracksDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere une trace par son id
   Future<TrailGpxTrack?> getById(String id) {
-    return (select(trailGpxTracks)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      trailGpxTracks,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Insere ou remplace une trace

@@ -48,18 +48,16 @@ void main() {
     });
 
     test('colorFor retourne violet pour expert', () {
-      expect(
-        DifficultyBadge.colorFor('expert'),
-        const Color(0xFF7B1FA2),
-      );
+      expect(DifficultyBadge.colorFor('expert'), const Color(0xFF7B1FA2));
     });
 
     test('colorFor retourne gris pour valeur inconnue', () {
       expect(DifficultyBadge.colorFor('unknown'), AppTheme.grisGranite);
     });
 
-    testWidgets('affiche la valeur brute pour difficulté inconnue',
-        (tester) async {
+    testWidgets('affiche la valeur brute pour difficulté inconnue', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildBadge('extreme'));
       expect(find.text('extreme'), findsOneWidget);
     });

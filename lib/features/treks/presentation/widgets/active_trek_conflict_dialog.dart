@@ -1,8 +1,13 @@
+/// Le choix propose quand une AUTRE rando est deja en cours : terminer,
+/// abandonner, annuler. La couche data reste sans Flutter.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../i18n/translations.g.dart';
-import '../../../trek/providers/tracking_providers.dart';
+import '../../../../shared/widgets/app_button.dart';
+import '../../../trek/trek_facade.dart' show ActiveTrekConflictChoice;
 
 /// UI de resolution du CONFLIT d'unicite de rando active (StepWays LOT 2, C4).
 ///
@@ -37,28 +42,34 @@ Future<ActiveTrekConflictChoice> showActiveTrekConflictDialog(
         actionsOverflowButtonSpacing: AppTheme.spacingSm,
         actions: [
           // Annuler : ne rien faire (garder la rando en cours).
-          TextButton(
+          AppButton(
             key: const ValueKey('conflict-cancel'),
-            onPressed: () => Navigator.of(dialogContext)
-                .pop(ActiveTrekConflictChoice.cancel),
-            child: Text(t.trekState.abandonDialog.cancel),
+            variant: AppButtonVariant.text,
+            label: t.trekState.abandonDialog.cancel,
+            isFullWidth: false,
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(ActiveTrekConflictChoice.cancel),
           ),
           // Abandonner la rando en cours (status=abandoned), puis demarrer.
-          TextButton(
+          AppButton(
             key: const ValueKey('conflict-abandon'),
-            onPressed: () => Navigator.of(dialogContext)
-                .pop(ActiveTrekConflictChoice.abandonCurrent),
-            child: Text(
-              t.trekState.abandonDialog.abandon,
-              style: const TextStyle(color: AppTheme.rougeUrgence),
-            ),
+            variant: AppButtonVariant.text,
+            tone: AppTheme.emergencyRed,
+            label: t.trekState.abandonDialog.abandon,
+            isFullWidth: false,
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(ActiveTrekConflictChoice.abandonCurrent),
           ),
           // Terminer la rando en cours (status=completed), puis demarrer.
-          FilledButton(
+          AppButton(
             key: const ValueKey('conflict-finish'),
-            onPressed: () => Navigator.of(dialogContext)
-                .pop(ActiveTrekConflictChoice.finishCurrent),
-            child: Text(t.trekState.abandonDialog.finish),
+            label: t.trekState.abandonDialog.finish,
+            isFullWidth: false,
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(ActiveTrekConflictChoice.finishCurrent),
           ),
         ],
       );

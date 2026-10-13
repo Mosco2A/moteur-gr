@@ -1,12 +1,20 @@
+/// Le code de reconnexion s'AFFICHE a la demande, et c'est tout : au marcheur
+/// de le noter, puisque rien ne part par mail ni par SMS.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
+import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/services/recovery_code_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran « Afficher mon code de reconnexion » (StepWays — modèle code-sur-tel).
 ///
@@ -25,8 +33,55 @@ class RecoveryCodeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.recoveryCode);
     final theme = Theme.of(context);
     final tr = Translations.of(context);
+
+    // TACHE 596 (C2) — ON NE PROMET PLUS UN COFFRE VIDE.
+    //
+    // Tant que rien n'alimente le coffre (mesure declaree et verifiee par
+    // invariante, cf. [ReconnectionVault]), cet ecran disait au randonneur
+    // que son code « ouvre son coffre sur un autre telephone » — c'etait faux :
+    // aucun code de production n'y ecrit, aucun ecran ne permet de saisir un
+    // code, et il n'existe meme pas de transport. Pire, afficher cet ecran
+    // FABRIQUAIT le code au passage, posant dans le coffre-fort du telephone un
+    // secret qui n'ouvre rien.
+    //
+    // Ici, on dit l'etat reel — et on ne lit meme pas `recoveryCodeProvider`,
+    // donc aucun code n'est cree.
+    if (!ReconnectionVault.alimente) {
+      return Scaffold(
+        appBar: AppHeader(title: tr.recovery.title),
+        body: ListView(
+          padding: const EdgeInsets.all(AppTheme.spacingBase),
+          children: [
+            AppCard(
+              padding: const EdgeInsets.all(AppTheme.spacingLg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    tr.recovery.noVaultTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppTheme.spacingSm),
+                  Text(
+                    tr.recovery.noVaultBody,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Le code n'est LU (donc fabrique, `getOrCreate`) qu'une fois le coffre
+    // reellement alimente. C'est volontairement APRES la sortie ci-dessus.
     final codeAsync = ref.watch(recoveryCodeProvider);
 
     return Scaffold(
@@ -43,10 +98,7 @@ class RecoveryCodeScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
             // Explication : à quoi sert le code + où il ouvre le coffre.
-            Text(
-              tr.recovery.intro,
-              style: theme.textTheme.bodyMedium,
-            ),
+            Text(tr.recovery.intro, style: theme.textTheme.bodyMedium),
             const SizedBox(height: AppTheme.spacingLg),
 
             // Le CODE, en gros, monospace, lisible et copiable.
@@ -72,10 +124,12 @@ class RecoveryCodeScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: AppTheme.spacingMd),
-                  OutlinedButton.icon(
+                  AppButton(
+                    variant: AppButtonVariant.outline,
+                    icon: StepwaysIcons.copier,
+                    iconSize: 18,
+                    label: tr.recovery.copy,
                     onPressed: () => _copy(context, ref, code),
-                    icon: const Icon(Icons.copy, size: 18),
-                    label: Text(tr.recovery.copy),
                   ),
                 ],
               ),
@@ -88,8 +142,8 @@ class RecoveryCodeScreen extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(
-                    Icons.warning_amber_rounded,
+                  const StepIcon(
+                    StepwaysIcons.danger,
                     color: AppTheme.orangeDifficile,
                     size: 22,
                   ),

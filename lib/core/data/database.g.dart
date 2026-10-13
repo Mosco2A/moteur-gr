@@ -4388,17 +4388,15 @@ class $TrailMetaTable extends TrailMeta
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
-  static const VerificationMeta _dataVersionMeta = const VerificationMeta(
-    'dataVersion',
-  );
   @override
-  late final GeneratedColumn<int> dataVersion = GeneratedColumn<int>(
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur, int>
+  dataVersion = GeneratedColumn<int>(
     'data_version',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-  );
+  ).withConverter<HorodatageServeur>($TrailMetaTable.$converterdataVersion);
   static const VerificationMeta _lastSyncMeta = const VerificationMeta(
     'lastSync',
   );
@@ -4421,12 +4419,22 @@ class $TrailMetaTable extends TrailMeta
     defaultValue: const Constant('active'),
   );
   @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
+      GeneratedColumn<int>(
+        'rev',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<HorodatageServeur?>($TrailMetaTable.$converterrevn);
+  @override
   List<GeneratedColumn> get $columns => [
     id,
     code,
     dataVersion,
     lastSync,
     status,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4452,17 +4460,6 @@ class $TrailMetaTable extends TrailMeta
       );
     } else if (isInserting) {
       context.missing(_codeMeta);
-    }
-    if (data.containsKey('data_version')) {
-      context.handle(
-        _dataVersionMeta,
-        dataVersion.isAcceptableOrUnknown(
-          data['data_version']!,
-          _dataVersionMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_dataVersionMeta);
     }
     if (data.containsKey('last_sync')) {
       context.handle(
@@ -4493,10 +4490,12 @@ class $TrailMetaTable extends TrailMeta
         DriftSqlType.string,
         data['${effectivePrefix}code'],
       )!,
-      dataVersion: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}data_version'],
-      )!,
+      dataVersion: $TrailMetaTable.$converterdataVersion.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}data_version'],
+        )!,
+      ),
       lastSync: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}last_sync'],
@@ -4505,6 +4504,12 @@ class $TrailMetaTable extends TrailMeta
         DriftSqlType.string,
         data['${effectivePrefix}status'],
       )!,
+      rev: $TrailMetaTable.$converterrevn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}rev'],
+        ),
+      ),
     );
   }
 
@@ -4512,6 +4517,13 @@ class $TrailMetaTable extends TrailMeta
   $TrailMetaTable createAlias(String alias) {
     return $TrailMetaTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<HorodatageServeur, int> $converterdataVersion =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur, int> $converterrev =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $converterrevn =
+      NullAwareTypeConverter.wrap($converterrev);
 }
 
 class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
@@ -4521,31 +4533,58 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
   /// Code unique du sentier (ex: 'gr10', 'tmb')
   final String code;
 
-  /// Version des donnees (incremente a chaque maj serveur)
-  final int dataVersion;
+  /// L INSTANT DE LA DERNIERE PUBLICATION DU SENTIER, recopie dans sa fiche.
+  /// Millisecondes depuis l epoch (cf. `revision_de_donnee.dart`).
+  ///
+  /// C EST UNE COPIE, PAS LE REPERE QUI FAIT FOI, et la distinction a ete mesuree
+  /// a la tache 607 : toutes les lectures qui DECIDENT d une mise a jour viennent
+  /// de `trail_manifests`, jamais d ici. Le repere qui fait foi est
+  /// `trail_manifests.localVersion`, ecrit dans la transaction de la pose.
+  final HorodatageServeur dataVersion;
 
   /// Date de derniere synchronisation (ISO 8601, nullable)
   final String? lastSync;
 
   /// Statut du sentier ('active', 'archived', 'draft')
   final String status;
+
+  /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
+  /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, celles que la v28 a
+  /// remises a zero, et les donnees embarquees qui ne declarent pas d instant.
+  ///
+  /// STOCKE EN MILLISECONDES DEPUIS L EPOCH, DANS LA MEME COLONNE `INTEGER`
+  /// QU AVANT : la bascule du compteur vers la date ne demande AUCUN
+  /// `ALTER TABLE`. Le modele complet — et pourquoi le telephone ne doit jamais
+  /// y ecrire sa propre horloge — est dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final HorodatageServeur? rev;
   const TrailMetaData({
     required this.id,
     required this.code,
     required this.dataVersion,
     this.lastSync,
     required this.status,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['code'] = Variable<String>(code);
-    map['data_version'] = Variable<int>(dataVersion);
+    {
+      map['data_version'] = Variable<int>(
+        $TrailMetaTable.$converterdataVersion.toSql(dataVersion),
+      );
+    }
     if (!nullToAbsent || lastSync != null) {
       map['last_sync'] = Variable<String>(lastSync);
     }
     map['status'] = Variable<String>(status);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>($TrailMetaTable.$converterrevn.toSql(rev));
+    }
     return map;
   }
 
@@ -4558,6 +4597,7 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
           ? const Value.absent()
           : Value(lastSync),
       status: Value(status),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -4569,9 +4609,10 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
     return TrailMetaData(
       id: serializer.fromJson<String>(json['id']),
       code: serializer.fromJson<String>(json['code']),
-      dataVersion: serializer.fromJson<int>(json['dataVersion']),
+      dataVersion: serializer.fromJson<HorodatageServeur>(json['dataVersion']),
       lastSync: serializer.fromJson<String?>(json['lastSync']),
       status: serializer.fromJson<String>(json['status']),
+      rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
     );
   }
   @override
@@ -4580,24 +4621,27 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'code': serializer.toJson<String>(code),
-      'dataVersion': serializer.toJson<int>(dataVersion),
+      'dataVersion': serializer.toJson<HorodatageServeur>(dataVersion),
       'lastSync': serializer.toJson<String?>(lastSync),
       'status': serializer.toJson<String>(status),
+      'rev': serializer.toJson<HorodatageServeur?>(rev),
     };
   }
 
   TrailMetaData copyWith({
     String? id,
     String? code,
-    int? dataVersion,
+    HorodatageServeur? dataVersion,
     Value<String?> lastSync = const Value.absent(),
     String? status,
+    Value<HorodatageServeur?> rev = const Value.absent(),
   }) => TrailMetaData(
     id: id ?? this.id,
     code: code ?? this.code,
     dataVersion: dataVersion ?? this.dataVersion,
     lastSync: lastSync.present ? lastSync.value : this.lastSync,
     status: status ?? this.status,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailMetaData copyWithCompanion(TrailMetaCompanion data) {
     return TrailMetaData(
@@ -4608,6 +4652,7 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
           : this.dataVersion,
       lastSync: data.lastSync.present ? data.lastSync.value : this.lastSync,
       status: data.status.present ? data.status.value : this.status,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -4618,13 +4663,14 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
           ..write('code: $code, ')
           ..write('dataVersion: $dataVersion, ')
           ..write('lastSync: $lastSync, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, code, dataVersion, lastSync, status);
+  int get hashCode => Object.hash(id, code, dataVersion, lastSync, status, rev);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4633,15 +4679,17 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
           other.code == this.code &&
           other.dataVersion == this.dataVersion &&
           other.lastSync == this.lastSync &&
-          other.status == this.status);
+          other.status == this.status &&
+          other.rev == this.rev);
 }
 
 class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
   final Value<String> id;
   final Value<String> code;
-  final Value<int> dataVersion;
+  final Value<HorodatageServeur> dataVersion;
   final Value<String?> lastSync;
   final Value<String> status;
+  final Value<HorodatageServeur?> rev;
   final Value<int> rowid;
   const TrailMetaCompanion({
     this.id = const Value.absent(),
@@ -4649,14 +4697,16 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
     this.dataVersion = const Value.absent(),
     this.lastSync = const Value.absent(),
     this.status = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailMetaCompanion.insert({
     required String id,
     required String code,
-    required int dataVersion,
+    required HorodatageServeur dataVersion,
     this.lastSync = const Value.absent(),
     this.status = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        code = Value(code),
@@ -4667,6 +4717,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
     Expression<int>? dataVersion,
     Expression<String>? lastSync,
     Expression<String>? status,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4675,6 +4726,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
       if (dataVersion != null) 'data_version': dataVersion,
       if (lastSync != null) 'last_sync': lastSync,
       if (status != null) 'status': status,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4682,9 +4734,10 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
   TrailMetaCompanion copyWith({
     Value<String>? id,
     Value<String>? code,
-    Value<int>? dataVersion,
+    Value<HorodatageServeur>? dataVersion,
     Value<String?>? lastSync,
     Value<String>? status,
+    Value<HorodatageServeur?>? rev,
     Value<int>? rowid,
   }) {
     return TrailMetaCompanion(
@@ -4693,6 +4746,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
       dataVersion: dataVersion ?? this.dataVersion,
       lastSync: lastSync ?? this.lastSync,
       status: status ?? this.status,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4707,13 +4761,20 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
       map['code'] = Variable<String>(code.value);
     }
     if (dataVersion.present) {
-      map['data_version'] = Variable<int>(dataVersion.value);
+      map['data_version'] = Variable<int>(
+        $TrailMetaTable.$converterdataVersion.toSql(dataVersion.value),
+      );
     }
     if (lastSync.present) {
       map['last_sync'] = Variable<String>(lastSync.value);
     }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
+    }
+    if (rev.present) {
+      map['rev'] = Variable<int>(
+        $TrailMetaTable.$converterrevn.toSql(rev.value),
+      );
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -4729,6 +4790,7 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
           ..write('dataVersion: $dataVersion, ')
           ..write('lastSync: $lastSync, ')
           ..write('status: $status, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4849,6 +4911,17 @@ class $TrailItinerariesTable extends TrailItineraries
     requiredDuringInsert: true,
   );
   @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
+      GeneratedColumn<int>(
+        'rev',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<HorodatageServeur?>(
+        $TrailItinerariesTable.$converterrevn,
+      );
+  @override
   List<GeneratedColumn> get $columns => [
     id,
     trailId,
@@ -4861,6 +4934,7 @@ class $TrailItinerariesTable extends TrailItineraries
     distanceKm,
     elevationGain,
     stageCount,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5015,6 +5089,12 @@ class $TrailItinerariesTable extends TrailItineraries
         DriftSqlType.int,
         data['${effectivePrefix}stage_count'],
       )!,
+      rev: $TrailItinerariesTable.$converterrevn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}rev'],
+        ),
+      ),
     );
   }
 
@@ -5022,6 +5102,11 @@ class $TrailItinerariesTable extends TrailItineraries
   $TrailItinerariesTable createAlias(String alias) {
     return $TrailItinerariesTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<HorodatageServeur, int> $converterrev =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $converterrevn =
+      NullAwareTypeConverter.wrap($converterrev);
 }
 
 class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
@@ -5057,6 +5142,19 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
 
   /// Nombre d'etapes
   final int stageCount;
+
+  /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
+  /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, celles que la v28 a
+  /// remises a zero, et les donnees embarquees qui ne declarent pas d instant.
+  ///
+  /// STOCKE EN MILLISECONDES DEPUIS L EPOCH, DANS LA MEME COLONNE `INTEGER`
+  /// QU AVANT : la bascule du compteur vers la date ne demande AUCUN
+  /// `ALTER TABLE`. Le modele complet — et pourquoi le telephone ne doit jamais
+  /// y ecrire sa propre horloge — est dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final HorodatageServeur? rev;
   const TrailItinerary({
     required this.id,
     required this.trailId,
@@ -5069,6 +5167,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     required this.distanceKm,
     required this.elevationGain,
     required this.stageCount,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5084,6 +5183,11 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     map['distance_km'] = Variable<double>(distanceKm);
     map['elevation_gain'] = Variable<int>(elevationGain);
     map['stage_count'] = Variable<int>(stageCount);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(
+        $TrailItinerariesTable.$converterrevn.toSql(rev),
+      );
+    }
     return map;
   }
 
@@ -5100,6 +5204,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
       distanceKm: Value(distanceKm),
       elevationGain: Value(elevationGain),
       stageCount: Value(stageCount),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -5120,6 +5225,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
       distanceKm: serializer.fromJson<double>(json['distanceKm']),
       elevationGain: serializer.fromJson<int>(json['elevationGain']),
       stageCount: serializer.fromJson<int>(json['stageCount']),
+      rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
     );
   }
   @override
@@ -5137,6 +5243,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
       'distanceKm': serializer.toJson<double>(distanceKm),
       'elevationGain': serializer.toJson<int>(elevationGain),
       'stageCount': serializer.toJson<int>(stageCount),
+      'rev': serializer.toJson<HorodatageServeur?>(rev),
     };
   }
 
@@ -5152,6 +5259,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     double? distanceKm,
     int? elevationGain,
     int? stageCount,
+    Value<HorodatageServeur?> rev = const Value.absent(),
   }) => TrailItinerary(
     id: id ?? this.id,
     trailId: trailId ?? this.trailId,
@@ -5164,6 +5272,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     distanceKm: distanceKm ?? this.distanceKm,
     elevationGain: elevationGain ?? this.elevationGain,
     stageCount: stageCount ?? this.stageCount,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailItinerary copyWithCompanion(TrailItinerariesCompanion data) {
     return TrailItinerary(
@@ -5184,6 +5293,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
       stageCount: data.stageCount.present
           ? data.stageCount.value
           : this.stageCount,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -5200,7 +5310,8 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
           ..write('nameEs: $nameEs, ')
           ..write('distanceKm: $distanceKm, ')
           ..write('elevationGain: $elevationGain, ')
-          ..write('stageCount: $stageCount')
+          ..write('stageCount: $stageCount, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -5218,6 +5329,7 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     distanceKm,
     elevationGain,
     stageCount,
+    rev,
   );
   @override
   bool operator ==(Object other) =>
@@ -5233,7 +5345,8 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
           other.nameEs == this.nameEs &&
           other.distanceKm == this.distanceKm &&
           other.elevationGain == this.elevationGain &&
-          other.stageCount == this.stageCount);
+          other.stageCount == this.stageCount &&
+          other.rev == this.rev);
 }
 
 class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
@@ -5248,6 +5361,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
   final Value<double> distanceKm;
   final Value<int> elevationGain;
   final Value<int> stageCount;
+  final Value<HorodatageServeur?> rev;
   final Value<int> rowid;
   const TrailItinerariesCompanion({
     this.id = const Value.absent(),
@@ -5261,6 +5375,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     this.distanceKm = const Value.absent(),
     this.elevationGain = const Value.absent(),
     this.stageCount = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailItinerariesCompanion.insert({
@@ -5275,6 +5390,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     required double distanceKm,
     required int elevationGain,
     required int stageCount,
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        trailId = Value(trailId),
@@ -5299,6 +5415,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     Expression<double>? distanceKm,
     Expression<int>? elevationGain,
     Expression<int>? stageCount,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5313,6 +5430,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
       if (distanceKm != null) 'distance_km': distanceKm,
       if (elevationGain != null) 'elevation_gain': elevationGain,
       if (stageCount != null) 'stage_count': stageCount,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5329,6 +5447,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     Value<double>? distanceKm,
     Value<int>? elevationGain,
     Value<int>? stageCount,
+    Value<HorodatageServeur?>? rev,
     Value<int>? rowid,
   }) {
     return TrailItinerariesCompanion(
@@ -5343,6 +5462,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
       distanceKm: distanceKm ?? this.distanceKm,
       elevationGain: elevationGain ?? this.elevationGain,
       stageCount: stageCount ?? this.stageCount,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5383,6 +5503,11 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     if (stageCount.present) {
       map['stage_count'] = Variable<int>(stageCount.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(
+        $TrailItinerariesTable.$converterrevn.toSql(rev.value),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5403,6 +5528,7 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
           ..write('distanceKm: $distanceKm, ')
           ..write('elevationGain: $elevationGain, ')
           ..write('stageCount: $stageCount, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5587,6 +5713,15 @@ class $TrailStagesTable extends TrailStages
     requiredDuringInsert: true,
   );
   @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
+      GeneratedColumn<int>(
+        'rev',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<HorodatageServeur?>($TrailStagesTable.$converterrevn);
+  @override
   List<GeneratedColumn> get $columns => [
     id,
     itineraryId,
@@ -5605,6 +5740,7 @@ class $TrailStagesTable extends TrailStages
     elevationLoss,
     durationMinutes,
     difficulty,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5843,6 +5979,12 @@ class $TrailStagesTable extends TrailStages
         DriftSqlType.string,
         data['${effectivePrefix}difficulty'],
       )!,
+      rev: $TrailStagesTable.$converterrevn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}rev'],
+        ),
+      ),
     );
   }
 
@@ -5850,6 +5992,11 @@ class $TrailStagesTable extends TrailStages
   $TrailStagesTable createAlias(String alias) {
     return $TrailStagesTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<HorodatageServeur, int> $converterrev =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $converterrevn =
+      NullAwareTypeConverter.wrap($converterrev);
 }
 
 class TrailStage extends DataClass implements Insertable<TrailStage> {
@@ -5903,6 +6050,19 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
 
   /// Difficulte (easy, moderate, hard, extreme)
   final String difficulty;
+
+  /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
+  /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, celles que la v28 a
+  /// remises a zero, et les donnees embarquees qui ne declarent pas d instant.
+  ///
+  /// STOCKE EN MILLISECONDES DEPUIS L EPOCH, DANS LA MEME COLONNE `INTEGER`
+  /// QU AVANT : la bascule du compteur vers la date ne demande AUCUN
+  /// `ALTER TABLE`. Le modele complet — et pourquoi le telephone ne doit jamais
+  /// y ecrire sa propre horloge — est dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final HorodatageServeur? rev;
   const TrailStage({
     required this.id,
     required this.itineraryId,
@@ -5921,6 +6081,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     required this.elevationLoss,
     required this.durationMinutes,
     required this.difficulty,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5942,6 +6103,9 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     map['elevation_loss'] = Variable<int>(elevationLoss);
     map['duration_minutes'] = Variable<int>(durationMinutes);
     map['difficulty'] = Variable<String>(difficulty);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>($TrailStagesTable.$converterrevn.toSql(rev));
+    }
     return map;
   }
 
@@ -5964,6 +6128,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       elevationLoss: Value(elevationLoss),
       durationMinutes: Value(durationMinutes),
       difficulty: Value(difficulty),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -5990,6 +6155,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       elevationLoss: serializer.fromJson<int>(json['elevationLoss']),
       durationMinutes: serializer.fromJson<int>(json['durationMinutes']),
       difficulty: serializer.fromJson<String>(json['difficulty']),
+      rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
     );
   }
   @override
@@ -6013,6 +6179,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       'elevationLoss': serializer.toJson<int>(elevationLoss),
       'durationMinutes': serializer.toJson<int>(durationMinutes),
       'difficulty': serializer.toJson<String>(difficulty),
+      'rev': serializer.toJson<HorodatageServeur?>(rev),
     };
   }
 
@@ -6034,6 +6201,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     int? elevationLoss,
     int? durationMinutes,
     String? difficulty,
+    Value<HorodatageServeur?> rev = const Value.absent(),
   }) => TrailStage(
     id: id ?? this.id,
     itineraryId: itineraryId ?? this.itineraryId,
@@ -6052,6 +6220,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     elevationLoss: elevationLoss ?? this.elevationLoss,
     durationMinutes: durationMinutes ?? this.durationMinutes,
     difficulty: difficulty ?? this.difficulty,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailStage copyWithCompanion(TrailStagesCompanion data) {
     return TrailStage(
@@ -6086,6 +6255,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       difficulty: data.difficulty.present
           ? data.difficulty.value
           : this.difficulty,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -6108,7 +6278,8 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
           ..write('elevationGain: $elevationGain, ')
           ..write('elevationLoss: $elevationLoss, ')
           ..write('durationMinutes: $durationMinutes, ')
-          ..write('difficulty: $difficulty')
+          ..write('difficulty: $difficulty, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -6132,6 +6303,7 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     elevationLoss,
     durationMinutes,
     difficulty,
+    rev,
   );
   @override
   bool operator ==(Object other) =>
@@ -6153,7 +6325,8 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
           other.elevationGain == this.elevationGain &&
           other.elevationLoss == this.elevationLoss &&
           other.durationMinutes == this.durationMinutes &&
-          other.difficulty == this.difficulty);
+          other.difficulty == this.difficulty &&
+          other.rev == this.rev);
 }
 
 class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
@@ -6174,6 +6347,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
   final Value<int> elevationLoss;
   final Value<int> durationMinutes;
   final Value<String> difficulty;
+  final Value<HorodatageServeur?> rev;
   final Value<int> rowid;
   const TrailStagesCompanion({
     this.id = const Value.absent(),
@@ -6193,6 +6367,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     this.elevationLoss = const Value.absent(),
     this.durationMinutes = const Value.absent(),
     this.difficulty = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailStagesCompanion.insert({
@@ -6213,6 +6388,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     required int elevationLoss,
     required int durationMinutes,
     required String difficulty,
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        itineraryId = Value(itineraryId),
@@ -6249,6 +6425,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     Expression<int>? elevationLoss,
     Expression<int>? durationMinutes,
     Expression<String>? difficulty,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -6269,6 +6446,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
       if (elevationLoss != null) 'elevation_loss': elevationLoss,
       if (durationMinutes != null) 'duration_minutes': durationMinutes,
       if (difficulty != null) 'difficulty': difficulty,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -6291,6 +6469,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     Value<int>? elevationLoss,
     Value<int>? durationMinutes,
     Value<String>? difficulty,
+    Value<HorodatageServeur?>? rev,
     Value<int>? rowid,
   }) {
     return TrailStagesCompanion(
@@ -6311,6 +6490,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
       elevationLoss: elevationLoss ?? this.elevationLoss,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       difficulty: difficulty ?? this.difficulty,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -6369,6 +6549,11 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     if (difficulty.present) {
       map['difficulty'] = Variable<String>(difficulty.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(
+        $TrailStagesTable.$converterrevn.toSql(rev.value),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -6395,6 +6580,7 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
           ..write('elevationLoss: $elevationLoss, ')
           ..write('durationMinutes: $durationMinutes, ')
           ..write('difficulty: $difficulty, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6561,6 +6747,28 @@ class $TrailAccommodationsTable extends TrailAccommodations
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
+      GeneratedColumn<int>(
+        'rev',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<HorodatageServeur?>(
+        $TrailAccommodationsTable.$converterrevn,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6579,6 +6787,8 @@ class $TrailAccommodationsTable extends TrailAccommodations
     capacity,
     priceRange,
     bookingUrl,
+    address,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6705,6 +6915,12 @@ class $TrailAccommodationsTable extends TrailAccommodations
         bookingUrl.isAcceptableOrUnknown(data['booking_url']!, _bookingUrlMeta),
       );
     }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    }
     return context;
   }
 
@@ -6778,6 +6994,16 @@ class $TrailAccommodationsTable extends TrailAccommodations
         DriftSqlType.string,
         data['${effectivePrefix}booking_url'],
       ),
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
+      ),
+      rev: $TrailAccommodationsTable.$converterrevn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}rev'],
+        ),
+      ),
     );
   }
 
@@ -6785,6 +7011,11 @@ class $TrailAccommodationsTable extends TrailAccommodations
   $TrailAccommodationsTable createAlias(String alias) {
     return $TrailAccommodationsTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<HorodatageServeur, int> $converterrev =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $converterrevn =
+      NullAwareTypeConverter.wrap($converterrev);
 }
 
 class TrailAccommodation extends DataClass
@@ -6836,6 +7067,41 @@ class TrailAccommodation extends DataClass
 
   /// URL de reservation (nullable)
   final String? bookingUrl;
+
+  /// ADRESSE POSTALE (nullable, tache 641).
+  ///
+  /// DEMANDE DE CHRISTOPHE DU 30/09 10:23, verbatim : « hebergement il doit
+  /// avoir une adresse et un point GPS qui link sur Maps » (bug 15). La table
+  /// portait deja `lat` et `lng` ; elle n avait AUCUN champ d adresse, et les
+  /// onze hebergements du Mare a Mare n avaient ni telephone, ni site, ni
+  /// adresse — tous nuls dans l asset embarque.
+  ///
+  /// POURQUOI L ADRESSE EN PLUS DU POINT GPS, alors qu on a deja des coordonnees.
+  /// Parce que les deux ne repondent pas a la meme question. Le point GPS dit ou
+  /// c est ; l adresse est ce qu on donne a un taxi, ce qu on ecrit dans un
+  /// courriel de reservation, et ce que l application de cartes sait geocoder
+  /// quand les coordonnees ne designent que le CENTRE DU VILLAGE — ce qui est le
+  /// cas de la plupart des gites du Mare a Mare, et c est dit dans la donnee
+  /// plutot que masque par une fausse precision.
+  ///
+  /// NULLABLE, ET CE N EST PAS UN PIS-ALLER : « pas d adresse connue » est un
+  /// etat REEL et frequent pour un refuge de montagne. Le lien vers les cartes
+  /// se construit alors sur les coordonnees seules, et l ecran n affiche aucune
+  /// ligne vide.
+  final String? address;
+
+  /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
+  /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, celles que la v28 a
+  /// remises a zero, et les donnees embarquees qui ne declarent pas d instant.
+  ///
+  /// STOCKE EN MILLISECONDES DEPUIS L EPOCH, DANS LA MEME COLONNE `INTEGER`
+  /// QU AVANT : la bascule du compteur vers la date ne demande AUCUN
+  /// `ALTER TABLE`. Le modele complet — et pourquoi le telephone ne doit jamais
+  /// y ecrire sa propre horloge — est dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final HorodatageServeur? rev;
   const TrailAccommodation({
     required this.id,
     required this.stageId,
@@ -6853,6 +7119,8 @@ class TrailAccommodation extends DataClass
     this.capacity,
     this.priceRange,
     this.bookingUrl,
+    this.address,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -6884,6 +7152,14 @@ class TrailAccommodation extends DataClass
     }
     if (!nullToAbsent || bookingUrl != null) {
       map['booking_url'] = Variable<String>(bookingUrl);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(
+        $TrailAccommodationsTable.$converterrevn.toSql(rev),
+      );
     }
     return map;
   }
@@ -6918,6 +7194,10 @@ class TrailAccommodation extends DataClass
       bookingUrl: bookingUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(bookingUrl),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -6943,6 +7223,8 @@ class TrailAccommodation extends DataClass
       capacity: serializer.fromJson<int?>(json['capacity']),
       priceRange: serializer.fromJson<String?>(json['priceRange']),
       bookingUrl: serializer.fromJson<String?>(json['bookingUrl']),
+      address: serializer.fromJson<String?>(json['address']),
+      rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
     );
   }
   @override
@@ -6965,6 +7247,8 @@ class TrailAccommodation extends DataClass
       'capacity': serializer.toJson<int?>(capacity),
       'priceRange': serializer.toJson<String?>(priceRange),
       'bookingUrl': serializer.toJson<String?>(bookingUrl),
+      'address': serializer.toJson<String?>(address),
+      'rev': serializer.toJson<HorodatageServeur?>(rev),
     };
   }
 
@@ -6985,6 +7269,8 @@ class TrailAccommodation extends DataClass
     Value<int?> capacity = const Value.absent(),
     Value<String?> priceRange = const Value.absent(),
     Value<String?> bookingUrl = const Value.absent(),
+    Value<String?> address = const Value.absent(),
+    Value<HorodatageServeur?> rev = const Value.absent(),
   }) => TrailAccommodation(
     id: id ?? this.id,
     stageId: stageId ?? this.stageId,
@@ -7002,6 +7288,8 @@ class TrailAccommodation extends DataClass
     capacity: capacity.present ? capacity.value : this.capacity,
     priceRange: priceRange.present ? priceRange.value : this.priceRange,
     bookingUrl: bookingUrl.present ? bookingUrl.value : this.bookingUrl,
+    address: address.present ? address.value : this.address,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailAccommodation copyWithCompanion(TrailAccommodationsCompanion data) {
     return TrailAccommodation(
@@ -7025,6 +7313,8 @@ class TrailAccommodation extends DataClass
       bookingUrl: data.bookingUrl.present
           ? data.bookingUrl.value
           : this.bookingUrl,
+      address: data.address.present ? data.address.value : this.address,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -7046,7 +7336,9 @@ class TrailAccommodation extends DataClass
           ..write('website: $website, ')
           ..write('capacity: $capacity, ')
           ..write('priceRange: $priceRange, ')
-          ..write('bookingUrl: $bookingUrl')
+          ..write('bookingUrl: $bookingUrl, ')
+          ..write('address: $address, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -7069,6 +7361,8 @@ class TrailAccommodation extends DataClass
     capacity,
     priceRange,
     bookingUrl,
+    address,
+    rev,
   );
   @override
   bool operator ==(Object other) =>
@@ -7089,7 +7383,9 @@ class TrailAccommodation extends DataClass
           other.website == this.website &&
           other.capacity == this.capacity &&
           other.priceRange == this.priceRange &&
-          other.bookingUrl == this.bookingUrl);
+          other.bookingUrl == this.bookingUrl &&
+          other.address == this.address &&
+          other.rev == this.rev);
 }
 
 class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
@@ -7109,6 +7405,8 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
   final Value<int?> capacity;
   final Value<String?> priceRange;
   final Value<String?> bookingUrl;
+  final Value<String?> address;
+  final Value<HorodatageServeur?> rev;
   final Value<int> rowid;
   const TrailAccommodationsCompanion({
     this.id = const Value.absent(),
@@ -7127,6 +7425,8 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     this.capacity = const Value.absent(),
     this.priceRange = const Value.absent(),
     this.bookingUrl = const Value.absent(),
+    this.address = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailAccommodationsCompanion.insert({
@@ -7146,6 +7446,8 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     this.capacity = const Value.absent(),
     this.priceRange = const Value.absent(),
     this.bookingUrl = const Value.absent(),
+    this.address = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        stageId = Value(stageId),
@@ -7174,6 +7476,8 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     Expression<int>? capacity,
     Expression<String>? priceRange,
     Expression<String>? bookingUrl,
+    Expression<String>? address,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -7193,6 +7497,8 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
       if (capacity != null) 'capacity': capacity,
       if (priceRange != null) 'price_range': priceRange,
       if (bookingUrl != null) 'booking_url': bookingUrl,
+      if (address != null) 'address': address,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -7214,6 +7520,8 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     Value<int?>? capacity,
     Value<String?>? priceRange,
     Value<String?>? bookingUrl,
+    Value<String?>? address,
+    Value<HorodatageServeur?>? rev,
     Value<int>? rowid,
   }) {
     return TrailAccommodationsCompanion(
@@ -7233,6 +7541,8 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
       capacity: capacity ?? this.capacity,
       priceRange: priceRange ?? this.priceRange,
       bookingUrl: bookingUrl ?? this.bookingUrl,
+      address: address ?? this.address,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -7288,6 +7598,14 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     if (bookingUrl.present) {
       map['booking_url'] = Variable<String>(bookingUrl.value);
     }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (rev.present) {
+      map['rev'] = Variable<int>(
+        $TrailAccommodationsTable.$converterrevn.toSql(rev.value),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -7313,6 +7631,8 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
           ..write('capacity: $capacity, ')
           ..write('priceRange: $priceRange, ')
           ..write('bookingUrl: $bookingUrl, ')
+          ..write('address: $address, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -7483,6 +7803,46 @@ class $TrailPoisTable extends TrailPois
     type: DriftSqlType.double,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _websiteMeta = const VerificationMeta(
+    'website',
+  );
+  @override
+  late final GeneratedColumn<String> website = GeneratedColumn<String>(
+    'website',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
+      GeneratedColumn<int>(
+        'rev',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<HorodatageServeur?>($TrailPoisTable.$converterrevn);
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -7501,6 +7861,10 @@ class $TrailPoisTable extends TrailPois
     lat,
     lng,
     elevation,
+    address,
+    phone,
+    website,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -7642,6 +8006,24 @@ class $TrailPoisTable extends TrailPois
         elevation.isAcceptableOrUnknown(data['elevation']!, _elevationMeta),
       );
     }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('website')) {
+      context.handle(
+        _websiteMeta,
+        website.isAcceptableOrUnknown(data['website']!, _websiteMeta),
+      );
+    }
     return context;
   }
 
@@ -7715,6 +8097,24 @@ class $TrailPoisTable extends TrailPois
         DriftSqlType.double,
         data['${effectivePrefix}elevation'],
       ),
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
+      ),
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      website: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}website'],
+      ),
+      rev: $TrailPoisTable.$converterrevn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}rev'],
+        ),
+      ),
     );
   }
 
@@ -7722,6 +8122,11 @@ class $TrailPoisTable extends TrailPois
   $TrailPoisTable createAlias(String alias) {
     return $TrailPoisTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<HorodatageServeur, int> $converterrev =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $converterrevn =
+      NullAwareTypeConverter.wrap($converterrev);
 }
 
 class TrailPoi extends DataClass implements Insertable<TrailPoi> {
@@ -7772,6 +8177,47 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
 
   /// Altitude en metres (nullable)
   final double? elevation;
+
+  /// ADRESSE POSTALE DU LIEU (nullable, tache 641).
+  ///
+  /// « appliquer la meme regle a tout lieu physique (ravitaillement, point d eau,
+  /// depart/arrivee, transport) : une adresse + un point GPS cliquable partout ou
+  /// il y a un lieu » (Christophe, 30/09 10:23, bug 15). Un arret d autocar, une
+  /// epicerie, un office de tourisme sont des lieux qu on rejoint : ils ont une
+  /// adresse, et elle ne se deduit pas d une latitude.
+  final String? address;
+
+  /// TELEPHONE DU LIEU (nullable, tache 641).
+  ///
+  /// C EST LE CHAMP QUI MANQUAIT POUR QUE TRANSPORT ET RAVITAILLEMENT VIVENT EN
+  /// BASE. Avant ce lot, ces deux rubriques etaient deux constantes Dart
+  /// (`transport_catalog.dart`, `shop_catalog.dart`) derriere un
+  /// `switch (trailId)` : muettes pour tout autre sentier, invisibles dans la
+  /// base, et impossibles a corriger sans republier l application. Les y deplacer
+  /// demandait de pouvoir porter un numero a appeler — l exploitant d une ligne
+  /// d autocar, le gite qui prepare les paniers-repas, l office de tourisme qui
+  /// sait quels commerces sont ouverts hors saison.
+  final String? phone;
+
+  /// SITE WEB DU LIEU (nullable, tache 641).
+  ///
+  /// Meme raison que [phone]. Les horaires d un autocar corse changent quatre
+  /// fois par an : on ne les fige pas dans l application, on donne l adresse
+  /// officielle ou ils sont publies.
+  final String? website;
+
+  /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
+  /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, celles que la v28 a
+  /// remises a zero, et les donnees embarquees qui ne declarent pas d instant.
+  ///
+  /// STOCKE EN MILLISECONDES DEPUIS L EPOCH, DANS LA MEME COLONNE `INTEGER`
+  /// QU AVANT : la bascule du compteur vers la date ne demande AUCUN
+  /// `ALTER TABLE`. Le modele complet — et pourquoi le telephone ne doit jamais
+  /// y ecrire sa propre horloge — est dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final HorodatageServeur? rev;
   const TrailPoi({
     required this.id,
     required this.stageId,
@@ -7789,6 +8235,10 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     required this.lat,
     required this.lng,
     this.elevation,
+    this.address,
+    this.phone,
+    this.website,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -7820,6 +8270,18 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     map['lng'] = Variable<double>(lng);
     if (!nullToAbsent || elevation != null) {
       map['elevation'] = Variable<double>(elevation);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || website != null) {
+      map['website'] = Variable<String>(website);
+    }
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>($TrailPoisTable.$converterrevn.toSql(rev));
     }
     return map;
   }
@@ -7854,6 +8316,16 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       elevation: elevation == null && nullToAbsent
           ? const Value.absent()
           : Value(elevation),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      website: website == null && nullToAbsent
+          ? const Value.absent()
+          : Value(website),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -7879,6 +8351,10 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       lat: serializer.fromJson<double>(json['lat']),
       lng: serializer.fromJson<double>(json['lng']),
       elevation: serializer.fromJson<double?>(json['elevation']),
+      address: serializer.fromJson<String?>(json['address']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      website: serializer.fromJson<String?>(json['website']),
+      rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
     );
   }
   @override
@@ -7901,6 +8377,10 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       'lat': serializer.toJson<double>(lat),
       'lng': serializer.toJson<double>(lng),
       'elevation': serializer.toJson<double?>(elevation),
+      'address': serializer.toJson<String?>(address),
+      'phone': serializer.toJson<String?>(phone),
+      'website': serializer.toJson<String?>(website),
+      'rev': serializer.toJson<HorodatageServeur?>(rev),
     };
   }
 
@@ -7921,6 +8401,10 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     double? lat,
     double? lng,
     Value<double?> elevation = const Value.absent(),
+    Value<String?> address = const Value.absent(),
+    Value<String?> phone = const Value.absent(),
+    Value<String?> website = const Value.absent(),
+    Value<HorodatageServeur?> rev = const Value.absent(),
   }) => TrailPoi(
     id: id ?? this.id,
     stageId: stageId ?? this.stageId,
@@ -7948,6 +8432,10 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     lat: lat ?? this.lat,
     lng: lng ?? this.lng,
     elevation: elevation.present ? elevation.value : this.elevation,
+    address: address.present ? address.value : this.address,
+    phone: phone.present ? phone.value : this.phone,
+    website: website.present ? website.value : this.website,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailPoi copyWithCompanion(TrailPoisCompanion data) {
     return TrailPoi(
@@ -7977,6 +8465,10 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
       lat: data.lat.present ? data.lat.value : this.lat,
       lng: data.lng.present ? data.lng.value : this.lng,
       elevation: data.elevation.present ? data.elevation.value : this.elevation,
+      address: data.address.present ? data.address.value : this.address,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      website: data.website.present ? data.website.value : this.website,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -7998,7 +8490,11 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
           ..write('type: $type, ')
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
-          ..write('elevation: $elevation')
+          ..write('elevation: $elevation, ')
+          ..write('address: $address, ')
+          ..write('phone: $phone, ')
+          ..write('website: $website, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -8021,6 +8517,10 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     lat,
     lng,
     elevation,
+    address,
+    phone,
+    website,
+    rev,
   );
   @override
   bool operator ==(Object other) =>
@@ -8041,7 +8541,11 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
           other.type == this.type &&
           other.lat == this.lat &&
           other.lng == this.lng &&
-          other.elevation == this.elevation);
+          other.elevation == this.elevation &&
+          other.address == this.address &&
+          other.phone == this.phone &&
+          other.website == this.website &&
+          other.rev == this.rev);
 }
 
 class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
@@ -8061,6 +8565,10 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
   final Value<double> lat;
   final Value<double> lng;
   final Value<double?> elevation;
+  final Value<String?> address;
+  final Value<String?> phone;
+  final Value<String?> website;
+  final Value<HorodatageServeur?> rev;
   final Value<int> rowid;
   const TrailPoisCompanion({
     this.id = const Value.absent(),
@@ -8079,6 +8587,10 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     this.lat = const Value.absent(),
     this.lng = const Value.absent(),
     this.elevation = const Value.absent(),
+    this.address = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.website = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailPoisCompanion.insert({
@@ -8098,6 +8610,10 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     required double lat,
     required double lng,
     this.elevation = const Value.absent(),
+    this.address = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.website = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        stageId = Value(stageId),
@@ -8126,6 +8642,10 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     Expression<double>? lat,
     Expression<double>? lng,
     Expression<double>? elevation,
+    Expression<String>? address,
+    Expression<String>? phone,
+    Expression<String>? website,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -8145,6 +8665,10 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
       if (lat != null) 'lat': lat,
       if (lng != null) 'lng': lng,
       if (elevation != null) 'elevation': elevation,
+      if (address != null) 'address': address,
+      if (phone != null) 'phone': phone,
+      if (website != null) 'website': website,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -8166,6 +8690,10 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     Value<double>? lat,
     Value<double>? lng,
     Value<double?>? elevation,
+    Value<String?>? address,
+    Value<String?>? phone,
+    Value<String?>? website,
+    Value<HorodatageServeur?>? rev,
     Value<int>? rowid,
   }) {
     return TrailPoisCompanion(
@@ -8185,6 +8713,10 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       elevation: elevation ?? this.elevation,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+      website: website ?? this.website,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -8240,6 +8772,20 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     if (elevation.present) {
       map['elevation'] = Variable<double>(elevation.value);
     }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (website.present) {
+      map['website'] = Variable<String>(website.value);
+    }
+    if (rev.present) {
+      map['rev'] = Variable<int>(
+        $TrailPoisTable.$converterrevn.toSql(rev.value),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -8265,6 +8811,10 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('elevation: $elevation, ')
+          ..write('address: $address, ')
+          ..write('phone: $phone, ')
+          ..write('website: $website, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -8318,7 +8868,16 @@ class $TrailGpxTracksTable extends TrailGpxTracks
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, itineraryId, name, sourceUrl];
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
+      GeneratedColumn<int>(
+        'rev',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<HorodatageServeur?>($TrailGpxTracksTable.$converterrevn);
+  @override
+  List<GeneratedColumn> get $columns => [id, itineraryId, name, sourceUrl, rev];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -8386,6 +8945,12 @@ class $TrailGpxTracksTable extends TrailGpxTracks
         DriftSqlType.string,
         data['${effectivePrefix}source_url'],
       ),
+      rev: $TrailGpxTracksTable.$converterrevn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}rev'],
+        ),
+      ),
     );
   }
 
@@ -8393,6 +8958,11 @@ class $TrailGpxTracksTable extends TrailGpxTracks
   $TrailGpxTracksTable createAlias(String alias) {
     return $TrailGpxTracksTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<HorodatageServeur, int> $converterrev =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $converterrevn =
+      NullAwareTypeConverter.wrap($converterrev);
 }
 
 class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
@@ -8407,11 +8977,25 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
 
   /// URL source du fichier GPX (nullable)
   final String? sourceUrl;
+
+  /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
+  /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, celles que la v28 a
+  /// remises a zero, et les donnees embarquees qui ne declarent pas d instant.
+  ///
+  /// STOCKE EN MILLISECONDES DEPUIS L EPOCH, DANS LA MEME COLONNE `INTEGER`
+  /// QU AVANT : la bascule du compteur vers la date ne demande AUCUN
+  /// `ALTER TABLE`. Le modele complet — et pourquoi le telephone ne doit jamais
+  /// y ecrire sa propre horloge — est dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final HorodatageServeur? rev;
   const TrailGpxTrack({
     required this.id,
     required this.itineraryId,
     required this.name,
     this.sourceUrl,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -8421,6 +9005,11 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || sourceUrl != null) {
       map['source_url'] = Variable<String>(sourceUrl);
+    }
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(
+        $TrailGpxTracksTable.$converterrevn.toSql(rev),
+      );
     }
     return map;
   }
@@ -8433,6 +9022,7 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
       sourceUrl: sourceUrl == null && nullToAbsent
           ? const Value.absent()
           : Value(sourceUrl),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -8446,6 +9036,7 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
       itineraryId: serializer.fromJson<String>(json['itineraryId']),
       name: serializer.fromJson<String>(json['name']),
       sourceUrl: serializer.fromJson<String?>(json['sourceUrl']),
+      rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
     );
   }
   @override
@@ -8456,6 +9047,7 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
       'itineraryId': serializer.toJson<String>(itineraryId),
       'name': serializer.toJson<String>(name),
       'sourceUrl': serializer.toJson<String?>(sourceUrl),
+      'rev': serializer.toJson<HorodatageServeur?>(rev),
     };
   }
 
@@ -8464,11 +9056,13 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
     String? itineraryId,
     String? name,
     Value<String?> sourceUrl = const Value.absent(),
+    Value<HorodatageServeur?> rev = const Value.absent(),
   }) => TrailGpxTrack(
     id: id ?? this.id,
     itineraryId: itineraryId ?? this.itineraryId,
     name: name ?? this.name,
     sourceUrl: sourceUrl.present ? sourceUrl.value : this.sourceUrl,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailGpxTrack copyWithCompanion(TrailGpxTracksCompanion data) {
     return TrailGpxTrack(
@@ -8478,6 +9072,7 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
           : this.itineraryId,
       name: data.name.present ? data.name.value : this.name,
       sourceUrl: data.sourceUrl.present ? data.sourceUrl.value : this.sourceUrl,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -8487,13 +9082,14 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
           ..write('id: $id, ')
           ..write('itineraryId: $itineraryId, ')
           ..write('name: $name, ')
-          ..write('sourceUrl: $sourceUrl')
+          ..write('sourceUrl: $sourceUrl, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, itineraryId, name, sourceUrl);
+  int get hashCode => Object.hash(id, itineraryId, name, sourceUrl, rev);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8501,7 +9097,8 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
           other.id == this.id &&
           other.itineraryId == this.itineraryId &&
           other.name == this.name &&
-          other.sourceUrl == this.sourceUrl);
+          other.sourceUrl == this.sourceUrl &&
+          other.rev == this.rev);
 }
 
 class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
@@ -8509,12 +9106,14 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
   final Value<String> itineraryId;
   final Value<String> name;
   final Value<String?> sourceUrl;
+  final Value<HorodatageServeur?> rev;
   final Value<int> rowid;
   const TrailGpxTracksCompanion({
     this.id = const Value.absent(),
     this.itineraryId = const Value.absent(),
     this.name = const Value.absent(),
     this.sourceUrl = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailGpxTracksCompanion.insert({
@@ -8522,6 +9121,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     required String itineraryId,
     required String name,
     this.sourceUrl = const Value.absent(),
+    this.rev = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        itineraryId = Value(itineraryId),
@@ -8531,6 +9131,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     Expression<String>? itineraryId,
     Expression<String>? name,
     Expression<String>? sourceUrl,
+    Expression<int>? rev,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -8538,6 +9139,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
       if (itineraryId != null) 'itinerary_id': itineraryId,
       if (name != null) 'name': name,
       if (sourceUrl != null) 'source_url': sourceUrl,
+      if (rev != null) 'rev': rev,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -8547,6 +9149,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     Value<String>? itineraryId,
     Value<String>? name,
     Value<String?>? sourceUrl,
+    Value<HorodatageServeur?>? rev,
     Value<int>? rowid,
   }) {
     return TrailGpxTracksCompanion(
@@ -8554,6 +9157,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
       itineraryId: itineraryId ?? this.itineraryId,
       name: name ?? this.name,
       sourceUrl: sourceUrl ?? this.sourceUrl,
+      rev: rev ?? this.rev,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -8573,6 +9177,11 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     if (sourceUrl.present) {
       map['source_url'] = Variable<String>(sourceUrl.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(
+        $TrailGpxTracksTable.$converterrevn.toSql(rev.value),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -8586,6 +9195,7 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
           ..write('itineraryId: $itineraryId, ')
           ..write('name: $name, ')
           ..write('sourceUrl: $sourceUrl, ')
+          ..write('rev: $rev, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -8663,6 +9273,15 @@ class $TrailGpxPointsTable extends TrailGpxPoints
     requiredDuringInsert: true,
   );
   @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int> rev =
+      GeneratedColumn<int>(
+        'rev',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<HorodatageServeur?>($TrailGpxPointsTable.$converterrevn);
+  @override
   List<GeneratedColumn> get $columns => [
     id,
     trackId,
@@ -8670,6 +9289,7 @@ class $TrailGpxPointsTable extends TrailGpxPoints
     lng,
     elevation,
     sequenceIndex,
+    rev,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -8762,6 +9382,12 @@ class $TrailGpxPointsTable extends TrailGpxPoints
         DriftSqlType.int,
         data['${effectivePrefix}sequence_index'],
       )!,
+      rev: $TrailGpxPointsTable.$converterrevn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}rev'],
+        ),
+      ),
     );
   }
 
@@ -8769,6 +9395,11 @@ class $TrailGpxPointsTable extends TrailGpxPoints
   $TrailGpxPointsTable createAlias(String alias) {
     return $TrailGpxPointsTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<HorodatageServeur, int> $converterrev =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $converterrevn =
+      NullAwareTypeConverter.wrap($converterrev);
 }
 
 class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
@@ -8789,6 +9420,19 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
 
   /// Index de sequence pour l'ordre des points
   final int sequenceIndex;
+
+  /// HORODATAGE de cet enregistrement : L INSTANT ou il a ete modifie pour la
+  /// derniere fois, pose par le SERVEUR (StepWays taches 605 puis 610).
+  ///
+  /// Nullable : les lignes anterieures a la migration v27, celles que la v28 a
+  /// remises a zero, et les donnees embarquees qui ne declarent pas d instant.
+  ///
+  /// STOCKE EN MILLISECONDES DEPUIS L EPOCH, DANS LA MEME COLONNE `INTEGER`
+  /// QU AVANT : la bascule du compteur vers la date ne demande AUCUN
+  /// `ALTER TABLE`. Le modele complet — et pourquoi le telephone ne doit jamais
+  /// y ecrire sa propre horloge — est dans
+  /// `lib/core/data/revision_de_donnee.dart`.
+  final HorodatageServeur? rev;
   const TrailGpxPoint({
     required this.id,
     required this.trackId,
@@ -8796,6 +9440,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     required this.lng,
     required this.elevation,
     required this.sequenceIndex,
+    this.rev,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -8806,6 +9451,11 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     map['lng'] = Variable<double>(lng);
     map['elevation'] = Variable<double>(elevation);
     map['sequence_index'] = Variable<int>(sequenceIndex);
+    if (!nullToAbsent || rev != null) {
+      map['rev'] = Variable<int>(
+        $TrailGpxPointsTable.$converterrevn.toSql(rev),
+      );
+    }
     return map;
   }
 
@@ -8817,6 +9467,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
       lng: Value(lng),
       elevation: Value(elevation),
       sequenceIndex: Value(sequenceIndex),
+      rev: rev == null && nullToAbsent ? const Value.absent() : Value(rev),
     );
   }
 
@@ -8832,6 +9483,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
       lng: serializer.fromJson<double>(json['lng']),
       elevation: serializer.fromJson<double>(json['elevation']),
       sequenceIndex: serializer.fromJson<int>(json['sequenceIndex']),
+      rev: serializer.fromJson<HorodatageServeur?>(json['rev']),
     );
   }
   @override
@@ -8844,6 +9496,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
       'lng': serializer.toJson<double>(lng),
       'elevation': serializer.toJson<double>(elevation),
       'sequenceIndex': serializer.toJson<int>(sequenceIndex),
+      'rev': serializer.toJson<HorodatageServeur?>(rev),
     };
   }
 
@@ -8854,6 +9507,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     double? lng,
     double? elevation,
     int? sequenceIndex,
+    Value<HorodatageServeur?> rev = const Value.absent(),
   }) => TrailGpxPoint(
     id: id ?? this.id,
     trackId: trackId ?? this.trackId,
@@ -8861,6 +9515,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     lng: lng ?? this.lng,
     elevation: elevation ?? this.elevation,
     sequenceIndex: sequenceIndex ?? this.sequenceIndex,
+    rev: rev.present ? rev.value : this.rev,
   );
   TrailGpxPoint copyWithCompanion(TrailGpxPointsCompanion data) {
     return TrailGpxPoint(
@@ -8872,6 +9527,7 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
       sequenceIndex: data.sequenceIndex.present
           ? data.sequenceIndex.value
           : this.sequenceIndex,
+      rev: data.rev.present ? data.rev.value : this.rev,
     );
   }
 
@@ -8883,14 +9539,15 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('elevation: $elevation, ')
-          ..write('sequenceIndex: $sequenceIndex')
+          ..write('sequenceIndex: $sequenceIndex, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(id, trackId, lat, lng, elevation, sequenceIndex);
+      Object.hash(id, trackId, lat, lng, elevation, sequenceIndex, rev);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8900,7 +9557,8 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
           other.lat == this.lat &&
           other.lng == this.lng &&
           other.elevation == this.elevation &&
-          other.sequenceIndex == this.sequenceIndex);
+          other.sequenceIndex == this.sequenceIndex &&
+          other.rev == this.rev);
 }
 
 class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
@@ -8910,6 +9568,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
   final Value<double> lng;
   final Value<double> elevation;
   final Value<int> sequenceIndex;
+  final Value<HorodatageServeur?> rev;
   const TrailGpxPointsCompanion({
     this.id = const Value.absent(),
     this.trackId = const Value.absent(),
@@ -8917,6 +9576,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     this.lng = const Value.absent(),
     this.elevation = const Value.absent(),
     this.sequenceIndex = const Value.absent(),
+    this.rev = const Value.absent(),
   });
   TrailGpxPointsCompanion.insert({
     this.id = const Value.absent(),
@@ -8925,6 +9585,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     required double lng,
     required double elevation,
     required int sequenceIndex,
+    this.rev = const Value.absent(),
   }) : trackId = Value(trackId),
        lat = Value(lat),
        lng = Value(lng),
@@ -8937,6 +9598,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     Expression<double>? lng,
     Expression<double>? elevation,
     Expression<int>? sequenceIndex,
+    Expression<int>? rev,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -8945,6 +9607,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
       if (lng != null) 'lng': lng,
       if (elevation != null) 'elevation': elevation,
       if (sequenceIndex != null) 'sequence_index': sequenceIndex,
+      if (rev != null) 'rev': rev,
     });
   }
 
@@ -8955,6 +9618,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     Value<double>? lng,
     Value<double>? elevation,
     Value<int>? sequenceIndex,
+    Value<HorodatageServeur?>? rev,
   }) {
     return TrailGpxPointsCompanion(
       id: id ?? this.id,
@@ -8963,6 +9627,7 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
       lng: lng ?? this.lng,
       elevation: elevation ?? this.elevation,
       sequenceIndex: sequenceIndex ?? this.sequenceIndex,
+      rev: rev ?? this.rev,
     );
   }
 
@@ -8987,6 +9652,11 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     if (sequenceIndex.present) {
       map['sequence_index'] = Variable<int>(sequenceIndex.value);
     }
+    if (rev.present) {
+      map['rev'] = Variable<int>(
+        $TrailGpxPointsTable.$converterrevn.toSql(rev.value),
+      );
+    }
     return map;
   }
 
@@ -8998,7 +9668,8 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('elevation: $elevation, ')
-          ..write('sequenceIndex: $sequenceIndex')
+          ..write('sequenceIndex: $sequenceIndex, ')
+          ..write('rev: $rev')
           ..write(')'))
         .toString();
   }
@@ -9021,17 +9692,18 @@ class $TrailManifestsTable extends TrailManifests
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _dataVersionMeta = const VerificationMeta(
-    'dataVersion',
-  );
   @override
-  late final GeneratedColumn<int> dataVersion = GeneratedColumn<int>(
-    'data_version',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur, int>
+  dataVersion =
+      GeneratedColumn<int>(
+        'data_version',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<HorodatageServeur>(
+        $TrailManifestsTable.$converterdataVersion,
+      );
   static const VerificationMeta _hashMeta = const VerificationMeta('hash');
   @override
   late final GeneratedColumn<String> hash = GeneratedColumn<String>(
@@ -9083,15 +9755,71 @@ class $TrailManifestsTable extends TrailManifests
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _localVersionMeta = const VerificationMeta(
-    'localVersion',
+  @override
+  late final GeneratedColumnWithTypeConverter<HorodatageServeur?, int>
+  localVersion =
+      GeneratedColumn<int>(
+        'local_version',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<HorodatageServeur?>(
+        $TrailManifestsTable.$converterlocalVersionn,
+      );
+  static const VerificationMeta _ficheJsonMeta = const VerificationMeta(
+    'ficheJson',
   );
   @override
-  late final GeneratedColumn<int> localVersion = GeneratedColumn<int>(
-    'local_version',
+  late final GeneratedColumn<String> ficheJson = GeneratedColumn<String>(
+    'fiche_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _niveauLocalMeta = const VerificationMeta(
+    'niveauLocal',
+  );
+  @override
+  late final GeneratedColumn<String> niveauLocal = GeneratedColumn<String>(
+    'niveau_local',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tilesPathMeta = const VerificationMeta(
+    'tilesPath',
+  );
+  @override
+  late final GeneratedColumn<String> tilesPath = GeneratedColumn<String>(
+    'tiles_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tilesSizeMeta = const VerificationMeta(
+    'tilesSize',
+  );
+  @override
+  late final GeneratedColumn<int> tilesSize = GeneratedColumn<int>(
+    'tiles_size',
     aliasedName,
     true,
     type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tilesHashMeta = const VerificationMeta(
+    'tilesHash',
+  );
+  @override
+  late final GeneratedColumn<String> tilesHash = GeneratedColumn<String>(
+    'tiles_hash',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
   @override
@@ -9104,6 +9832,11 @@ class $TrailManifestsTable extends TrailManifests
     status,
     lastUpdated,
     localVersion,
+    ficheJson,
+    niveauLocal,
+    tilesPath,
+    tilesSize,
+    tilesHash,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9124,17 +9857,6 @@ class $TrailManifestsTable extends TrailManifests
       );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
-    }
-    if (data.containsKey('data_version')) {
-      context.handle(
-        _dataVersionMeta,
-        dataVersion.isAcceptableOrUnknown(
-          data['data_version']!,
-          _dataVersionMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_dataVersionMeta);
     }
     if (data.containsKey('hash')) {
       context.handle(
@@ -9179,13 +9901,37 @@ class $TrailManifestsTable extends TrailManifests
     } else if (isInserting) {
       context.missing(_lastUpdatedMeta);
     }
-    if (data.containsKey('local_version')) {
+    if (data.containsKey('fiche_json')) {
       context.handle(
-        _localVersionMeta,
-        localVersion.isAcceptableOrUnknown(
-          data['local_version']!,
-          _localVersionMeta,
+        _ficheJsonMeta,
+        ficheJson.isAcceptableOrUnknown(data['fiche_json']!, _ficheJsonMeta),
+      );
+    }
+    if (data.containsKey('niveau_local')) {
+      context.handle(
+        _niveauLocalMeta,
+        niveauLocal.isAcceptableOrUnknown(
+          data['niveau_local']!,
+          _niveauLocalMeta,
         ),
+      );
+    }
+    if (data.containsKey('tiles_path')) {
+      context.handle(
+        _tilesPathMeta,
+        tilesPath.isAcceptableOrUnknown(data['tiles_path']!, _tilesPathMeta),
+      );
+    }
+    if (data.containsKey('tiles_size')) {
+      context.handle(
+        _tilesSizeMeta,
+        tilesSize.isAcceptableOrUnknown(data['tiles_size']!, _tilesSizeMeta),
+      );
+    }
+    if (data.containsKey('tiles_hash')) {
+      context.handle(
+        _tilesHashMeta,
+        tilesHash.isAcceptableOrUnknown(data['tiles_hash']!, _tilesHashMeta),
       );
     }
     return context;
@@ -9201,10 +9947,12 @@ class $TrailManifestsTable extends TrailManifests
         DriftSqlType.string,
         data['${effectivePrefix}trail_id'],
       )!,
-      dataVersion: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}data_version'],
-      )!,
+      dataVersion: $TrailManifestsTable.$converterdataVersion.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}data_version'],
+        )!,
+      ),
       hash: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}hash'],
@@ -9225,9 +9973,31 @@ class $TrailManifestsTable extends TrailManifests
         DriftSqlType.string,
         data['${effectivePrefix}last_updated'],
       )!,
-      localVersion: attachedDatabase.typeMapping.read(
+      localVersion: $TrailManifestsTable.$converterlocalVersionn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}local_version'],
+        ),
+      ),
+      ficheJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}fiche_json'],
+      ),
+      niveauLocal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}niveau_local'],
+      ),
+      tilesPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tiles_path'],
+      ),
+      tilesSize: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}local_version'],
+        data['${effectivePrefix}tiles_size'],
+      ),
+      tilesHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tiles_hash'],
       ),
     );
   }
@@ -9236,14 +10006,33 @@ class $TrailManifestsTable extends TrailManifests
   $TrailManifestsTable createAlias(String alias) {
     return $TrailManifestsTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<HorodatageServeur, int> $converterdataVersion =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur, int> $converterlocalVersion =
+      const HorodatageServeurConverter();
+  static TypeConverter<HorodatageServeur?, int?> $converterlocalVersionn =
+      NullAwareTypeConverter.wrap($converterlocalVersion);
 }
 
 class TrailManifest extends DataClass implements Insertable<TrailManifest> {
   /// Identifiant unique du sentier (cle primaire)
   final String trailId;
 
-  /// Version des donnees distantes
-  final int dataVersion;
+  /// L INSTANT DE LA DERNIERE PUBLICATION DU SENTIER, tel que la liste distante
+  /// l annonce. Millisecondes depuis l epoch (cf. `revision_de_donnee.dart`).
+  ///
+  /// C est la moitie SERVEUR de l unique question : « je suis a jour jusqu a
+  /// [localVersion], tu es publie a [dataVersion] ; donne-moi tout ce qui porte
+  /// une date plus recente que mon repere ».
+  ///
+  /// LE NOM RESTE `dataVersion` ALORS QUE LA VALEUR EST UNE DATE, et c est un
+  /// choix de perimetre, pas un oubli : la consigne du lot 610 est « meme
+  /// mecanisme, SEUL LE TYPE DE LA COMPARAISON CHANGE ». Renommer la colonne
+  /// aurait impose une reconstruction de table a une migration qui, ainsi, n a
+  /// aucun `ALTER TABLE` a faire — et une migration qui echoue empeche la base de
+  /// s ouvrir. La dette de vocabulaire est nommee dans la specification serveur.
+  final HorodatageServeur dataVersion;
 
   /// Hash SHA-256 du fichier distant
   final String hash;
@@ -9260,8 +10049,93 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
   /// Date de derniere mise a jour (ISO 8601)
   final String lastUpdated;
 
-  /// Version telechargee localement (null = jamais telecharge)
-  final int? localVersion;
+  /// LE REPERE DU TELEPHONE : jusqu a QUEL INSTANT ce sentier est copie ici.
+  /// Null = jamais telecharge. Millisecondes depuis l epoch.
+  ///
+  /// CE QUI EST ECRIT ICI EST LA DATE QUE LE SERVEUR A ANNONCEE, JAMAIS L HEURE
+  /// DE L APPAREIL — et ce n est pas une consigne, c est le type
+  /// `HorodatageServeur` qui l impose : il ne se construit qu en LISANT une
+  /// valeur venue du serveur. Un telephone dont l horloge avance d une heure et
+  /// qui inscrirait son propre `now()` se croirait a jour jusqu a une heure dans
+  /// le futur, et raterait DEFINITIVEMENT, sans que rien ne le dise, tout ce que
+  /// le serveur publie entre-temps.
+  ///
+  /// IL N AVANCE QUE SI TOUT A ETE RECU, dans la MEME transaction que la pose des
+  /// donnees (le mot « complet » de Christophe, 28/09 09:32). Un telephone coupe
+  /// au milieu d une copie ne doit pas se croire a jour.
+  final HorodatageServeur? localVersion;
+
+  /// LE DERNIER CATALOGUE DISTANT RECU, POUR QU IL SURVIVE AU HORS-LIGNE.
+  ///
+  /// Fiche d affichage du sentier (`TrailManifestSheet`) serialisee en JSON,
+  /// telle que le manifeste distant l a declaree. Null = le manifeste n a
+  /// jamais decrit ce sentier (entree de simple versionnement, ou base
+  /// anterieure a la migration v27).
+  ///
+  /// POURQUOI UNE COLONNE JSON ET PAS DOUZE COLONNES. La fiche est une donnee
+  /// SERVEUR que l on stocke pour la RELIRE telle quelle : le moteur ne la
+  /// requete jamais champ par champ, il la desserialise en entier pour en faire
+  /// une `TrailConfig`. Douze colonnes obligeraient a une migration a chaque
+  /// champ que Christophe voudra decrire a distance — exactement la
+  /// republication que ce lot supprime. C est aussi la forme du patron GR20,
+  /// qui stocke ses listes distantes en JSON dans Hive
+  /// (`remote_data_service.dart`).
+  ///
+  /// C EST LA COUCHE 2 DE L ORDRE DES SOURCES : distant, puis DERNIER DISTANT
+  /// RECU (cette colonne), puis compile. Sans elle, un randonneur hors ligne
+  /// perdrait de son catalogue tout sentier que le binaire ne connait pas.
+  final String? ficheJson;
+
+  /// JUSQU A QUEL NIVEAU CE SENTIER EST DESCENDU (tache 616).
+  ///
+  /// Code stable de [NiveauDeTelechargement] (`regarder`, `preparer`,
+  /// `realiser`). Null = jamais telecharge, comme [localVersion] null.
+  ///
+  /// POURQUOI CETTE COLONNE EST INDISPENSABLE ET PAS UN CONFORT — C EST LE PIEGE
+  /// QUE LES NIVEAUX OUVRENT. Le repere [localVersion] est UN SEUL instant pour
+  /// tout le sentier, et la regle de pose est « je prends ce qui est plus recent
+  /// que mon repere ». Un telephone qui aurait copie le sentier au niveau
+  /// « preparer » jusqu a l instant T, et qui demanderait ensuite « realiser »,
+  /// verrait ses points de trace REFUSES : ils portent une date anterieure a T,
+  /// donc la regle les declare deja a jour. Le randonneur partirait sans trace,
+  /// en croyant avoir tout telecharge, et AUCUNE mise a jour ulterieure n irait
+  /// jamais la chercher. Sans cette colonne, le defaut est silencieux et
+  /// definitif.
+  ///
+  /// CE QU ELLE PERMET, ET C EST LA SEULE CHOSE QU ELLE PERMET : comparer le
+  /// niveau DEMANDE au niveau DEJA DESCENDU. S il monte, la copie repart de
+  /// l origine pour ce sentier (`repartirDeZero`), ce qui est deja un chemin
+  /// eprouve du moteur et ne coute RIEN de plus en reseau sur le transport actuel
+  /// — la source de fichier telecharge le fichier entier de toute facon.
+  final String? niveauLocal;
+
+  /// OU SONT LES TUILES DE CE SENTIER, CE QU ELLES PESENT, ET LEUR EMPREINTE
+  /// (tache 622).
+  ///
+  /// Miroir local de `TrailManifestEntry.tilesPath` / `tilesSize` / `tilesHash`.
+  /// Nulles quand la liste distante ne publie pas de carte pour ce sentier — ce qui
+  /// est un cas NORMAL, pas une anomalie.
+  ///
+  /// POURQUOI EN BASE, ET PAS LUES AU VOL DANS LA LISTE DISTANTE. Le geste
+  /// « telecharger » lit la LIGNE LOCALE (`CatalogNotifier.downloadTrail` ->
+  /// `getByTrailId`), jamais la reponse reseau : c est ce qui lui permet de partir
+  /// d un catalogue affiche depuis le dernier distant recu. Si l adresse des tuiles
+  /// n etait pas conservee ici, la descente des cartes exigerait une SECONDE lecture
+  /// du manifeste au moment du geste — donc un second chemin de resolution, avec sa
+  /// propre facon d echouer. Trois colonnes valent mieux que deux verites.
+  ///
+  /// ELLES NE DISENT RIEN DE CE QUI EST SUR LE TELEPHONE. Ce sont des faits
+  /// SERVEUR, comme [hash] et [fileSize] : « voila la carte publiee ». La presence
+  /// reelle du fichier se lit sur le systeme de fichiers (`MBTilesManager`), une
+  /// seule source, et pas dans une colonne qui pourrait mentir apres un effacement
+  /// de donnees d application.
+  final String? tilesPath;
+
+  /// Poids du fichier de tuiles publie, en octets. Null = aucune carte publiee.
+  final int? tilesSize;
+
+  /// Empreinte SHA-256 du fichier de tuiles publie. Null = aucune carte publiee.
+  final String? tilesHash;
   const TrailManifest({
     required this.trailId,
     required this.dataVersion,
@@ -9271,19 +10145,45 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     required this.status,
     required this.lastUpdated,
     this.localVersion,
+    this.ficheJson,
+    this.niveauLocal,
+    this.tilesPath,
+    this.tilesSize,
+    this.tilesHash,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['trail_id'] = Variable<String>(trailId);
-    map['data_version'] = Variable<int>(dataVersion);
+    {
+      map['data_version'] = Variable<int>(
+        $TrailManifestsTable.$converterdataVersion.toSql(dataVersion),
+      );
+    }
     map['hash'] = Variable<String>(hash);
     map['file_path'] = Variable<String>(filePath);
     map['file_size'] = Variable<int>(fileSize);
     map['status'] = Variable<String>(status);
     map['last_updated'] = Variable<String>(lastUpdated);
     if (!nullToAbsent || localVersion != null) {
-      map['local_version'] = Variable<int>(localVersion);
+      map['local_version'] = Variable<int>(
+        $TrailManifestsTable.$converterlocalVersionn.toSql(localVersion),
+      );
+    }
+    if (!nullToAbsent || ficheJson != null) {
+      map['fiche_json'] = Variable<String>(ficheJson);
+    }
+    if (!nullToAbsent || niveauLocal != null) {
+      map['niveau_local'] = Variable<String>(niveauLocal);
+    }
+    if (!nullToAbsent || tilesPath != null) {
+      map['tiles_path'] = Variable<String>(tilesPath);
+    }
+    if (!nullToAbsent || tilesSize != null) {
+      map['tiles_size'] = Variable<int>(tilesSize);
+    }
+    if (!nullToAbsent || tilesHash != null) {
+      map['tiles_hash'] = Variable<String>(tilesHash);
     }
     return map;
   }
@@ -9300,6 +10200,21 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       localVersion: localVersion == null && nullToAbsent
           ? const Value.absent()
           : Value(localVersion),
+      ficheJson: ficheJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ficheJson),
+      niveauLocal: niveauLocal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(niveauLocal),
+      tilesPath: tilesPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tilesPath),
+      tilesSize: tilesSize == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tilesSize),
+      tilesHash: tilesHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tilesHash),
     );
   }
 
@@ -9310,13 +10225,20 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrailManifest(
       trailId: serializer.fromJson<String>(json['trailId']),
-      dataVersion: serializer.fromJson<int>(json['dataVersion']),
+      dataVersion: serializer.fromJson<HorodatageServeur>(json['dataVersion']),
       hash: serializer.fromJson<String>(json['hash']),
       filePath: serializer.fromJson<String>(json['filePath']),
       fileSize: serializer.fromJson<int>(json['fileSize']),
       status: serializer.fromJson<String>(json['status']),
       lastUpdated: serializer.fromJson<String>(json['lastUpdated']),
-      localVersion: serializer.fromJson<int?>(json['localVersion']),
+      localVersion: serializer.fromJson<HorodatageServeur?>(
+        json['localVersion'],
+      ),
+      ficheJson: serializer.fromJson<String?>(json['ficheJson']),
+      niveauLocal: serializer.fromJson<String?>(json['niveauLocal']),
+      tilesPath: serializer.fromJson<String?>(json['tilesPath']),
+      tilesSize: serializer.fromJson<int?>(json['tilesSize']),
+      tilesHash: serializer.fromJson<String?>(json['tilesHash']),
     );
   }
   @override
@@ -9324,25 +10246,35 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'trailId': serializer.toJson<String>(trailId),
-      'dataVersion': serializer.toJson<int>(dataVersion),
+      'dataVersion': serializer.toJson<HorodatageServeur>(dataVersion),
       'hash': serializer.toJson<String>(hash),
       'filePath': serializer.toJson<String>(filePath),
       'fileSize': serializer.toJson<int>(fileSize),
       'status': serializer.toJson<String>(status),
       'lastUpdated': serializer.toJson<String>(lastUpdated),
-      'localVersion': serializer.toJson<int?>(localVersion),
+      'localVersion': serializer.toJson<HorodatageServeur?>(localVersion),
+      'ficheJson': serializer.toJson<String?>(ficheJson),
+      'niveauLocal': serializer.toJson<String?>(niveauLocal),
+      'tilesPath': serializer.toJson<String?>(tilesPath),
+      'tilesSize': serializer.toJson<int?>(tilesSize),
+      'tilesHash': serializer.toJson<String?>(tilesHash),
     };
   }
 
   TrailManifest copyWith({
     String? trailId,
-    int? dataVersion,
+    HorodatageServeur? dataVersion,
     String? hash,
     String? filePath,
     int? fileSize,
     String? status,
     String? lastUpdated,
-    Value<int?> localVersion = const Value.absent(),
+    Value<HorodatageServeur?> localVersion = const Value.absent(),
+    Value<String?> ficheJson = const Value.absent(),
+    Value<String?> niveauLocal = const Value.absent(),
+    Value<String?> tilesPath = const Value.absent(),
+    Value<int?> tilesSize = const Value.absent(),
+    Value<String?> tilesHash = const Value.absent(),
   }) => TrailManifest(
     trailId: trailId ?? this.trailId,
     dataVersion: dataVersion ?? this.dataVersion,
@@ -9352,6 +10284,11 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     status: status ?? this.status,
     lastUpdated: lastUpdated ?? this.lastUpdated,
     localVersion: localVersion.present ? localVersion.value : this.localVersion,
+    ficheJson: ficheJson.present ? ficheJson.value : this.ficheJson,
+    niveauLocal: niveauLocal.present ? niveauLocal.value : this.niveauLocal,
+    tilesPath: tilesPath.present ? tilesPath.value : this.tilesPath,
+    tilesSize: tilesSize.present ? tilesSize.value : this.tilesSize,
+    tilesHash: tilesHash.present ? tilesHash.value : this.tilesHash,
   );
   TrailManifest copyWithCompanion(TrailManifestsCompanion data) {
     return TrailManifest(
@@ -9369,6 +10306,13 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
       localVersion: data.localVersion.present
           ? data.localVersion.value
           : this.localVersion,
+      ficheJson: data.ficheJson.present ? data.ficheJson.value : this.ficheJson,
+      niveauLocal: data.niveauLocal.present
+          ? data.niveauLocal.value
+          : this.niveauLocal,
+      tilesPath: data.tilesPath.present ? data.tilesPath.value : this.tilesPath,
+      tilesSize: data.tilesSize.present ? data.tilesSize.value : this.tilesSize,
+      tilesHash: data.tilesHash.present ? data.tilesHash.value : this.tilesHash,
     );
   }
 
@@ -9382,7 +10326,12 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
           ..write('fileSize: $fileSize, ')
           ..write('status: $status, ')
           ..write('lastUpdated: $lastUpdated, ')
-          ..write('localVersion: $localVersion')
+          ..write('localVersion: $localVersion, ')
+          ..write('ficheJson: $ficheJson, ')
+          ..write('niveauLocal: $niveauLocal, ')
+          ..write('tilesPath: $tilesPath, ')
+          ..write('tilesSize: $tilesSize, ')
+          ..write('tilesHash: $tilesHash')
           ..write(')'))
         .toString();
   }
@@ -9397,6 +10346,11 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     status,
     lastUpdated,
     localVersion,
+    ficheJson,
+    niveauLocal,
+    tilesPath,
+    tilesSize,
+    tilesHash,
   );
   @override
   bool operator ==(Object other) =>
@@ -9409,18 +10363,28 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
           other.fileSize == this.fileSize &&
           other.status == this.status &&
           other.lastUpdated == this.lastUpdated &&
-          other.localVersion == this.localVersion);
+          other.localVersion == this.localVersion &&
+          other.ficheJson == this.ficheJson &&
+          other.niveauLocal == this.niveauLocal &&
+          other.tilesPath == this.tilesPath &&
+          other.tilesSize == this.tilesSize &&
+          other.tilesHash == this.tilesHash);
 }
 
 class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
   final Value<String> trailId;
-  final Value<int> dataVersion;
+  final Value<HorodatageServeur> dataVersion;
   final Value<String> hash;
   final Value<String> filePath;
   final Value<int> fileSize;
   final Value<String> status;
   final Value<String> lastUpdated;
-  final Value<int?> localVersion;
+  final Value<HorodatageServeur?> localVersion;
+  final Value<String?> ficheJson;
+  final Value<String?> niveauLocal;
+  final Value<String?> tilesPath;
+  final Value<int?> tilesSize;
+  final Value<String?> tilesHash;
   final Value<int> rowid;
   const TrailManifestsCompanion({
     this.trailId = const Value.absent(),
@@ -9431,17 +10395,27 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     this.status = const Value.absent(),
     this.lastUpdated = const Value.absent(),
     this.localVersion = const Value.absent(),
+    this.ficheJson = const Value.absent(),
+    this.niveauLocal = const Value.absent(),
+    this.tilesPath = const Value.absent(),
+    this.tilesSize = const Value.absent(),
+    this.tilesHash = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TrailManifestsCompanion.insert({
     required String trailId,
-    required int dataVersion,
+    required HorodatageServeur dataVersion,
     required String hash,
     required String filePath,
     required int fileSize,
     required String status,
     required String lastUpdated,
     this.localVersion = const Value.absent(),
+    this.ficheJson = const Value.absent(),
+    this.niveauLocal = const Value.absent(),
+    this.tilesPath = const Value.absent(),
+    this.tilesSize = const Value.absent(),
+    this.tilesHash = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : trailId = Value(trailId),
        dataVersion = Value(dataVersion),
@@ -9459,6 +10433,11 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     Expression<String>? status,
     Expression<String>? lastUpdated,
     Expression<int>? localVersion,
+    Expression<String>? ficheJson,
+    Expression<String>? niveauLocal,
+    Expression<String>? tilesPath,
+    Expression<int>? tilesSize,
+    Expression<String>? tilesHash,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -9470,19 +10449,29 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       if (status != null) 'status': status,
       if (lastUpdated != null) 'last_updated': lastUpdated,
       if (localVersion != null) 'local_version': localVersion,
+      if (ficheJson != null) 'fiche_json': ficheJson,
+      if (niveauLocal != null) 'niveau_local': niveauLocal,
+      if (tilesPath != null) 'tiles_path': tilesPath,
+      if (tilesSize != null) 'tiles_size': tilesSize,
+      if (tilesHash != null) 'tiles_hash': tilesHash,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   TrailManifestsCompanion copyWith({
     Value<String>? trailId,
-    Value<int>? dataVersion,
+    Value<HorodatageServeur>? dataVersion,
     Value<String>? hash,
     Value<String>? filePath,
     Value<int>? fileSize,
     Value<String>? status,
     Value<String>? lastUpdated,
-    Value<int?>? localVersion,
+    Value<HorodatageServeur?>? localVersion,
+    Value<String?>? ficheJson,
+    Value<String?>? niveauLocal,
+    Value<String?>? tilesPath,
+    Value<int?>? tilesSize,
+    Value<String?>? tilesHash,
     Value<int>? rowid,
   }) {
     return TrailManifestsCompanion(
@@ -9494,6 +10483,11 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       status: status ?? this.status,
       lastUpdated: lastUpdated ?? this.lastUpdated,
       localVersion: localVersion ?? this.localVersion,
+      ficheJson: ficheJson ?? this.ficheJson,
+      niveauLocal: niveauLocal ?? this.niveauLocal,
+      tilesPath: tilesPath ?? this.tilesPath,
+      tilesSize: tilesSize ?? this.tilesSize,
+      tilesHash: tilesHash ?? this.tilesHash,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -9505,7 +10499,9 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       map['trail_id'] = Variable<String>(trailId.value);
     }
     if (dataVersion.present) {
-      map['data_version'] = Variable<int>(dataVersion.value);
+      map['data_version'] = Variable<int>(
+        $TrailManifestsTable.$converterdataVersion.toSql(dataVersion.value),
+      );
     }
     if (hash.present) {
       map['hash'] = Variable<String>(hash.value);
@@ -9523,7 +10519,24 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
       map['last_updated'] = Variable<String>(lastUpdated.value);
     }
     if (localVersion.present) {
-      map['local_version'] = Variable<int>(localVersion.value);
+      map['local_version'] = Variable<int>(
+        $TrailManifestsTable.$converterlocalVersionn.toSql(localVersion.value),
+      );
+    }
+    if (ficheJson.present) {
+      map['fiche_json'] = Variable<String>(ficheJson.value);
+    }
+    if (niveauLocal.present) {
+      map['niveau_local'] = Variable<String>(niveauLocal.value);
+    }
+    if (tilesPath.present) {
+      map['tiles_path'] = Variable<String>(tilesPath.value);
+    }
+    if (tilesSize.present) {
+      map['tiles_size'] = Variable<int>(tilesSize.value);
+    }
+    if (tilesHash.present) {
+      map['tiles_hash'] = Variable<String>(tilesHash.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -9542,6 +10555,11 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
           ..write('status: $status, ')
           ..write('lastUpdated: $lastUpdated, ')
           ..write('localVersion: $localVersion, ')
+          ..write('ficheJson: $ficheJson, ')
+          ..write('niveauLocal: $niveauLocal, ')
+          ..write('tilesPath: $tilesPath, ')
+          ..write('tilesSize: $tilesSize, ')
+          ..write('tilesHash: $tilesHash, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11665,6 +12683,15 @@ class $SessionTrackPointsTable extends SessionTrackPoints
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -11676,6 +12703,7 @@ class $SessionTrackPointsTable extends SessionTrackPoints
     lng,
     altitude,
     recordedAt,
+    source,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -11750,6 +12778,12 @@ class $SessionTrackPointsTable extends SessionTrackPoints
     } else if (isInserting) {
       context.missing(_recordedAtMeta);
     }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
     return context;
   }
 
@@ -11795,6 +12829,10 @@ class $SessionTrackPointsTable extends SessionTrackPoints
         DriftSqlType.dateTime,
         data['${effectivePrefix}recorded_at'],
       )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      ),
     );
   }
 
@@ -11839,6 +12877,13 @@ class SessionTrackPoint extends DataClass
 
   /// Horodatage d'enregistrement du point
   final DateTime recordedAt;
+
+  /// Origine du point : `gps` (relevé réel) ou `estime` (calculé sur le
+  /// tracé), cf. `TrackPointSource`.
+  ///
+  /// Null pour les points antérieurs à la migration v32 : ce sont des
+  /// relevés réels, et toute lecture les traite comme tels.
+  final String? source;
   const SessionTrackPoint({
     required this.id,
     required this.trailId,
@@ -11849,6 +12894,7 @@ class SessionTrackPoint extends DataClass
     required this.lng,
     required this.altitude,
     required this.recordedAt,
+    this.source,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -11868,6 +12914,9 @@ class SessionTrackPoint extends DataClass
     map['lng'] = Variable<double>(lng);
     map['altitude'] = Variable<double>(altitude);
     map['recorded_at'] = Variable<DateTime>(recordedAt);
+    if (!nullToAbsent || source != null) {
+      map['source'] = Variable<String>(source);
+    }
     return map;
   }
 
@@ -11888,6 +12937,9 @@ class SessionTrackPoint extends DataClass
       lng: Value(lng),
       altitude: Value(altitude),
       recordedAt: Value(recordedAt),
+      source: source == null && nullToAbsent
+          ? const Value.absent()
+          : Value(source),
     );
   }
 
@@ -11906,6 +12958,7 @@ class SessionTrackPoint extends DataClass
       lng: serializer.fromJson<double>(json['lng']),
       altitude: serializer.fromJson<double>(json['altitude']),
       recordedAt: serializer.fromJson<DateTime>(json['recordedAt']),
+      source: serializer.fromJson<String?>(json['source']),
     );
   }
   @override
@@ -11921,6 +12974,7 @@ class SessionTrackPoint extends DataClass
       'lng': serializer.toJson<double>(lng),
       'altitude': serializer.toJson<double>(altitude),
       'recordedAt': serializer.toJson<DateTime>(recordedAt),
+      'source': serializer.toJson<String?>(source),
     };
   }
 
@@ -11934,6 +12988,7 @@ class SessionTrackPoint extends DataClass
     double? lng,
     double? altitude,
     DateTime? recordedAt,
+    Value<String?> source = const Value.absent(),
   }) => SessionTrackPoint(
     id: id ?? this.id,
     trailId: trailId ?? this.trailId,
@@ -11944,6 +12999,7 @@ class SessionTrackPoint extends DataClass
     lng: lng ?? this.lng,
     altitude: altitude ?? this.altitude,
     recordedAt: recordedAt ?? this.recordedAt,
+    source: source.present ? source.value : this.source,
   );
   SessionTrackPoint copyWithCompanion(SessionTrackPointsCompanion data) {
     return SessionTrackPoint(
@@ -11958,6 +13014,7 @@ class SessionTrackPoint extends DataClass
       recordedAt: data.recordedAt.present
           ? data.recordedAt.value
           : this.recordedAt,
+      source: data.source.present ? data.source.value : this.source,
     );
   }
 
@@ -11972,7 +13029,8 @@ class SessionTrackPoint extends DataClass
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('altitude: $altitude, ')
-          ..write('recordedAt: $recordedAt')
+          ..write('recordedAt: $recordedAt, ')
+          ..write('source: $source')
           ..write(')'))
         .toString();
   }
@@ -11988,6 +13046,7 @@ class SessionTrackPoint extends DataClass
     lng,
     altitude,
     recordedAt,
+    source,
   );
   @override
   bool operator ==(Object other) =>
@@ -12001,7 +13060,8 @@ class SessionTrackPoint extends DataClass
           other.lat == this.lat &&
           other.lng == this.lng &&
           other.altitude == this.altitude &&
-          other.recordedAt == this.recordedAt);
+          other.recordedAt == this.recordedAt &&
+          other.source == this.source);
 }
 
 class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
@@ -12014,6 +13074,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
   final Value<double> lng;
   final Value<double> altitude;
   final Value<DateTime> recordedAt;
+  final Value<String?> source;
   const SessionTrackPointsCompanion({
     this.id = const Value.absent(),
     this.trailId = const Value.absent(),
@@ -12024,6 +13085,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     this.lng = const Value.absent(),
     this.altitude = const Value.absent(),
     this.recordedAt = const Value.absent(),
+    this.source = const Value.absent(),
   });
   SessionTrackPointsCompanion.insert({
     this.id = const Value.absent(),
@@ -12035,6 +13097,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     required double lng,
     required double altitude,
     required DateTime recordedAt,
+    this.source = const Value.absent(),
   }) : trailId = Value(trailId),
        lat = Value(lat),
        lng = Value(lng),
@@ -12050,6 +13113,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     Expression<double>? lng,
     Expression<double>? altitude,
     Expression<DateTime>? recordedAt,
+    Expression<String>? source,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -12061,6 +13125,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
       if (lng != null) 'lng': lng,
       if (altitude != null) 'altitude': altitude,
       if (recordedAt != null) 'recorded_at': recordedAt,
+      if (source != null) 'source': source,
     });
   }
 
@@ -12074,6 +13139,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     Value<double>? lng,
     Value<double>? altitude,
     Value<DateTime>? recordedAt,
+    Value<String?>? source,
   }) {
     return SessionTrackPointsCompanion(
       id: id ?? this.id,
@@ -12085,6 +13151,7 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
       lng: lng ?? this.lng,
       altitude: altitude ?? this.altitude,
       recordedAt: recordedAt ?? this.recordedAt,
+      source: source ?? this.source,
     );
   }
 
@@ -12118,6 +13185,9 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     if (recordedAt.present) {
       map['recorded_at'] = Variable<DateTime>(recordedAt.value);
     }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
     return map;
   }
 
@@ -12132,7 +13202,8 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('altitude: $altitude, ')
-          ..write('recordedAt: $recordedAt')
+          ..write('recordedAt: $recordedAt, ')
+          ..write('source: $source')
           ..write(')'))
         .toString();
   }
@@ -21470,18 +22541,20 @@ typedef $$TrailMetaTableCreateCompanionBuilder =
     TrailMetaCompanion Function({
       required String id,
       required String code,
-      required int dataVersion,
+      required HorodatageServeur dataVersion,
       Value<String?> lastSync,
       Value<String> status,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 typedef $$TrailMetaTableUpdateCompanionBuilder =
     TrailMetaCompanion Function({
       Value<String> id,
       Value<String> code,
-      Value<int> dataVersion,
+      Value<HorodatageServeur> dataVersion,
       Value<String?> lastSync,
       Value<String> status,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 
@@ -21504,9 +22577,10 @@ class $$TrailMetaTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get dataVersion => $composableBuilder(
+  ColumnWithTypeConverterFilters<HorodatageServeur, HorodatageServeur, int>
+  get dataVersion => $composableBuilder(
     column: $table.dataVersion,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<String> get lastSync => $composableBuilder(
@@ -21517,6 +22591,12 @@ class $$TrailMetaTableFilterComposer
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
     builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 }
 
@@ -21553,6 +22633,11 @@ class $$TrailMetaTableOrderingComposer
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailMetaTableAnnotationComposer
@@ -21570,16 +22655,20 @@ class $$TrailMetaTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumn<int> get dataVersion => $composableBuilder(
-    column: $table.dataVersion,
-    builder: (column) => column,
-  );
+  GeneratedColumnWithTypeConverter<HorodatageServeur, int> get dataVersion =>
+      $composableBuilder(
+        column: $table.dataVersion,
+        builder: (column) => column,
+      );
 
   GeneratedColumn<String> get lastSync =>
       $composableBuilder(column: $table.lastSync, builder: (column) => column);
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailMetaTableTableManager
@@ -21615,9 +22704,10 @@ class $$TrailMetaTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> code = const Value.absent(),
-                Value<int> dataVersion = const Value.absent(),
+                Value<HorodatageServeur> dataVersion = const Value.absent(),
                 Value<String?> lastSync = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailMetaCompanion(
                 id: id,
@@ -21625,15 +22715,17 @@ class $$TrailMetaTableTableManager
                 dataVersion: dataVersion,
                 lastSync: lastSync,
                 status: status,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String id,
                 required String code,
-                required int dataVersion,
+                required HorodatageServeur dataVersion,
                 Value<String?> lastSync = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailMetaCompanion.insert(
                 id: id,
@@ -21641,6 +22733,7 @@ class $$TrailMetaTableTableManager
                 dataVersion: dataVersion,
                 lastSync: lastSync,
                 status: status,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -21681,6 +22774,7 @@ typedef $$TrailItinerariesTableCreateCompanionBuilder =
       required double distanceKm,
       required int elevationGain,
       required int stageCount,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 typedef $$TrailItinerariesTableUpdateCompanionBuilder =
@@ -21696,6 +22790,7 @@ typedef $$TrailItinerariesTableUpdateCompanionBuilder =
       Value<double> distanceKm,
       Value<int> elevationGain,
       Value<int> stageCount,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 
@@ -21762,6 +22857,12 @@ class $$TrailItinerariesTableFilterComposer
     column: $table.stageCount,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
 class $$TrailItinerariesTableOrderingComposer
@@ -21827,6 +22928,11 @@ class $$TrailItinerariesTableOrderingComposer
     column: $table.stageCount,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailItinerariesTableAnnotationComposer
@@ -21876,6 +22982,9 @@ class $$TrailItinerariesTableAnnotationComposer
     column: $table.stageCount,
     builder: (column) => column,
   );
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailItinerariesTableTableManager
@@ -21926,6 +23035,7 @@ class $$TrailItinerariesTableTableManager
                 Value<double> distanceKm = const Value.absent(),
                 Value<int> elevationGain = const Value.absent(),
                 Value<int> stageCount = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailItinerariesCompanion(
                 id: id,
@@ -21939,6 +23049,7 @@ class $$TrailItinerariesTableTableManager
                 distanceKm: distanceKm,
                 elevationGain: elevationGain,
                 stageCount: stageCount,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -21954,6 +23065,7 @@ class $$TrailItinerariesTableTableManager
                 required double distanceKm,
                 required int elevationGain,
                 required int stageCount,
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailItinerariesCompanion.insert(
                 id: id,
@@ -21967,6 +23079,7 @@ class $$TrailItinerariesTableTableManager
                 distanceKm: distanceKm,
                 elevationGain: elevationGain,
                 stageCount: stageCount,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -22013,6 +23126,7 @@ typedef $$TrailStagesTableCreateCompanionBuilder =
       required int elevationLoss,
       required int durationMinutes,
       required String difficulty,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 typedef $$TrailStagesTableUpdateCompanionBuilder =
@@ -22034,6 +23148,7 @@ typedef $$TrailStagesTableUpdateCompanionBuilder =
       Value<int> elevationLoss,
       Value<int> durationMinutes,
       Value<String> difficulty,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 
@@ -22130,6 +23245,12 @@ class $$TrailStagesTableFilterComposer
     column: $table.difficulty,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
 class $$TrailStagesTableOrderingComposer
@@ -22225,6 +23346,11 @@ class $$TrailStagesTableOrderingComposer
     column: $table.difficulty,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailStagesTableAnnotationComposer
@@ -22300,6 +23426,9 @@ class $$TrailStagesTableAnnotationComposer
     column: $table.difficulty,
     builder: (column) => column,
   );
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailStagesTableTableManager
@@ -22350,6 +23479,7 @@ class $$TrailStagesTableTableManager
                 Value<int> elevationLoss = const Value.absent(),
                 Value<int> durationMinutes = const Value.absent(),
                 Value<String> difficulty = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailStagesCompanion(
                 id: id,
@@ -22369,6 +23499,7 @@ class $$TrailStagesTableTableManager
                 elevationLoss: elevationLoss,
                 durationMinutes: durationMinutes,
                 difficulty: difficulty,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -22390,6 +23521,7 @@ class $$TrailStagesTableTableManager
                 required int elevationLoss,
                 required int durationMinutes,
                 required String difficulty,
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailStagesCompanion.insert(
                 id: id,
@@ -22409,6 +23541,7 @@ class $$TrailStagesTableTableManager
                 elevationLoss: elevationLoss,
                 durationMinutes: durationMinutes,
                 difficulty: difficulty,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -22454,6 +23587,8 @@ typedef $$TrailAccommodationsTableCreateCompanionBuilder =
       Value<int?> capacity,
       Value<String?> priceRange,
       Value<String?> bookingUrl,
+      Value<String?> address,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 typedef $$TrailAccommodationsTableUpdateCompanionBuilder =
@@ -22474,6 +23609,8 @@ typedef $$TrailAccommodationsTableUpdateCompanionBuilder =
       Value<int?> capacity,
       Value<String?> priceRange,
       Value<String?> bookingUrl,
+      Value<String?> address,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 
@@ -22565,6 +23702,17 @@ class $$TrailAccommodationsTableFilterComposer
     column: $table.bookingUrl,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
 class $$TrailAccommodationsTableOrderingComposer
@@ -22655,6 +23803,16 @@ class $$TrailAccommodationsTableOrderingComposer
     column: $table.bookingUrl,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailAccommodationsTableAnnotationComposer
@@ -22717,6 +23875,12 @@ class $$TrailAccommodationsTableAnnotationComposer
     column: $table.bookingUrl,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailAccommodationsTableTableManager
@@ -22778,6 +23942,8 @@ class $$TrailAccommodationsTableTableManager
                 Value<int?> capacity = const Value.absent(),
                 Value<String?> priceRange = const Value.absent(),
                 Value<String?> bookingUrl = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailAccommodationsCompanion(
                 id: id,
@@ -22796,6 +23962,8 @@ class $$TrailAccommodationsTableTableManager
                 capacity: capacity,
                 priceRange: priceRange,
                 bookingUrl: bookingUrl,
+                address: address,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -22816,6 +23984,8 @@ class $$TrailAccommodationsTableTableManager
                 Value<int?> capacity = const Value.absent(),
                 Value<String?> priceRange = const Value.absent(),
                 Value<String?> bookingUrl = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailAccommodationsCompanion.insert(
                 id: id,
@@ -22834,6 +24004,8 @@ class $$TrailAccommodationsTableTableManager
                 capacity: capacity,
                 priceRange: priceRange,
                 bookingUrl: bookingUrl,
+                address: address,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -22883,6 +24055,10 @@ typedef $$TrailPoisTableCreateCompanionBuilder =
       required double lat,
       required double lng,
       Value<double?> elevation,
+      Value<String?> address,
+      Value<String?> phone,
+      Value<String?> website,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 typedef $$TrailPoisTableUpdateCompanionBuilder =
@@ -22903,6 +24079,10 @@ typedef $$TrailPoisTableUpdateCompanionBuilder =
       Value<double> lat,
       Value<double> lng,
       Value<double?> elevation,
+      Value<String?> address,
+      Value<String?> phone,
+      Value<String?> website,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 
@@ -22994,6 +24174,27 @@ class $$TrailPoisTableFilterComposer
     column: $table.elevation,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get website => $composableBuilder(
+    column: $table.website,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
 class $$TrailPoisTableOrderingComposer
@@ -23084,6 +24285,26 @@ class $$TrailPoisTableOrderingComposer
     column: $table.elevation,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get website => $composableBuilder(
+    column: $table.website,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailPoisTableAnnotationComposer
@@ -23152,6 +24373,18 @@ class $$TrailPoisTableAnnotationComposer
 
   GeneratedColumn<double> get elevation =>
       $composableBuilder(column: $table.elevation, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get website =>
+      $composableBuilder(column: $table.website, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailPoisTableTableManager
@@ -23198,6 +24431,10 @@ class $$TrailPoisTableTableManager
                 Value<double> lat = const Value.absent(),
                 Value<double> lng = const Value.absent(),
                 Value<double?> elevation = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> website = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailPoisCompanion(
                 id: id,
@@ -23216,6 +24453,10 @@ class $$TrailPoisTableTableManager
                 lat: lat,
                 lng: lng,
                 elevation: elevation,
+                address: address,
+                phone: phone,
+                website: website,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -23236,6 +24477,10 @@ class $$TrailPoisTableTableManager
                 required double lat,
                 required double lng,
                 Value<double?> elevation = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> website = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailPoisCompanion.insert(
                 id: id,
@@ -23254,6 +24499,10 @@ class $$TrailPoisTableTableManager
                 lat: lat,
                 lng: lng,
                 elevation: elevation,
+                address: address,
+                phone: phone,
+                website: website,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -23284,6 +24533,7 @@ typedef $$TrailGpxTracksTableCreateCompanionBuilder =
       required String itineraryId,
       required String name,
       Value<String?> sourceUrl,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 typedef $$TrailGpxTracksTableUpdateCompanionBuilder =
@@ -23292,6 +24542,7 @@ typedef $$TrailGpxTracksTableUpdateCompanionBuilder =
       Value<String> itineraryId,
       Value<String> name,
       Value<String?> sourceUrl,
+      Value<HorodatageServeur?> rev,
       Value<int> rowid,
     });
 
@@ -23323,6 +24574,12 @@ class $$TrailGpxTracksTableFilterComposer
     column: $table.sourceUrl,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
 class $$TrailGpxTracksTableOrderingComposer
@@ -23353,6 +24610,11 @@ class $$TrailGpxTracksTableOrderingComposer
     column: $table.sourceUrl,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailGpxTracksTableAnnotationComposer
@@ -23377,6 +24639,9 @@ class $$TrailGpxTracksTableAnnotationComposer
 
   GeneratedColumn<String> get sourceUrl =>
       $composableBuilder(column: $table.sourceUrl, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailGpxTracksTableTableManager
@@ -23416,12 +24681,14 @@ class $$TrailGpxTracksTableTableManager
                 Value<String> itineraryId = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String?> sourceUrl = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailGpxTracksCompanion(
                 id: id,
                 itineraryId: itineraryId,
                 name: name,
                 sourceUrl: sourceUrl,
+                rev: rev,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -23430,12 +24697,14 @@ class $$TrailGpxTracksTableTableManager
                 required String itineraryId,
                 required String name,
                 Value<String?> sourceUrl = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailGpxTracksCompanion.insert(
                 id: id,
                 itineraryId: itineraryId,
                 name: name,
                 sourceUrl: sourceUrl,
+                rev: rev,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -23471,6 +24740,7 @@ typedef $$TrailGpxPointsTableCreateCompanionBuilder =
       required double lng,
       required double elevation,
       required int sequenceIndex,
+      Value<HorodatageServeur?> rev,
     });
 typedef $$TrailGpxPointsTableUpdateCompanionBuilder =
     TrailGpxPointsCompanion Function({
@@ -23480,6 +24750,7 @@ typedef $$TrailGpxPointsTableUpdateCompanionBuilder =
       Value<double> lng,
       Value<double> elevation,
       Value<int> sequenceIndex,
+      Value<HorodatageServeur?> rev,
     });
 
 class $$TrailGpxPointsTableFilterComposer
@@ -23519,6 +24790,12 @@ class $$TrailGpxPointsTableFilterComposer
   ColumnFilters<int> get sequenceIndex => $composableBuilder(
     column: $table.sequenceIndex,
     builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 }
 
@@ -23560,6 +24837,11 @@ class $$TrailGpxPointsTableOrderingComposer
     column: $table.sequenceIndex,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get rev => $composableBuilder(
+    column: $table.rev,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailGpxPointsTableAnnotationComposer
@@ -23590,6 +24872,9 @@ class $$TrailGpxPointsTableAnnotationComposer
     column: $table.sequenceIndex,
     builder: (column) => column,
   );
+
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get rev =>
+      $composableBuilder(column: $table.rev, builder: (column) => column);
 }
 
 class $$TrailGpxPointsTableTableManager
@@ -23631,6 +24916,7 @@ class $$TrailGpxPointsTableTableManager
                 Value<double> lng = const Value.absent(),
                 Value<double> elevation = const Value.absent(),
                 Value<int> sequenceIndex = const Value.absent(),
+                Value<HorodatageServeur?> rev = const Value.absent(),
               }) => TrailGpxPointsCompanion(
                 id: id,
                 trackId: trackId,
@@ -23638,6 +24924,7 @@ class $$TrailGpxPointsTableTableManager
                 lng: lng,
                 elevation: elevation,
                 sequenceIndex: sequenceIndex,
+                rev: rev,
               ),
           createCompanionCallback:
               ({
@@ -23647,6 +24934,7 @@ class $$TrailGpxPointsTableTableManager
                 required double lng,
                 required double elevation,
                 required int sequenceIndex,
+                Value<HorodatageServeur?> rev = const Value.absent(),
               }) => TrailGpxPointsCompanion.insert(
                 id: id,
                 trackId: trackId,
@@ -23654,6 +24942,7 @@ class $$TrailGpxPointsTableTableManager
                 lng: lng,
                 elevation: elevation,
                 sequenceIndex: sequenceIndex,
+                rev: rev,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -23683,25 +24972,35 @@ typedef $$TrailGpxPointsTableProcessedTableManager =
 typedef $$TrailManifestsTableCreateCompanionBuilder =
     TrailManifestsCompanion Function({
       required String trailId,
-      required int dataVersion,
+      required HorodatageServeur dataVersion,
       required String hash,
       required String filePath,
       required int fileSize,
       required String status,
       required String lastUpdated,
-      Value<int?> localVersion,
+      Value<HorodatageServeur?> localVersion,
+      Value<String?> ficheJson,
+      Value<String?> niveauLocal,
+      Value<String?> tilesPath,
+      Value<int?> tilesSize,
+      Value<String?> tilesHash,
       Value<int> rowid,
     });
 typedef $$TrailManifestsTableUpdateCompanionBuilder =
     TrailManifestsCompanion Function({
       Value<String> trailId,
-      Value<int> dataVersion,
+      Value<HorodatageServeur> dataVersion,
       Value<String> hash,
       Value<String> filePath,
       Value<int> fileSize,
       Value<String> status,
       Value<String> lastUpdated,
-      Value<int?> localVersion,
+      Value<HorodatageServeur?> localVersion,
+      Value<String?> ficheJson,
+      Value<String?> niveauLocal,
+      Value<String?> tilesPath,
+      Value<int?> tilesSize,
+      Value<String?> tilesHash,
       Value<int> rowid,
     });
 
@@ -23719,9 +25018,10 @@ class $$TrailManifestsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get dataVersion => $composableBuilder(
+  ColumnWithTypeConverterFilters<HorodatageServeur, HorodatageServeur, int>
+  get dataVersion => $composableBuilder(
     column: $table.dataVersion,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<String> get hash => $composableBuilder(
@@ -23749,8 +25049,34 @@ class $$TrailManifestsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get localVersion => $composableBuilder(
+  ColumnWithTypeConverterFilters<HorodatageServeur?, HorodatageServeur, int>
+  get localVersion => $composableBuilder(
     column: $table.localVersion,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get ficheJson => $composableBuilder(
+    column: $table.ficheJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get niveauLocal => $composableBuilder(
+    column: $table.niveauLocal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tilesPath => $composableBuilder(
+    column: $table.tilesPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get tilesSize => $composableBuilder(
+    column: $table.tilesSize,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tilesHash => $composableBuilder(
+    column: $table.tilesHash,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -23803,6 +25129,31 @@ class $$TrailManifestsTableOrderingComposer
     column: $table.localVersion,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get ficheJson => $composableBuilder(
+    column: $table.ficheJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get niveauLocal => $composableBuilder(
+    column: $table.niveauLocal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tilesPath => $composableBuilder(
+    column: $table.tilesPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get tilesSize => $composableBuilder(
+    column: $table.tilesSize,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tilesHash => $composableBuilder(
+    column: $table.tilesHash,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailManifestsTableAnnotationComposer
@@ -23817,10 +25168,11 @@ class $$TrailManifestsTableAnnotationComposer
   GeneratedColumn<String> get trailId =>
       $composableBuilder(column: $table.trailId, builder: (column) => column);
 
-  GeneratedColumn<int> get dataVersion => $composableBuilder(
-    column: $table.dataVersion,
-    builder: (column) => column,
-  );
+  GeneratedColumnWithTypeConverter<HorodatageServeur, int> get dataVersion =>
+      $composableBuilder(
+        column: $table.dataVersion,
+        builder: (column) => column,
+      );
 
   GeneratedColumn<String> get hash =>
       $composableBuilder(column: $table.hash, builder: (column) => column);
@@ -23839,10 +25191,28 @@ class $$TrailManifestsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get localVersion => $composableBuilder(
-    column: $table.localVersion,
+  GeneratedColumnWithTypeConverter<HorodatageServeur?, int> get localVersion =>
+      $composableBuilder(
+        column: $table.localVersion,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<String> get ficheJson =>
+      $composableBuilder(column: $table.ficheJson, builder: (column) => column);
+
+  GeneratedColumn<String> get niveauLocal => $composableBuilder(
+    column: $table.niveauLocal,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get tilesPath =>
+      $composableBuilder(column: $table.tilesPath, builder: (column) => column);
+
+  GeneratedColumn<int> get tilesSize =>
+      $composableBuilder(column: $table.tilesSize, builder: (column) => column);
+
+  GeneratedColumn<String> get tilesHash =>
+      $composableBuilder(column: $table.tilesHash, builder: (column) => column);
 }
 
 class $$TrailManifestsTableTableManager
@@ -23879,13 +25249,18 @@ class $$TrailManifestsTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> trailId = const Value.absent(),
-                Value<int> dataVersion = const Value.absent(),
+                Value<HorodatageServeur> dataVersion = const Value.absent(),
                 Value<String> hash = const Value.absent(),
                 Value<String> filePath = const Value.absent(),
                 Value<int> fileSize = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String> lastUpdated = const Value.absent(),
-                Value<int?> localVersion = const Value.absent(),
+                Value<HorodatageServeur?> localVersion = const Value.absent(),
+                Value<String?> ficheJson = const Value.absent(),
+                Value<String?> niveauLocal = const Value.absent(),
+                Value<String?> tilesPath = const Value.absent(),
+                Value<int?> tilesSize = const Value.absent(),
+                Value<String?> tilesHash = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailManifestsCompanion(
                 trailId: trailId,
@@ -23896,18 +25271,28 @@ class $$TrailManifestsTableTableManager
                 status: status,
                 lastUpdated: lastUpdated,
                 localVersion: localVersion,
+                ficheJson: ficheJson,
+                niveauLocal: niveauLocal,
+                tilesPath: tilesPath,
+                tilesSize: tilesSize,
+                tilesHash: tilesHash,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String trailId,
-                required int dataVersion,
+                required HorodatageServeur dataVersion,
                 required String hash,
                 required String filePath,
                 required int fileSize,
                 required String status,
                 required String lastUpdated,
-                Value<int?> localVersion = const Value.absent(),
+                Value<HorodatageServeur?> localVersion = const Value.absent(),
+                Value<String?> ficheJson = const Value.absent(),
+                Value<String?> niveauLocal = const Value.absent(),
+                Value<String?> tilesPath = const Value.absent(),
+                Value<int?> tilesSize = const Value.absent(),
+                Value<String?> tilesHash = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TrailManifestsCompanion.insert(
                 trailId: trailId,
@@ -23918,6 +25303,11 @@ class $$TrailManifestsTableTableManager
                 status: status,
                 lastUpdated: lastUpdated,
                 localVersion: localVersion,
+                ficheJson: ficheJson,
+                niveauLocal: niveauLocal,
+                tilesPath: tilesPath,
+                tilesSize: tilesSize,
+                tilesHash: tilesHash,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -25030,6 +26420,7 @@ typedef $$SessionTrackPointsTableCreateCompanionBuilder =
       required double lng,
       required double altitude,
       required DateTime recordedAt,
+      Value<String?> source,
     });
 typedef $$SessionTrackPointsTableUpdateCompanionBuilder =
     SessionTrackPointsCompanion Function({
@@ -25042,6 +26433,7 @@ typedef $$SessionTrackPointsTableUpdateCompanionBuilder =
       Value<double> lng,
       Value<double> altitude,
       Value<DateTime> recordedAt,
+      Value<String?> source,
     });
 
 class $$SessionTrackPointsTableFilterComposer
@@ -25095,6 +26487,11 @@ class $$SessionTrackPointsTableFilterComposer
 
   ColumnFilters<DateTime> get recordedAt => $composableBuilder(
     column: $table.recordedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -25152,6 +26549,11 @@ class $$SessionTrackPointsTableOrderingComposer
     column: $table.recordedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SessionTrackPointsTableAnnotationComposer
@@ -25191,6 +26593,9 @@ class $$SessionTrackPointsTableAnnotationComposer
     column: $table.recordedAt,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
 }
 
 class $$SessionTrackPointsTableTableManager
@@ -25242,6 +26647,7 @@ class $$SessionTrackPointsTableTableManager
                 Value<double> lng = const Value.absent(),
                 Value<double> altitude = const Value.absent(),
                 Value<DateTime> recordedAt = const Value.absent(),
+                Value<String?> source = const Value.absent(),
               }) => SessionTrackPointsCompanion(
                 id: id,
                 trailId: trailId,
@@ -25252,6 +26658,7 @@ class $$SessionTrackPointsTableTableManager
                 lng: lng,
                 altitude: altitude,
                 recordedAt: recordedAt,
+                source: source,
               ),
           createCompanionCallback:
               ({
@@ -25264,6 +26671,7 @@ class $$SessionTrackPointsTableTableManager
                 required double lng,
                 required double altitude,
                 required DateTime recordedAt,
+                Value<String?> source = const Value.absent(),
               }) => SessionTrackPointsCompanion.insert(
                 id: id,
                 trailId: trailId,
@@ -25274,6 +26682,7 @@ class $$SessionTrackPointsTableTableManager
                 lng: lng,
                 altitude: altitude,
                 recordedAt: recordedAt,
+                source: source,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

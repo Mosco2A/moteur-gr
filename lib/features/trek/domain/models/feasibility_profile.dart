@@ -1,3 +1,7 @@
+/// Les capacites et l'experience d'un marcheur. En groupe, c'est le PIRE profil
+/// qui sert de base aux recommandations.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'feasibility_profile.freezed.dart';

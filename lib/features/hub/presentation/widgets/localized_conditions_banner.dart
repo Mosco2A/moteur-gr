@@ -1,18 +1,30 @@
+/// « Ici et maintenant » : ce bandeau n'est monte QU'EN phase de marche, donc
+/// jamais visible pendant la preparation.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
+import '../../../../domain/temperature_unit.dart'
+    show TemperatureUnit, formatTemperatureRange;
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_card.dart';
-import '../../../weather/models/weather_forecast.dart';
-import '../../../weather/presentation/fire_risk_screen.dart' show fireRiskColor;
-import '../../../weather/providers/current_stage_provider.dart';
-import '../../../weather/providers/fire_risk_providers.dart'
-    show FireRiskDay, trailFireRiskProvider;
-import '../../../weather/providers/weather_providers.dart';
-import '../../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
+import '../../../settings/settings_facade.dart' show settingsProvider;
+import '../../../weather/weather_facade.dart'
+    show
+        DayForecast,
+        FireRiskDay,
+        WeatherIcon,
+        WeatherStageParams,
+        fireRiskColor,
+        localizedStageNumberProvider,
+        stageWeatherProvider,
+        trailFireRiskProvider;
+import '../../../../core/branding/stepways_icons.dart';
 
 /// BANDEAU « ICI ET MAINTENANT » — MÉTÉO PENDANT LA RANDO, AU JOUR J (R11).
 ///
@@ -27,8 +39,8 @@ import '../../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
 /// réutilise le socle météo StepWays PAR ÉTAPE (coordonnées résolues
 /// dynamiquement depuis Drift) via l'**étape détectée par le GPS**
 /// ([localizedStageNumberProvider], dérivé du pipeline `positionStream` ->
-/// détection d'étape) — même liaison GPS -> étape que le reste du moteur, aucune
-/// nouvelle source, jamais de localité en dur (#84627/#99460).
+/// détection d'étape) — même liaison GPS -> étape que le reste du moteur,
+/// aucune nouvelle source, jamais de localité en dur (#84627/#99460).
 ///
 /// C'est le point clé de R11 : on affiche l'étape COURANTE détectée, et non
 /// l'étape de référence D-3 ([referenceStageNumberProvider], défaut 1) qui
@@ -87,8 +99,8 @@ class LocalizedConditionsBanner extends ConsumerWidget {
           // Titre du bandeau (« Ici et maintenant ») + localisation par étape.
           Row(
             children: [
-              const Icon(
-                Icons.my_location,
+              const StepIcon(
+                StepwaysIcons.maPosition,
                 size: 16,
                 color: AppTheme.phaseHike,
               ),
@@ -97,8 +109,6 @@ class LocalizedConditionsBanner extends ConsumerWidget {
                 child: Text(
                   t.navPilote.weatherBannerTitle,
                   style: theme.textTheme.labelLarge,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               Text(
@@ -115,7 +125,14 @@ class LocalizedConditionsBanner extends ConsumerWidget {
             children: [
               _leadingWeather(context, today, weather.isLoading, scheme),
               const SizedBox(width: AppTheme.spacingBase),
-              Expanded(child: _weatherText(context, today, weather.isLoading)),
+              Expanded(
+                child: _weatherText(
+                  context,
+                  today,
+                  weather.isLoading,
+                  ref.watch(settingsProvider.select((s) => s.temperatureUnit)),
+                ),
+              ),
               if (fireLevel >= 1) ...[
                 const SizedBox(width: AppTheme.spacingSm),
                 _FireChip(level: fireLevel),
@@ -127,10 +144,12 @@ class LocalizedConditionsBanner extends ConsumerWidget {
           // même si la météo localisée est indisponible : accès préservé).
           SizedBox(
             width: double.infinity,
-            child: OutlinedButton.icon(
+            child: AppButton(
+              variant: AppButtonVariant.outline,
+              icon: StepwaysIcons.weather,
+              iconSize: 18,
+              label: t.navPilote.weatherBannerStages,
               onPressed: () => context.push('/trail/$trailId/weather'),
-              icon: const Icon(Icons.wb_sunny_outlined, size: 18),
-              label: Text(t.navPilote.weatherBannerStages),
             ),
           ),
         ],
@@ -160,21 +179,29 @@ class LocalizedConditionsBanner extends ConsumerWidget {
         child: CircularProgressIndicator(strokeWidth: 2),
       );
     }
-    return Icon(
-      Icons.wb_cloudy_outlined,
+    return StepIcon(
+      StepwaysIcons.weather,
       size: 32,
       color: scheme.onSurface.withValues(alpha: 0.6),
     );
   }
 
   /// Texte météo localisée : T° min/max + condition, ou repli lisible.
-  Widget _weatherText(BuildContext context, DayForecast? today, bool loading) {
+  Widget _weatherText(
+    BuildContext context,
+    DayForecast? today,
+    bool loading,
+    TemperatureUnit unit,
+  ) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     if (today != null) {
-      final temp = t.hub.weather.tempRange(
-        min: today.temperatureMin.round(),
-        max: today.temperatureMax.round(),
+      // P2 (#101255 point 2) : meme format que la tuile du cockpit, meme ordre
+      // min / max, et le symbole suit desormais le reglage du randonneur.
+      final temp = formatTemperatureRange(
+        today.temperatureMin,
+        today.temperatureMax,
+        unit,
       );
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,8 +213,6 @@ class LocalizedConditionsBanner extends ConsumerWidget {
             style: theme.textTheme.bodySmall?.copyWith(
               color: scheme.onSurface.withValues(alpha: 0.7),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ],
       );
@@ -229,7 +254,7 @@ class _FireChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.local_fire_department, size: 14, color: color),
+            StepIcon(StepwaysIcons.incendie, size: 14, color: color),
             const SizedBox(width: 4),
             Text(
               t.fireRisk.levelBadge(level: level),

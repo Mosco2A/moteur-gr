@@ -1,11 +1,17 @@
+/// L'ecran bloquant quand aucun sentier n'est encore sur le telephone, et qui
+/// se leve de lui-meme des qu'un sentier arrive.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Provider qui indique si des sentiers sont disponibles localement.
 ///
@@ -25,6 +31,10 @@ class NoDataScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.noData);
     final theme = Theme.of(context);
     final hasTrails = ref.watch(hasLocalTrailsProvider);
 
@@ -51,8 +61,8 @@ class NoDataScreen extends ConsumerWidget {
                     color: theme.colorScheme.primaryContainer.withAlpha(40),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.downloading_rounded,
+                  child: StepIcon(
+                    StepwaysIcons.download,
                     size: 64,
                     color: theme.colorScheme.primary.withAlpha(180),
                   ),
@@ -90,7 +100,7 @@ class NoDataScreen extends ConsumerWidget {
                 // largeur (theme = minimumSize infinie, le bouton remplissait
                 // deja la Column) -> isFullWidth:true = iso-rendu.
                 AppButton(
-                  icon: Icons.explore,
+                  icon: StepwaysIcons.trailCatalog,
                   label: t.noData.browseCta,
                   onPressed: () => context.go('/catalog'),
                 ),

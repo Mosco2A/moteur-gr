@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/geo/douglas_peucker.dart';
-import 'package:moteur_gr/core/geo/gpx_parser.dart';
-import 'package:moteur_gr/core/geo/track_point.dart';
+import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 
 /// Tests du provider simplifiedTrackProvider.
 ///
@@ -16,7 +16,7 @@ void main() {
   setUp(() {
     final file = File('assets/gpx/test_trail.gpx');
     final content = file.readAsStringSync();
-    fullTrack = GpxParser.parseFromString(content);
+    fullTrack = GpxDepuisLesAssets.parseFromString(content);
   });
 
   group('simplifiedTrackProvider — seuils de zoom', () {
@@ -60,7 +60,8 @@ void main() {
         expect(
           simplified,
           isNotEmpty,
-          reason: 'Le tracé simplifié (epsilon=$epsilon) ne doit jamais '
+          reason:
+              'Le tracé simplifié (epsilon=$epsilon) ne doit jamais '
               'être vide',
         );
       }

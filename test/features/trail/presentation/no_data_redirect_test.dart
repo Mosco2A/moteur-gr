@@ -12,8 +12,9 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// (hasLocalTrailsProvider passe a true).
 void main() {
   group('NoDataScreen redirection', () {
-    testWidgets('reste bloque tant qu aucun sentier n est disponible',
-        (tester) async {
+    testWidgets('reste bloque tant qu aucun sentier n est disponible', (
+      tester,
+    ) async {
       String? navigatedTo;
 
       final router = GoRouter(
@@ -44,8 +45,9 @@ void main() {
       expect(navigatedTo, isNull);
     });
 
-    testWidgets('redirige vers /trails quand hasLocalTrails passe a true',
-        (tester) async {
+    testWidgets('redirige vers /trails quand hasLocalTrails passe a true', (
+      tester,
+    ) async {
       String? navigatedTo;
 
       final router = GoRouter(

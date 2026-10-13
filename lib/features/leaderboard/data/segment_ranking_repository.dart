@@ -19,7 +19,7 @@ abstract interface class SegmentRankingRepository {
 /// document `segment_rankings/{segmentId}` (R2), sans changer l'UI.
 class InMemorySegmentRankingRepository implements SegmentRankingRepository {
   InMemorySegmentRankingRepository([Map<String, SegmentRanking>? cache])
-      : _cache = {...?cache};
+    : _cache = {...?cache};
 
   final Map<String, SegmentRanking> _cache;
 

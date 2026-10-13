@@ -1,9 +1,11 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 
 /// StepWays LOT 2, C4 — machine d'unicite de rando active.
@@ -15,8 +17,21 @@ import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 void main() {
   late AppDatabase db;
 
-  setUp(() {
+  setUp(() async {
     db = AppDatabase(NativeDatabase.memory());
+    // LE DROIT DE REALISER EST DESORMAIS UNE CONDITION DU DEMARRAGE (tache 594,
+    // A1) : `ensureSingleActiveThenStart` refuse un trek non achete avant
+    // meme de regarder l'unicite. Ces tests-ci portent sur la machine
+    // d'UNICITE, pas sur l'argent : on leur donne donc le droit, une fois, et
+    // ils continuent de tester ce qu'ils testaient. Le refus d'achat a ses
+    // propres tests (`test/comportement/argent_594_test.dart`).
+    await db.trekEntitlementsDao.upsert(
+      TrekEntitlementsCompanion.insert(
+        trailId: 'gr20',
+        owned: const Value(true),
+        updatedAt: DateTime.utc(2026, 6, 1),
+      ),
+    );
   });
 
   tearDown(() async {
@@ -28,19 +43,20 @@ void main() {
     required String trailId,
     String status = 'active',
     DateTime? startedAt,
-  }) =>
-      TrekSession(
-        id: id,
-        trailId: trailId,
-        startedAt: startedAt ?? DateTime.utc(2026, 6, 15, 8),
-        status: status,
-      );
+  }) => TrekSession(
+    id: id,
+    trailId: trailId,
+    startedAt: startedAt ?? DateTime.utc(2026, 6, 15, 8),
+    status: status,
+  );
 
   ProviderContainer makeContainer(_C4Notifier notifier) {
-    final container = ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      trekSessionManagerProvider.overrideWith(() => notifier),
-    ]);
+    final container = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        trekSessionManagerProvider.overrideWith(() => notifier),
+      ],
+    );
     addTearDown(container.dispose);
     return container;
   }
@@ -63,8 +79,9 @@ void main() {
     });
 
     test('meme trek deja en cours -> idempotent, pas de demarrage', () async {
-      await db.trekSessionsDao
-          .upsertSession(ongoing(id: 's1', trailId: 'gr20'));
+      await db.trekSessionsDao.upsertSession(
+        ongoing(id: 's1', trailId: 'gr20'),
+      );
       final notifier = _C4Notifier(const TrackingSessionState());
       final container = makeContainer(notifier);
       final n = container.read(trekSessionManagerProvider.notifier);
@@ -80,8 +97,9 @@ void main() {
     });
 
     test('autre trek en cours + ANNULER -> non demarre, rien solde', () async {
-      await db.trekSessionsDao
-          .upsertSession(ongoing(id: 's1', trailId: 'gr10'));
+      await db.trekSessionsDao.upsertSession(
+        ongoing(id: 's1', trailId: 'gr10'),
+      );
       final notifier = _C4Notifier(const TrackingSessionState());
       final container = makeContainer(notifier);
       final n = container.read(trekSessionManagerProvider.notifier);
@@ -102,56 +120,64 @@ void main() {
       expect((await db.trekSessionsDao.getById('s1'))!.status, 'active');
     });
 
-    test('autre trek en cours (ORPHELIN) + ABANDONNER -> solde puis demarre',
-        () async {
-      await db.trekSessionsDao
-          .upsertSession(ongoing(id: 's1', trailId: 'gr10', status: 'paused'));
-      // La session en cours n'est PAS dans l'etat en memoire du notifier
-      // (orpheline d'un crash sur un autre trek) -> soldee en base directement.
-      final notifier = _C4Notifier(const TrackingSessionState());
-      final container = makeContainer(notifier);
-      final n = container.read(trekSessionManagerProvider.notifier);
+    test(
+      'autre trek en cours (ORPHELIN) + ABANDONNER -> solde puis demarre',
+      () async {
+        await db.trekSessionsDao.upsertSession(
+          ongoing(id: 's1', trailId: 'gr10', status: 'paused'),
+        );
+        // La session en cours n'est PAS dans l'etat en memoire du notifier
+        // (orpheline d'un crash sur un autre trek) -> soldee en base directement.
+        final notifier = _C4Notifier(const TrackingSessionState());
+        final container = makeContainer(notifier);
+        final n = container.read(trekSessionManagerProvider.notifier);
 
-      final outcome = await n.ensureSingleActiveThenStart(
-        'gr20',
-        resolve: (_) async => ActiveTrekConflictChoice.abandonCurrent,
-      );
+        final outcome = await n.ensureSingleActiveThenStart(
+          'gr20',
+          resolve: (_) async => ActiveTrekConflictChoice.abandonCurrent,
+        );
 
-      expect(outcome, StartOutcome.started);
-      expect(notifier.startedTrailIds, ['gr20']);
-      // L'orpheline a ete soldee en `abandoned` (statut, sans finisher).
-      final solded = await db.trekSessionsDao.getById('s1');
-      expect(solded!.status, 'abandoned');
-      expect(solded.parcoursFullyWalked, isFalse);
-      expect(solded.finishedAt, isNotNull);
-    });
+        expect(outcome, StartOutcome.started);
+        expect(notifier.startedTrailIds, ['gr20']);
+        // L'orpheline a ete soldee en `abandoned` (statut, sans finisher).
+        final solded = await db.trekSessionsDao.getById('s1');
+        expect(solded!.status, 'abandoned');
+        expect(solded.parcoursFullyWalked, isFalse);
+        expect(solded.finishedAt, isNotNull);
+      },
+    );
 
-    test('autre trek en cours (EN MEMOIRE) + TERMINER -> stop() puis demarre',
-        () async {
-      final live = ongoing(id: 's1', trailId: 'gr10');
-      await db.trekSessionsDao.upsertSession(live);
-      // Cette fois la session en cours EST la session vivante du notifier ->
-      // on doit passer par stop() (teardown complet), pas par un solde en base.
-      final notifier = _C4Notifier(
-        TrackingSessionState(
-          status: TrackingSessionStatus.recording,
-          session: live,
-        ),
-      );
-      final container = makeContainer(notifier);
-      final n = container.read(trekSessionManagerProvider.notifier);
+    test(
+      'autre trek en cours (EN MEMOIRE) + TERMINER -> stop() puis demarre',
+      () async {
+        final live = ongoing(id: 's1', trailId: 'gr10');
+        await db.trekSessionsDao.upsertSession(live);
+        // Cette fois la session en cours EST la session vivante du notifier ->
+        // on doit passer par stop() (teardown complet), pas par un solde en base.
+        final notifier = _C4Notifier(
+          TrackingSessionState(
+            status: TrackingSessionStatus.recording,
+            session: live,
+          ),
+        );
+        final container = makeContainer(notifier);
+        final n = container.read(trekSessionManagerProvider.notifier);
 
-      final outcome = await n.ensureSingleActiveThenStart(
-        'gr20',
-        resolve: (_) async => ActiveTrekConflictChoice.finishCurrent,
-      );
+        final outcome = await n.ensureSingleActiveThenStart(
+          'gr20',
+          resolve: (_) async => ActiveTrekConflictChoice.finishCurrent,
+        );
 
-      expect(outcome, StartOutcome.started);
-      expect(notifier.stopCallCount, 1,
-          reason: 'La session vivante est terminee via stop().');
-      expect(notifier.abandonCallCount, 0);
-      expect(notifier.startedTrailIds, ['gr20']);
-    });
+        expect(outcome, StartOutcome.started);
+        expect(
+          notifier.stopCallCount,
+          1,
+          reason: 'La session vivante est terminee via stop().',
+        );
+        expect(notifier.abandonCallCount, 0);
+        expect(notifier.startedTrailIds, ['gr20']);
+      },
+    );
   });
 }
 

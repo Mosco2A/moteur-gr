@@ -1,3 +1,7 @@
+/// Solde du compte-etapes tel qu'il DURE : les prefs sont la source, la table
+/// Drift en est le miroir canonique hydrate au demarrage.
+library;
+
 import 'dart:async';
 
 import 'package:drift/drift.dart' show Value;
@@ -40,9 +44,9 @@ class WalletSnapshot {
 
   /// Solde vide (etat initial avant tout credit).
   const WalletSnapshot.empty()
-      : balanceSteps = 0,
-        lifetimeEarnedSteps = 0,
-        lifetimeSpentSteps = 0;
+    : balanceSteps = 0,
+      lifetimeEarnedSteps = 0,
+      lifetimeSpentSteps = 0;
 
   /// Solde courant du compte-etapes, en etapes.
   final int balanceSteps;
@@ -65,17 +69,33 @@ class WalletSnapshot {
       Object.hash(balanceSteps, lifetimeEarnedSteps, lifetimeSpentSteps);
 
   @override
-  String toString() => 'WalletSnapshot(balance: $balanceSteps, '
+  String toString() =>
+      'WalletSnapshot(balance: $balanceSteps, '
       'earned: $lifetimeEarnedSteps, spent: $lifetimeSpentSteps)';
 }
 
 /// Couche de persistance DUALE du compte-etapes (StepWays LOT 1, ST2).
 ///
-/// POURQUOI une double persistance : la base Drift tourne EN MEMOIRE
-/// (`database_provider.dart` = `NativeDatabase.memory()`, VOLATILE) — un solde
-/// stocke uniquement en Drift disparaitrait au redemarrage. La SOURCE DURABLE
-/// est donc SharedPreferences (3 cles entieres) ; Drift ([WalletBalance]) en
-/// est le MIROIR canonique, hydrate au boot depuis les prefs par [load].
+/// POURQUOI une double persistance — ET LA RAISON D'ORIGINE N'EXISTE PLUS
+/// (tache 613). Ce commentaire disait que la base Drift tournait EN MEMOIRE
+/// (`NativeDatabase.memory()`, VOLATILE) et qu'un solde pose en Drift seul
+/// disparaitrait au redemarrage. C'ETAIT VRAI, ET C'EST CE CONSTAT QUI A FAIT
+/// TROUVER LE DEFAUT : la base etait bien volatile EN PRODUCTION. Elle vit
+/// desormais dans un fichier.
+///
+/// LA SOURCE DURABLE RESTE SharedPreferences (3 cles entieres) et Drift
+/// ([WalletBalance]) en reste le MIROIR canonique, hydrate au boot par [load].
+/// On ne renverse pas ce montage dans le meme lot que la persistance : le solde
+/// est de l'argent, et les deux etages sont aujourd'hui ECRITS ENSEMBLE a chaque
+/// mouvement, donc d'accord entre eux. Le miroir est devenu redondant, il n'est
+/// pas devenu faux. Sa suppression est un point OUVERT, pas un oubli.
+///
+/// LA NUANCE QUI COMPTE, ET IL NE FAUT PAS LA PERDRE : c'est bien pour cela que
+/// le solde SURVIVAIT deja a une fermeture avant la tache 613. Ce que la base
+/// volatile emportait, c'etait la progression, le journal, la fiche medicale et
+/// les sentiers telecharges — pas la cagnotte, qui etait sauvee par ce
+/// contournement. Et les achats faits au magasin n'ont jamais rien risque : la
+/// transaction est chez Google ou Apple, la restauration les ramene.
 ///
 /// Ecritures : [credit] / [debit] mettent a jour prefs ET Drift dans la meme
 /// operation (+ `updatedAt`), puis emettent le nouveau solde sur [watch].
@@ -86,9 +106,9 @@ class WalletStore {
     required AppDatabase db,
     SharedPreferences? prefs,
     String userId = kWalletLocalUserId,
-  })  : _db = db,
-        _prefs = prefs,
-        _userId = userId;
+  }) : _db = db,
+       _prefs = prefs,
+       _userId = userId;
 
   final AppDatabase _db;
   SharedPreferences? _prefs;
@@ -120,8 +140,10 @@ class WalletStore {
   /// Hydrate l'etat depuis la SOURCE DURABLE (prefs) et met a jour le MIROIR
   /// Drift (a appeler au boot). Idempotent.
   ///
-  /// La DB etant volatile, Drift est (re)ecrit a partir des prefs a chaque
-  /// demarrage — les prefs font foi.
+  /// Drift est (re)ecrit a partir des prefs a chaque demarrage — les prefs font
+  /// foi. Cela restait vrai apres la tache 613 : la base est durable, mais elle
+  /// n'est pas devenue la source du solde pour autant, et reecrire le miroir au
+  /// boot le garde aligne sans rien risquer.
   Future<void> load() async {
     final prefs = await _preferences;
     _snapshot = WalletSnapshot(

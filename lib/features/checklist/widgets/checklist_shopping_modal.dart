@@ -1,10 +1,16 @@
+/// « A acheter » et « Deja achete » : cocher ici marque l'article achete ET le
+/// coche dans le sac, les deux etats restant lies.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../providers/checklist_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Nom affiche d'un article (custom -> customName, sinon i18n du template).
 String checklistItemDisplayName(ChecklistItemState item) {
@@ -43,9 +49,9 @@ class _ChecklistShoppingModalState
       buffer.writeln('${entry.key} :');
       for (final item in remaining) {
         final name = checklistItemDisplayName(item);
-        buffer.writeln(item.quantity > 1
-            ? '  - $name (x${item.quantity})'
-            : '  - $name');
+        buffer.writeln(
+          item.quantity > 1 ? '  - $name (x${item.quantity})' : '  - $name',
+        );
       }
       buffer.writeln('');
     }
@@ -113,7 +119,10 @@ class _ChecklistShoppingModalState
               ),
               child: Row(
                 children: [
-                  Icon(Icons.shopping_cart, color: theme.colorScheme.primary),
+                  StepIcon(
+                    StepwaysIcons.panier,
+                    color: theme.colorScheme.primary,
+                  ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Text(ui.shoppingListTitle, style: theme.textTheme.titleLarge),
                 ],
@@ -173,8 +182,11 @@ class _ChecklistShoppingModalState
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.check_circle,
-                              size: 18, color: AppTheme.vertFacile),
+                          const StepIcon(
+                            StepwaysIcons.cochePleine,
+                            size: 18,
+                            color: AppTheme.vertFacile,
+                          ),
                           const SizedBox(width: AppTheme.spacingSm),
                           Text(
                             ui.shoppingPurchased,
@@ -235,10 +247,11 @@ class _ChecklistShoppingModalState
               padding: const EdgeInsets.all(AppTheme.spacingBase),
               child: SizedBox(
                 width: double.infinity,
-                child: ElevatedButton.icon(
+                child: AppButton(
+                  icon: StepwaysIcons.partager,
+                  iconSize: 18,
+                  label: t.checklist.ui.share,
                   onPressed: _shareList,
-                  icon: const Icon(Icons.share, size: 18),
-                  label: Text(t.checklist.ui.share),
                 ),
               ),
             ),

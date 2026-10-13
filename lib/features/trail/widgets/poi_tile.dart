@@ -1,8 +1,13 @@
+/// Un point d'interet en ligne de liste : icone typee, nom, description et
+/// altitude quand elle est connue.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/models/poi.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../poi/domain/poi_type_config.dart';
+import '../../../shared/poi/poi_type_config.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Tuile d'affichage pour un point d'interet.
 ///
@@ -22,11 +27,7 @@ class PoiTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       child: Row(
         children: [
-          Icon(
-            style.icon,
-            size: 20,
-            color: theme.colorScheme.secondary,
-          ),
+          StepIcon(style.icon, size: 20, color: theme.colorScheme.secondary),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Column(
@@ -44,8 +45,6 @@ class PoiTile extends StatelessWidget {
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withAlpha(160),
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
               ],
             ),

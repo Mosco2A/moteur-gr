@@ -1,3 +1,7 @@
+/// Le plan d'entrainement est une DONNEE externalisee, avec repli sur le plan
+/// par defaut quand un sentier n'a pas le sien.
+library;
+
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;

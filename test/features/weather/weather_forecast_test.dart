@@ -14,13 +14,18 @@ void main() {
     });
 
     test('toJson et fromJson sont symétriques', () {
-      final original = WeatherForecast.fromOpenMeteo(_sampleOpenMeteoResponse());
+      final original = WeatherForecast.fromOpenMeteo(
+        _sampleOpenMeteoResponse(),
+      );
       final json = original.toJson();
       final restored = WeatherForecast.fromJson(json);
 
       expect(restored.days.length, original.days.length);
       expect(restored.latitude, original.latitude);
-      expect(restored.days.first.temperatureMax, original.days.first.temperatureMax);
+      expect(
+        restored.days.first.temperatureMax,
+        original.days.first.temperatureMax,
+      );
     });
   });
 

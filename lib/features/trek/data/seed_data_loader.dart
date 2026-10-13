@@ -1,3 +1,7 @@
+/// Premiere pose des donnees d'un sentier depuis les assets, idempotente : elle
+/// ne fait rien si la base porte deja ces etapes.
+library;
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
@@ -12,34 +16,54 @@ import '../../../core/data/daos/stages_dao.dart';
 import '../../../core/data/daos/trail_gpx_points_dao.dart';
 import '../../../core/data/daos/trail_gpx_tracks_dao.dart';
 import '../../../core/data/seed/trail_seeder.dart';
-import '../domain/models/track_point.dart' as trek;
+import '../../../domain/track_point.dart' as trek;
 import 'gpx_parser.dart';
-import '../../../features/tips/domain/models/tip_card.dart';
-import 'track_simplifier.dart';
+import '../../../domain/tip_card.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Chargement initial des donnees depuis les assets.
 ///
-/// Idempotent : ne fait rien si les donnees ont deja ete chargees
-/// (flag [_kDataSeeded] dans SharedPreferences).
+/// Idempotent : ne fait rien si les etapes de CE sentier sont deja en base — la
+/// base est la seule source de verite, voir [seedIfNeeded] et
+/// [SeedDataLoader.kDataSeededPrefsKey] pour la raison.
 ///
 /// Charge les stages (JSON), POIs (JSON), et GPX (parse + simplification
 /// Douglas-Peucker), puis insere en batch dans Drift.
 class SeedDataLoader {
-  /// Cle SharedPreferences du flag de seed.
+  /// ANCIENNE cle du drapeau de seed — ELLE N'EST PLUS LUE, SEULEMENT NETTOYEE.
   ///
-  /// Publique pour que l'amorce (`appBootstrapProvider`) puisse la reinitialiser
-  /// et forcer un re-seed a chaque lancement tant que la DB est in-memory.
+  /// LE DRAPEAU A ETE SUPPRIME A LA TACHE 613, ET LE REMPLACER PAR UN DRAPEAU PAR
+  /// SENTIER N'AURAIT PAS SUFFI : une preference et une base ne disparaissent pas
+  /// ensemble, donc un drapeau peut toujours mentir sur ce que la base contient,
+  /// DANS LES DEUX SENS.
+  ///
+  ///  * Il dit « deja seede » devant une base VIDE — preferences restaurees
+  ///    depuis une sauvegarde de telephone, ou drapeau pose par une version
+  ///    precedente de l'application dont la base etait en memoire. Resultat :
+  ///    l'application s'ouvre sur une carte sans etapes.
+  ///
+  ///  * Il dit « jamais seede » devant une base DEJA PEUPLEE. Ce n'est pas
+  ///    theorique : l'effacement du compte (art. 17) purge les preferences mais
+  ///    CONSERVE les tables de reference du sentier (`stages`, `pois`, la trace —
+  ///    voir `DataRetentionService.referenceTableNames`, et c'est voulu : effacer
+  ///    SES donnees ne doit pas lui retirer SON sentier). Le lancement suivant
+  ///    aurait re-seede par-dessus, et ce code INSERE sans jamais vider : etapes,
+  ///    points d'interet et trace GPX ENTIERE dupliques.
+  ///
+  /// LA BASE EST DONC LA SEULE SOURCE DE VERITE : on lui demande si le sentier
+  /// est deja pose. Une preference ne peut pas repondre a une question qui porte
+  /// sur la base. La cle n'est gardee ici que pour etre RETIREE des telephones
+  /// qui la portent encore, afin de ne pas laisser un residu de decision.
   static const String kDataSeededPrefsKey = 'data_seeded';
 
   SeedDataLoader({
     required AppDatabase db,
     required SharedPreferences prefs,
     required TrailConfig trailConfig,
-  })  : _db = db,
-        _prefs = prefs,
-        _trailConfig = trailConfig;
+  }) : _db = db,
+       _prefs = prefs,
+       _trailConfig = trailConfig;
 
   final AppDatabase _db;
   final SharedPreferences _prefs;
@@ -52,18 +76,38 @@ class SeedDataLoader {
   ///
   /// Retourne true si le seed a ete effectue,
   /// false si les donnees etaient deja presentes.
+  ///
+  /// C'EST LA BASE QUI DECIDE, PAS UNE PREFERENCE (tache 613). La question posee
+  /// est « les etapes de CE sentier sont-elles deja en base ? », et elle est
+  /// posee a la base. Le drapeau en preferences qui tenait ce role a ete retire :
+  /// il pouvait mentir dans les deux sens, et les deux cas sont reels — voir
+  /// [kDataSeededPrefsKey], qui les nomme.
+  ///
+  /// Tant que la base etait en memoire, la question n'avait pas de sens : rien ne
+  /// survivait, et l'amorce effacait le drapeau a chaque lancement pour forcer le
+  /// seed. Sur une base durable, ce forcage aurait DOUBLE etapes, points
+  /// d'interet et trace a chaque ouverture — ce code INSERE, il ne vide jamais.
   Future<bool> seedIfNeeded() async {
-    if (_prefs.getBool(kDataSeededPrefsKey) == true) {
-      _log.d('Seed deja effectue, skip');
-      return false;
-    }
-
     final assetsBase = _trailConfig.seedAssetsBase;
     if (assetsBase == null) {
       _log.d('Pas de seed assets pour ce sentier, skip');
       return false;
     }
     final trailId = _trailConfig.id;
+
+    // Le residu de l'ancien drapeau : on l'oublie sans jamais s'y fier.
+    if (_prefs.containsKey(kDataSeededPrefsKey)) {
+      await _prefs.remove(kDataSeededPrefsKey);
+    }
+
+    final dejaEnBase = await StagesDao(_db).getByTrailId(trailId);
+    if (dejaEnBase.isNotEmpty) {
+      _log.d(
+        'Sentier $trailId deja en base '
+        '(${dejaEnBase.length} etapes), pas de seed',
+      );
+      return false;
+    }
 
     final sw = Stopwatch()..start();
 
@@ -76,16 +120,18 @@ class SeedDataLoader {
     final gpxResult = GpxParser.parse(gpxContent);
     final allPoints = gpxResult.allTrackPoints;
 
-    // --- 3. Simplifier la trace via Douglas-Peucker ---
+    // --- 3. Convertir les points lus (AUCUNE simplification ici) ---
+    //
+    // La simplification Douglas-Peucker qui vivait a cette ligne a ete RETIREE
+    // (tache 606) : elle degradait la trace AVANT de la poser en base, et la
+    // base est desormais ce que la carte lit. Le rendu simplifie par zoom est
+    // inchange (`simplifiedTrackProvider`) — il travaillait deja sur une trace
+    // deja simplifiee, soit deux fois.
     final trekPoints = allPoints
-        .map((p) => trek.TrackPoint(
-              lat: p.lat,
-              lng: p.lng,
-              elevation: p.altitude,
-            ))
+        .map(
+          (p) => trek.TrackPoint(lat: p.lat, lng: p.lng, elevation: p.altitude),
+        )
         .toList();
-
-    final simplified = DouglasPeucker.simplify(trekPoints);
 
     // --- 4. Batch insert stages ---
     final stagesDao = StagesDao(_db);
@@ -154,14 +200,24 @@ class SeedDataLoader {
     // insert awaite par point. Sur la DB in-memory de l'isolate UI, la boucle
     // serie bloquait le thread principal proportionnellement au nombre de
     // points (freeze visible au demarrage / a l'ouverture des ecrans data).
+    //
+    // LA TRACE POSEE EN BASE EST LA TRACE ENTIERE, PLUS LA TRACE SIMPLIFIEE, ET
+    // C EST UNE CORRECTION MESUREE (tache 606). Depuis que la carte lit la base
+    // avant l asset ([LecteurDeTrace]), ce que le semeur pose ICI est ce que le
+    // randonneur VOIT. Or il posait le resultat de Douglas-Peucker : sur
+    // `mare_a_mare_centre`, 48 points pour 53 lus — 5 POINTS PERDUS, donc un
+    // sentier embarque DEGRADE par le branchement, ce qui est exclu. La
+    // simplification n a pas disparu : elle reste ou elle a du sens, au RENDU,
+    // par niveau de zoom (`simplifiedTrackProvider`). Elle etait de toute facon
+    // appliquee DEUX FOIS sur ce chemin.
     final gpxPointsDao = TrailGpxPointsDao(_db);
     final gpxCompanions = <TrailGpxPointsCompanion>[
-      for (var i = 0; i < simplified.length; i++)
+      for (var i = 0; i < trekPoints.length; i++)
         TrailGpxPointsCompanion(
           trackId: Value(trailId),
-          lat: Value(simplified[i].lat),
-          lng: Value(simplified[i].lng),
-          elevation: Value(simplified[i].elevation),
+          lat: Value(trekPoints[i].lat),
+          lng: Value(trekPoints[i].lng),
+          elevation: Value(trekPoints[i].elevation),
           sequenceIndex: Value(i),
         ),
     ];
@@ -202,16 +258,17 @@ class SeedDataLoader {
       }
     }
 
-    // --- 7. Marquer comme seed ---
-    await _prefs.setBool(kDataSeededPrefsKey, true);
+    // --- 7. RIEN A MARQUER (tache 613) ---
+    // Le drapeau en preferences a disparu : la presence des etapes en base EST
+    // la marque. Une marque qui vit ailleurs que la donnee qu'elle decrit finit
+    // toujours par ne plus la decrire.
 
     sw.stop();
     _log.i(
       'Seed termine: ${stageCompanions.length} etapes, '
       '${poiCompanions.length} POIs, '
-      '${simplified.length} points GPX '
-      '(${allPoints.length} bruts -> ${simplified.length} simplifies) '
-      'en ${sw.elapsedMilliseconds}ms',
+      '${trekPoints.length} points GPX (trace ENTIERE, la simplification est '
+      'au rendu) en ${sw.elapsedMilliseconds}ms',
     );
 
     return true;

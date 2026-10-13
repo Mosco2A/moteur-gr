@@ -54,7 +54,17 @@ void main() {
   }
 
   group('OnboardingScreen', () {
-    testWidgets('parcourt les 3 pages via « Suivant » puis « Commencer »', (
+    // TACHE 568 (LOT Q, Q1) — CE TEST A CHANGE DE BOUTON, ET C'EST VOULU.
+    //
+    // La 3e page portait DEUX commandes vers le MEME endroit : « Parcourir le
+    // catalogue » dans le contenu et « Commencer » en bas. Elles ne faisaient
+    // pas la meme chose (l'une posait le drapeau d'onboarding, l'autre non),
+    // donc l'une marchait et l'autre paraissait morte — defaut trouve par Chris
+    // le 26/09. Decision de Skynet : on garde le geste EXPLICITE (celui du
+    // contenu) et le doublon du bas DISPARAIT sur cette page. Ce test suit donc
+    // le bouton conserve ; le detail du contrat est verrouille par
+    // `parcourir_catalogue_568_test.dart`.
+    testWidgets('parcourt les 3 pages via « Suivant » puis le geste explicite', (
       tester,
     ) async {
       String? navigatedTo;
@@ -79,10 +89,12 @@ void main() {
       await tester.tap(find.text(tr.onboarding.next));
       await tester.pumpAndSettle();
       expect(find.text(tr.onboarding.downloadTitle), findsOneWidget);
-      expect(find.text(tr.onboarding.getStarted), findsOneWidget);
+      // Le doublon du bas a disparu (tache 568) : seul le geste explicite reste.
+      expect(find.text(tr.onboarding.getStarted), findsNothing);
+      expect(find.text(tr.onboarding.browseCatalog), findsOneWidget);
 
-      // « Commencer » termine l'onboarding et navigue vers le catalogue.
-      await tester.tap(find.text(tr.onboarding.getStarted));
+      // Le geste explicite termine l'onboarding et navigue vers le catalogue.
+      await tester.tap(find.text(tr.onboarding.browseCatalog));
       await tester.pumpAndSettle();
       expect(navigatedTo, '/catalog');
     });

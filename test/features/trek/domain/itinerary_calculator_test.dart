@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/trek/domain/itinerary_calculator.dart';
 import 'package:moteur_gr/features/trek/domain/models/feasibility_profile.dart';
 import 'package:moteur_gr/features/trek/domain/models/itinerary_config.dart';
@@ -175,10 +175,7 @@ void main() {
         snowFactor: 0.5,
       );
 
-      final scoreHard = ItineraryCalculator.feasibilityScore(
-        day,
-        hardParams,
-      );
+      final scoreHard = ItineraryCalculator.feasibilityScore(day, hardParams);
 
       expect(scoreHard, lessThan(scoreNeutre));
 

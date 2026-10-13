@@ -20,25 +20,29 @@ void main() {
 
     setUp(() {
       db = AppDatabase(NativeDatabase.memory());
-      container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(const TrailConfig(
-          id: 'test_trail',
-          name: 'Test Trail',
-          displayName: 'Test',
-          tagline: 'Test tagline',
-          totalStages: 5,
-          totalDistanceKm: 50.0,
-          totalElevationGain: 3000,
-          region: 'Test Region',
-          country: 'France',
-          primaryColorValue: 0xFF2E7D32,
-          secondaryColorValue: 0xFF1565C0,
-          gpxAssetPath: 'assets/gpx/test.gpx',
-          defaultDuration: 5,
-          availableDurations: [3, 5, 7],
-        )),
-      ]);
+      container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(
+            const TrailConfig(
+              id: 'test_trail',
+              name: 'Test Trail',
+              displayName: 'Test',
+              tagline: 'Test tagline',
+              totalStages: 5,
+              totalDistanceKm: 50.0,
+              totalElevationGain: 3000,
+              region: 'Test Region',
+              country: 'France',
+              primaryColorValue: 0xFF2E7D32,
+              secondaryColorValue: 0xFF1565C0,
+              gpxAssetPath: 'assets/gpx/test.gpx',
+              defaultDuration: 5,
+              availableDurations: [3, 5, 7],
+            ),
+          ),
+        ],
+      );
     });
 
     tearDown(() async {
@@ -64,8 +68,11 @@ void main() {
       final dao = ChecklistDao(db);
       final dbItems = await dao.getByTrailId('test_trail');
       final backpackDb = dbItems.firstWhere((i) => i.itemId == 'backpack');
-      expect(backpackDb.isChecked, true,
-          reason: 'Le cochage doit etre persiste en DB via Drift');
+      expect(
+        backpackDb.isChecked,
+        true,
+        reason: 'Le cochage doit etre persiste en DB via Drift',
+      );
 
       // Cocher un deuxieme item
       await container.read(checklistProvider.notifier).toggle('sleepingBag');
@@ -81,8 +88,11 @@ void main() {
       await container.read(checklistProvider.notifier).toggle('backpack');
       final dbItems3 = await dao.getByTrailId('test_trail');
       final backpackDb3 = dbItems3.firstWhere((i) => i.itemId == 'backpack');
-      expect(backpackDb3.isChecked, false,
-          reason: 'Le decochage doit aussi persister en DB');
+      expect(
+        backpackDb3.isChecked,
+        false,
+        reason: 'Le decochage doit aussi persister en DB',
+      );
     });
 
     test('items sont groupes par les 6 categories du template', () async {
@@ -122,7 +132,8 @@ void main() {
         expect(
           categoryItems.isNotEmpty,
           true,
-          reason: 'checklistByCategoryProvider("$category") doit renvoyer des items',
+          reason:
+              'checklistByCategoryProvider("$category") doit renvoyer des items',
         );
       }
     });

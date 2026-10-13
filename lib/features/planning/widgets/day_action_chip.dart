@@ -1,6 +1,11 @@
+/// Les gestes d'une journee du programme, avec un gris de texte choisi pour
+/// rester lisible sur le fond reel, pas sur un fond suppose.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Gris de texte secondaire REELLEMENT LISIBLE sur le fond courant.
 ///
@@ -11,8 +16,8 @@ import '../../../core/theme/app_theme.dart';
 /// reserve precisement a cet usage. Une seule regle, un seul endroit.
 Color dayNeutralColor(BuildContext context) =>
     Theme.of(context).brightness == Brightness.dark
-        ? AppTheme.grisTexteSecondaire
-        : AppTheme.grisGranite;
+    ? AppTheme.grisTexteSecondaire
+    : AppTheme.grisGranite;
 
 /// Role semantique d'une action de jour — la COULEUR en est derivee.
 ///
@@ -50,7 +55,7 @@ class DayActionChip extends StatelessWidget {
     this.enabled = true,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
 
   /// Role de l'action : la couleur est resolue depuis le theme, jamais fournie
@@ -104,7 +109,7 @@ class DayActionChip extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 16, color: effectiveColor),
+                StepIcon(icon, size: 16, color: effectiveColor),
                 const SizedBox(width: 4),
                 Text(
                   label,
@@ -135,7 +140,7 @@ class DayMiniStat extends StatelessWidget {
     this.color,
   });
 
-  final IconData icon;
+  final String icon;
   final String value;
   final Color? color;
 
@@ -148,7 +153,7 @@ class DayMiniStat extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 20, color: color ?? dayNeutralColor(context)),
+        StepIcon(icon, size: 20, color: color ?? dayNeutralColor(context)),
         const SizedBox(width: 2),
         Flexible(
           child: Text(

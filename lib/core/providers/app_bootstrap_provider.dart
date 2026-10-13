@@ -1,3 +1,7 @@
+/// L'amorce qui APPELLE enfin la pose des donnees : sans elle, les tables
+/// restaient vides parce que personne ne declenchait le seeder.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -5,6 +9,8 @@ import '../engine/trail_engine.dart';
 import '../../features/trek/data/seed_data_loader.dart';
 import '../../features/trek/providers/session_recovery_provider.dart';
 import '../../features/trek/providers/stage_providers.dart';
+import '../services/garde_sauvegarde_ios.dart';
+import 'taches_d_amorcage.dart';
 import '../services/monetization_service.dart';
 import 'database_provider.dart';
 
@@ -16,23 +22,109 @@ import 'database_provider.dart';
 /// de boot unique qui declenche le seed du sentier actif AVANT le rendu des
 /// ecrans data (voir la garde dans `main.dart`).
 ///
-/// DB in-memory (`NativeDatabase.memory()`, volatile) : le seed doit tourner
-/// A CHAQUE lancement. On force donc le seed en effacant d'abord le flag
-/// `data_seeded` (rendant `seedIfNeeded()` reellement idempotent DANS la session
-/// mais rejoue au demarrage suivant). Le moteur reste generique : le sentier
-/// seede est celui de `trailConfigProvider` (une donnee), aucune localite ici.
+/// LE SEED FORCE A CHAQUE LANCEMENT A ETE RETIRE (tache 613), ET C'ETAIT UN
+/// IMPERATIF, PAS UN NETTOYAGE. Cette amorce effacait le flag `data_seeded` a
+/// chaque demarrage parce que la base etait volatile : sans cela, le sentier
+/// embarque n'aurait ete seede qu'une fois et la carte serait restee vide au
+/// lancement suivant.
+///
+/// La base est desormais durable — et `seedIfNeeded()` INSERE sans jamais vider.
+/// Garder ce forcage aurait donc DUPLIQUE les etapes, les POI et la trace GPX
+/// ENTIERE a chaque ouverture de l'application : le randonneur aurait vu sa
+/// trace se doubler, se tripler, et la base grossir sans fin. Le flag n'est plus
+/// efface ; l'idempotence, qui n'etait vraie que « dans la session », devient
+/// vraie tout court.
+///
+/// ET LE DRAPEAU EN PREFERENCES A DISPARU, PAS ETE DEPLACE. Un drapeau global
+/// (`data_seeded`) suffisait quand il etait remis a zero a chaque lancement ;
+/// conserve, il aurait empeche le seed du DEUXIEME sentier embarque, puisque
+/// cette amorce se rejoue a chaque changement de sentier. Un drapeau PAR SENTIER
+/// aurait corrige cela sans corriger le fond : une preference ne peut pas
+/// repondre a une question qui porte sur la base, et elle peut mentir dans les
+/// deux sens (voir [SeedDataLoader.kDataSeededPrefsKey], qui nomme les deux cas
+/// reels). C'est donc la BASE qu'on interroge : « ce sentier est-il deja pose ? ».
+/// Le moteur reste generique : le sentier seede est celui de
+/// `trailConfigProvider` (une donnee), aucune localite ici.
+/// L'EXCLUSION iCLOUD DE LA FICHE MEDICALE EST REPOSEE ICI, A CHAQUE DEMARRAGE
+/// (tache 615). Elle est posee a chaque ecriture de la fiche, ce qui protege ce
+/// que l'application ecrit ELLE-MEME — mais pas le telephone d'un randonneur qui
+/// avait deja rempli sa fiche avec la version de la tache 613 et met a jour :
+/// celui-la ne reecrira peut-etre plus jamais sa fiche, et son `fiche.json` est
+/// deja dans iCloud sans attribut. C'est l'amorce, et elle seule, qui repasse
+/// derriere lui. Meme discipline que le re-alignement de la copie sauvegardable :
+/// le disque converge vers la decision a chaque ouverture.
+///
+/// ELLE EST ATTENDUE, ET SANS RISQUE POUR LE DEMARRAGE : hors iPhone elle rend la
+/// main sans toucher au canal natif, sur iPhone elle est bornee par
+/// `ExclusionSauvegardeIcloud.delaiMax`, et elle ne leve jamais.
+///
+/// TACHE 617 — LE BALAYAGE COUVRE MAINTENANT TOUT LE STOCKAGE CONFIE, PAS SEULE
+/// LA FICHE MEDICALE, ET IL PASSE APRES L'OUVERTURE DE LA BASE. La regle generale
+/// de Christophe du 28/09 14:31 (« on ne partage aucune donnee confiee sauf si le
+/// client decoche volontairement ») vaut pour la progression, le journal, les
+/// photos et le profil. Cote Android une seule inclusion suffit et elle est
+/// declarative ; cote iPhone il faut poser l'attribut chemin par chemin
+/// ([GardeSauvegardeIos]).
+///
+/// L'ORDRE N'EST PAS INDIFFERENT : `ref.watch(databaseProvider)` puis une
+/// requete ouvrent le fichier de la base, et le balayage doit passer APRES pour
+/// que ce fichier existe deja et recoive son attribut. C'est pour cela que
+/// l'appel est place apres le seed et non au debut. Un balayage place avant
+/// laisserait la base hors de sa portee jusqu'au lancement suivant.
 final appBootstrapProvider = FutureProvider<void>((ref) async {
   final db = ref.watch(databaseProvider);
   final config = ref.watch(trailConfigProvider);
 
-  final prefs = await SharedPreferences.getInstance();
+  // LES TRAVAUX QUE LES FEATURES ONT POSES DEVANT L AMORCAGE (cas K1 du lot
+  // 645-05). Ici se tenait `ref.read(healthInfoFileProvider)`, pris dans
+  // `features/safety/presentation/health_info_screen.dart` : LE SOCLE
+  // IMPORTAIT UN ECRAN. La fleche est inversee — l amorcage declare le besoin,
+  // la feature s annonce, et c est `main.dart`, au-dessus des deux couches, qui
+  // noue les deux (voir `taches_d_amorcage.dart`).
+  //
+  // DEUX TRAVAUX Y SONT POSES PAR `main.dart`, DANS CET ORDRE : l exclusion
+  // iCloud de la fiche medicale (tache 615, feature `safety`) puis la migration
+  // du profil du randonneur hors des preferences (tache 623, feature
+  // `feasibility`). Tous deux sont idempotents et ne levent jamais.
+  //
+  // L ORDRE EST CONSERVE AU PAS PRES : ces deux travaux passaient AVANT les
+  // preferences et le seed, et ils y passent toujours — la boucle est a la
+  // place exacte des appels qu elle remplace, et la liste garde leur ordre
+  // relatif. C est ce qui rend ce deplacement sans effet sur le demarrage.
+  for (final tache in ref.read(tachesDAmorcageProvider)) {
+    await tache();
+  }
 
-  // DB volatile -> forcer un seed frais a chaque lancement : on repart d'un
-  // flag `data_seeded` a false pour que seedIfNeeded() recharge les assets.
-  await prefs.remove(SeedDataLoader.kDataSeededPrefsKey);
+  // TACHE 623 — LE PROFIL DU RANDONNEUR QUITTE LES PREFERENCES ICI, ET C'EST LE
+  // SEUL ENDROIT QUI PUISSE LE FAIRE POUR UN TELEPHONE DEJA INSTALLE.
+  //
+  // Sur iPhone, `NSUserDefaults` (ce que `SharedPreferences` utilise) ne peut PAS
+  // etre exclu de la sauvegarde iCloud : ce n'est pas un fichier de
+  // l'application mais un domaine de preferences du systeme
+  // (`SauvegardeSysteme.trouUserDefaultsIos`). L'age, la taille et le poids
+  // montaient donc dans iCloud, contre la regle de Christophe du 27/09 en
+  // majuscules. La migration les transporte vers le MEME fichier protege que la
+  // fiche medicale, puis retire les cles.
+  //
+  // POURQUOI ICI ET PAS SEULEMENT A LA PREMIERE LECTURE DU PROFIL : on remplit sa
+  // fiche UNE fois, avant de partir. Un randonneur qui met a jour l'application
+  // et ne rouvre jamais l'ecran de faisabilite garderait son poids dans iCloud
+  // pour toujours. C'est le meme raisonnement que `garantirExclusion` ci-dessus
+  // (tache 615), et la migration est idempotente : sans cle heritee, elle ne fait
+  // rien. Elle ne leve jamais.
+  //
+  // ET L'EXCLUSION EST REPOSEE DANS LE MEME GESTE, pour la meme raison que pour
+  // la fiche : l'ecriture atomique remplace le fichier, et un fichier remplace ne
+  // porte plus l'attribut de celui qu'il remplace.
+  final prefs = await SharedPreferences.getInstance();
 
   final loader = SeedDataLoader(db: db, prefs: prefs, trailConfig: config);
   await loader.seedIfNeeded();
+
+  // LE BALAYAGE IPHONE, ICI ET PAS PLUS HAUT : le seed vient d'ouvrir le fichier
+  // de la base, donc il existe et peut recevoir son attribut. Sans objet hors
+  // iPhone (il ne parcourt meme pas le disque), borne et non levant sur iPhone.
+  await ref.read(gardeSauvegardeIosProvider).balayer();
 
   // Synchronise le fil d'etapes sur le sentier seede. `currentTrailIdProvider`
   // derive deja de `trailConfigProvider.id` (defaut), mais on l'ecrit

@@ -4,12 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/trek/presentation/map/controls/map_controls.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget du composant MapControls (Phase 2 E2.3c).
 ///
 /// Verifie que MapControls est un StatelessWidget qui affiche
-/// 4 FloatingActionButton (changer de peau, zoom in, zoom out, center on me).
-/// SW-SKIN-L7 : ajout de l'acces « Changer de peau » (4e bouton).
+/// 3 FloatingActionButton (zoom in, zoom out, center on me).
+/// TACHE 570 (S4) : le 4e bouton ouvrait le selecteur de peaux, retire.
 void main() {
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,7 @@ void main() {
       mapController = MapController();
     });
 
-    testWidgets('affiche 4 FloatingActionButton', (tester) async {
+    testWidgets('affiche 3 FloatingActionButton', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           child: TranslationProvider(
@@ -40,14 +41,35 @@ void main() {
         ),
       );
 
-      // 4 FAB dans l arbre (SW-SKIN-L7 : + changer de peau)
-      expect(find.byType(FloatingActionButton), findsNWidgets(4));
+      // 3 FAB dans l arbre (le bouton de peau est retire, tache 570)
+      expect(find.byType(FloatingActionButton), findsNWidgets(3));
 
-      // Icones attendues
-      expect(find.byIcon(Icons.brush_outlined), findsOneWidget);
-      expect(find.byIcon(Icons.add), findsOneWidget);
-      expect(find.byIcon(Icons.remove), findsOneWidget);
-      expect(find.byIcon(Icons.my_location), findsOneWidget);
+      // Icones attendues. Le pinceau (selecteur de peaux) est retire : on
+      // exige son ABSENCE, pour qu'il ne revienne pas par inadvertance.
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.palette,
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.plus,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.moins,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.maPosition,
+        ),
+        findsOneWidget,
+      );
     });
 
     test('est un StatelessWidget', () {

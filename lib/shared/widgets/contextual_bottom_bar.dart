@@ -1,3 +1,7 @@
+/// La barre du bas qui LIT ce que l'ecran courant a declare : chaque ecran
+/// annonce ses actions, celle-ci les rend, sans les connaitre.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

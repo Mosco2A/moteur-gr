@@ -1,14 +1,20 @@
+/// La page que suivent les proches, atteignable par un code de partage : un
+/// marqueur qui avance, et rien d'autre.
+library;
+
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../core/firebase/firebase_service.dart';
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/attribution_osm.dart';
+import '../data/suivi_public_depot.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran web de suivi de position en temps reel (E4.12a).
 ///
@@ -37,7 +43,7 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
   bool _hasError = false;
   bool _isLoading = true;
   bool _isFirstPosition = true;
-  StreamSubscription<QuerySnapshot>? _positionSubscription;
+  StreamSubscription<PositionSuivie>? _positionSubscription;
 
   /// Vue monde neutre tant qu aucune position n est recue
   /// (aucune region codee en dur — la carte se centre sur le
@@ -49,6 +55,7 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
   @override
   void initState() {
     super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.followWeb);
     _startListening();
   }
 
@@ -60,64 +67,45 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
   }
 
   /// Recherche la session par shareCode et ecoute les positions.
+  ///
+  /// L ECRAN NE PARLE PLUS A FIRESTORE (cas K2 du lot 645-05). La resolution du
+  /// code de partage, le miroir public minimal, le TTL de 48 h et le garde
+  /// `isAvailable` sont descendus dans `SuiviPublicDepot` (couche data du
+  /// groupe) : c etait l unique endroit du depot ou la couche presentation
+  /// importait `package:cloud_firestore` (ECR-25). Les trois cas que l ecran
+  /// traitait de la meme facon — Firebase indisponible, aucune session active,
+  /// session expiree — arrivent ici comme un `sessionId` nul, et affichent le
+  /// meme ecran « lien invalide » qu avant.
   Future<void> _startListening() async {
-    final firebase = ref.read(firebaseServiceProvider);
-    if (!firebase.isAvailable) {
-      setState(() {
-        _hasError = true;
-        _isLoading = false;
-      });
-      return;
-    }
+    // LE TYPE EST NOMME, ET CE N EST PAS DE LA DECORATION : c est la seule
+    // citation de `SuiviPublicDepot` hors de son propre fichier, et c est elle
+    // qui dit, a la lecture de l ecran, de quoi il depend desormais — un depot
+    // du groupe, pas Firestore.
+    final SuiviPublicDepot depot = ref.read(suiviPublicDepotProvider);
     try {
-      final firestore = FirebaseFirestore.instance;
-      // Resolution shareCode -> sessionId via le miroir public MINIMAL
-      // (follow_sessions_public ne porte jamais trekkerUserId — P0-1 #327).
-      // Le document maitre follow_sessions reste owner-only.
-      final snapshot = await firestore
-          .collection('follow_sessions_public')
-          .where('shareCode', isEqualTo: widget.shareCode)
-          .where('isActive', isEqualTo: true)
-          .limit(1)
-          .get();
-      if (snapshot.docs.isEmpty) {
+      final sessionId = await depot.resoudreSession(widget.shareCode);
+      if (sessionId == null) {
         setState(() {
           _hasError = true;
           _isLoading = false;
         });
         return;
       }
-      final publicDoc = snapshot.docs.first;
-      // Session expiree (TTL 48h) : les regles refuseront de toute facon
-      // la lecture des positions — afficher l erreur lien invalide tout
-      // de suite plutot qu une carte vide.
-      final expiresAtTs = publicDoc.data()['expiresAtTs'];
-      if (expiresAtTs is Timestamp &&
-          !expiresAtTs.toDate().isAfter(DateTime.now())) {
-        setState(() {
-          _hasError = true;
-          _isLoading = false;
-        });
-        return;
-      }
-      final sessionId = publicDoc.id;
       setState(() {
         _sessionFound = true;
         _isLoading = false;
       });
-      _positionSubscription = firestore
-          .collection('follow_sessions')
-          .doc(sessionId)
-          .collection('positions')
-          .orderBy('timestamp', descending: true)
-          .limit(1)
-          .snapshots()
-          .listen(_onPositionUpdate, onError: (_) {
-        // P1-4 audit #327 : erreur de flux (ex. session expiree refusee
-        // par les regles) -> badge "hors ligne" au lieu d un faux "en
-        // direct" fige sur la derniere position.
-        if (mounted) setState(() => _sessionFound = false);
-      });
+      _positionSubscription = depot
+          .positions(sessionId)
+          .listen(
+            _onPositionUpdate,
+            onError: (_) {
+              // P1-4 audit #327 : erreur de flux (ex. session expiree refusee
+              // par les regles) -> badge "hors ligne" au lieu d un faux "en
+              // direct" fige sur la derniere position.
+              if (mounted) setState(() => _sessionFound = false);
+            },
+          );
     } catch (_) {
       setState(() {
         _hasError = true;
@@ -126,22 +114,12 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
     }
   }
 
-  /// Callback quand une nouvelle position arrive de Firestore.
-  void _onPositionUpdate(QuerySnapshot snapshot) {
-    if (snapshot.docs.isEmpty) return;
-    final data = snapshot.docs.first.data() as Map<String, dynamic>;
-    final lat = (data['lat'] as num?)?.toDouble();
-    final lng = (data['lng'] as num?)?.toDouble();
-    if (lat == null || lng == null) return;
-    final newPosition = LatLng(lat, lng);
-    DateTime? timestamp;
-    final ts = data['timestamp'];
-    if (ts is Timestamp) {
-      timestamp = ts.toDate();
-    }
+  /// Callback quand une nouvelle position arrive du depot de suivi.
+  void _onPositionUpdate(PositionSuivie position) {
+    final newPosition = LatLng(position.lat, position.lng);
     setState(() {
       _trekkerPosition = newPosition;
-      _lastTimestamp = timestamp;
+      _lastTimestamp = position.horodatage;
     });
     if (_isFirstPosition) {
       _mapController.move(newPosition, _positionZoom);
@@ -153,11 +131,13 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      body: Column(children: [
-        _buildHeader(theme),
-        Expanded(child: _buildMapOrStatus(theme)),
-        if (_trekkerPosition != null) _buildInfoBar(theme),
-      ]),
+      body: Column(
+        children: [
+          _buildHeader(theme),
+          Expanded(child: _buildMapOrStatus(theme)),
+          if (_trekkerPosition != null) _buildInfoBar(theme),
+        ],
+      ),
     );
   }
 
@@ -170,27 +150,40 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
       color: theme.colorScheme.surface,
       child: SafeArea(
         bottom: false,
-        child: Row(children: [
-          Text(
-            t.follow.title,
-            style: theme.textTheme.titleMedium
-                ?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          _buildStatusBadge(theme),
-        ]),
+        // DEBORDEMENT MESURE (tache 580, Y3) : 67 pixels coupes sur la droite,
+        // sur un telephone courant. Le titre prenait sa largeur NATURELLE a
+        // cote d'un badge d'etat lui aussi libre de s'etendre : des que la
+        // somme des deux depasse la largeur de l'ecran, la fin du titre part
+        // hors champ SANS lever d'exception visible a l'utilisateur. Le
+        // titre devient [Flexible] : c'est lui qui cede, il se replie sur
+        // deux lignes, et le badge — la seule information qui dit si le suivi
+        // est vivant — reste entier. Rien n'est tronque, rien n'est deplace.
+        child: Row(
+          children: [
+            Flexible(
+              child: Text(
+                t.follow.title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(width: AppTheme.spacingSm),
+            _buildStatusBadge(theme),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildStatusBadge(ThemeData theme) {
     final isLive = _sessionFound && _trekkerPosition != null;
-    final dotColor = isLive ? AppTheme.vertFacile : AppTheme.rougeUrgence;
+    final dotColor = isLive ? AppTheme.vertFacile : AppTheme.emergencyRed;
     final text = _isLoading
         ? t.follow.connecting
         : isLive
-            ? t.follow.live
-            : t.follow.offline;
+        ? t.follow.live
+        : t.follow.offline;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingSm,
@@ -200,15 +193,18 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppTheme.radiusChip),
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 6),
-        Text(text, style: theme.textTheme.labelSmall),
-      ]),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 6),
+          Text(text, style: theme.textTheme.labelSmall),
+        ],
+      ),
     );
   }
 
@@ -218,22 +214,31 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacingXl),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.link_off, size: 48, color: AppTheme.rougeUrgence),
-            const SizedBox(height: AppTheme.spacingBase),
-            Text(
-              t.follow.invalidLink,
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(color: AppTheme.rougeUrgence),
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            Text(
-              t.follow.invalidLinkHint,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.grisTexteSecondaire),
-              textAlign: TextAlign.center,
-            ),
-          ]),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const StepIcon(
+                StepwaysIcons.lienRompu,
+                size: 48,
+                color: AppTheme.emergencyRed,
+              ),
+              const SizedBox(height: AppTheme.spacingBase),
+              Text(
+                t.follow.invalidLink,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: AppTheme.emergencyRed,
+                ),
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(
+                t.follow.invalidLinkHint,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.grisTexteSecondaire,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -248,27 +253,32 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         ),
         if (_trekkerPosition != null)
-          MarkerLayer(markers: [
-            Marker(
-              point: _trekkerPosition!,
-              width: 24,
-              height: 24,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.vertFacile,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 3),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 8,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: _trekkerPosition!,
+                width: 24,
+                height: 24,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.vertFacile,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ]),
+            ],
+          ),
+        // ODbL : les tuiles viennent d OpenStreetMap, la carte le dit
+        // (integration 647).
+        const AttributionOsm(),
       ],
     );
   }
@@ -297,8 +307,9 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
           ),
           Text(
             timeStr,
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: AppTheme.grisTexteSecondaire),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.grisTexteSecondaire,
+            ),
           ),
         ],
       ),

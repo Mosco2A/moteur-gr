@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/trek/domain/models/track_point.dart';
+import 'package:moteur_gr/domain/track_point.dart';
 import 'package:moteur_gr/features/trek/domain/post_trek_stats.dart';
 
 /// Tests du calculateur de stats post-étape (F6B-03).
@@ -11,23 +11,27 @@ void main() {
   final t0 = DateTime.utc(2026, 6, 14, 8);
 
   List<TrackPoint> track(List<(int minutes, double elev)> pts) => [
-        for (final p in pts)
-          TrackPoint(
-            lat: 42.0,
-            lng: 9.0,
-            elevation: p.$2,
-            timestamp: t0.add(Duration(minutes: p.$1)),
-          ),
-      ];
+    for (final p in pts)
+      TrackPoint(
+        lat: 42.0,
+        lng: 9.0,
+        elevation: p.$2,
+        timestamp: t0.add(Duration(minutes: p.$1)),
+      ),
+  ];
 
   group('PostTrekStatsCalculator', () {
     test('dénivelé cumulé depuis la série barométrique (préférée)', () {
       final baro = [
         BaroAltitudeSample(timestamp: t0, altitudeM: 1000),
         BaroAltitudeSample(
-            timestamp: t0.add(const Duration(minutes: 10)), altitudeM: 1100),
+          timestamp: t0.add(const Duration(minutes: 10)),
+          altitudeM: 1100,
+        ),
         BaroAltitudeSample(
-            timestamp: t0.add(const Duration(minutes: 20)), altitudeM: 1050),
+          timestamp: t0.add(const Duration(minutes: 20)),
+          altitudeM: 1050,
+        ),
       ];
       final stats = PostTrekStatsCalculator.compute(
         track: track([(0, 1000), (10, 1100), (20, 1050)]),

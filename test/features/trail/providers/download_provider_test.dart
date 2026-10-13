@@ -15,20 +15,23 @@ void main() {
       final db = AppDatabase(NativeDatabase.memory());
       final dao = StagesDao(db);
 
-      final stages = List.generate(10, (i) => StagesCompanion(
-        trailId: const Value('batch_test'),
-        stageNumber: Value(i + 1),
-        name: Value('Etape ${i + 1}'),
-        distanceKm: Value(10.0 + i),
-        elevationGainM: Value(500 + i * 100),
-        elevationLossM: Value(300 + i * 50),
-        description: Value('Description ${i + 1}'),
-        startLat: Value(42.0 + i * 0.01),
-        startLng: Value(9.0 + i * 0.01),
-        endLat: Value(42.01 + i * 0.01),
-        endLng: Value(9.01 + i * 0.01),
-        difficulty: const Value('moderate'),
-      ));
+      final stages = List.generate(
+        10,
+        (i) => StagesCompanion(
+          trailId: const Value('batch_test'),
+          stageNumber: Value(i + 1),
+          name: Value('Etape ${i + 1}'),
+          distanceKm: Value(10.0 + i),
+          elevationGainM: Value(500 + i * 100),
+          elevationLossM: Value(300 + i * 50),
+          description: Value('Description ${i + 1}'),
+          startLat: Value(42.0 + i * 0.01),
+          startLng: Value(9.0 + i * 0.01),
+          endLat: Value(42.01 + i * 0.01),
+          endLng: Value(9.01 + i * 0.01),
+          difficulty: const Value('moderate'),
+        ),
+      );
 
       await dao.insertAll(stages);
       final result = await dao.getByTrailId('batch_test');
@@ -44,16 +47,19 @@ void main() {
       final dao = PoisDao(db);
 
       final types = ['shelter', 'water', 'viewpoint', 'campsite', 'restaurant'];
-      final pois = List.generate(5, (i) => PoisCompanion(
-        trailId: const Value('batch_test'),
-        stageNumber: Value(i + 1),
-        name: Value('POI ${i + 1}'),
-        description: Value('Desc ${i + 1}'),
-        type: Value(types[i]),
-        lat: Value(42.0 + i * 0.01),
-        lng: Value(9.0 + i * 0.01),
-        altitudeM: Value(1000 + i * 200),
-      ));
+      final pois = List.generate(
+        5,
+        (i) => PoisCompanion(
+          trailId: const Value('batch_test'),
+          stageNumber: Value(i + 1),
+          name: Value('POI ${i + 1}'),
+          description: Value('Desc ${i + 1}'),
+          type: Value(types[i]),
+          lat: Value(42.0 + i * 0.01),
+          lng: Value(9.0 + i * 0.01),
+          altitudeM: Value(1000 + i * 200),
+        ),
+      );
 
       await dao.insertAll(pois);
       final result = await dao.getByTrailId('batch_test');

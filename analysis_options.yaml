@@ -15,6 +15,55 @@ analyzer:
     - data/**
     - build/**
     - .claude/**
+  # SEVERITE FORCEE A `info` POUR LES SEPT REGLES ALLUMEES CI-DESSOUS
+  # (tache 645-01).
+  #
+  # POURQUOI `info` ET PAS `warning`. Ces sept regles remontent des MILLIERS
+  # d infractions sur l etat du 02/10/2026. Les allumer en `warning` ou en
+  # `error` rendrait `flutter analyze` rouge immediatement, donc la gate
+  # rouge, donc la gate contournee : on aurait echange une mesure contre une
+  # garde desarmee. En `info`, elles MESURENT sans bloquer.
+  #
+  # CE QUI RESTE A FAIRE, ET C EST UN LOT A PART. Leur passage en bloquant
+  # suppose d avoir resorbe le stock ; c est un chantier par regle, pas une
+  # ligne de configuration. Ne durcissez pas une de ces severites sans avoir
+  # d abord ramene son compte a zero.
+  errors:
+    public_member_api_docs: info
+    directives_ordering: info
+    lines_longer_than_80_chars: info
+    avoid_print: info
+    prefer_single_quotes: info
+    unnecessary_lambdas: info
+    always_declare_return_types: info
+    # invalid_annotation_target : FAUX POSITIF DE FREEZED, DESCENDU A `info`
+    # (tache 665, apporte par le lot 645-07).
+    #
+    # CE QUI LE DECLENCHE, UNE SEULE FOIS DANS TOUT LE DEPOT.
+    # `lib/features/planning/models/stage_variant.dart` porte
+    # `@JsonKey(name: 'selectionParEtape')` sur un PARAMETRE de constructeur
+    # d usine freezed. L analyseur objecte que `JsonKey` ne vaut que sur un
+    # champ ou un accesseur. Il a tort ici : freezed REPORTE l annotation sur
+    # le champ et l accesseur generes, et le code genere le prouve —
+    # `_$VariantSelectionToJson` emet bien
+    # `{'selectionParEtape': instance.selectionByStage}`.
+    #
+    # POURQUOI CETTE ANNOTATION EXISTE, ET POURQUOI ON NE LA RETIRE PAS.
+    # Le lot 645-07 a renomme le champ `selectionParEtape` en
+    # `selectionByStage`. La CLE STOCKEE, elle, ne se renomme pas : elle est
+    # ecrite telle quelle dans les donnees des telephones deja installes, et
+    # la changer ferait perdre SILENCIEUSEMENT le choix de variante du
+    # randonneur a la mise a jour. Le `@JsonKey` gele la cle. C est la regle
+    # P3 du lot (« une cle stockee sur le telephone ne se renomme pas »).
+    #
+    # POURQUOI `info` ET PAS `ignore`, ET POURQUOI PAS UN `// ignore:` SUR LA
+    # LIGNE. `ignore` eteindrait la regle : un VRAI mauvais placement
+    # d annotation passerait alors inapercu. Et un `// ignore:` dans le
+    # fichier source ne tient pas : freezed RECOPIE les commentaires dans le
+    # fichier genere, ou la meme ligne devient un `duplicate_ignore` — on
+    # echangerait un avertissement contre trois. En `info`, la regle mesure
+    # toujours et la gate reste a zero avertissement.
+    invalid_annotation_target: info
 
 linter:
   # The lint rules applied to this project can be customized in the
@@ -28,8 +77,18 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    # LES SEPT REGLES ALLUMEES POUR MESURER (tache 645-01).
+    #
+    # Elles etaient absentes : le depot ne savait donc pas combien il en
+    # enfreignait. Leur severite est forcee a `info` dans `analyzer: errors:`
+    # ci-dessus — lisez-y POURQUOI avant d en durcir une seule.
+    always_declare_return_types: true
+    avoid_print: true
+    directives_ordering: true
+    lines_longer_than_80_chars: true
+    prefer_single_quotes: true
+    public_member_api_docs: true
+    unnecessary_lambdas: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

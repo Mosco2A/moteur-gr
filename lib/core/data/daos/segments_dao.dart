@@ -1,3 +1,7 @@
+/// Segments publies par le serveur, en cache pour la lecture hors-ligne, et les
+/// efforts que le marcheur y realise, envoyes en differe.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -32,8 +36,9 @@ class SegmentsDao extends DatabaseAccessor<AppDatabase>
 
   /// Un segment par son identifiant (null si absent du cache).
   Future<Segment?> segmentById(String segmentId) {
-    return (select(segments)..where((t) => t.id.equals(segmentId)))
-        .getSingleOrNull();
+    return (select(
+      segments,
+    )..where((t) => t.id.equals(segmentId))).getSingleOrNull();
   }
 
   // --- Efforts (file de sync) ---
@@ -70,8 +75,9 @@ class SegmentsDao extends DatabaseAccessor<AppDatabase>
 
   /// Marque un effort comme synchronise (avec l'id Firestore distant).
   Future<int> markEffortSynced(int effortId, {String? remoteId}) {
-    return (update(segmentEffortLocal)..where((t) => t.id.equals(effortId)))
-        .write(
+    return (update(
+      segmentEffortLocal,
+    )..where((t) => t.id.equals(effortId))).write(
       SegmentEffortLocalCompanion(
         syncState: const Value('synced'),
         remoteId: Value(remoteId),
@@ -81,12 +87,13 @@ class SegmentsDao extends DatabaseAccessor<AppDatabase>
 
   /// Marque un effort en echec et stocke l'erreur (incremente attempts).
   Future<void> markEffortFailed(int effortId, String error) async {
-    final row = await (select(segmentEffortLocal)
-          ..where((t) => t.id.equals(effortId)))
-        .getSingleOrNull();
+    final row = await (select(
+      segmentEffortLocal,
+    )..where((t) => t.id.equals(effortId))).getSingleOrNull();
     if (row == null) return;
-    await (update(segmentEffortLocal)..where((t) => t.id.equals(effortId)))
-        .write(
+    await (update(
+      segmentEffortLocal,
+    )..where((t) => t.id.equals(effortId))).write(
       SegmentEffortLocalCompanion(
         syncState: const Value('failed'),
         attempts: Value(row.attempts + 1),
@@ -98,9 +105,7 @@ class SegmentsDao extends DatabaseAccessor<AppDatabase>
   /// Remet un effort 'failed' en 'pending' pour re-tenter la sync.
   Future<int> requeueEffort(int effortId) {
     return (update(segmentEffortLocal)..where((t) => t.id.equals(effortId)))
-        .write(
-      const SegmentEffortLocalCompanion(syncState: Value('pending')),
-    );
+        .write(const SegmentEffortLocalCompanion(syncState: Value('pending')));
   }
 
   /// Compte les efforts en attente.

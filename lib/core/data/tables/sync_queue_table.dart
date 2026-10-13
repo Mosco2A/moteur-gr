@@ -16,8 +16,7 @@ class SyncQueue extends Table {
   TextColumn get action => text()();
 
   /// Statut de l'action ('pending', 'completed', 'failed')
-  TextColumn get status =>
-      text().withDefault(const Constant('pending'))();
+  TextColumn get status => text().withDefault(const Constant('pending'))();
 
   /// Donnees JSON de l'action (nullable, contenu a inserer)
   TextColumn get payload => text().nullable()();
@@ -29,6 +28,5 @@ class SyncQueue extends Table {
   TextColumn get completedAt => text().nullable()();
 
   /// Nombre de tentatives echouees
-  IntColumn get retryCount =>
-      integer().withDefault(const Constant(0))();
+  IntColumn get retryCount => integer().withDefault(const Constant(0))();
 }

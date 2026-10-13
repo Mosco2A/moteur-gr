@@ -1,5 +1,5 @@
 {
-  "_comment": "StepWays LOT 5 (A) — plans d'entrainement EXTERNALISES par sentier. La duree (durationWeeks) est un CHAMP DE DONNEES reglable (6/8/12 sem) SANS recompilation (leve l'arbitrage A9 sans le figer). 'default' = plan generique applique a tout sentier sans plan specifique. Les plans specifiques (par trailId) heritent du meme schema. Agnostique au sentier : jamais 'GR20' en dur ; l'objectif reprend un repere du sentier charge. i18n 5 langues INLINE (fr base + en/de/it/es). Structure maquette : 8 semaines, 3 phases (Fondation S1-2 / Denivele S3-5 / Endurance S6-8). La descente excentrique est gardee (1re cause de blessure genou).",
+  "_comment": "StepWays LOT 5 (A) — plans d'entrainement EXTERNALISES par sentier. La duree (durationWeeks) est un CHAMP DE DONNEES reglable (6/8/12 sem) SANS recompilation. 'default' = plan generique applique a tout sentier sans plan specifique. Agnostique au sentier : jamais 'GR20' en dur. i18n 5 langues INLINE (fr base + en/de/it/es). Structure : 8 semaines, 3 phases (Fondation S1-2 / Denivele S3-5 / Endurance S6-8). La descente excentrique est gardee (1re cause de blessure genou). TACHE 570 (LOT S, S3-a) — CHAQUE SEANCE PORTE DESORMAIS SA FREQUENCE (timesPerWeek + occurrence), parce que le plan listait des TYPES de seances et que l'ecran les presentait comme des seances uniques : deux semaines de Fondation semblaient ne demander qu'UNE sortie cardio (retour Chris 26/09). AUCUNE FREQUENCE N'EST INVENTEE (regle #6178). Semaine de reference = REI Expert Advice 'Conditioning for Backpacking & Hiking' : 3 seances cardio non consecutives + 2 jours de renforcement non consecutifs + 2 jours de repos. Renforcement a 2 jours confirme par les recommandations OMS 2020 ('muscle-strengthening activities on 2 or more days a week'). Sortie longue hebdomadaire = Terres d'Aventure ('marchez tous les week-ends, 5 a 6 h minimum, avec un sac a dos de 5 a 10 kg'). Denivele 2 fois par semaine = Randonner Malin ('monter 1500 marches et descendre 1500 marches 2 fois par semaine'). Le plancher de 8 semaines sous lequel AUCUNE prepa n'est proposee vient de Terres d'Aventure ('commencez a vous entrainer au moins 2 mois avant de partir') — il vit dans le code (kTrainingMinWeeks), pas ici, parce qu'il vaut pour TOUS les plans.",
   "default": {
     "trailId": "default",
     "durationWeeks": 8,
@@ -22,11 +22,13 @@
         "sessions": [
           {
             "id": "foundation-s1",
-            "labelFr": "Sortie cardio 1 h (velo, course ou natation)",
-            "labelEn": "1 h cardio session (bike, run or swim)",
+            "labelFr": "Cardio 1 h (velo, course ou natation)",
+            "labelEn": "1 h cardio (bike, run or swim)",
             "labelDe": "1 Std. Ausdauer (Rad, Laufen oder Schwimmen)",
-            "labelIt": "Uscita cardio 1 h (bici, corsa o nuoto)",
-            "labelEs": "Sesion cardio 1 h (bici, carrera o natacion)"
+            "labelIt": "Cardio 1 h (bici, corsa o nuoto)",
+            "labelEs": "Cardio 1 h (bici, carrera o natacion)",
+            "timesPerWeek": 2,
+            "occurrence": "weekly"
           },
           {
             "id": "foundation-s2",
@@ -34,15 +36,19 @@
             "labelEn": "1 h walk + legs and core strengthening",
             "labelDe": "1 Std. Gehen + Bein- und Rumpfkraftigung",
             "labelIt": "Camminata 1 h + rinforzo gambe e core",
-            "labelEs": "Marcha 1 h + refuerzo piernas y core"
+            "labelEs": "Marcha 1 h + refuerzo piernas y core",
+            "timesPerWeek": 2,
+            "occurrence": "weekly"
           },
           {
             "id": "foundation-s3",
-            "labelFr": "Sortie marche 1 h 30 sur terrain vallonne",
-            "labelEn": "1 h 30 walk on rolling terrain",
-            "labelDe": "1,5 Std. Gehen in hugeligem Gelande",
-            "labelIt": "Camminata 1 h 30 su terreno ondulato",
-            "labelEs": "Marcha 1 h 30 en terreno ondulado"
+            "labelFr": "Marche reguliere 1 h 30 sur terrain vallonne",
+            "labelEn": "Regular walk 1 h 30 on rolling terrain",
+            "labelDe": "Regelmassiges Gehen 1,5 Std. in hugeligem Gelande",
+            "labelIt": "Camminata regolare 1 h 30 su terreno ondulato",
+            "labelEs": "Marcha regular 1 h 30 en terreno ondulado",
+            "timesPerWeek": 1,
+            "occurrence": "weekly"
           }
         ]
       },
@@ -68,7 +74,9 @@
             "labelEn": "4-6 uphill reps of 7-10 min (80-85% max HR)",
             "labelDe": "4-6 Bergaufintervalle 7-10 min (80-85% max HF)",
             "labelIt": "4-6 salite di 7-10 min (80-85% FC max)",
-            "labelEs": "4-6 subidas de 7-10 min (80-85% FC max)"
+            "labelEs": "4-6 subidas de 7-10 min (80-85% FC max)",
+            "timesPerWeek": 2,
+            "occurrence": "weekly"
           },
           {
             "id": "elevation-s2",
@@ -76,7 +84,9 @@
             "labelEn": "3 h long walk with loaded pack (~50% target weight)",
             "labelDe": "3 Std. lange Tour mit Rucksack (~50% Zielgewicht)",
             "labelIt": "Uscita lunga 3 h con zaino (~50% peso previsto)",
-            "labelEs": "Salida larga 3 h con mochila (~50% peso previsto)"
+            "labelEs": "Salida larga 3 h con mochila (~50% peso previsto)",
+            "timesPerWeek": 1,
+            "occurrence": "weekly"
           },
           {
             "id": "elevation-s3",
@@ -84,7 +94,9 @@
             "labelEn": "Strength + eccentric downhill work (protects knees)",
             "labelDe": "Kraft + exzentrisches Bergab (schutzt die Knie)",
             "labelIt": "Rinforzo + discesa eccentrica (protegge le ginocchia)",
-            "labelEs": "Refuerzo + bajada excentrica (protege las rodillas)"
+            "labelEs": "Refuerzo + bajada excentrica (protege las rodillas)",
+            "timesPerWeek": 2,
+            "occurrence": "weekly"
           }
         ]
       },
@@ -110,7 +122,9 @@
             "labelEn": "Long outing simulating a trek day (full pack)",
             "labelDe": "Lange Tour wie ein Trekkingtag (voller Rucksack)",
             "labelIt": "Uscita lunga come una giornata di trek (zaino pieno)",
-            "labelEs": "Salida larga que simula un dia de trek (mochila llena)"
+            "labelEs": "Salida larga que simula un dia de trek (mochila llena)",
+            "timesPerWeek": 1,
+            "occurrence": "weekly"
           },
           {
             "id": "endurance-s2",
@@ -118,7 +132,9 @@
             "labelEn": "Two back-to-back days with an overnight (gear test)",
             "labelDe": "Zwei Tage hintereinander mit Ubernachtung (Materialtest)",
             "labelIt": "Due giorni consecutivi con pernottamento (test materiale)",
-            "labelEs": "Dos dias encadenados con noche (prueba de material)"
+            "labelEs": "Dos dias encadenados con noche (prueba de material)",
+            "timesPerWeek": 0,
+            "occurrence": "oncePerPhase"
           },
           {
             "id": "endurance-s3",
@@ -126,7 +142,9 @@
             "labelEn": "Taper: reduced volume, 48 h rest before departure",
             "labelDe": "Tapering: weniger Umfang, 48 Std. Ruhe vor dem Start",
             "labelIt": "Scarico: volume ridotto, riposo 48 h prima della partenza",
-            "labelEs": "Afinamiento: volumen reducido, descanso 48 h antes"
+            "labelEs": "Afinamiento: volumen reducido, descanso 48 h antes",
+            "timesPerWeek": 0,
+            "occurrence": "finalWeek"
           }
         ]
       }
@@ -162,11 +180,13 @@
           "sessions": [
             {
               "id": "foundation-s1",
-              "labelFr": "Sortie cardio 1 h (velo, course ou natation)",
-              "labelEn": "1 h cardio session (bike, run or swim)",
+              "labelFr": "Cardio 1 h (velo, course ou natation)",
+              "labelEn": "1 h cardio (bike, run or swim)",
               "labelDe": "1 Std. Ausdauer (Rad, Laufen oder Schwimmen)",
-              "labelIt": "Uscita cardio 1 h (bici, corsa o nuoto)",
-              "labelEs": "Sesion cardio 1 h (bici, carrera o natacion)"
+              "labelIt": "Cardio 1 h (bici, corsa o nuoto)",
+              "labelEs": "Cardio 1 h (bici, carrera o natacion)",
+              "timesPerWeek": 2,
+              "occurrence": "weekly"
             },
             {
               "id": "foundation-s2",
@@ -174,15 +194,19 @@
               "labelEn": "1 h walk + legs and core strengthening",
               "labelDe": "1 Std. Gehen + Bein- und Rumpfkraftigung",
               "labelIt": "Camminata 1 h + rinforzo gambe e core",
-              "labelEs": "Marcha 1 h + refuerzo piernas y core"
+              "labelEs": "Marcha 1 h + refuerzo piernas y core",
+              "timesPerWeek": 2,
+              "occurrence": "weekly"
             },
             {
               "id": "foundation-s3",
-              "labelFr": "Sortie marche 1 h 30 pour s'habituer aux zones seches",
-              "labelEn": "1 h 30 walk to get used to the dry zones",
-              "labelDe": "1,5 Std. Gehen, um sich an die trockenen Zonen zu gewohnen",
-              "labelIt": "Camminata 1 h 30 per abituarsi alle zone aride",
-              "labelEs": "Marcha 1 h 30 para acostumbrarse a las zonas secas"
+              "labelFr": "Marche reguliere 1 h 30 pour s'habituer aux zones seches",
+              "labelEn": "Regular walk 1 h 30 to get used to the dry zones",
+              "labelDe": "Regelmassiges Gehen 1,5 Std., um sich an die trockenen Zonen zu gewohnen",
+              "labelIt": "Camminata regolare 1 h 30 per abituarsi alle zone aride",
+              "labelEs": "Marcha regular 1 h 30 para acostumbrarse a las zonas secas",
+              "timesPerWeek": 1,
+              "occurrence": "weekly"
             }
           ]
         },
@@ -208,7 +232,9 @@
               "labelEn": "4-6 uphill reps of 7-10 min (aim for 850 m total climb)",
               "labelDe": "4-6 Bergaufintervalle 7-10 min (Ziel 850 m Anstieg)",
               "labelIt": "4-6 salite di 7-10 min (obiettivo 850 m D+ totale)",
-              "labelEs": "4-6 subidas de 7-10 min (objetivo 850 m D+ total)"
+              "labelEs": "4-6 subidas de 7-10 min (objetivo 850 m D+ total)",
+              "timesPerWeek": 2,
+              "occurrence": "weekly"
             },
             {
               "id": "elevation-s2",
@@ -216,7 +242,9 @@
               "labelEn": "3 h long walk with loaded pack (~50% target weight)",
               "labelDe": "3 Std. lange Tour mit Rucksack (~50% Zielgewicht)",
               "labelIt": "Uscita lunga 3 h con zaino (~50% peso previsto)",
-              "labelEs": "Salida larga 3 h con mochila (~50% peso previsto)"
+              "labelEs": "Salida larga 3 h con mochila (~50% peso previsto)",
+              "timesPerWeek": 1,
+              "occurrence": "weekly"
             },
             {
               "id": "elevation-s3",
@@ -224,7 +252,9 @@
               "labelEn": "Strength + eccentric downhill work (protects knees)",
               "labelDe": "Kraft + exzentrisches Bergab (schutzt die Knie)",
               "labelIt": "Rinforzo + discesa eccentrica (protegge le ginocchia)",
-              "labelEs": "Refuerzo + bajada excentrica (protege las rodillas)"
+              "labelEs": "Refuerzo + bajada excentrica (protege las rodillas)",
+              "timesPerWeek": 2,
+              "occurrence": "weekly"
             }
           ]
         },
@@ -250,7 +280,9 @@
               "labelEn": "Long outing simulating a stage (15 km, full pack)",
               "labelDe": "Lange Tour wie eine Etappe (15 km, voller Rucksack)",
               "labelIt": "Uscita lunga come una tappa (15 km, zaino pieno)",
-              "labelEs": "Salida larga que simula una etapa (15 km, mochila llena)"
+              "labelEs": "Salida larga que simula una etapa (15 km, mochila llena)",
+              "timesPerWeek": 1,
+              "occurrence": "weekly"
             },
             {
               "id": "endurance-s2",
@@ -258,7 +290,9 @@
               "labelEn": "Two back-to-back days with a lodge night (gear test)",
               "labelDe": "Zwei Tage hintereinander mit Hutten-Ubernachtung (Materialtest)",
               "labelIt": "Due giorni consecutivi con notte in rifugio (test materiale)",
-              "labelEs": "Dos dias encadenados con noche en albergue (prueba de material)"
+              "labelEs": "Dos dias encadenados con noche en albergue (prueba de material)",
+              "timesPerWeek": 0,
+              "occurrence": "oncePerPhase"
             },
             {
               "id": "endurance-s3",
@@ -266,7 +300,9 @@
               "labelEn": "Taper: reduced volume, 48 h rest before departure",
               "labelDe": "Tapering: weniger Umfang, 48 Std. Ruhe vor dem Start",
               "labelIt": "Scarico: volume ridotto, riposo 48 h prima della partenza",
-              "labelEs": "Afinamiento: volumen reducido, descanso 48 h antes"
+              "labelEs": "Afinamiento: volumen reducido, descanso 48 h antes",
+              "timesPerWeek": 0,
+              "occurrence": "finalWeek"
             }
           ]
         }

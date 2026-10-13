@@ -69,9 +69,7 @@ void main() {
           // teste ici.
           feasibilityAssessmentProvider.overrideWith((ref) async => null),
         ],
-        child: const MaterialApp(
-          home: Scaffold(body: ChecklistDescentAlert()),
-        ),
+        child: const MaterialApp(home: Scaffold(body: ChecklistDescentAlert())),
       ),
     );
     for (var i = 0; i < 6; i++) {
@@ -86,8 +84,9 @@ void main() {
       .firstWhere((s) => s.length > 40, orElse: () => '');
 
   group('a l ecran', () {
-    testWidgets('120 kg a 1,78 m, sac 10 kg : DEUX nombres, pas leur somme',
-        (tester) async {
+    testWidgets('120 kg a 1,78 m, sac 10 kg : DEUX nombres, pas leur somme', (
+      tester,
+    ) async {
       // Reference a 1,78 m = 79,2 kg. Au-dessus du poids de forme : 40,8 kg.
       // Sac : 10,0 kg. L ancien texte affichait 50,8 — et c est precisement ce
       // total que Chris ne pouvait pas interpreter.
@@ -97,18 +96,30 @@ void main() {
       );
 
       final texte = texteAffiche(tester);
-      expect(texte, contains('10,0 kg'),
-          reason: 'les kilos de SAC doivent etre nommes tels quels');
-      expect(texte, contains('40,8 kg'),
-          reason: 'les kilos au-dessus du poids de forme doivent etre nommes '
-              'a part');
-      expect(texte, isNot(contains('50,8')),
-          reason: 'le TOTAL est exactement ce que le retour de Chris reproche : '
-              'il ne doit plus apparaitre');
+      expect(
+        texte,
+        contains('10,0 kg'),
+        reason: 'les kilos de SAC doivent etre nommes tels quels',
+      );
+      expect(
+        texte,
+        contains('40,8 kg'),
+        reason:
+            'les kilos au-dessus du poids de forme doivent etre nommes '
+            'a part',
+      );
+      expect(
+        texte,
+        isNot(contains('50,8')),
+        reason:
+            'le TOTAL est exactement ce que le retour de Chris reproche : '
+            'il ne doit plus apparaitre',
+      );
     });
 
-    testWidgets('70 kg a 1,78 m, sac 8 kg : on n ecrit pas « 0,0 kg »',
-        (tester) async {
+    testWidgets('70 kg a 1,78 m, sac 8 kg : on n ecrit pas « 0,0 kg »', (
+      tester,
+    ) async {
       // Sous la reference : il n y a RIEN au-dessus du poids de forme. Enoncer
       // « 0,0 kg au-dessus de ton poids de forme » serait un nombre nul presente
       // comme un fait.
@@ -120,43 +131,66 @@ void main() {
       final texte = texteAffiche(tester);
       expect(texte, contains('8,0 kg'));
       expect(texte, isNot(contains('0,0 kg')));
-      expect(texte, isNot(contains('poids de forme')),
-          reason: 'sans kilos au-dessus du poids de forme, on n en parle pas');
+      expect(
+        texte,
+        isNot(contains('poids de forme')),
+        reason: 'sans kilos au-dessus du poids de forme, on n en parle pas',
+      );
     });
 
-    testWidgets('sac vide et poids sous la reference : AUCUNE alerte',
-        (tester) async {
+    testWidgets('sac vide et poids sous la reference : AUCUNE alerte', (
+      tester,
+    ) async {
       // Comportement inchange : une alerte qui se declenche toujours n alerte
       // plus.
       await pumpAlerte(
         tester,
         etat(heightCm: 178, bodyWeightKg: 70, packGrams: 0),
       );
-      expect(find.byKey(const ValueKey('checklist-descent-alert')),
-          findsNothing);
+      expect(
+        find.byKey(const ValueKey('checklist-descent-alert')),
+        findsNothing,
+      );
     });
   });
 
   group('les textes, dans les cinq langues', () {
-    test('DEUX reperes distincts dans le texte complet, UN dans la variante',
-        () {
-      for (final langue in AppLocale.values) {
-        final w = langue.buildSync().checklist.weight;
-        expect(w.descentAlertBody, contains('{pack}'),
-            reason: '${langue.languageCode} : les kilos de sac ne sont pas '
-                'nommes');
-        expect(w.descentAlertBody, contains('{above}'),
-            reason: '${langue.languageCode} : les kilos au-dessus du poids de '
-                'forme ne sont pas nommes a part');
-        // L ancien repere unique — le total — ne doit plus exister.
-        expect(w.descentAlertBody, isNot(contains('{kg}')),
-            reason: '${langue.languageCode} : le total est revenu');
-        expect(w.descentAlertBodyPackOnly, contains('{pack}'));
-        expect(w.descentAlertBodyPackOnly, isNot(contains('{above}')),
-            reason: '${langue.languageCode} : la variante sac seul parle quand '
-                'meme du poids de forme');
-      }
-    });
+    test(
+      'DEUX reperes distincts dans le texte complet, UN dans la variante',
+      () {
+        for (final langue in AppLocale.values) {
+          final w = langue.buildSync().checklist.weight;
+          expect(
+            w.descentAlertBody,
+            contains('{pack}'),
+            reason:
+                '${langue.languageCode} : les kilos de sac ne sont pas '
+                'nommes',
+          );
+          expect(
+            w.descentAlertBody,
+            contains('{above}'),
+            reason:
+                '${langue.languageCode} : les kilos au-dessus du poids de '
+                'forme ne sont pas nommes a part',
+          );
+          // L ancien repere unique — le total — ne doit plus exister.
+          expect(
+            w.descentAlertBody,
+            isNot(contains('{kg}')),
+            reason: '${langue.languageCode} : le total est revenu',
+          );
+          expect(w.descentAlertBodyPackOnly, contains('{pack}'));
+          expect(
+            w.descentAlertBodyPackOnly,
+            isNot(contains('{above}')),
+            reason:
+                '${langue.languageCode} : la variante sac seul parle quand '
+                'meme du poids de forme',
+          );
+        }
+      },
+    );
 
     test('UN SEUL chiffre mecanique, et c est #S23-a Kutzner 2010', () {
       const attendus = <AppLocale, List<String>>{
@@ -168,14 +202,15 @@ void main() {
       };
       for (final entree in attendus.entries) {
         final w = entree.key.buildSync().checklist.weight;
-        for (final texte in [
-          w.descentAlertBody,
-          w.descentAlertBodyPackOnly,
-        ]) {
+        for (final texte in [w.descentAlertBody, w.descentAlertBodyPackOnly]) {
           for (final chiffre in entree.value) {
-            expect(texte, contains(chiffre),
-                reason: '${entree.key.languageCode} : le chiffre source '
-                    '$chiffre manque');
+            expect(
+              texte,
+              contains(chiffre),
+              reason:
+                  '${entree.key.languageCode} : le chiffre source '
+                  '$chiffre manque',
+            );
           }
         }
       }
@@ -229,14 +264,15 @@ void main() {
       };
       for (final entree in interdits.entries) {
         final w = entree.key.buildSync().checklist.weight;
-        for (final texte in [
-          w.descentAlertBody,
-          w.descentAlertBodyPackOnly,
-        ]) {
+        for (final texte in [w.descentAlertBody, w.descentAlertBodyPackOnly]) {
           for (final mot in entree.value) {
-            expect(texte.toLowerCase(), isNot(contains(mot)),
-                reason: '${entree.key.languageCode} : l alerte descente dit '
-                    '« $mot » — elle parle du corps ou pose un pronostic');
+            expect(
+              texte.toLowerCase(),
+              isNot(contains(mot)),
+              reason:
+                  '${entree.key.languageCode} : l alerte descente dit '
+                  '« $mot » — elle parle du corps ou pose un pronostic',
+            );
           }
         }
       }
@@ -247,7 +283,9 @@ void main() {
         final w = entree.key.buildSync().checklist.weight;
         expect(w.descentAlertBody.toLowerCase(), contains(entree.value));
         expect(
-            w.descentAlertBodyPackOnly.toLowerCase(), contains(entree.value));
+          w.descentAlertBodyPackOnly.toLowerCase(),
+          contains(entree.value),
+        );
       }
     });
 
@@ -267,12 +305,15 @@ void main() {
       // MEME titre de coiffer la variante sac seul sans mentir — donc pas de
       // second titre a maintenir, et la parite des cles reste intacte.
       for (final entree in _motSac.entries) {
-        final titre =
-            entree.key.buildSync().checklist.weight.descentAlertTitle;
+        final titre = entree.key.buildSync().checklist.weight.descentAlertTitle;
         expect(titre.trim(), isNotEmpty);
-        expect(titre.toLowerCase(), isNot(contains(entree.value)),
-            reason: '${entree.key.languageCode} : le titre n annonce que le sac '
-                '(« $titre ») alors que le corps annonce deux poids');
+        expect(
+          titre.toLowerCase(),
+          isNot(contains(entree.value)),
+          reason:
+              '${entree.key.languageCode} : le titre n annonce que le sac '
+              '(« $titre ») alors que le corps annonce deux poids',
+        );
       }
       // Et il ne bascule pas dans l'autre exces : il ne parle pas davantage du
       // corps de la personne — le garde-fou de redaction vaut pour le titre.
@@ -291,8 +332,11 @@ void main() {
             .descentAlertTitle
             .toLowerCase();
         for (final mot in entree.value) {
-          expect(titre, isNot(contains(mot)),
-              reason: '${entree.key.languageCode} : le titre dit « $mot »');
+          expect(
+            titre,
+            isNot(contains(mot)),
+            reason: '${entree.key.languageCode} : le titre dit « $mot »',
+          );
         }
       }
     });

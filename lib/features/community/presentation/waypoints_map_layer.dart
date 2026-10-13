@@ -1,9 +1,14 @@
+/// Les reperes sur la carte, lus d'une liste deja en cache : cette couche ne va
+/// jamais chercher la donnee elle-meme.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../data/waypoint_service.dart';
 import '../domain/waypoint_type_config.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Couche de marqueurs des waypoints communautaires (F8A-04, FarOut R1).
 ///
@@ -36,8 +41,9 @@ class WaypointsMapLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filtered =
-        waypoints.where((w) => visibleTypes.contains(w.type)).toList();
+    final filtered = waypoints
+        .where((w) => visibleTypes.contains(w.type))
+        .toList();
 
     if (filtered.isEmpty) {
       return const SizedBox.shrink();
@@ -74,7 +80,7 @@ class WaypointsMapLayer extends StatelessWidget {
                   ],
                 ),
                 alignment: Alignment.center,
-                child: Icon(
+                child: StepIcon(
                   style.icon,
                   color: Colors.white,
                   size: markerSize * 0.5,

@@ -7,15 +7,15 @@ import 'package:moteur_gr/features/trek/providers/eta_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 EtaInput _input({bool degraded = false}) => EtaInput(
-      distanceToWaypointM: 1100,
-      ascentToWaypointM: 0,
-      descentToWaypointM: 0,
-      distanceToStageEndM: 5500,
-      ascentToStageEndM: 0,
-      descentToStageEndM: 0,
-      observedPaceMps: 1.1,
-      gpsDegraded: degraded,
-    );
+  distanceToWaypointM: 1100,
+  ascentToWaypointM: 0,
+  descentToWaypointM: 0,
+  distanceToStageEndM: 5500,
+  ascentToStageEndM: 0,
+  descentToStageEndM: 0,
+  observedPaceMps: 1.1,
+  gpsDegraded: degraded,
+);
 
 /// Tests widget de l'affichage ETA (F6B-02).
 ///
@@ -23,11 +23,11 @@ EtaInput _input({bool degraded = false}) => EtaInput(
 /// et l'indicateur de confiance basse en GPS dégradé.
 void main() {
   Widget wrap(ProviderContainer container) => UncontrolledProviderScope(
-        container: container,
-        child: TranslationProvider(
-          child: const MaterialApp(home: Scaffold(body: EtaWidget())),
-        ),
-      );
+    container: container,
+    child: TranslationProvider(
+      child: const MaterialApp(home: Scaffold(body: EtaWidget())),
+    ),
+  );
 
   testWidgets('rien affiché tant qu aucune estimation', (tester) async {
     final container = ProviderContainer();
@@ -39,8 +39,9 @@ void main() {
     expect(find.byType(Card), findsNothing);
   });
 
-  testWidgets('affiche le titre, les deux ETA et la confiance fiable',
-      (tester) async {
+  testWidgets('affiche le titre, les deux ETA et la confiance fiable', (
+    tester,
+  ) async {
     final container = ProviderContainer();
     addTearDown(container.dispose);
     // Seed une estimation via le contrôleur (événement).

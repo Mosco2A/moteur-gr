@@ -3,7 +3,7 @@
   "tache": 541,
   "objet": "Matrice 96 combinaisons — campagne personas v2 StepWays",
   "dimensions": "6 personas x 4 jeux d etapes x 4 rangs de forme = 96",
-  "v1": "code Dart reel du jour : lib/features/feasibility/domain/feasibility_formula.dart",
+  "v1": "code Dart reel du jour : lib/domain/feasibility_formula.dart",
   "v2": "SPEC_FINALE_faisabilite_et_poids.md (#100332), sections 2 et 9",
   "seuils": {
    "vert": 0.85,

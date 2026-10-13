@@ -1,3 +1,7 @@
+/// Un puits inerte tant que le serveur n'est pas branche : les kudos restent en
+/// file locale plutot que d'etre perdus.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/database_provider.dart';
@@ -39,7 +43,9 @@ final kudosServiceProvider = Provider<KudosService>((ref) {
 });
 
 /// Compteur de kudos d'une activite (cache local), indexe par activityId.
-final kudosCountProvider =
-    FutureProvider.family<int, String>((ref, activityId) {
+final kudosCountProvider = FutureProvider.family<int, String>((
+  ref,
+  activityId,
+) {
   return ref.watch(kudosServiceProvider).kudosCount(activityId);
 });

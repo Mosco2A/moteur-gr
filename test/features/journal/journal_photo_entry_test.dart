@@ -79,17 +79,25 @@ void main() {
     );
 
     final entries = await repo.getByTrailId(trailId);
-    final withPhoto =
-        entries.where((e) => e.photoPath != null).toList(growable: false);
+    final withPhoto = entries
+        .where((e) => e.photoPath != null)
+        .toList(growable: false);
 
     expect(entries, hasLength(2));
-    expect(withPhoto, hasLength(1),
-        reason: 'Avant L10 ce filtre renvoyait TOUJOURS une liste vide');
+    expect(
+      withPhoto,
+      hasLength(1),
+      reason: 'Avant L10 ce filtre renvoyait TOUJOURS une liste vide',
+    );
     expect(withPhoto.single.photoPath, photoPath);
   });
 
   test('addNote (texte seul) ne porte toujours aucune photo', () async {
-    await repo.addNote(trailId: trailId, stageNumber: 1, text: 'Juste du texte');
+    await repo.addNote(
+      trailId: trailId,
+      stageNumber: 1,
+      text: 'Juste du texte',
+    );
 
     final entries = await repo.getByTrailId(trailId);
     expect(entries.single.photoPath, isNull);

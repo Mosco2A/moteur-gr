@@ -1,8 +1,12 @@
+/// Hors rando il n'existe pas d'« etape du jour » : on montre la premiere
+/// etape, et ce choix est surchargeable sans toucher aux ecrans.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/data/database.dart';
-import '../../trek/providers/gps_providers.dart' show currentStageIdProvider;
+import '../../trek/trek_facade.dart' show currentStageIdProvider;
 import 'weather_providers.dart' show stagesDaoProvider;
 
 /// Étape de référence hors trek (préparation / HUB au repos) — D-3.
@@ -43,8 +47,10 @@ final localizedStageNumberProvider = Provider<int>((ref) {
 /// Chargée directement via [StagesDao] à partir d'un `trailId` explicite
 /// (celui de la route météo), sans dépendre de `currentTrailIdProvider`.
 /// Sert la vue « Toutes les étapes » de l'écran météo.
-final trailStagesProvider =
-    FutureProvider.family<List<Stage>, String>((ref, trailId) async {
+final trailStagesProvider = FutureProvider.family<List<Stage>, String>((
+  ref,
+  trailId,
+) async {
   if (trailId.isEmpty) return const [];
   final dao = ref.watch(stagesDaoProvider);
   return dao.getByTrailId(trailId);

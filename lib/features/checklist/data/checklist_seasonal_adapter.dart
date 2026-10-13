@@ -1,3 +1,7 @@
+/// Couche ADDITIVE au gabarit de base : les 84 articles restent intacts, on
+/// ajoute selon le sentier et la saison.
+library;
+
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;

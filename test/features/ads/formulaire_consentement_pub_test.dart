@@ -71,27 +71,40 @@ void main() {
       expect(AdConfig.hasProductionUnits, isFalse);
     });
 
-    test('build sans identifiants de production : AUCUN formulaire demande', () async {
-      final demandes = <int>[];
-      final svc = service(consentFormEnabled: false, formulairesDemandes: demandes);
+    test(
+      'build sans identifiants de production : AUCUN formulaire demande',
+      () async {
+        final demandes = <int>[];
+        final svc = service(
+          consentFormEnabled: false,
+          formulairesDemandes: demandes,
+        );
 
-      final autorise = await svc.ensureConsentAndInit();
+        final autorise = await svc.ensureConsentAndInit();
 
-      expect(demandes, isEmpty,
-          reason: 'un build de test ne demande pas un consentement '
-              'publicitaire pour une regie qui n est pas branchee');
-      expect(svc.consentFormRequests, 0);
-      expect(svc.consentFormDeferred, isTrue);
-      // Et le reste de la chaine n'est pas casse : le consentement deja
-      // enregistre (ici « obtenu ») decide toujours des pubs.
-      expect(autorise, isTrue);
-      expect(svc.adsInitialized, isTrue);
-    });
+        expect(
+          demandes,
+          isEmpty,
+          reason:
+              'un build de test ne demande pas un consentement '
+              'publicitaire pour une regie qui n est pas branchee',
+        );
+        expect(svc.consentFormRequests, 0);
+        expect(svc.consentFormDeferred, isTrue);
+        // Et le reste de la chaine n'est pas casse : le consentement deja
+        // enregistre (ici « obtenu ») decide toujours des pubs.
+        expect(autorise, isTrue);
+        expect(svc.adsInitialized, isTrue);
+      },
+    );
 
     test('build de production : le formulaire est demande UNE SEULE FOIS, '
         'meme sur deux appels', () async {
       final demandes = <int>[];
-      final svc = service(consentFormEnabled: true, formulairesDemandes: demandes);
+      final svc = service(
+        consentFormEnabled: true,
+        formulairesDemandes: demandes,
+      );
 
       // Deux appels — c'est le cas d'une re-souscription au provider d'amorce.
       final premier = svc.ensureConsentAndInit();
@@ -99,8 +112,11 @@ void main() {
       await Future.wait([premier, second]);
       await svc.ensureConsentAndInit();
 
-      expect(svc.consentFormRequests, 1,
-          reason: 'trois appels, un seul formulaire : la sequence est memorisee');
+      expect(
+        svc.consentFormRequests,
+        1,
+        reason: 'trois appels, un seul formulaire : la sequence est memorisee',
+      );
       expect(demandes.length, 1);
       expect(svc.consentFormDeferred, isFalse);
     });
@@ -122,10 +138,14 @@ void main() {
       // cockpit ou la carte.
       await Future<void>.delayed(umpLent * 3);
 
-      expect(demandes, isEmpty,
-          reason: 'le formulaire tombe hors de la fenetre d amorce : il doit '
-              'etre reporte au prochain demarrage, pas pose sur un ecran de '
-              'travail');
+      expect(
+        demandes,
+        isEmpty,
+        reason:
+            'le formulaire tombe hors de la fenetre d amorce : il doit '
+            'etre reporte au prochain demarrage, pas pose sur un ecran de '
+            'travail',
+      );
       expect(svc.consentFormRequests, 0);
       expect(svc.consentFormDeferred, isTrue);
     });
@@ -180,6 +200,6 @@ class _FakeConsentInformation implements ConsentInformation {
 
   @override
   Future<PrivacyOptionsRequirementStatus>
-      getPrivacyOptionsRequirementStatus() async =>
-          PrivacyOptionsRequirementStatus.notRequired;
+  getPrivacyOptionsRequirementStatus() async =>
+      PrivacyOptionsRequirementStatus.notRequired;
 }

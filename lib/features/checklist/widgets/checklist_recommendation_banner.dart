@@ -1,8 +1,13 @@
+/// Le poids recommande par defaut, faute de profil de nuitees par etape : le
+/// maximum entre le poids de refuge de reference et 15 % du corps.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../feasibility/domain/body_weight_reference.dart';
+import '../../feasibility/feasibility_facade.dart' show BodyWeightReference;
+import '../../../core/branding/stepways_icons.dart';
 
 /// Bandeau « Poids recommande » — CLONE GR20 (BackpackRecommendationBanner).
 ///
@@ -54,8 +59,9 @@ class ChecklistRecommendationBanner extends StatelessWidget {
       heightCm: bodyHeightCm,
       bodyWeightKg: bodyWeightKg,
     );
-    final recommendedKg =
-        _refugeReferenceKg > minByBody ? _refugeReferenceKg : minByBody;
+    final recommendedKg = _refugeReferenceKg > minByBody
+        ? _refugeReferenceKg
+        : minByBody;
     const color = AppTheme.orangeDifficile;
 
     return Container(
@@ -74,7 +80,7 @@ class ChecklistRecommendationBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.cabin, size: 24, color: color),
+          const StepIcon(StepwaysIcons.nuitees, size: 24, color: color),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(

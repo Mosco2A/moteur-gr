@@ -1,9 +1,17 @@
+/// Deux mecanismes INDEPENDANTS : la condition qui active le bouton « Demarrer
+/// », et le demarrage reel lui-meme.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../notifications/providers/download_reminder_provider.dart';
-import '../../trek/providers/gps_providers.dart';
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
+import '../../safety/safety_facade.dart' show healthPrepareDoneProvider;
+import '../../trek/trek_facade.dart'
+    show currentTrekPlanProvider, domainStagesProvider, positionStreamProvider;
+import '../../../core/services/session_demo.dart';
 
 /// Providers du DÉMARRAGE RÉEL du trek depuis le cockpit (StepWays LOT 3, Q1).
 ///
@@ -89,7 +97,9 @@ class PrepareCoreStepsNotifier extends Notifier<Set<PrepCoreStep>> {
   Future<void> _loadFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     if (!ref.mounted) return;
-    final stored = _decode(prefs.getStringList('$_prefix$_trailId') ?? const []);
+    final stored = _decode(
+      prefs.getStringList('$_prefix$_trailId') ?? const [],
+    );
     state = {...state, ...stored};
   }
 
@@ -105,6 +115,13 @@ class PrepareCoreStepsNotifier extends Notifier<Set<PrepCoreStep>> {
   /// redémarrage de l'application.
   Future<void> markSeen(PrepCoreStep step) async {
     if (state.contains(step)) return;
+    // DEMO : l'etat reste EN MEMOIRE, rien ne part sur le disque (tache 634).
+    // La porte s'ouvre donc normalement pendant la demonstration, et le
+    // randonneur retrouve sa vraie preparation intacte en sortant.
+    if (ref.read(enDemoProvider)) {
+      state = {...state, step};
+      return;
+    }
     // Réactivité immédiate : l'UI ne doit pas attendre l'écriture disque.
     state = {...state, step};
     final prefs = await SharedPreferences.getInstance();
@@ -123,29 +140,48 @@ class PrepareCoreStepsNotifier extends Notifier<Set<PrepCoreStep>> {
 }
 
 /// Étapes cœur faites pour un sentier donné (persisté). Famille par `trailId`.
-final prepareCoreStepsProvider = NotifierProvider.family<
-    PrepareCoreStepsNotifier, Set<PrepCoreStep>, String>(
-  PrepareCoreStepsNotifier.new,
-);
+final prepareCoreStepsProvider =
+    NotifierProvider.family<
+      PrepareCoreStepsNotifier,
+      Set<PrepCoreStep>,
+      String
+    >(PrepareCoreStepsNotifier.new);
 
-/// « Préparer terminé » (Q1, §12.1) : Itinéraire ET Date ET Programme.
+/// « Préparer terminé » (Q1, §12.1) : Itinéraire ET Date ET Programme, PLUS la
+/// FICHE MÉDICALE depuis la décision de Chris du 26/09 (tâche 568, LOT Q).
 ///
 /// - **Itinéraire** + **Programme** : dérivés de [prepareCoreStepsProvider]
 ///   (les 2 écrans cœur ont été ouverts/validés).
 /// - **Date** : dérivée du signal DÉJÀ persisté [downloadReminderProvider]
 ///   (`departureDate != null` = l'utilisateur a choisi une date de départ dans
 ///   le calendrier). Aucune persistance neuve pour la date.
+/// - **Fiche médicale** : dérivée de [healthPrepareDoneProvider] — fiche
+///   REMPLIE *et* conseils d'usage LUS. Décision de Chris, verbatim : « on ne
+///   demarre pas un trek sans avoir rempli sa fiche medicale et lu les conseils
+///   pour qu'elle soit applicable sur le sentier ». Les deux moitiés comptent :
+///   une fiche parfaite que personne ne sait ni trouver ni montrer ne sert à
+///   rien le jour de l'accident.
 ///
 /// C'est le SEUL critère d'ENABLE du bouton « Démarrer » (§12.5). La proximité
 /// GPS ne conditionne PAS l'enable.
+///
+/// LE MESSAGE D'AIDE SUIT (`t.hub.startGateHint`) : il annonçait « Itinéraire,
+/// Date et Programme » et a été réécrit dans les 5 langues pour nommer la
+/// quatrième condition. Un test verrouille qu'il contient le libellé exact de la
+/// carte qui y mène — un texte qui annonce autre chose que ce que le code exige
+/// est précisément le défaut que Chris trouve depuis deux jours.
 final prepareCoreDoneProvider = Provider.family<bool, String>((ref, trailId) {
   final steps = ref.watch(prepareCoreStepsProvider(trailId));
   final hasDate = ref.watch(
     downloadReminderProvider(trailId).select((s) => s.departureDate != null),
   );
+  // Signal de PERSONNE (pas de sentier) : la fiche médicale suit le randonneur
+  // d'un trek à l'autre, elle n'est pas à refaire par sentier.
+  final healthReady = ref.watch(healthPrepareDoneProvider);
   return steps.contains(PrepCoreStep.itinerary) &&
       steps.contains(PrepCoreStep.programme) &&
-      hasDate;
+      hasDate &&
+      healthReady;
 });
 
 /// État de proximité au point de départ de l'étape 1 (Q1, §12.5).

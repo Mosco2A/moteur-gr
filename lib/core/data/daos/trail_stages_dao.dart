@@ -1,3 +1,7 @@
+/// Etapes d'un itineraire donne, relues dans son ordre — a ne pas confondre
+/// avec les etapes de sentier de stages_dao.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -21,8 +25,9 @@ class TrailStagesDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere une etape par son id
   Future<TrailStage?> getById(String id) {
-    return (select(trailStages)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      trailStages,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Recupere les etapes d'un itineraire, triees par numero

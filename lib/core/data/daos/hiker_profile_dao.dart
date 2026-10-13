@@ -1,3 +1,7 @@
+/// Profil du randonneur, une ligne par utilisateur hashe, ecrite par upsert
+/// idempotent. Drift est canonique, la source durable reste les prefs.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -13,8 +17,11 @@ part 'hiker_profile_dao.g.dart';
 /// `insertOnConflictUpdate` (idempotent : chaque ecriture ecrase la ligne).
 ///
 /// Le schema Drift est CANONIQUE ; la SOURCE DURABLE reste SharedPreferences
-/// (DB volatile en memoire ; hydratation au boot par la couche repository, cf.
-/// `HikerProfileRepository`), comme le wallet.
+/// (hydratation au boot par la couche repository, cf. `HikerProfileRepository`),
+/// comme le wallet. LA RAISON D'ORIGINE A DISPARU A LA TACHE 613 : ce n'est plus
+/// « parce que la base est volatile » — elle vit dans un fichier — mais parce que
+/// renverser ce montage n'appartenait pas au lot qui a pose la persistance. Voir
+/// `HikerProfileRepository` pour l'arbitrage.
 @DriftAccessor(tables: [HikerProfile])
 class HikerProfileDao extends DatabaseAccessor<AppDatabase>
     with _$HikerProfileDaoMixin {
@@ -22,14 +29,16 @@ class HikerProfileDao extends DatabaseAccessor<AppDatabase>
 
   /// Relit le profil de [userId], ou null si absent.
   Future<HikerProfileData?> getByUserId(String userId) {
-    return (select(hikerProfile)..where((t) => t.userId.equals(userId)))
-        .getSingleOrNull();
+    return (select(
+      hikerProfile,
+    )..where((t) => t.userId.equals(userId))).getSingleOrNull();
   }
 
   /// Observe le profil de [userId] (emet a chaque modification, null si absent).
   Stream<HikerProfileData?> watchByUserId(String userId) {
-    return (select(hikerProfile)..where((t) => t.userId.equals(userId)))
-        .watchSingleOrNull();
+    return (select(
+      hikerProfile,
+    )..where((t) => t.userId.equals(userId))).watchSingleOrNull();
   }
 
   /// Cree ou met a jour le profil (upsert par [userId]).

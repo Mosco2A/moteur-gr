@@ -88,23 +88,38 @@ void main() {
 
     test('equality fonctionne avec freezed', () {
       const a = Trail(
-        id: 't1', name: 'A', displayName: 'A',
-        totalStages: 1, totalDistanceKm: 10,
-        totalElevationGain: 500, region: 'R', country: 'FR',
+        id: 't1',
+        name: 'A',
+        displayName: 'A',
+        totalStages: 1,
+        totalDistanceKm: 10,
+        totalElevationGain: 500,
+        region: 'R',
+        country: 'FR',
       );
       const b = Trail(
-        id: 't1', name: 'A', displayName: 'A',
-        totalStages: 1, totalDistanceKm: 10,
-        totalElevationGain: 500, region: 'R', country: 'FR',
+        id: 't1',
+        name: 'A',
+        displayName: 'A',
+        totalStages: 1,
+        totalDistanceKm: 10,
+        totalElevationGain: 500,
+        region: 'R',
+        country: 'FR',
       );
       expect(a, equals(b));
     });
 
     test('copyWith modifie un champ', () {
       const trail = Trail(
-        id: 't1', name: 'A', displayName: 'Original',
-        totalStages: 1, totalDistanceKm: 10,
-        totalElevationGain: 500, region: 'R', country: 'FR',
+        id: 't1',
+        name: 'A',
+        displayName: 'Original',
+        totalStages: 1,
+        totalDistanceKm: 10,
+        totalElevationGain: 500,
+        region: 'R',
+        country: 'FR',
       );
       final modified = trail.copyWith(displayName: 'Modifie');
       expect(modified.displayName, 'Modifie');

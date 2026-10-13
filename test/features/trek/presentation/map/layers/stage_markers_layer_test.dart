@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/presentation/map/layers/stage_markers_layer.dart';
 
 /// Tests widget du composant StageMarkersLayer (Phase 2 E2.3d).
@@ -37,10 +37,7 @@ void main() {
             body: FlutterMap(
               options: const MapOptions(),
               children: [
-                StageMarkersLayer(
-                  stages: stages,
-                  onStageTap: (id) {},
-                ),
+                StageMarkersLayer(stages: stages, onStageTap: (id) {}),
               ],
             ),
           ),
@@ -71,10 +68,7 @@ void main() {
     });
 
     test('accepte une taille personnalisee', () {
-      const layer = StageMarkersLayer(
-        stages: [],
-        markerSize: 48.0,
-      );
+      const layer = StageMarkersLayer(stages: [], markerSize: 48.0);
       expect(layer.markerSize, 48.0);
     });
   });

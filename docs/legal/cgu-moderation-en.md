@@ -9,18 +9,27 @@
 > the legal wording must be **drafted/validated by a lawyer** before
 > publication (form reserve #86142, design D4 #86166, C-3 / A4-5).
 > StepWays has **hosting provider** status (baseline obligations, **not
-> a VLOP** — A4-6). The fields `[ENTITY]`, `[CONTACT-EMAIL]`,
-> `[MODERATION-CONTACT]` are to be completed.
+> a VLOP** — A4-6).
+>
+> **PUBLISHED ON 30/09/2026** at
+> <https://only1cent.com/stepways/conditions-en> (French version:
+> `/stepways/conditions`), on the Firebase hosting of the `gr20-app`
+> project, like the GR20 pages (task 642). Publisher and contacts filled
+> in below; the online page **states explicitly** that the remaining
+> general provisions (liability, intellectual property, governing law,
+> termination) are being drafted, rather than letting it appear complete.
 
-**Last updated: June 15, 2026** (SEC-D batch, D4D-04)
+**Last updated: 30 September 2026** (task 642 — publisher filled in and
+published online. Drafted: 15 June 2026, SEC-D batch, D4D-04)
 
 ## 1. Purpose and status
 
 StepWays lets its users publish community content: **waypoint
 comments**, **trail reports**, shared **activities**. As such, the
-publisher **[ENTITY]** acts as a **hosting provider** under the DSA: it
-does not screen content before publication and applies **a-posteriori
-moderation** upon report.
+publisher **Only1Cent**, represented by **Christophe Mosconi**
+(**contact@only1cent.com**), acts as a **hosting provider** under the
+DSA: it does not screen content before publication and applies
+**a-posteriori moderation** upon report.
 
 ## 2. Content rules (what is prohibited)
 
@@ -63,10 +72,21 @@ moderators. See the privacy policy
 
 These terms and the transparency page (`transparence-en.md`) are
 accessible **in the app**, from **Settings -> Privacy / Legal** (existing
-section D4A-02). The link must point to the published version (FR/EN).
+section D4A-02). The link points to the published version in the hiker's
+language (French if their app is in French, English in the four other
+cases): addresses held by `StepwaysLegal` (`lib/core/branding/`).
 
-> **[LEGAL]**: provide the stable public URL of the terms and the
-> transparency page, and their acceptance at sign-up if required.
+**Stable public URLs (task 642)**:
+- <https://only1cent.com/stepways/conditions> (FR)
+- <https://only1cent.com/stepways/conditions-en> (EN)
+
+The transparency page has no URL of its own: its content is folded into
+the terms page (§ 5 "Moderation transparency"), which announces that the
+**first figures report** will be published at the end of the first
+reference period — publishing empty `[N]` templates would be meaningless.
+
+> **[LEGAL]**: still to be decided — **acceptance at sign-up** if
+> required, and the publication frequency of the report.
 
 ## 6. Reserves
 

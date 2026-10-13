@@ -25,9 +25,15 @@ void main() {
       const dLat = step / 111320.0; // ~m par degre lat
       s.addPosition(lat: lat0, lng: lng0, elapsed: const Duration(seconds: 2));
       s.addPosition(
-          lat: lat0 + dLat, lng: lng0, elapsed: const Duration(seconds: 4));
+        lat: lat0 + dLat,
+        lng: lng0,
+        elapsed: const Duration(seconds: 4),
+      );
       s.addPosition(
-          lat: lat0 + 2 * dLat, lng: lng0, elapsed: const Duration(seconds: 6));
+        lat: lat0 + 2 * dLat,
+        lng: lng0,
+        elapsed: const Duration(seconds: 6),
+      );
       // ~30 m au total (2 pas de ~15 m).
       expect(s.distanceMeters, closeTo(30, 2));
     });
@@ -53,7 +59,10 @@ void main() {
       const micro = 0.3 / 111320.0; // ~0.3 m
       s.addPosition(lat: lat, lng: lng, elapsed: const Duration(seconds: 2));
       final counted = s.addPosition(
-          lat: lat + micro, lng: lng, elapsed: const Duration(seconds: 4));
+        lat: lat + micro,
+        lng: lng,
+        elapsed: const Duration(seconds: 4),
+      );
       expect(counted, isFalse);
       expect(s.distanceMeters, 0);
     });
@@ -64,7 +73,10 @@ void main() {
       // Saut de ~200 m.
       const dLat = 200.0 / 111320.0;
       final counted = s.addPosition(
-          lat: 48.0 + dLat, lng: 2.0, elapsed: const Duration(seconds: 4));
+        lat: 48.0 + dLat,
+        lng: 2.0,
+        elapsed: const Duration(seconds: 4),
+      );
       expect(counted, isFalse);
       expect(s.distanceMeters, 0);
     });
@@ -74,7 +86,10 @@ void main() {
       const dLat = 15.0 / 111320.0;
       s.addPosition(lat: 48.0, lng: 2.0, elapsed: const Duration(seconds: 2));
       s.addPosition(
-          lat: 48.0 + dLat, lng: 2.0, elapsed: const Duration(seconds: 4));
+        lat: 48.0 + dLat,
+        lng: 2.0,
+        elapsed: const Duration(seconds: 4),
+      );
       expect(s.distanceMeters, greaterThan(0));
       s.reset();
       expect(s.distanceMeters, 0);

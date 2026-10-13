@@ -1,13 +1,20 @@
+/// Adapter l'itineraire d'une rando EN COURS : ce geste n'est atteignable que
+/// depuis la section « Randonner » du cockpit.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../models/planned_day.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../domain/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../providers/trek_edit_lock_provider.dart';
 import '../widgets/day_action_chip.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// ADAPTER L'ITINERAIRE — modifier la rando EN COURS (R12, LOT L9).
 ///
@@ -26,13 +33,14 @@ import '../widgets/day_action_chip.dart';
 ///
 /// CE QUI CHANGE PAR RAPPORT A LA PREPARATION (regle metier Christophe) :
 ///   1. **Les jours deja marches sont FIGES.** Ils sont rendus a part, en tete,
-///      grises, cadenas + badge « Fait », SANS aucune action. Le refus n'est pas
-///      qu'un affichage : il est porte par [PlannedDaysNotifier] (`isDayLocked`,
-///      `splitBlockedReason`, `mergeBlockedReason`, `canAddRestDayAfter`), donc
-///      infranchissable meme par une autre porte d'entree.
-///   2. **Aucune inversion possible.** Il n'y a PAS de `ReorderableListView` ni
-///      de poignee de glissement sur cet ecran : l'ordre des etapes ne se touche
-///      plus une fois parti. (Cote domaine, `reorder` refuse egalement.)
+///      grises, cadenas + badge « Fait », SANS aucune action. Le refus n'est
+/// pas      qu'un affichage : il est porte par [PlannedDaysNotifier]
+/// (`isDayLocked`,      `splitBlockedReason`, `mergeBlockedReason`,
+/// `canAddRestDayAfter`), donc      infranchissable meme par une autre porte
+/// d'entree.   2. **Aucune inversion possible.** Il n'y a PAS de
+/// `ReorderableListView` ni      de poignee de glissement sur cet ecran :
+/// l'ordre des etapes ne se touche      plus une fois parti. (Cote domaine,
+/// `reorder` refuse egalement.)
 ///
 /// DIFFERENCE ASSUMEE AVEC GR20 : l'ecran GR20 cense couvrir ce cas
 /// (`ItineraryAdaptationScreen`, premium) est une MAQUETTE non cablee — son
@@ -48,6 +56,10 @@ class TrekAdjustScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.trekAdjust, trail: trailId);
     final days = ref.watch(plannedDaysProvider(trailId));
     // INDISPENSABLE : le verrou est injecte dans le notifier par `ref.listen`
     // (pour ne pas regenerer le programme a chaque etape terminee), donc il
@@ -65,7 +77,7 @@ class TrekAdjustScreen extends ConsumerWidget {
         title: Text(t.programme.inTrek.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const StepIcon(StepwaysIcons.info),
             tooltip: t.programme.helpTooltip,
             onPressed: () => _showHelpSheet(context),
           ),
@@ -73,8 +85,10 @@ class TrekAdjustScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: days.isEmpty
-            ? _EmptyAdjustState(message: t.programme.inTrek.empty.message,
-                title: t.programme.inTrek.empty.title)
+            ? _EmptyAdjustState(
+                message: t.programme.inTrek.empty.message,
+                title: t.programme.inTrek.empty.title,
+              )
             : Column(
                 children: [
                   _IntroBanner(
@@ -93,7 +107,7 @@ class TrekAdjustScreen extends ConsumerWidget {
                         // --- Deja marche (fige) ---
                         if (lockedCount > 0) ...[
                           _SectionLabel(
-                            icon: Icons.lock_outline,
+                            icon: StepwaysIcons.cadenas,
                             label: t.programme.inTrek.doneSection,
                           ),
                           for (var i = 0; i < lockedCount; i++)
@@ -107,7 +121,7 @@ class TrekAdjustScreen extends ConsumerWidget {
 
                         // --- A venir (editable) ---
                         _SectionLabel(
-                          icon: Icons.hiking,
+                          icon: StepwaysIcons.chaussure,
                           label: t.programme.inTrek.upcomingSection,
                         ),
                         if (lockedCount >= days.length)
@@ -125,9 +139,13 @@ class TrekAdjustScreen extends ConsumerWidget {
                               day: days[i],
                               locked: false,
                               canMerge: notifier.canMergeWithNext(i),
-                              mergeBlockedReason: notifier.mergeBlockedReason(i),
+                              mergeBlockedReason: notifier.mergeBlockedReason(
+                                i,
+                              ),
                               canSplit: notifier.canSplit(i),
-                              splitBlockedReason: notifier.splitBlockedReason(i),
+                              splitBlockedReason: notifier.splitBlockedReason(
+                                i,
+                              ),
                               onMerge: () => notifier.mergeWithNext(i),
                               onSplit: () => notifier.splitDay(i),
                               onAddRestDay: () => notifier.addRestDay(i),
@@ -142,7 +160,8 @@ class TrekAdjustScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(AppTheme.spacingLg),
                     child: SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
+                      child: AppButton(
+                        label: t.programme.inTrek.validate,
                         // Les modifications sont DEJA ecrites dans le programme
                         // (source unique) a chaque action : ce bouton confirme
                         // et rend la main, il ne « sauvegarde » pas en douce.
@@ -155,7 +174,6 @@ class TrekAdjustScreen extends ConsumerWidget {
                           );
                           if (context.canPop()) context.pop();
                         },
-                        child: Text(t.programme.inTrek.validate),
                       ),
                     ),
                   ),
@@ -178,30 +196,32 @@ class TrekAdjustScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(t.programme.inTrek.info.title,
-                style: theme.textTheme.titleLarge),
+            Text(
+              t.programme.inTrek.info.title,
+              style: theme.textTheme.titleLarge,
+            ),
             const SizedBox(height: AppTheme.spacingMd),
             _HelpLine(
-              icon: Icons.lock_outline,
+              icon: StepwaysIcons.cadenas,
               title: t.programme.inTrek.info.done.title,
               body: t.programme.inTrek.info.done.body,
             ),
             _HelpLine(
-              icon: Icons.edit_road,
+              icon: StepwaysIcons.itineraire,
               title: t.programme.inTrek.info.upcoming.title,
               body: t.programme.inTrek.info.upcoming.body,
             ),
             _HelpLine(
-              icon: Icons.swap_vert,
+              icon: StepwaysIcons.inverser,
               title: t.programme.inTrek.info.order.title,
               body: t.programme.inTrek.info.order.body,
             ),
             const SizedBox(height: AppTheme.spacingLg),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: AppButton(
+                label: t.programme.inTrek.info.close,
                 onPressed: () => Navigator.pop(ctx),
-                child: Text(t.programme.inTrek.info.close),
               ),
             ),
           ],
@@ -238,15 +258,13 @@ class _IntroBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            started ? Icons.edit_road : Icons.info_outline,
+          StepIcon(
+            started ? StepwaysIcons.itineraire : StepwaysIcons.info,
             size: 20,
             color: theme.colorScheme.primary,
           ),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(message, style: theme.textTheme.bodySmall),
-          ),
+          Expanded(child: Text(message, style: theme.textTheme.bodySmall)),
         ],
       ),
     );
@@ -257,7 +275,10 @@ class _IntroBanner extends StatelessWidget {
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.icon, required this.label});
 
-  final IconData icon;
+  /// Chemin d'une icone Stepways ([StepwaysIcons]), monochrome : elle prend
+  /// `dayNeutralColor` comme le texte a cote (tache 632).
+  final String icon;
+
   final String label;
 
   @override
@@ -270,7 +291,7 @@ class _SectionLabel extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: dayNeutralColor(context)),
+          StepIcon(icon, size: 18, color: dayNeutralColor(context)),
           const SizedBox(width: AppTheme.spacingSm),
           Text(
             label,
@@ -293,7 +314,7 @@ class _HelpLine extends StatelessWidget {
     required this.body,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String body;
 
@@ -305,15 +326,18 @@ class _HelpLine extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: theme.colorScheme.primary),
+          StepIcon(icon, size: 20, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  title,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 Text(body, style: theme.textTheme.bodySmall),
               ],
             ),
@@ -384,13 +408,12 @@ class _AdjustDayCard extends StatelessWidget {
     }
   }
 
-  /// `portion` : tache 558 — une etape deja coupee en deux ne se recoupe pas,
-  /// et ce n'est pas la meme chose que « rien a couper ».
+  /// Le code `portion` a disparu avec le decoupage d'etape (tache 634,
+  /// DEM-260929-1327) : il n'existe plus de demi-etape.
   String _splitLabel() => switch (splitBlockedReason) {
-        'locked' => t.programme.splitBlocked.locked,
-        'portion' => t.programme.splitBlocked.portion,
-        _ => t.programme.splitBlocked.single,
-      };
+    'locked' => t.programme.splitBlocked.locked,
+    _ => t.programme.splitBlocked.single,
+  };
 
   void _blocked(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -413,8 +436,8 @@ class _AdjustDayCard extends StatelessWidget {
     final accent = locked
         ? dayNeutralColor(context)
         : isRest
-            ? AppTheme.bleuRepos
-            : _difficultyColor(day.maxDifficulty);
+        ? AppTheme.bleuRepos
+        : _difficultyColor(day.maxDifficulty);
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
@@ -439,8 +462,10 @@ class _AdjustDayCard extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'J${day.dayNumber}',
-                    style: theme.textTheme.labelLarge
-                        ?.copyWith(color: accent, fontSize: 14),
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: accent,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
@@ -452,7 +477,11 @@ class _AdjustDayCard extends StatelessWidget {
                     if (isRest)
                       Row(
                         children: [
-                          Icon(Icons.self_improvement, size: 20, color: accent),
+                          StepIcon(
+                            StepwaysIcons.preparationPhysique,
+                            size: 20,
+                            color: accent,
+                          ),
                           const SizedBox(width: AppTheme.spacingSm),
                           Flexible(
                             child: Text(
@@ -461,8 +490,6 @@ class _AdjustDayCard extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color: accent,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -475,8 +502,6 @@ class _AdjustDayCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(height: AppTheme.spacingXs),
@@ -485,16 +510,17 @@ class _AdjustDayCard extends StatelessWidget {
                         runSpacing: AppTheme.spacingXs,
                         children: [
                           DayMiniStat(
-                            icon: Icons.straighten,
-                            value: '${day.totalDistanceKm.toStringAsFixed(1)} km',
+                            icon: StepwaysIcons.distance,
+                            value:
+                                '${day.totalDistanceKm.toStringAsFixed(1)} km',
                           ),
                           DayMiniStat(
-                            icon: Icons.arrow_upward,
+                            icon: StepwaysIcons.flecheHaut,
                             value: '${day.totalElevationGainM} m D+',
                             color: AppTheme.rougeExtreme,
                           ),
                           DayMiniStat(
-                            icon: Icons.schedule,
+                            icon: StepwaysIcons.clock,
                             value: _formatDuration(day.estimatedHours),
                           ),
                         ],
@@ -505,8 +531,11 @@ class _AdjustDayCard extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.lock_outline,
-                              size: 16, color: dayNeutralColor(context)),
+                          StepIcon(
+                            StepwaysIcons.cadenas,
+                            size: 16,
+                            color: dayNeutralColor(context),
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             t.programme.inTrek.doneBadge,
@@ -529,7 +558,7 @@ class _AdjustDayCard extends StatelessWidget {
                   children: [
                     if (!isRest) ...[
                       DayActionChip(
-                        icon: Icons.compress,
+                        icon: StepwaysIcons.compresser,
                         label: t.programme.actions.merge,
                         tone: DayActionTone.principal,
                         enabled: canMerge,
@@ -538,7 +567,7 @@ class _AdjustDayCard extends StatelessWidget {
                             : () => _blocked(context, _mergeLabel()),
                       ),
                       DayActionChip(
-                        icon: Icons.call_split,
+                        icon: StepwaysIcons.allerRetour,
                         label: t.programme.actions.split,
                         tone: DayActionTone.secondaire,
                         enabled: canSplit,
@@ -549,26 +578,31 @@ class _AdjustDayCard extends StatelessWidget {
                     ],
                     if (onAddRestDay != null)
                       DayActionChip(
-                        icon: Icons.self_improvement,
+                        icon: StepwaysIcons.preparationPhysique,
                         label: t.programme.actions.rest,
                         tone: DayActionTone.principal,
                         onPressed: onAddRestDay!,
                       ),
                     if (onRemoveRestDay != null)
                       IconButton(
-                        icon: const Icon(Icons.remove_circle_outline, size: 20),
-                        color: AppTheme.rougeUrgence,
+                        icon: const StepIcon(StepwaysIcons.moins, size: 20),
+                        color: AppTheme.emergencyRed,
                         tooltip: t.programme.actions.removeRest,
                         onPressed: onRemoveRestDay,
                         padding: EdgeInsets.zero,
-                        constraints:
-                            const BoxConstraints(minWidth: 48, minHeight: 48),
+                        constraints: const BoxConstraints(
+                          minWidth: 48,
+                          minHeight: 48,
+                        ),
                       ),
                   ],
                 )
               else
-                Icon(Icons.lock_outline,
-                    size: 20, color: dayNeutralColor(context)),
+                StepIcon(
+                  StepwaysIcons.cadenas,
+                  size: 20,
+                  color: dayNeutralColor(context),
+                ),
             ],
           ),
         ),
@@ -593,16 +627,23 @@ class _EmptyAdjustState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.event_busy,
-                size: 48, color: dayNeutralColor(context)),
+            StepIcon(
+              StepwaysIcons.calendrier,
+              size: 48,
+              color: dayNeutralColor(context),
+            ),
             const SizedBox(height: AppTheme.spacingMd),
-            Text(title,
-                style: theme.textTheme.titleMedium,
-                textAlign: TextAlign.center),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: AppTheme.spacingSm),
-            Text(message,
-                style: theme.textTheme.bodySmall,
-                textAlign: TextAlign.center),
+            Text(
+              message,
+              style: theme.textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

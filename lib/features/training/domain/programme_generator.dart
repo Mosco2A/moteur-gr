@@ -53,31 +53,37 @@ class ProgrammeGenerator {
       final intensiteCardio = s < semaines / 3
           ? IntensiteSeance.faible
           : (s < 2 * semaines / 3
-              ? IntensiteSeance.moderee
-              : IntensiteSeance.elevee);
+                ? IntensiteSeance.moderee
+                : IntensiteSeance.elevee);
 
       seances
-        ..add(SeanceEntrainement(
-          jourOffset: baseDay,
-          type: TypeSeance.renforcement,
-          dureeMin: 30,
-          intensite: IntensiteSeance.moderee,
-          description: 'Renforcement jambes et gainage',
-        ))
-        ..add(SeanceEntrainement(
-          jourOffset: baseDay + 2,
-          type: TypeSeance.cardio,
-          dureeMin: 30,
-          intensite: intensiteCardio,
-          description: 'Cardio (velo, course ou natation)',
-        ))
-        ..add(SeanceEntrainement(
-          jourOffset: baseDay + 4,
-          type: TypeSeance.marche,
-          dureeMin: marcheMin,
-          intensite: IntensiteSeance.moderee,
-          description: 'Sortie marche longue avec denivele',
-        ));
+        ..add(
+          SeanceEntrainement(
+            jourOffset: baseDay,
+            type: TypeSeance.renforcement,
+            dureeMin: 30,
+            intensite: IntensiteSeance.moderee,
+            description: 'Renforcement jambes et gainage',
+          ),
+        )
+        ..add(
+          SeanceEntrainement(
+            jourOffset: baseDay + 2,
+            type: TypeSeance.cardio,
+            dureeMin: 30,
+            intensite: intensiteCardio,
+            description: 'Cardio (velo, course ou natation)',
+          ),
+        )
+        ..add(
+          SeanceEntrainement(
+            jourOffset: baseDay + 4,
+            type: TypeSeance.marche,
+            dureeMin: marcheMin,
+            intensite: IntensiteSeance.moderee,
+            description: 'Sortie marche longue avec denivele',
+          ),
+        );
     }
 
     return ProgrammeEntrainement(

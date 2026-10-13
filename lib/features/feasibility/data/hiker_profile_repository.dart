@@ -1,3 +1,7 @@
+/// La source durable du profil, avec un identifiant LOCAL stable tant qu'aucun
+/// compte n'est lie — meme convention que le portefeuille.
+library;
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -10,9 +14,12 @@ import '../../../core/data/database.dart';
 import '../../../core/data/daos/hiker_profile_dao.dart';
 import '../../../core/data/daos/past_hikes_dao.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../../core/services/session_demo.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/past_hike.dart';
 import '../domain/walk_test_result.dart';
+import 'hiker_profile_file.dart';
+import 'profil_volatil_demo.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -24,26 +31,58 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// cote sync (comme le wallet), hors du perimetre de cette couche.
 const String kHikerLocalUserId = 'local';
 
-/// Cle SharedPreferences : fiche profil randonneur (JSON).
+/// Cle SharedPreferences HERITEE : fiche profil randonneur (JSON).
+///
+/// PLUS RIEN NE L'ECRIT DEPUIS LA TACHE 623. Elle subsiste pour DEUX raisons, et
+/// aucune des deux n'est de la nostalgie : la migration doit savoir ou chercher
+/// ce que les telephones portent deja, et l'effacement de l'article 17 doit
+/// continuer de l'emporter. Voir [HikerProfileFile].
 const String kHikerProfilePrefsKey = 'hiker.profile';
 
-/// Cle SharedPreferences : liste des randos passees (JSON list).
+/// Cle SharedPreferences HERITEE : liste des randos passees (JSON list).
+/// Voir [kHikerProfilePrefsKey].
 const String kHikerPastHikesPrefsKey = 'hiker.pastHikes';
 
-/// Cle SharedPreferences : note d'experience globale (texte libre).
+/// Cle SharedPreferences HERITEE : note d'experience globale (texte libre).
+/// Voir [kHikerProfilePrefsKey].
 const String kHikerExperienceNotePrefsKey = 'hiker.experienceNote';
 
-/// Cle SharedPreferences : dernier resultat du test de marche 6 minutes (JSON).
+/// Cle SharedPreferences HERITEE : dernier resultat du test 6 minutes (JSON).
+/// Voir [kHikerProfilePrefsKey].
 const String kWalkTestResultPrefsKey = 'hiker.walkTestResult';
 
-/// Couche de persistance DUALE du profil randonneur (StepWays LOT 4, Ph1/Ph3).
+/// Couche de persistance du profil randonneur (StepWays LOT 4, Ph1/Ph3).
 ///
-/// POURQUOI la double persistance : la base Drift tourne EN MEMOIRE
-/// (`database_provider.dart` = `NativeDatabase.memory()`, VOLATILE) — un profil
-/// stocke uniquement en Drift disparaitrait au redemarrage. La SOURCE DURABLE
-/// est donc SharedPreferences (JSON) ; Drift ([HikerProfile], [PastHikes],
-/// [HikerExperienceNote]) en est le MIROIR canonique, hydrate au boot depuis
-/// les prefs par [load]. Meme patron que `WalletStore` (LOT 1).
+/// ---------------------------------------------------------------------------
+/// LA SOURCE DURABLE A QUITTE LES PREFERENCES (tache 623) — ET CE FICHIER
+/// NOMMAIT LUI-MEME LE DEFAUT DEPUIS LA TACHE 613
+/// ---------------------------------------------------------------------------
+///
+/// Ce qu'on lisait ici avant ce lot : « cette fiche (age, taille, poids) est
+/// declaree au randonneur comme une donnee de sante, et SharedPreferences est
+/// INCLUS dans la sauvegarde du telephone par Google ou Apple ». La tache 617 l'a
+/// chiffre plus precisement encore (`SauvegardeSysteme.trouUserDefaultsIos`) :
+/// sur iPhone, `NSUserDefaults` n'est PAS un fichier de l'application mais un
+/// domaine de preferences du systeme, et `NSURLIsExcludedFromBackupKey` ne peut
+/// donc pas s'y appliquer — ni globalement, ni cle par cle. Le poids et la taille
+/// montaient dans iCloud, et AUCUNE declaration ne pouvait l'empecher.
+///
+/// Or la regle de Christophe du 27/09, en majuscules, inclut explicitement le
+/// poids et la taille : « Les donnees medicales RESTENT sur le tel ».
+///
+/// LA SOURCE DURABLE EST DESORMAIS [HikerProfileFile] : un fichier, dans
+/// le MEME dossier protege que la fiche medicale, avec la MEME exclusion iCloud du
+/// lot 615 — reutilisee, pas reinventee. La migration des telephones existants est
+/// faite par [migrerDepuisPreferences], une seule fois, sans rien perdre.
+///
+/// LE MIROIR DRIFT EST CONSERVE, ET C'EST LE MEME ARBITRAGE QUE LA TACHE 613 :
+/// il est devenu redondant, pas faux, et on ne renverse pas deux montages de
+/// persistance dans le lot qui vient d'en changer un. Point OUVERT, pas oubli.
+/// A SAVOIR, ET C'EST MESURE : le miroir vit dans `stepways.sqlite`, que
+/// `CopieSauvegardableBaseService` copie dans le dossier sauvegardable quand le
+/// randonneur DECOCHE la case. La morphologie suit donc le regime de la BASE de ce
+/// cote-la, pas celui du fichier protege — c'etait deja vrai avant ce lot et cela
+/// n'a pas change.
 ///
 /// CONFIDENTIALITE : donnee SENSIBLE (morpho) — jamais nominative. Le miroir
 /// cloud anonyme (hash) + la restauration au changement de tel sont branches
@@ -54,13 +93,65 @@ class HikerProfileRepository {
     required AppDatabase db,
     SharedPreferences? prefs,
     String userId = kHikerLocalUserId,
-  })  : _db = db,
-        _prefs = prefs,
-        _userId = userId;
+    HikerProfileFile? fichier,
+  }) : _db = db,
+       _prefs = prefs,
+       _userId = userId,
+       _fichier = fichier ?? HikerProfileFile(),
+       _enDemo = false;
+
+  /// LE MEME DEPOT, MAIS EN DEMO : IL N'ECRIT NULLE PART (tache 760).
+  ///
+  /// Trois differences, et elles vont ensemble — en laisser une de cote
+  /// suffirait a faire survivre la saisie d'une demo :
+  ///   1. la source durable est un [ProfilVolatilDeDemo] : la saisie vit en
+  ///      memoire et meurt avec la demo ;
+  ///   2. le MIROIR DRIFT n'est plus alimente — c'est un second etage de
+  ///      persistance, et `stepways.sqlite` est copie dans le dossier
+  ///      sauvegardable quand le randonneur decoche la case ;
+  ///   3. la MIGRATION des cles heritees ne tourne pas : elle ECRIT le fichier
+  ///      protege puis RETIRE quatre cles de preferences. Une demo n'a pas a
+  ///      deplacer les donnees du randonneur, meme pour les mettre a l'abri.
+  ///
+  /// LA LECTURE PART VIDE ELLE AUSSI : une demo repart vierge, elle ne montre
+  /// pas la fiche reelle du randonneur. Le raisonnement est dans
+  /// `profil_volatil_demo.dart`.
+  HikerProfileRepository.enDemo({
+    required AppDatabase db,
+    String userId = kHikerLocalUserId,
+    HikerProfileFile? fichier,
+  }) : _db = db,
+       _prefs = null,
+       _userId = userId,
+       _fichier = fichier ?? ProfilVolatilDeDemo(),
+       _enDemo = true,
+       // La migration est REPUTEE FAITE pour que [_load] ne la declenche
+       // jamais : c'est une ecriture, et elle n'a rien a faire dans une demo.
+       // L'amorce de l'application l'a de toute facon jouee au demarrage.
+       _migrationTentee = true;
 
   final AppDatabase _db;
   SharedPreferences? _prefs;
   final String _userId;
+
+  /// LA SOURCE DURABLE (tache 623) : un fichier dans le dossier protege.
+  /// En demo (tache 760), un [ProfilVolatilDeDemo] qui ignore le disque.
+  final HikerProfileFile _fichier;
+
+  /// LA BARRIERE D'ECRITURE DE LA DEMO (tache 760).
+  ///
+  /// Elle est portee par l'INSTANCE et non interrogee a chaque ecriture, au
+  /// contraire de celle de `MonetizationService`, et c'est voulu. Ce depot-ci
+  /// n'a aucun etat a conserver entre une demo et le reel : le provider le
+  /// reconstruit a l'entree comme a la sortie, et c'est precisement cette
+  /// reconstruction qui fait repartir chaque demo VIERGE et qui fait relire la
+  /// vraie fiche a la sortie, sans que personne ait a y penser.
+  final bool _enDemo;
+
+  /// Vrai des que la migration depuis les preferences a ete TENTEE pour cette
+  /// instance. Elle est idempotente, mais la refaire a chaque lecture couterait
+  /// quatre interrogations de preferences pour rien.
+  bool _migrationTentee = false;
 
   HikerProfileDao get _profileDao => _db.hikerProfileDao;
   PastHikesDao get _pastHikesDao => _db.pastHikesDao;
@@ -68,56 +159,191 @@ class HikerProfileRepository {
   Future<SharedPreferences> get _preferences async =>
       _prefs ??= await SharedPreferences.getInstance();
 
+  /// Le stockage protege, exposee pour l'amorce de l'application (qui doit
+  /// reposer l'exclusion iCloud a chaque demarrage) et pour les tests.
+  HikerProfileFile get fichier => _fichier;
+
+  // --- Source durable : lecture / ecriture uniques ---------------------------
+
+  /// L'UNIQUE CHEMIN DE LECTURE. Il fait passer la migration devant, une fois.
+  Future<HikerProfileContent> _load() async {
+    if (!_migrationTentee) {
+      await migrerDepuisPreferences();
+    }
+    return _fichier.lire();
+  }
+
+  /// L'UNIQUE CHEMIN D'ECRITURE.
+  ///
+  /// Pourquoi il est unique : la pose de l'exclusion iCloud vit DANS
+  /// [HikerProfileFile.ecrire], et un second chemin d'ecriture serait un
+  /// second endroit ou l'oublier. C'est exactement le defaut que la tache 615 a
+  /// trouve dans l'ecriture atomique de la 613.
+  Future<void> _save(HikerProfileContent contenu) => _fichier.ecrire(contenu);
+
+  /// MIGRE LES QUATRE CLES HERITEES VERS LE FICHIER PROTEGE, PUIS LES RETIRE.
+  ///
+  /// IDEMPOTENTE ET CONVERGENTE : sans cle heritee elle ne fait rien. Elle est
+  /// appelee par l'amorce de l'application ET, par prudence, devant la premiere
+  /// lecture de chaque instance — un randonneur qui ne passerait pas par l'amorce
+  /// ne doit pas rester avec son poids dans iCloud.
+  ///
+  /// LE FICHIER GAGNE, SECTION PAR SECTION. Si le fichier porte deja un profil,
+  /// c'est lui qui est le plus recent (la cle heritee n'est plus ecrite depuis ce
+  /// lot) : la cle est alors seulement retiree. Mais la fusion est faite SECTION
+  /// PAR SECTION, parce qu'une migration interrompue peut avoir transporte les
+  /// randonnees sans le test de marche — et « la migration ne perd rien » est la
+  /// consigne de ce lot.
+  ///
+  /// UNE VALEUR HERITEE ILLISIBLE EST RETIREE QUAND MEME, ET C'EST UN CHOIX. Elle
+  /// est DEJA perdue du point de vue de l'application ([getProfile] rendait une
+  /// fiche vide sur un JSON casse, bien avant ce lot) : la garder ne restituerait
+  /// rien et la laisserait monter dans iCloud pour toujours. L'incident est
+  /// journalise, pas tu.
+  ///
+  /// NE LEVE JAMAIS : elle passe devant chaque lecture du profil et devant
+  /// l'amorce. Un defaut de migration ne doit pas empecher l'ecran de s'ouvrir.
+  Future<void> migrerDepuisPreferences() async {
+    _migrationTentee = true;
+    // EN DEMO, ELLE NE TOURNE PAS (tache 760). Elle ECRIT le fichier protege
+    // puis RETIRE quatre cles de preferences : c'est une transformation du
+    // telephone du randonneur, pas une lecture. Elle est deja jouee a l'amorce.
+    if (_enDemo) return;
+    try {
+      final prefs = await _preferences;
+      final rawProfile = prefs.getString(kHikerProfilePrefsKey);
+      final brutRandos = prefs.getString(kHikerPastHikesPrefsKey);
+      final brutTest = prefs.getString(kWalkTestResultPrefsKey);
+      final brutNote = prefs.getString(kHikerExperienceNotePrefsKey);
+
+      if (rawProfile == null &&
+          brutRandos == null &&
+          brutTest == null &&
+          brutNote == null) {
+        return;
+      }
+
+      var contenu = await _fichier.lire();
+
+      if (contenu.profile == null && rawProfile != null) {
+        try {
+          contenu = contenu.copyWith(
+            profile: HikerProfile.fromJson(
+              json.decode(rawProfile) as Map<String, dynamic>,
+            ),
+          );
+        } catch (e) {
+          _log.e(
+            '[HikerProfileRepository] Profil herite illisible, retire '
+            'sans etre transporte: $e',
+          );
+        }
+      }
+
+      if (contenu.randosPassees.isEmpty && brutRandos != null) {
+        try {
+          final list =
+              (json.decode(brutRandos) as List<dynamic>)
+                  .whereType<Map<String, dynamic>>()
+                  .map(PastHike.fromJson)
+                  .toList()
+                ..sort((a, b) => b.date.compareTo(a.date));
+          contenu = contenu.copyWith(
+            randosPassees: list.take(kMaxPastHikes).toList(),
+          );
+        } catch (e) {
+          _log.e(
+            '[HikerProfileRepository] Randos heritees illisibles, '
+            'retirees sans etre transportees: $e',
+          );
+        }
+      }
+
+      if (contenu.testDeMarche == null && brutTest != null) {
+        try {
+          contenu = contenu.copyWith(
+            testDeMarche: WalkTestResult.fromJson(
+              json.decode(brutTest) as Map<String, dynamic>,
+            ),
+          );
+        } catch (e) {
+          _log.e(
+            '[HikerProfileRepository] Test de marche herite illisible, '
+            'retire sans etre transporte: $e',
+          );
+        }
+      }
+
+      if (contenu.noteExperienceHeritee == null &&
+          brutNote != null &&
+          brutNote.isNotEmpty) {
+        contenu = contenu.copyWith(noteExperienceHeritee: brutNote);
+      }
+
+      await _save(contenu);
+
+      // LES CLES PARTENT APRES L'ECRITURE, JAMAIS AVANT : une coupure de courant
+      // entre les deux doit laisser la donnee dans les preferences, pas nulle
+      // part. La migration se rejouera au demarrage suivant.
+      await prefs.remove(kHikerProfilePrefsKey);
+      await prefs.remove(kHikerPastHikesPrefsKey);
+      await prefs.remove(kWalkTestResultPrefsKey);
+      await prefs.remove(kHikerExperienceNotePrefsKey);
+
+      _log.i(
+        '[HikerProfileRepository] Profil migre des preferences vers le '
+        'stockage protege (age/taille/poids hors sauvegarde iCloud)',
+      );
+    } catch (e) {
+      _log.e(
+        '[HikerProfileRepository] Migration impossible ($e) — les cles '
+        'heritees restent en place, la migration se rejouera',
+      );
+    }
+  }
+
   // --- Profil (fiche d'info) -----------------------------------------------
 
-  /// Hydrate le profil depuis la SOURCE DURABLE (prefs) et met a jour le MIROIR
-  /// Drift. Retourne le profil (vide si aucune fiche saisie).
+  /// Hydrate le profil depuis la SOURCE DURABLE (le fichier protege) et met a
+  /// jour le MIROIR Drift. Retourne le profil (vide si aucune fiche saisie).
   Future<HikerProfile> load() async {
-    final prefs = await _preferences;
-    final raw = prefs.getString(kHikerProfilePrefsKey);
-    if (raw == null) return HikerProfile.empty;
-    try {
-      final profile =
-          HikerProfile.fromJson(json.decode(raw) as Map<String, dynamic>);
-      await _mirrorProfileToDrift(profile);
-      return profile;
-    } catch (e) {
-      _log.e('[HikerProfileRepository] Profil illisible: $e');
-      return HikerProfile.empty;
-    }
+    final contenu = await _load();
+    final profile = contenu.profile;
+    if (profile == null) return HikerProfile.empty;
+    await _mirrorProfileToDrift(profile);
+    return profile;
   }
 
   /// Relit le profil sans re-mirroring (raccourci lecture).
   Future<HikerProfile> getProfile() async {
-    final prefs = await _preferences;
-    final raw = prefs.getString(kHikerProfilePrefsKey);
-    if (raw == null) return HikerProfile.empty;
-    try {
-      return HikerProfile.fromJson(json.decode(raw) as Map<String, dynamic>);
-    } catch (_) {
-      return HikerProfile.empty;
-    }
+    final contenu = await _load();
+    return contenu.profile ?? HikerProfile.empty;
   }
 
-  /// Sauvegarde le profil : prefs (source durable) ET Drift (miroir), avec
-  /// `updatedAt` rafraichi. L'IMC n'est jamais persiste (getter calcule).
+  /// Sauvegarde le profil : le fichier protege (source durable) ET Drift
+  /// (miroir), avec `updatedAt` rafraichi. L'IMC n'est jamais persiste (getter
+  /// calcule).
   Future<HikerProfile> saveProfile(HikerProfile profile) async {
     final stamped = profile.copyWith(updatedAt: DateTime.now());
-    final prefs = await _preferences;
-    await prefs.setString(kHikerProfilePrefsKey, json.encode(stamped.toJson()));
+    final contenu = await _load();
+    await _save(contenu.copyWith(profile: stamped));
     await _mirrorProfileToDrift(stamped);
     _log.d('[HikerProfileRepository] Profil sauvegarde (IMC calcule local)');
     return stamped;
   }
 
-  /// Supprime le profil (droit a l'effacement RGPD) : prefs ET Drift.
+  /// Supprime le profil (droit a l'effacement RGPD) : fichier protege ET Drift.
   ///
   /// PERIMETRE : la seule fiche d'info. Pour l'effacement TOTAL au titre de
   /// l'article 17 (randos, note d'experience et test de marche compris), c'est
   /// [eraseAllPersonalData] qu'il faut appeler.
   Future<void> deleteProfile() async {
-    final prefs = await _preferences;
-    await prefs.remove(kHikerProfilePrefsKey);
+    final contenu = await _load();
+    await _save(contenu.copyWith(eraseProfile: true));
+    // EN DEMO, L'EFFACEMENT RESTE DANS LA DEMO (tache 760). Effacer est encore
+    // une ecriture : une demo qui emporterait le miroir reel priverait le
+    // randonneur de sa fiche. Seul le magasin volatil est vide.
+    if (_enDemo) return;
     await _profileDao.deleteByUserId(_userId);
   }
 
@@ -137,16 +363,29 @@ class HikerProfileRepository {
   /// Un second chemin d'effacement ecrit ailleurs divergerait le jour ou une
   /// cle s'ajoute — il n'y a donc qu'un chemin, et c'est celui-ci.
   ///
-  /// CE QUI PART : les quatre cles de prefs (fiche, randos passees, note
-  /// d'experience, resultat du test de marche 6 min) ET les trois tables Drift
-  /// correspondantes pour cet utilisateur.
+  /// CE QUI PART : le fichier protege ENTIER (fiche, randos passees, note
+  /// d'experience heritee, resultat du test de marche 6 min), les quatre cles de
+  /// prefs heritees ET les trois tables Drift correspondantes pour cet
+  /// utilisateur.
+  ///
+  /// LES CLES DE PREFS PARTENT ENCORE, ALORS QUE PLUS RIEN NE LES ECRIT (tache
+  /// 623). Meme raisonnement que la tache 570 pour la note de difficultes : la
+  /// migration les retire au premier demarrage, mais un effacement demande AVANT
+  /// ce demarrage — ou apres une migration interrompue — doit les emporter. La
+  /// porte de sortie ferme apres tout le monde.
   ///
   /// A ne pas confondre avec [eraseMorphology] (retrait d'une CATEGORIE de
   /// donnees apres refus du consentement art. 9 : la fiche survit, videe de sa
   /// morphologie). Ici, plus rien ne survit.
   Future<void> eraseAllPersonalData() async {
+    // Etage 1 — la source durable : le fichier protege part en entier.
+    await _fichier.effacer();
+    // EN DEMO, ON S'ARRETE LA (tache 760). Ce qui suit emporte les cles de
+    // preferences et TROIS tables du randonneur : c'est le droit a
+    // l'effacement, et il s'exerce sur du reel, jamais depuis une demo.
+    if (_enDemo) return;
+    // Etage 1 bis — les cles heritees, pour les telephones pas encore migres.
     final prefs = await _preferences;
-    // Etage 1 — source durable.
     await prefs.remove(kHikerProfilePrefsKey);
     await prefs.remove(kHikerPastHikesPrefsKey);
     await prefs.remove(kHikerExperienceNotePrefsKey);
@@ -155,8 +394,10 @@ class HikerProfileRepository {
     await _profileDao.deleteByUserId(_userId);
     await _pastHikesDao.deleteAllForUser(_userId);
     await _pastHikesDao.deleteNote(_userId);
-    _log.d('[HikerProfileRepository] Fiche randonneur effacee (art. 17) : '
-        'prefs ET miroir Drift');
+    _log.d(
+      '[HikerProfileRepository] Fiche randonneur effacee (art. 17) : '
+      'fichier protege, cles heritees ET miroir Drift',
+    );
   }
 
   /// EFFACE LA MORPHOLOGIE — age, taille, poids — des deux etages de stockage
@@ -200,14 +441,14 @@ class HikerProfileRepository {
   /// A ne pas confondre avec [deleteProfile] (effacement TOTAL, droit a
   /// l'effacement) : ici on retire une CATEGORIE de donnees, pas la fiche.
   Future<HikerProfile> eraseMorphology() async {
-    final current = await getProfile();
+    final contenu = await _load();
+    final current = contenu.profile ?? HikerProfile.empty;
     final erased = current.copyWith(
       age: 0,
       heightCm: 0,
       weightKg: 0,
       updatedAt: DateTime.now(),
     );
-    final prefs = await _preferences;
 
     // RESTE-T-IL QUELQUE CHOSE QUI N'EST PAS DE L'ARTICLE 9 ? Le sexe declare et
     // le pays n'en relevent pas et le randonneur ne les a pas refuses : les
@@ -216,25 +457,43 @@ class HikerProfileRepository {
     final resteDuNonArticle9 =
         (erased.sex?.isNotEmpty ?? false) || erased.countryIso.isNotEmpty;
 
+    // LA MESURE DU TEST DE MARCHE PART DANS LE MEME GESTE, ET C'EST LE MEME
+    // FICHIER : une distance parcourue en six minutes est une mesure de capacite
+    // physique, donc de l'article 9 au meme titre que le poids (tache 562, K2a).
+    // Un seul enregistrement atomique au lieu de deux ecritures : il n'existe
+    // aucun instant ou la morphologie est partie et pas le test.
+    await _save(
+      contenu.copyWith(
+        profile: resteDuNonArticle9 ? erased : null,
+        eraseProfile: !resteDuNonArticle9,
+        effacerTestDeMarche: true,
+      ),
+    );
+
     if (resteDuNonArticle9) {
-      await prefs.setString(kHikerProfilePrefsKey, json.encode(erased.toJson()));
       await _mirrorProfileToDrift(erased);
+    } else if (_enDemo) {
+      // EN DEMO, LE MIROIR REEL NE BOUGE PAS (tache 760) : un refus de
+      // consentement joue dans une demonstration ne doit pas effacer la
+      // morphologie que le randonneur a reellement saisie.
     } else {
-      await prefs.remove(kHikerProfilePrefsKey);
       // Le miroir Drift part avec la source : une ligne a zero y serait la meme
       // trace de passage, a un autre etage — et [load] la re-ecrirait au boot.
       await _profileDao.deleteByUserId(_userId);
     }
-    // La mesure du test de marche 6 min est une donnee de sante a part entiere
-    // (capacite physique) : elle part avec la morphologie, pas apres.
-    await prefs.remove(kWalkTestResultPrefsKey);
-    _log.d('[HikerProfileRepository] Morphologie ET test de marche effaces '
-        '(consentement art. 9 refuse ou retire) — fiche '
-        '${resteDuNonArticle9 ? "conservee sans morphologie" : "supprimee"}');
+    _log.d(
+      '[HikerProfileRepository] Morphologie ET test de marche effaces '
+      '(consentement art. 9 refuse ou retire) — fiche '
+      '${resteDuNonArticle9 ? "conservee sans morphologie" : "supprimee"}',
+    );
     return resteDuNonArticle9 ? erased : HikerProfile.empty;
   }
 
   Future<void> _mirrorProfileToDrift(HikerProfile profile) async {
+    // LE SECOND ETAGE EST BARRE EN DEMO (tache 760) : le miroir vit dans
+    // `stepways.sqlite`, que la copie sauvegardable emporte quand le randonneur
+    // decoche la case. Une fiche de demo y resterait apres la demo.
+    if (_enDemo) return;
     await _profileDao.upsert(
       HikerProfileCompanion.insert(
         userId: _userId,
@@ -250,44 +509,38 @@ class HikerProfileRepository {
 
   // --- Randos passees (max 5) ----------------------------------------------
 
-  /// Charge les randos depuis les prefs (source durable) et met a jour Drift.
-  /// Triees par date decroissante, plafonnees a [kMaxPastHikes].
+  /// Charge les randos depuis la source durable (le fichier protege) et met a
+  /// jour Drift. Triees par date decroissante, plafonnees a [kMaxPastHikes].
   Future<List<PastHike>> loadPastHikes() async {
-    final prefs = await _preferences;
-    final raw = prefs.getString(kHikerPastHikesPrefsKey);
-    if (raw == null) return const [];
-    try {
-      final list = (json.decode(raw) as List<dynamic>)
-          .map((e) => PastHike.fromJson(e as Map<String, dynamic>))
-          .toList()
-        ..sort((a, b) => b.date.compareTo(a.date));
-      final capped = list.take(kMaxPastHikes).toList();
-      await _mirrorPastHikesToDrift(capped);
-      return capped;
-    } catch (e) {
-      _log.e('[HikerProfileRepository] Randos illisibles: $e');
-      return const [];
-    }
+    final contenu = await _load();
+    if (contenu.randosPassees.isEmpty) return const [];
+    final list = [...contenu.randosPassees]
+      ..sort((a, b) => b.date.compareTo(a.date));
+    final capped = list.take(kMaxPastHikes).toList();
+    await _mirrorPastHikesToDrift(capped);
+    return capped;
   }
 
-  /// Remplace la liste complete des randos (prefs + Drift), plafonnee a 5.
+  /// Remplace la liste complete des randos (fichier protege + Drift), plafonnee
+  /// a 5.
   ///
   /// L'ecran d'interview gere l'ajout/edition/suppression puis persiste la
   /// liste entiere — plus simple et sur que des ids Drift volatils.
   Future<List<PastHike>> savePastHikes(List<PastHike> hikes) async {
     final sorted = [...hikes]..sort((a, b) => b.date.compareTo(a.date));
     final capped = sorted.take(kMaxPastHikes).toList();
-    final prefs = await _preferences;
-    await prefs.setString(
-      kHikerPastHikesPrefsKey,
-      json.encode(capped.map((h) => h.toJson()).toList()),
-    );
+    final contenu = await _load();
+    await _save(contenu.copyWith(randosPassees: capped));
     await _mirrorPastHikesToDrift(capped);
     _log.d('[HikerProfileRepository] ${capped.length} rando(s) sauvegardee(s)');
     return capped;
   }
 
   Future<void> _mirrorPastHikesToDrift(List<PastHike> hikes) async {
+    // BARRE EN DEMO (tache 760), et pour une raison de plus que le profil : ce
+    // miroir EFFACE d'abord toutes les randonnees de l'utilisateur. Le laisser
+    // tourner ferait perdre au randonneur ses vraies randonnees passees.
+    if (_enDemo) return;
     await _pastHikesDao.deleteAllForUser(_userId);
     final now = DateTime.now();
     for (final h in hikes) {
@@ -305,52 +558,45 @@ class HikerProfileRepository {
     }
   }
 
-  // --- Note d'experience globale (texte libre) -----------------------------
-
-  /// Relit la note d'experience globale (texte libre « difficultes »).
-  Future<String> getExperienceNote() async {
-    final prefs = await _preferences;
-    return prefs.getString(kHikerExperienceNotePrefsKey) ?? '';
-  }
-
-  /// Sauvegarde la note d'experience globale (prefs + Drift). V1 : STOCKEE
-  /// seulement (l'IA la lira en V2, envoi anonymise).
-  Future<void> saveExperienceNote(String text) async {
-    final prefs = await _preferences;
-    await prefs.setString(kHikerExperienceNotePrefsKey, text);
-    await _pastHikesDao.upsertNote(
-      HikerExperienceNoteCompanion.insert(
-        userId: _userId,
-        freeTextDifficulties: Value(text),
-        updatedAt: DateTime.now(),
-      ),
-    );
-  }
+  // --- Note d'experience globale (texte libre) : PLUS D'ECRITURE ------------
+  //
+  // TACHE 570, S2 — `getExperienceNote` et `saveExperienceNote` sont retirees.
+  // Ce couple ecrivait le texte libre « difficultes » sur DEUX etages (prefs
+  // durables + miroir Drift), d'ou il partait au cloud et revenait a la
+  // restauration — pour n'etre jamais relu par aucune regle metier. Plus rien
+  // n'ecrit donc dans `hiker.experienceNote` ni dans la table de notes.
+  //
+  // CE QUI SUBSISTE, ET POURQUOI. La cle de prefs
+  // ([kHikerExperienceNotePrefsKey]) et l'effacement de la table restent, tous
+  // deux dans [eraseAllPersonalData] SEULEMENT : des telephones portent deja
+  // cette note, et arreter de collecter ne les nettoie pas. Retirer la ligne
+  // d'effacement en meme temps que la collecte laisserait ces textes sur
+  // l'appareil pour toujours, hors de portee du droit a l'oubli — c'est
+  // exactement le defaut que la tache 561 avait eu a corriger. La porte de
+  // sortie ferme donc apres tout le monde.
 
   // --- Test de marche 6 minutes (dernier resultat date) --------------------
 
   /// Relit le dernier resultat du test 6 min, ou null si jamais fait
   /// (=> fallback auto-eval cote faisabilite).
   Future<WalkTestResult?> getWalkTestResult() async {
-    final prefs = await _preferences;
-    final raw = prefs.getString(kWalkTestResultPrefsKey);
-    if (raw == null) return null;
-    try {
-      return WalkTestResult.fromJson(
-          json.decode(raw) as Map<String, dynamic>);
-    } catch (e) {
-      _log.e('[HikerProfileRepository] Resultat test 6 min illisible: $e');
-      return null;
-    }
+    final contenu = await _load();
+    return contenu.testDeMarche;
   }
 
   /// Enregistre le resultat du test 6 min (remplace le precedent : recurrent).
+  ///
+  /// IL VA DANS LE MEME FICHIER PROTEGE QUE LA MORPHOLOGIE (tache 623), et pour
+  /// la meme raison qu'il part avec elle au refus de consentement : une distance
+  /// parcourue en six minutes est une MESURE DE CAPACITE PHYSIQUE, donc de
+  /// l'article 9 — elle en dit meme davantage que le poids (tache 562, K2a).
   Future<void> saveWalkTestResult(WalkTestResult result) async {
-    final prefs = await _preferences;
-    await prefs.setString(
-        kWalkTestResultPrefsKey, json.encode(result.toJson()));
-    _log.d('[HikerProfileRepository] Test 6 min: ${result.distanceMeters} m '
-        '-> ${result.level}');
+    final contenu = await _load();
+    await _save(contenu.copyWith(testDeMarche: result));
+    _log.d(
+      '[HikerProfileRepository] Test 6 min: ${result.distanceMeters} m '
+      '-> ${result.level}',
+    );
   }
 }
 
@@ -358,8 +604,23 @@ class HikerProfileRepository {
 ///
 /// Branche sur la meme instance Drift que le reste de l'app
 /// ([databaseProvider]). Convention identique au `walletStoreProvider`.
-final hikerProfileRepositoryProvider =
-    Provider<HikerProfileRepository>((ref) {
+/// IL SE RECONSTRUIT A CHAQUE BASCULE DE DEMO, ET C'EST LE MECANISME (tache
+/// 760).
+///
+/// En lisant [enDemoProvider] avec `watch`, ce provider se reconstruit a
+/// l'ENTREE en demo (un magasin volatil NEUF, donc une demo qui repart vierge
+/// de la precedente) et a la SORTIE (le depot reel revient, et les notifiers
+/// qui le `watch` — `hikerProfileProvider` et `pastHikesProvider` — relisent
+/// d'eux-memes la vraie fiche). Aucune ligne de purge n'est necessaire dans
+/// `quitterLaDemo` : il n'y a jamais rien eu a purger.
+final hikerProfileRepositoryProvider = Provider<HikerProfileRepository>((ref) {
   final db = ref.watch(databaseProvider);
+  if (ref.watch(enDemoProvider)) {
+    // LE NUMERO DE LA DEMO EST LA DEPENDANCE QUI COMPTE : sans lui, entrer,
+    // sortir et rentrer resservirait le magasin de la demo precedente, parce
+    // que `enDemoProvider` a retrouve la valeur qu'il avait au dernier calcul.
+    ref.watch(generationDeDemoProvider);
+    return HikerProfileRepository.enDemo(db: db);
+  }
   return HikerProfileRepository(db: db);
 });

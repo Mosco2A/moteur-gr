@@ -13,15 +13,15 @@
 // garde : ces tests exigent qu'elle soit DANS la methode, et qu'elle soit
 // FERMEE PAR DEFAUT (pas de consentement lisible = refus).
 
+import 'dart:io';
+
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/checklist_dao.dart';
-import 'package:moteur_gr/core/data/daos/health_info_dao.dart';
 import 'package:moteur_gr/core/data/daos/journal_dao.dart';
 import 'package:moteur_gr/core/data/daos/progress_dao.dart';
 import 'package:moteur_gr/core/data/daos/sync_queue_dao.dart';
@@ -30,10 +30,6 @@ import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/cloud_sync_service.dart';
 import 'package:moteur_gr/core/services/consent_service.dart';
 import 'package:moteur_gr/core/services/restore_service.dart';
-import 'package:moteur_gr/core/services/secure_vault_service.dart';
-import 'package:moteur_gr/features/safety/data/health_backup_service.dart';
-import 'package:moteur_gr/features/safety/data/health_info_repository.dart';
-import 'package:moteur_gr/features/safety/domain/models/health_info.dart';
 
 /// Connectivite pilotable (en ligne par defaut).
 class _FakeConnectivityMonitor extends ConnectivityMonitor {
@@ -58,297 +54,195 @@ void main() {
     await db.close();
   });
 
-  CloudSyncService makeSync({ConsentCheck? consent}) => CloudSyncService(
-        progressDao: ProgressDao(db),
-        journalDao: JournalDao(db),
-        checklistDao: ChecklistDao(db),
-        syncQueueDao: SyncQueueDao(db),
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: true),
-        hikerProfileDao: db.hikerProfileDao,
-        pastHikesDao: db.pastHikesDao,
-        consentCheck: consent,
-      );
+  CloudSyncService makeSync() => CloudSyncService(
+    progressDao: ProgressDao(db),
+    checklistDao: ChecklistDao(db),
+    syncQueueDao: SyncQueueDao(db),
+    connectivityMonitor: connectivity,
+    firebaseService: FirebaseService.testOnly(isAvailable: true),
+    pastHikesDao: db.pastHikesDao,
+  );
 
   RestoreService makeRestore({ConsentCheck? consent}) => RestoreService(
-        progressDao: ProgressDao(db),
-        journalDao: JournalDao(db),
-        checklistDao: ChecklistDao(db),
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: true),
-        hikerProfileDao: db.hikerProfileDao,
-        pastHikesDao: db.pastHikesDao,
-        consentCheck: consent,
-      );
+    progressDao: ProgressDao(db),
+    journalDao: JournalDao(db),
+    checklistDao: ChecklistDao(db),
+    connectivityMonitor: connectivity,
+    firebaseService: FirebaseService.testOnly(isAvailable: true),
+    hikerProfileDao: db.hikerProfileDao,
+    pastHikesDao: db.pastHikesDao,
+    consentCheck: consent,
+  );
 
-  Future<void> seedProfile() async {
-    await db.hikerProfileDao.upsert(HikerProfileCompanion.insert(
-      userId: 'hash-anon',
-      age: const Value(72),
-      heightCm: const Value(172),
-      weightKg: const Value(88),
-      updatedAt: DateTime.utc(2026, 6, 15),
-    ));
+  Future<void> seedRandoPassee() async {
+    await db.pastHikesDao.insertHike(
+      PastHikeEntriesCompanion.insert(
+        userId: 'local',
+        date: DateTime.utc(2026, 6, 15),
+        days: const Value(4),
+        totalElevationGain: const Value(3200),
+        totalDistanceKm: const Value(58),
+        updatedAt: DateTime.utc(2026, 6, 20),
+      ),
+    );
   }
 
-  group('CloudSyncService.syncHikerProfile — garde art. 9 DANS la methode', () {
-    test('consentement sante ABSENT -> refus, aucune ecriture tentee',
-        () async {
-      await seedProfile();
-      // Consentement jamais donne (prefs vides) : la garde par defaut lit le
-      // stockage reel et doit refuser.
-      final result = await makeSync().syncHikerProfile('hash-anon');
-
-      expect(result.status, CloudSyncStatusValues.idle);
-      expect(result.itemsSynced, 0);
-      expect(result.error, kSyncErrorHealthConsentMissing,
-          reason: 'le refus doit etre NOMME, pas confondu avec un hors-ligne');
-    });
-
-    test('consentement sante REVOQUE -> refus (le retrait est immediat)',
-        () async {
-      await seedProfile();
-      final prefs = await SharedPreferences.getInstance();
-      final consent = ConsentService(prefs: prefs);
-      await consent.grant(ConsentPurpose.healthData);
-      await consent.revoke(ConsentPurpose.healthData);
-
-      final result = await makeSync().syncHikerProfile('hash-anon');
-
-      expect(result.error, kSyncErrorHealthConsentMissing);
-      consent.dispose();
-    });
-
-    test('une AUTRE finalite accordee n ouvre PAS la porte a la sante',
-        () async {
-      await seedProfile();
-      final prefs = await SharedPreferences.getInstance();
-      final consent = ConsentService(prefs: prefs);
-      await consent.grant(ConsentPurpose.locationNavigation);
-      await consent.grant(ConsentPurpose.socialSharing);
-
-      final result = await makeSync().syncHikerProfile('hash-anon');
-
-      expect(result.error, kSyncErrorHealthConsentMissing,
-          reason: 'art. 9 : consentement SEPARE, jamais groupe');
-      consent.dispose();
-    });
-
-    test('la garde est FERMEE PAR DEFAUT si l etat est illisible', () async {
-      await seedProfile();
-      // Etat de consentement corrompu : impossible de conclure => on refuse.
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        'consent_healthData': 'ceci n est pas du JSON',
-      });
-      final result = await makeSync().syncHikerProfile('hash-anon');
-      expect(result.error, kSyncErrorHealthConsentMissing,
-          reason: 'un doute sur le consentement se tranche par le refus');
-    });
-
-    test('consentement ACCORDE -> la garde laisse passer', () async {
-      await seedProfile();
-      var checked = false;
-      final result = await makeSync(consent: (purpose) async {
-        checked = purpose == ConsentPurpose.healthData;
-        return true;
-      }).syncHikerProfile('hash-anon');
-
-      expect(checked, isTrue,
-          reason: 'la garde doit interroger la finalite SANTE');
-      // Firestore n'est pas joignable en test : on n'exige pas un succes, mais
-      // on exige que le refus de consentement ne soit PLUS la raison.
-      expect(result.error, isNot(kSyncErrorHealthConsentMissing));
-    });
-  });
-
-  group('RestoreService.restoreHikerProfile — garde art. 9 DANS la methode',
-      () {
-    test('consentement sante ABSENT -> refus, rien ne redescend', () async {
-      final result = await makeRestore().restoreHikerProfile('hash-anon');
-
-      expect(result.success, isFalse);
-      expect(result.error, kRestoreErrorHealthConsentMissing);
-      expect((await db.select(db.hikerProfile).get()), isEmpty,
-          reason: 'aucune donnee de sante ne doit atterrir sur l appareil');
-    });
-
-    test('consentement ACCORDE -> la garde laisse passer', () async {
-      var checked = false;
-      final result = await makeRestore(consent: (purpose) async {
-        checked = purpose == ConsentPurpose.healthData;
-        return true;
-      }).restoreHikerProfile('hash-anon');
-
-      expect(checked, isTrue);
-      expect(result.error, isNot(kRestoreErrorHealthConsentMissing));
-    });
-  });
-
-  // TACHE 562 (LOT K, K3) — LE BLOB DE FICHE SANTE.
+  // LES RANDOS PASSEES SONT SORTIES DE CETTE GARDE, ET C EST CHRISTOPHE QUI A
+  // TRANCHE (DEM du 30/09 12:33).
   //
-  // NEUVIEME OCCURRENCE DU MEME MOTIF. `HealthBackupService` chiffre la fiche de
-  // renseignement medical (groupe sanguin, allergies, traitements — article 9)
-  // et depose le blob dans le miroir cloud anonyme, SANS aucune verification de
-  // consentement. Le chiffrement est zero-knowledge : le serveur ne voit rien.
-  // Cela n'en fait pas une exception.
+  // HISTORIQUE EN DEUX TEMPS. La garde protegeait `syncHikerProfile`, qui
+  // poussait la MORPHOLOGIE ; la tache 635 a supprime cette montee (la
+  // morphologie reste sur le telephone) et a REPORTE la garde sur les randos
+  // passees, par prudence. Le bilan de ce lot signalait la consequence : tant
+  // que la case sante n etait pas cochee, `past_hikes` restait VIDE au serveur.
+  // Christophe l a lue et a tranche l inverse — les randos montent comme la
+  // progression et le sac, la case garde la fiche medicale seule.
   //
-  // DECISION DE SKYNET, PAS DE L'AGENT (tache 562) : on ne sauvegarde pas une
-  // donnee de sante sans accord, meme chiffree, meme pour le bien de la
-  // personne — l'accord se demande, il ne se suppose pas. La garde est donc
-  // posee DANS les methodes, fermee par defaut, et le randonneur lit ce qu'il
-  // perd en refusant (`t.consent.healthBackupNote`, cinq langues, affiche sur
-  // l'ecran meme ou il refuse).
-  //
-  // CES TESTS MESURENT LE FAIT, PAS L'INTENTION : ils demandent « un blob de
-  // donnee de sante a-t-il ete produit ? », « la fiche est-elle redescendue sur
-  // l'appareil ? ». Ecrits avant la correction, les trois premiers etaient
-  // ROUGES.
-  group('HealthBackupService — garde art. 9 sur le BLOB de fiche sante', () {
-    const fiche = HealthInfo(
-      bloodType: 'O-',
-      allergies: 'Penicilline',
-      treatments: 'Levothyrox 50mg/j',
+  // CE GROUPE PROUVE DONC MAINTENANT LE CONTRAIRE DE CE QU IL PROUVAIT : que
+  // rien, dans ce service, ne subordonne plus les randos passees a un
+  // consentement. Et il verifie que le chemin de sortie de la fiche medicale
+  // reste FERME, lui — c est la seule chose que la case doit encore garder.
+  group('CloudSyncService.syncPastHikes — plus aucune garde de consentement', () {
+    test(
+      'sans consentement sante, les randos passees montent quand meme',
+      () async {
+        await seedRandoPassee();
+        // Prefs vides : AUCUN consentement n a jamais ete donne.
+        final result = await makeSync().syncPastHikes('uid-auth');
+
+        // FIREBASE N EST PAS JOIGNABLE EN TEST : on n exige donc pas un succes.
+        // Ce qui se mesure ici est que la methode VA JUSQU AU TRANSPORT au lieu
+        // de refuser avant — l erreur rendue est celle du cloud absent, plus
+        // jamais celle d un consentement manquant.
+        expect(
+          result.error,
+          isNot(contains('consent')),
+          reason: 'un refus de consentement ne peut plus etre la raison',
+        );
+        expect(
+          result.error,
+          contains('Firebase'),
+          reason:
+              'la methode est allee jusqu au transport, comme pour la '
+              'progression et le sac',
+        );
+      },
     );
 
-    late HealthInfoRepository sante;
-
-    setUp(() {
-      FlutterSecureStorage.setMockInitialValues(<String, String>{});
-      sante = HealthInfoRepository(dao: HealthInfoDao(db));
-    });
-
-    HealthBackupService makeBackup({ConsentCheck? consent}) =>
-        HealthBackupService(
-          vault: SecureVaultService(),
-          healthRepository: sante,
-          consentCheck: consent,
-        );
-
-    /// Un blob de fiche sante fabrique SANS passer par le service sous test
-    /// (coffre direct) : il existe donc independamment de la garde, et un refus
-    /// de restauration ne peut pas etre mis sur le compte d'un blob absent.
-    Future<String> blobDeFicheSante(String code) async {
-      final vault = SecureVaultService();
-      final salt = vault.newSalt();
-      final key = await vault.deriveKeyFromCode(code, salt);
-      return vault.encryptJson(
-        {'kind': 'stepways.health.v1', 'health': fiche.toJson()},
-        key: key,
-        salt: salt,
-      );
-    }
-
-    /// Execute [action] et retourne son resultat, ou `null` si elle a refuse.
-    /// Formulation volontaire : la question posee est « un blob est-il sorti ? »,
-    /// et la reponse doit etre non, que le refus prenne la forme d'une exception
-    /// ou d'un retour vide.
-    Future<T?> tenter<T>(Future<T?> Function() action) async {
-      try {
-        return await action();
-      } catch (_) {
-        return null;
-      }
-    }
-
-    test('consentement ABSENT -> AUCUN blob produit depuis le code', () async {
-      await sante.save(fiche);
-      final blob = await tenter(() => makeBackup().exportWithCode('MON-CODE'));
-      expect(blob, isNull,
-          reason: 'un blob de donnee de sante a ete produit sans accord');
-    });
-
-    test('consentement ABSENT -> AUCUN blob produit avec la cle locale',
-        () async {
-      await sante.save(fiche);
-      final blob = await tenter(() => makeBackup().exportWithLocalKey());
-      expect(blob, isNull,
-          reason: 'le blob local peut partir vers le cloud de l OS : meme regle');
-    });
-
-    test('consentement ABSENT -> la fiche ne REDESCEND pas sur l appareil',
-        () async {
-      final blob = await blobDeFicheSante('MON-CODE');
-      await tenter(() => makeBackup().restoreWithCode('MON-CODE', blob));
-      expect((await sante.get()).hasData, isFalse,
-          reason: 'aucune donnee de sante ne doit atterrir sans accord');
-    });
-
-    test('consentement ABSENT -> refus NOMME, jamais confondu avec un cloud '
-        'absent ou une fiche vide', () async {
-      await sante.save(fiche);
-      final service = makeBackup();
-      await expectLater(service.exportWithCode('MON-CODE'),
-          throwsA(isA<HealthConsentMissingException>()));
-      await expectLater(service.exportWithLocalKey(),
-          throwsA(isA<HealthConsentMissingException>()));
-      await expectLater(service.backupToCloud('hash-anon', 'MON-CODE'),
-          throwsA(isA<HealthConsentMissingException>()));
-      await expectLater(service.restoreFromCloud('hash-anon', 'MON-CODE'),
-          throwsA(isA<HealthConsentMissingException>()));
-      await expectLater(service.restoreWithLocalKey('peu-importe'),
-          throwsA(isA<HealthConsentMissingException>()));
-      await expectLater(
-          service.restoreWithCode('MON-CODE', await blobDeFicheSante('X')),
-          throwsA(isA<HealthConsentMissingException>()));
-    });
-
-    test('la garde interroge bien la finalite SANTE, et elle laisse passer '
-        'quand l accord est donne', () async {
-      await sante.save(fiche);
-      final interrogees = <ConsentPurpose>[];
-      final service = makeBackup(consent: (purpose) async {
-        interrogees.add(purpose);
-        return true;
-      });
-
-      final blob = await service.exportWithCode('MON-CODE');
-
-      expect(interrogees, contains(ConsentPurpose.healthData));
-      expect(blob, isNotNull);
-      // Zero-knowledge inchange : le blob ne porte aucun clair.
-      expect(blob!.contains('Levothyrox'), isFalse);
-    });
-
-    test('FERMEE PAR DEFAUT : un etat de consentement illisible refuse',
-        () async {
-      await sante.save(fiche);
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        'consent_healthData': 'ceci n est pas du JSON',
-      });
-      await expectLater(makeBackup().exportWithCode('MON-CODE'),
-          throwsA(isA<HealthConsentMissingException>()));
-    });
-
-    test('une AUTRE finalite accordee n ouvre PAS la porte a la fiche sante',
-        () async {
-      await sante.save(fiche);
-      final prefs = await SharedPreferences.getInstance();
-      final consent = ConsentService(prefs: prefs);
-      await consent.grant(ConsentPurpose.socialSharing);
-      await consent.grant(ConsentPurpose.locationNavigation);
-
-      await expectLater(makeBackup().exportWithCode('MON-CODE'),
-          throwsA(isA<HealthConsentMissingException>()));
-      consent.dispose();
-    });
-
-    test('consentement REVOQUE -> refus immediat (pas d instance en cache)',
-        () async {
-      await sante.save(fiche);
+    test('un consentement sante REVOQUE ne bloque plus les randos', () async {
+      await seedRandoPassee();
       final prefs = await SharedPreferences.getInstance();
       final consent = ConsentService(prefs: prefs);
       await consent.grant(ConsentPurpose.healthData);
-      final service = makeBackup();
-      expect(await service.exportWithCode('MON-CODE'), isNotNull);
-
       await consent.revoke(ConsentPurpose.healthData);
 
-      await expectLater(service.exportWithCode('MON-CODE'),
-          throwsA(isA<HealthConsentMissingException>()));
+      final result = await makeSync().syncPastHikes('uid-auth');
+
+      expect(result.error, isNot(contains('consent')));
       consent.dispose();
     });
+
+    test(
+      'le service ne connait plus aucune verification de consentement',
+      () async {
+        final source = File(
+          'lib/core/services/cloud_sync_service.dart',
+        ).readAsStringSync();
+        // ON CHERCHE LA DECLARATION, PAS LE MOT : les commentaires de ce service
+        // expliquent longuement pourquoi la garde a ete retiree, et ils doivent
+        // pouvoir le dire sans faire echouer l invariante.
+        expect(
+          source,
+          isNot(contains('final ConsentCheck consentCheck')),
+          reason:
+              'un champ de verification qui survit a sa garde laisse '
+              'croire qu une garde vit encore ici',
+        );
+        expect(source, isNot(contains('ConsentCheck? consentCheck')));
+        expect(source, isNot(contains('await consentCheck(')));
+        expect(source, isNot(contains('ConsentPurpose.healthData)')));
+      },
+    );
+
+    test(
+      'LA FICHE MEDICALE, ELLE, N A TOUJOURS AUCUN CHEMIN DE SORTIE',
+      () async {
+        // C est ce que la case garde encore, et ce lot n y touche pas : la liste
+        // fermee de la tache 612 refuse tout document de sante, consentement ou
+        // pas.
+        for (final nom in const [
+          'health',
+          'sante',
+          'medical',
+          'fiche_medicale',
+        ]) {
+          expect(
+            DocumentsDuCoffreDistant.autorise(nom),
+            isFalse,
+            reason: '« $nom » ne doit avoir aucun chemin vers nos serveurs',
+          );
+        }
+      },
+    );
   });
 
+  group(
+    'RestoreService.restoreHikerProfile — garde art. 9 DANS la methode',
+    () {
+      test('consentement sante ABSENT -> refus, rien ne redescend', () async {
+        final result = await makeRestore().restoreHikerProfile('hash-anon');
+
+        expect(result.success, isFalse);
+        expect(result.error, kRestoreErrorHealthConsentMissing);
+        expect(
+          (await db.select(db.hikerProfile).get()),
+          isEmpty,
+          reason: 'aucune donnee de sante ne doit atterrir sur l appareil',
+        );
+      });
+
+      test('consentement ACCORDE -> la garde laisse passer', () async {
+        var checked = false;
+        final result = await makeRestore(
+          consent: (purpose) async {
+            checked = purpose == ConsentPurpose.healthData;
+            return true;
+          },
+        ).restoreHikerProfile('hash-anon');
+
+        expect(checked, isTrue);
+        expect(result.error, isNot(kRestoreErrorHealthConsentMissing));
+      });
+    },
+  );
+
+  // TACHE 562 (LOT K, K3) — LE BLOB DE FICHE SANTE : CE GROUPE N'EXISTE PLUS,
+  // ET SON SUJET NON PLUS (retire par la tache 612).
+  //
+  // CE QU'IL TESTAIT. `HealthBackupService` chiffrait la fiche de renseignement
+  // medical (groupe sanguin, allergies, traitements — article 9) et deposait le
+  // blob dans le miroir cloud anonyme. Le LOT K y avait pose une garde de
+  // consentement, fermee par defaut, et huit tests la tenaient.
+  //
+  // POURQUOI ILS SONT PARTIS AVEC LUI. Decision de Christophe du 28/09 10:42,
+  // verbatim et en majuscules dans son message : « NON ON NE TROUVERAIT RIEN !!!
+  // Les donnees medicales RESTENT sur le tel !!! ». Version dure : pas de
+  // sauvegarde distante, meme chiffree, MEME AVEC CONSENTEMENT. La garde du LOT K
+  // demandait l'accord avant de faire sortir la fiche ; il n'y a plus d'accord a
+  // demander parce qu'il n'y a plus de sortie. Le service est supprime, et le
+  // transport refuse tout document absent de `DocumentsDuCoffreDistant.autorises`.
+  //
+  // CE QUI A PRIS LEUR PLACE, ET C'EST PLUS FORT :
+  // `test/comportement/fiche_medicale_locale_612_test.dart` ne demande plus
+  // « l'accord a-t-il ete demande ? » mais « un chemin de sortie existe-t-il ? »,
+  // et il devient ROUGE le jour ou quelqu'un en rouvre un de bonne foi.
+  //
+  // CE QUI RESTE DANS CE FICHIER : la garde de `syncPastHikes` (les randos
+  // passees, seule chose du profil qui monte encore depuis la tache 635) et
+  // celle de `restoreHikerProfile`, qui porte la MORPHOLOGIE dans l autre sens
+  // — le telephone ne l ENVOIE plus, mais il sait encore RECEVOIR celle qu un
+  // compte existant aurait deposee hier. Deux donnees, deux sujets : ne pas les
+  // confondre avec la fiche medicale.
 
   group('ConsentCheck par defaut — lecture du stockage reel', () {
     test('sans decision enregistree -> false', () async {
@@ -365,12 +259,14 @@ void main() {
       consent.dispose();
     });
 
-    test('etat corrompu -> false (fail-closed, pas d exception qui remonte)',
-        () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        'consent_healthData': '{{{',
-      });
-      expect(await consentFromLocalStore(ConsentPurpose.healthData), isFalse);
-    });
+    test(
+      'etat corrompu -> false (fail-closed, pas d exception qui remonte)',
+      () async {
+        SharedPreferences.setMockInitialValues(<String, Object>{
+          'consent_healthData': '{{{',
+        });
+        expect(await consentFromLocalStore(ConsentPurpose.healthData), isFalse);
+      },
+    );
   });
 }

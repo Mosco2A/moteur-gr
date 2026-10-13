@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/poi.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/trail/providers/pois_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/features/trek/presentation/stages/trek_stage_detail_screen.dart';
@@ -98,26 +98,19 @@ void main() {
       routes: [
         GoRoute(
           path: '/stage',
-          builder: (_, __) => const TrekStageDetailScreen(
-            trailId: 'test-trail',
-            stageId: 3,
-          ),
+          builder: (_, __) =>
+              const TrekStageDetailScreen(trailId: 'test-trail', stageId: 3),
         ),
-        GoRoute(
-          path: '/my-treks',
-          builder: (_, __) => const SizedBox(),
-        ),
+        GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
       ],
     );
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
-        stagesProvider('test-trail').overrideWith(
-          (ref) => Future.value(stages),
-        ),
-        poisProvider('test-trail').overrideWith(
-          (ref) => Future.value(pois),
-        ),
+        stagesProvider(
+          'test-trail',
+        ).overrideWith((ref) => Future.value(stages)),
+        poisProvider('test-trail').overrideWith((ref) => Future.value(pois)),
       ],
       child: MaterialApp.router(routerConfig: router),
     );
@@ -162,8 +155,9 @@ void main() {
   });
 
   group('TrekStageDetailScreen parite GR20 — duree', () {
-    testWidgets('affiche la duree d\'etape (fix mapping, plus de "--")',
-        (tester) async {
+    testWidgets('affiche la duree d\'etape (fix mapping, plus de "--")', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
@@ -173,8 +167,9 @@ void main() {
       expect(find.text('--'), findsNothing);
     });
 
-    testWidgets('sans duree fournie, retombe sur estimation (jamais "--")',
-        (tester) async {
+    testWidgets('sans duree fournie, retombe sur estimation (jamais "--")', (
+      tester,
+    ) async {
       const noDurationStage = StageModel(
         trailId: 'test-trail',
         stageNumber: 3,
@@ -200,8 +195,9 @@ void main() {
   });
 
   group('TrekStageDetailScreen parite GR20 — points d\'eau', () {
-    testWidgets('liste les points d\'eau de l\'etape (donnees sentier)',
-        (tester) async {
+    testWidgets('liste les points d\'eau de l\'etape (donnees sentier)', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject(pois: testPois));
       await tester.pumpAndSettle();
 
@@ -223,13 +219,16 @@ void main() {
       // Compteur "0 source(s)".
       expect(find.textContaining('0 source'), findsOneWidget);
       // Message d'avertissement (parite GR20 : prevoir de l'eau).
-      expect(find.textContaining('Prévoyez au moins 3 L'), findsOneWidget);
+      // TACHE 757 : le conseil tutoie desormais le randonneur
+      // (« Prévoyez » -> « Prévois »), decision de Christophe du 09/10 15:02.
+      expect(find.textContaining('Prévois au moins 3 L'), findsOneWidget);
     });
   });
 
   group('TrekStageDetailScreen parite GR20 — hebergements', () {
-    testWidgets('liste les hebergements de l\'etape (donnees sentier)',
-        (tester) async {
+    testWidgets('liste les hebergements de l\'etape (donnees sentier)', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject(pois: testPois));
       await tester.pumpAndSettle();
 
@@ -273,51 +272,48 @@ void main() {
       arrivalName: 'Catastaghju',
     );
 
-    testWidgets('affiche la sous-ligne quand les noms sont fournis',
-        (tester) async {
+    testWidgets('affiche la sous-ligne quand les noms sont fournis', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject(stages: [namedStage]));
       await tester.pumpAndSettle();
 
       // Sous-ligne « Depart  ->  Arrivee » (parite GR20). La fleche unicode et
       // les deux noms sont dans un unique Text.
-      expect(
-        find.text('Ghisonaccia  →  Catastaghju'),
-        findsOneWidget,
-      );
+      expect(find.text('Ghisonaccia  →  Catastaghju'), findsOneWidget);
     });
 
     testWidgets(
-        'sans noms fournis, derive la sous-ligne du nom « Depart — Arrivee »',
-        (tester) async {
-      // Noms riches absents : seul le nom d'etape porte le couple.
-      const derivedStage = StageModel(
-        trailId: 'test-trail',
-        stageNumber: 3,
-        name: 'Cozzano — Guitera-les-Bains',
-        distanceKm: 10.0,
-        elevationGainM: 400,
-        elevationLossM: 500,
-        description: 'desc',
-        startLat: 42.0,
-        startLng: 9.1,
-        endLat: 41.9,
-        endLng: 9.1,
-        difficulty: 'easy',
-        // departureName / arrivalName non fournis -> fallback via le nom.
-      );
-      await tester.pumpWidget(buildSubject(stages: [derivedStage]));
-      await tester.pumpAndSettle();
+      'sans noms fournis, derive la sous-ligne du nom « Depart — Arrivee »',
+      (tester) async {
+        // Noms riches absents : seul le nom d'etape porte le couple.
+        const derivedStage = StageModel(
+          trailId: 'test-trail',
+          stageNumber: 3,
+          name: 'Cozzano — Guitera-les-Bains',
+          distanceKm: 10.0,
+          elevationGainM: 400,
+          elevationLossM: 500,
+          description: 'desc',
+          startLat: 42.0,
+          startLng: 9.1,
+          endLat: 41.9,
+          endLng: 9.1,
+          difficulty: 'easy',
+          // departureName / arrivalName non fournis -> fallback via le nom.
+        );
+        await tester.pumpWidget(buildSubject(stages: [derivedStage]));
+        await tester.pumpAndSettle();
 
-      // Le trait d'union interne de « Guitera-les-Bains » NE doit PAS etre
-      // pris pour le separateur (seul le tiret entoure d'espaces l'est).
-      expect(
-        find.text('Cozzano  →  Guitera-les-Bains'),
-        findsOneWidget,
-      );
-    });
+        // Le trait d'union interne de « Guitera-les-Bains » NE doit PAS etre
+        // pris pour le separateur (seul le tiret entoure d'espaces l'est).
+        expect(find.text('Cozzano  →  Guitera-les-Bains'), findsOneWidget);
+      },
+    );
 
-    testWidgets('sans noms ni separateur exploitable, masque la sous-ligne',
-        (tester) async {
+    testWidgets('sans noms ni separateur exploitable, masque la sous-ligne', (
+      tester,
+    ) async {
       // testStage.name == 'Col de Vergio' : aucun separateur, aucun nom riche.
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
@@ -335,8 +331,9 @@ void main() {
       expect(find.text('Conseils'), findsOneWidget);
       // Etape 'hard' -> conseil "etape technique".
       expect(find.textContaining('Étape technique'), findsOneWidget);
-      // 2 points d'eau -> conseil "remplissez vos gourdes".
-      expect(find.textContaining('Remplissez vos gourdes'), findsOneWidget);
+      // 2 points d'eau -> conseil "remplis tes gourdes".
+      // TACHE 757 : tutoiement (« Remplissez vos » -> « Remplis tes »).
+      expect(find.textContaining('Remplis tes gourdes'), findsOneWidget);
     });
 
     testWidgets('conseil eau adapte quand peu de sources', (tester) async {

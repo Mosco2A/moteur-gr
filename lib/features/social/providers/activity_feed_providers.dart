@@ -1,3 +1,7 @@
+/// Le fil VISIBLE, lu du cache et purge des activites retirees par la
+/// moderation avant d'atteindre l'ecran.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/kudos_feed_dao.dart';
@@ -13,7 +17,8 @@ final kudosFeedDaoProvider = Provider<KudosFeedDao>((ref) {
 ///
 /// Masque les activites 'removed' (DSA, F7B-01.visibleActivities). Le widget
 /// se contente d'afficher : AUCUNE logique reseau/moderation ici.
-final visibleActivitiesProvider =
-    FutureProvider<List<ActivityFeedCacheData>>((ref) {
+final visibleActivitiesProvider = FutureProvider<List<ActivityFeedCacheData>>((
+  ref,
+) {
   return ref.watch(kudosFeedDaoProvider).visibleActivities();
 });

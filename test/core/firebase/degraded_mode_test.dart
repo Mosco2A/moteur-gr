@@ -57,47 +57,75 @@ void main() {
     test('cles Slang cloud.* presentes dans les 5 langues', () {
       for (final locale in ['fr', 'en', 'de', 'es', 'it']) {
         LocaleSettings.setLocaleRaw(locale);
-        expect(t.cloud.localModeTitle, isNotEmpty,
-            reason: 'localModeTitle manquant pour $locale');
-        expect(t.cloud.localModeBody, isNotEmpty,
-            reason: 'localModeBody manquant pour $locale');
-        expect(t.cloud.statusSection, isNotEmpty,
-            reason: 'statusSection manquant pour $locale');
-        expect(t.cloud.statusActive, isNotEmpty,
-            reason: 'statusActive manquant pour $locale');
-        expect(t.cloud.statusActiveDesc, isNotEmpty,
-            reason: 'statusActiveDesc manquant pour $locale');
-        expect(t.cloud.statusLocal, isNotEmpty,
-            reason: 'statusLocal manquant pour $locale');
-        expect(t.cloud.statusLocalDesc, isNotEmpty,
-            reason: 'statusLocalDesc manquant pour $locale');
+        expect(
+          t.cloud.localModeTitle,
+          isNotEmpty,
+          reason: 'localModeTitle manquant pour $locale',
+        );
+        expect(
+          t.cloud.localModeBody,
+          isNotEmpty,
+          reason: 'localModeBody manquant pour $locale',
+        );
+        expect(
+          t.cloud.statusSection,
+          isNotEmpty,
+          reason: 'statusSection manquant pour $locale',
+        );
+        expect(
+          t.cloud.statusActive,
+          isNotEmpty,
+          reason: 'statusActive manquant pour $locale',
+        );
+        expect(
+          t.cloud.statusActiveDesc,
+          isNotEmpty,
+          reason: 'statusActiveDesc manquant pour $locale',
+        );
+        expect(
+          t.cloud.statusLocal,
+          isNotEmpty,
+          reason: 'statusLocal manquant pour $locale',
+        );
+        expect(
+          t.cloud.statusLocalDesc,
+          isNotEmpty,
+          reason: 'statusLocalDesc manquant pour $locale',
+        );
       }
       LocaleSettings.setLocaleRaw('fr');
     });
 
-    testWidgets('GroupScreen sans Firebase : notice explicite, pas de formulaire',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        const GroupScreen(trailId: 'sentier-bleu'),
-        firebaseAvailable: false,
-      ));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'GroupScreen sans Firebase : notice explicite, pas de formulaire',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(
+            const GroupScreen(trailId: 'sentier-bleu'),
+            firebaseAvailable: false,
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.byType(CloudUnavailableNotice), findsOneWidget);
-      expect(find.text(t.cloud.localModeTitle), findsOneWidget);
-      // Le formulaire creer/rejoindre ne doit PAS etre propose.
-      expect(find.text('Creer un groupe'), findsNothing);
-      expect(find.text('Rejoindre'), findsNothing);
-      // Aucun spinner.
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-    });
+        expect(find.byType(CloudUnavailableNotice), findsOneWidget);
+        expect(find.text(t.cloud.localModeTitle), findsOneWidget);
+        // Le formulaire creer/rejoindre ne doit PAS etre propose.
+        expect(find.text('Creer un groupe'), findsNothing);
+        expect(find.text('Rejoindre'), findsNothing);
+        // Aucun spinner.
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+      },
+    );
 
-    testWidgets('GroupScreen avec Firebase : formulaire normal conserve',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        const GroupScreen(trailId: 'sentier-bleu'),
-        firebaseAvailable: true,
-      ));
+    testWidgets('GroupScreen avec Firebase : formulaire normal conserve', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          const GroupScreen(trailId: 'sentier-bleu'),
+          firebaseAvailable: true,
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(CloudUnavailableNotice), findsNothing);
@@ -105,65 +133,74 @@ void main() {
     });
 
     testWidgets(
-        'ProfileScreen utilisateur null : message explicite, pas de spinner infini',
-        (tester) async {
-      await tester.pumpWidget(wrap(
-        const ProfileScreen(),
-        firebaseAvailable: false,
-        extra: [
-          currentUserProvider.overrideWith(
-            (ref) => Stream<AuthUser?>.value(null),
+      'ProfileScreen utilisateur null : message explicite, pas de spinner infini',
+      (tester) async {
+        await tester.pumpWidget(
+          wrap(
+            const ProfileScreen(),
+            firebaseAvailable: false,
+            extra: [
+              currentUserProvider.overrideWith(
+                (ref) => Stream<AuthUser?>.value(null),
+              ),
+            ],
           ),
-        ],
-      ));
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text(t.auth.errorLoading), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-    });
+        expect(find.text(t.auth.errorLoading), findsOneWidget);
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+      },
+    );
 
     testWidgets(
-        'ProfileScreen anonyme sans Firebase : notice cloud, pas de tuile Google',
-        (tester) async {
-      const user = AuthUser(
-        uid: 'local-0001',
-        authMethod: AuthMethodValues.anonymous,
-      );
-      await tester.pumpWidget(wrap(
-        const ProfileScreen(),
-        firebaseAvailable: false,
-        extra: [
-          currentUserProvider.overrideWith(
-            (ref) => Stream<AuthUser?>.value(user),
+      'ProfileScreen anonyme sans Firebase : notice cloud, pas de tuile Google',
+      (tester) async {
+        const user = AuthUser(
+          uid: 'local-0001',
+          authMethod: AuthMethodValues.anonymous,
+        );
+        await tester.pumpWidget(
+          wrap(
+            const ProfileScreen(),
+            firebaseAvailable: false,
+            extra: [
+              currentUserProvider.overrideWith(
+                (ref) => Stream<AuthUser?>.value(user),
+              ),
+            ],
           ),
-        ],
-      ));
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.byType(CloudUnavailableNotice), findsOneWidget);
-      expect(find.text(t.auth.signInGoogle), findsNothing);
-    });
+        expect(find.byType(CloudUnavailableNotice), findsOneWidget);
+        expect(find.text(t.auth.signInGoogle), findsNothing);
+      },
+    );
 
     testWidgets(
-        'ProfileScreen anonyme avec Firebase : tuile Google conservee',
-        (tester) async {
-      const user = AuthUser(
-        uid: 'cloud-0001',
-        authMethod: AuthMethodValues.anonymous,
-      );
-      await tester.pumpWidget(wrap(
-        const ProfileScreen(),
-        firebaseAvailable: true,
-        extra: [
-          currentUserProvider.overrideWith(
-            (ref) => Stream<AuthUser?>.value(user),
+      'ProfileScreen anonyme avec Firebase : tuile Google conservee',
+      (tester) async {
+        const user = AuthUser(
+          uid: 'cloud-0001',
+          authMethod: AuthMethodValues.anonymous,
+        );
+        await tester.pumpWidget(
+          wrap(
+            const ProfileScreen(),
+            firebaseAvailable: true,
+            extra: [
+              currentUserProvider.overrideWith(
+                (ref) => Stream<AuthUser?>.value(user),
+              ),
+            ],
           ),
-        ],
-      ));
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.byType(CloudUnavailableNotice), findsNothing);
-      expect(find.text(t.auth.signInGoogle), findsOneWidget);
-    });
+        expect(find.byType(CloudUnavailableNotice), findsNothing);
+        expect(find.text(t.auth.signInGoogle), findsOneWidget);
+      },
+    );
   });
 }

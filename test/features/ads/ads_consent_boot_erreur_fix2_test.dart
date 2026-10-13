@@ -63,8 +63,8 @@ class _FakeConsentInformation implements ConsentInformation {
 
   @override
   Future<PrivacyOptionsRequirementStatus>
-      getPrivacyOptionsRequirementStatus() async =>
-          PrivacyOptionsRequirementStatus.notRequired;
+  getPrivacyOptionsRequirementStatus() async =>
+      PrivacyOptionsRequirementStatus.notRequired;
 }
 
 /// Lance [action] dans une zone gardee et rend les erreurs qui s'en echappent.
@@ -80,13 +80,10 @@ Future<List<Object>> erreursEchappees(
   final echappees = <Object>[];
   final termine = Completer<void>();
 
-  runZonedGuarded(
-    () async {
-      await action();
-      if (!termine.isCompleted) termine.complete();
-    },
-    (error, _) => echappees.add(error),
-  );
+  runZonedGuarded(() async {
+    await action();
+    if (!termine.isCompleted) termine.complete();
+  }, (error, _) => echappees.add(error));
 
   await termine.future;
   // On laisse volontairement du temps APRES le retour de l'amorce : c'est
@@ -108,29 +105,27 @@ void main() {
       () async {
         var resultat = true;
 
-        final echappees = await erreursEchappees(
-          () async {
-            final svc = AdsConsentService(
-              consentInformation: const _FakeConsentInformation(),
-              loadAndShowIfRequired: (cb) async => cb(null),
-              // Reseau lent : l'init native met plus longtemps que le budget
-              // de boot, PUIS echoue. C'est le cas exact du finding.
-              initializeAds: () => Future<InitializationStatus>.delayed(
-                apresEcheance,
-                () => throw StateError('AdMob KO (reseau lent)'),
-              ),
-              updateRequestConfiguration: (_) async {},
-              bootTimeout: budget,
-            );
-            resultat = await svc.ensureConsentAndInit();
-          },
-          laisserRetomber: apresEcheance * 2,
-        );
+        final echappees = await erreursEchappees(() async {
+          final svc = AdsConsentService(
+            consentInformation: const _FakeConsentInformation(),
+            loadAndShowIfRequired: (cb) async => cb(null),
+            // Reseau lent : l'init native met plus longtemps que le budget
+            // de boot, PUIS echoue. C'est le cas exact du finding.
+            initializeAds: () => Future<InitializationStatus>.delayed(
+              apresEcheance,
+              () => throw StateError('AdMob KO (reseau lent)'),
+            ),
+            updateRequestConfiguration: (_) async {},
+            bootTimeout: budget,
+          );
+          resultat = await svc.ensureConsentAndInit();
+        }, laisserRetomber: apresEcheance * 2);
 
         expect(
           echappees,
           isEmpty,
-          reason: 'l echec tardif de l amorce pub ne doit JAMAIS remonter '
+          reason:
+              'l echec tardif de l amorce pub ne doit JAMAIS remonter '
               'comme erreur asynchrone non geree (finding M2)',
         );
         expect(resultat, isFalse, reason: 'pas de pub, mais pas de crash');
@@ -142,20 +137,17 @@ void main() {
       () async {
         var resultat = true;
 
-        final echappees = await erreursEchappees(
-          () async {
-            final svc = AdsConsentService(
-              consentInformation: const _FakeConsentInformation(),
-              loadAndShowIfRequired: (cb) async => cb(null),
-              // Hors-ligne : l'API native ne rappelle jamais.
-              initializeAds: () => Completer<InitializationStatus>().future,
-              updateRequestConfiguration: (_) async {},
-              bootTimeout: budget,
-            );
-            resultat = await svc.ensureConsentAndInit();
-          },
-          laisserRetomber: apresEcheance,
-        );
+        final echappees = await erreursEchappees(() async {
+          final svc = AdsConsentService(
+            consentInformation: const _FakeConsentInformation(),
+            loadAndShowIfRequired: (cb) async => cb(null),
+            // Hors-ligne : l'API native ne rappelle jamais.
+            initializeAds: () => Completer<InitializationStatus>().future,
+            updateRequestConfiguration: (_) async {},
+            bootTimeout: budget,
+          );
+          resultat = await svc.ensureConsentAndInit();
+        }, laisserRetomber: apresEcheance);
 
         expect(echappees, isEmpty);
         expect(resultat, isFalse);
@@ -167,20 +159,16 @@ void main() {
       () async {
         var resultat = true;
 
-        final echappees = await erreursEchappees(
-          () async {
-            final svc = AdsConsentService(
-              consentInformation: const _FakeConsentInformation(),
-              loadAndShowIfRequired: (cb) async => cb(null),
-              initializeAds: () async =>
-                  throw StateError('AdMob KO (immediat)'),
-              updateRequestConfiguration: (_) async {},
-              bootTimeout: budget,
-            );
-            resultat = await svc.ensureConsentAndInit();
-          },
-          laisserRetomber: apresEcheance,
-        );
+        final echappees = await erreursEchappees(() async {
+          final svc = AdsConsentService(
+            consentInformation: const _FakeConsentInformation(),
+            loadAndShowIfRequired: (cb) async => cb(null),
+            initializeAds: () async => throw StateError('AdMob KO (immediat)'),
+            updateRequestConfiguration: (_) async {},
+            bootTimeout: budget,
+          );
+          resultat = await svc.ensureConsentAndInit();
+        }, laisserRetomber: apresEcheance);
 
         expect(echappees, isEmpty);
         expect(resultat, isFalse);

@@ -43,7 +43,10 @@ void main() {
         _point(HealthDataType.DISTANCE_DELTA, 800, HealthDataUnit.METER),
         _point(HealthDataType.DISTANCE_DELTA, 200, HealthDataUnit.METER),
         _point(
-            HealthDataType.ACTIVE_ENERGY_BURNED, 50, HealthDataUnit.KILOCALORIE),
+          HealthDataType.ACTIVE_ENERGY_BURNED,
+          50,
+          HealthDataUnit.KILOCALORIE,
+        ),
       ]);
       expect(snap.distanceMeters, 1000);
       expect(snap.activeCalories, 50);

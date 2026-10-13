@@ -1,3 +1,7 @@
+/// L'effacement branche sur la base REELLE et les preferences REELLES de
+/// l'application, pas sur une instance de circonstance.
+library;
+
 // TACHE 562 (LOT K, K1) — LE CHAINON QUI MANQUAIT ENTRE LE DROIT ET LE
 // RANDONNEUR.
 //
@@ -12,29 +16,37 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/services/data_retention_service.dart';
 import '../../../core/services/recovery_code_service.dart';
-import '../../after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
-import '../../booking/providers/nuitee_selections_provider.dart';
-import '../../diploma/providers/session_trace_provider.dart';
-import '../../consent/providers/consent_ui_providers.dart';
-import '../../feasibility/data/hiker_profile_repository.dart';
-import '../../hub/providers/cockpit_start_providers.dart'
-    show prepareCoreStepsProvider;
-import '../../journal/providers/journal_day_providers.dart';
-import '../../journal/providers/journal_providers.dart';
-import '../../map/providers/stage_poi_check_provider.dart';
-import '../../notifications/providers/download_reminder_provider.dart';
-import '../../planning/providers/planned_days_provider.dart'
-    show manualRestDayCacheProvider, plannedDaysProvider;
-import '../../planning/providers/planning_provider.dart'
-    show planningProvider, retainedDurationProvider;
-import '../../safety/presentation/health_info_screen.dart'
-    show healthInfoRepositoryProvider;
-import '../../share/providers/visibility_settings_provider.dart';
-import '../../trail/providers/progress_provider.dart';
-import '../../training/providers/training_plan_providers.dart'
-    show trainingProgressProvider;
-import '../../treks/providers/my_treks_provider.dart' show myTreksProvider;
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
+import '../../booking/booking_facade.dart' show nuiteeSelectionsProvider;
+import '../../diploma/diploma_facade.dart' show sessionTraceProvider;
+import '../../consent/consent_facade.dart'
+    show consentPromptNeededProvider, consentStatesProvider;
+import '../../feasibility/feasibility_facade.dart'
+    show hikerProfileRepositoryProvider;
+import '../../hub/hub_facade.dart' show prepareCoreStepsProvider;
+import '../../journal/journal_facade.dart'
+    show
+        journalCumulativeStatsProvider,
+        journalDayTraceProvider,
+        journalRepositoryProvider;
+import '../../map/map_facade.dart' show stagePoiChecksProvider;
+import '../../notifications/notifications_facade.dart'
+    show downloadReminderProvider;
+import '../../planning/planning_facade.dart'
+    show
+        manualRestDayCacheProvider,
+        plannedDaysProvider,
+        planningProvider,
+        retainedDurationProvider;
+import '../../safety/safety_facade.dart'
+    show
+        healthInfoFileProvider,
+        healthInfoRepositoryProvider,
+        healthPrepareStepsProvider;
+import '../../share/share_facade.dart' show visibilitySettingsProvider;
+import '../../trail/trail_facade.dart' show progressProvider;
+import '../../training/training_facade.dart' show trainingProgressProvider;
+import '../../treks/treks_facade.dart' show myTreksProvider;
 
 /// Service de retention / droit a l'effacement, branche sur la base REELLE de
 /// l'application et sur les preferences REELLES.
@@ -43,11 +55,20 @@ import '../../treks/providers/my_treks_provider.dart' show myTreksProvider;
 /// asynchrone ; la base vient de [databaseProvider], donc de la meme instance
 /// que le reste de l'app (un effacement sur une autre instance n'effacerait
 /// rien de ce que le randonneur voit).
-final dataRetentionServiceProvider =
-    FutureProvider<DataRetentionService>((ref) async {
+final dataRetentionServiceProvider = FutureProvider<DataRetentionService>((
+  ref,
+) async {
   final db = ref.watch(databaseProvider);
   final prefs = await SharedPreferences.getInstance();
-  return DataRetentionService(database: db, prefs: prefs);
+  return DataRetentionService(
+    database: db,
+    prefs: prefs,
+    // TACHE 613 : la fiche medicale n'est plus dans la base, elle a son propre
+    // fichier. L'effacement doit donc passer par LE MEME stockage que l'ecran,
+    // sinon il effacerait un fichier que personne ne lit pendant que celui que
+    // le randonneur voit resterait en place.
+    ficheMedicaleEraser: ref.watch(healthInfoFileProvider).effacer,
+  );
 });
 
 /// Signature de l'effacement du compte. Injectable : un ecran ne doit pas avoir
@@ -222,6 +243,20 @@ void oublierLesDonneesPersonnellesEnMemoire(Ref ref) {
   // Programme). Ce signal ouvre le bouton « Demarrer » : le laisser en place
   // apres un effacement ferait croire a une preparation qui n'existe plus.
   ref.invalidate(prepareCoreStepsProvider);
+
+  // FEUILLE — LA FICHE MEDICALE COMME ETAPE DE PREPARATION (tache 568, LOT Q).
+  //
+  // Depuis la decision de Chris du 26/09, la fiche medicale REMPLIE et ses
+  // conseils d'usage LUS forment la QUATRIEME condition du bouton « Demarrer »
+  // ([healthPrepareDoneProvider] entre dans [prepareCoreDoneProvider]). La DONNEE
+  // de sante part deja (table effacee, et la RACINE
+  // `healthInfoRepositoryProvider` est invalidee plus haut) ; la cle de
+  // preferences part d'elle-meme, puisque `_wipeAllPersonalPrefs` DERIVE sa liste
+  // du store reel. Mais le notifier, lui, GARDE son etat : sans cette ligne, la
+  // porte de demarrage resterait OUVERTE sur une fiche medicale qui n'existe
+  // plus. C'est mot pour mot le defaut M1 — le disque propre, la memoire vive
+  // non — rejoue sur la piece la plus recente.
+  ref.invalidate(healthPrepareStepsProvider);
 
   // FEUILLE — LES REGLAGES DE PARTAGE ET DE VISIBILITE. Ce sont des opt-in
   // sociaux, donc des decisions de la personne sur ce qu'elle expose : ils

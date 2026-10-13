@@ -1,3 +1,7 @@
+/// Un article tel que le marcheur le voit : les donnees du gabarit ET son etat
+/// personnel reunis pour un sentier donne.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'checklist_item.freezed.dart';

@@ -1,3 +1,7 @@
+/// La persistance des reservations, en cache local ET au serveur : le marcheur
+/// doit les relire sans reseau.
+library;
+
 // Service de persistence des reservations.
 //
 // Utilise Firestore (cloud) + SharedPreferences (cache local
@@ -10,6 +14,8 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/firebase/cloud_indisponible.dart';
+import '../../../core/firebase/firebase_service.dart';
 import '../domain/models/accommodation_booking.dart';
 
 /// Cle SharedPreferences pour le cache local des reservations.
@@ -24,17 +30,33 @@ const String kBookingsCollection = 'accommodation_bookings';
 /// dans SharedPreferences (offline-first).
 class BookingDataService {
   BookingDataService({
+    required FirebaseService firebaseService,
     FirebaseFirestore? firestore,
     SharedPreferences? prefs,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _prefs = prefs;
+  }) : _firebaseService = firebaseService,
+       _firestore = firestore,
+       _prefs = prefs;
 
-  final FirebaseFirestore _firestore;
+  /// 596 C4 — GARDE DE DISPONIBILITE, ET RESOLUTION PARESSEUSE.
+  ///
+  /// Le pire des quatre acces sans garde : `FirebaseFirestore.instance` etait
+  /// dans la LISTE D'INITIALISATION du constructeur. Le service explosait donc
+  /// a sa CONSTRUCTION, pas a son premier usage — aucun appelant n'aurait pu
+  /// rattraper quoi que ce soit en entourant ses appels d'un try/catch.
+  final FirebaseService _firebaseService;
+
+  FirebaseFirestore? _firestore;
   SharedPreferences? _prefs;
 
   /// Reference a la collection Firestore.
-  CollectionReference<Map<String, dynamic>> get _collection =>
-      _firestore.collection(kBookingsCollection);
+  CollectionReference<Map<String, dynamic>> get _collection {
+    if (!_firebaseService.isAvailable) {
+      throw const CloudIndisponibleException('reservation d un hebergement');
+    }
+    return (_firestore ??= FirebaseFirestore.instance).collection(
+      kBookingsCollection,
+    );
+  }
 
   Future<SharedPreferences> _getPrefs() async {
     return _prefs ??= await SharedPreferences.getInstance();
@@ -70,9 +92,7 @@ class BookingDataService {
   /// Recupere les reservations pour un trail depuis le cache local.
   ///
   /// Offline-first : lit le cache local, pas Firestore.
-  Future<List<AccommodationBooking>> getBookingsForTrail(
-    String trailId,
-  ) async {
+  Future<List<AccommodationBooking>> getBookingsForTrail(String trailId) async {
     final cache = await _readCache();
     final bookings = <AccommodationBooking>[];
 
@@ -90,14 +110,9 @@ class BookingDataService {
   }
 
   /// Met a jour le statut d'une reservation.
-  Future<void> updateStatus(
-    String bookingId,
-    BookingStatus newStatus,
-  ) async {
+  Future<void> updateStatus(String bookingId, BookingStatus newStatus) async {
     // Firestore
-    await _collection.doc(bookingId).update({
-      'status': newStatus.name,
-    });
+    await _collection.doc(bookingId).update({'status': newStatus.name});
 
     // Cache local
     final cache = await _readCache();

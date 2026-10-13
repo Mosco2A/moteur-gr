@@ -100,9 +100,7 @@ void main() {
     });
 
     test('getByStageNumber retourne null si etape inexistante', () async {
-      await dao.insertAll([
-        makeStage(trailId: 'trail1', stageNumber: 1),
-      ]);
+      await dao.insertAll([makeStage(trailId: 'trail1', stageNumber: 1)]);
 
       final result = await dao.getByStageNumber('trail1', 99);
       expect(result, isNull);

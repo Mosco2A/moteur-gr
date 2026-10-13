@@ -11,21 +11,68 @@ void main() {
     final testJson = {
       'version': 1,
       'defaultTemplate': {
-        'categories': ['equipment', 'clothing', 'food', 'safety', 'documents', 'hygiene'],
+        'categories': [
+          'equipment',
+          'clothing',
+          'food',
+          'safety',
+          'documents',
+          'hygiene',
+        ],
         'items': [
-          {'id': 'backpack', 'category': 'equipment', 'nameKey': 'backpack', 'isEssential': true},
-          {'id': 'sleepingBag', 'category': 'equipment', 'nameKey': 'sleepingBag', 'isEssential': true},
-          {'id': 'hikingBoots', 'category': 'clothing', 'nameKey': 'hikingBoots', 'isEssential': true},
-          {'id': 'trailSnacks', 'category': 'food', 'nameKey': 'trailSnacks', 'isEssential': false},
-          {'id': 'firstAidKit', 'category': 'safety', 'nameKey': 'firstAidKit', 'isEssential': true},
-          {'id': 'idCard', 'category': 'documents', 'nameKey': 'idCard', 'isEssential': true},
-          {'id': 'towel', 'category': 'hygiene', 'nameKey': 'towel', 'isEssential': false},
+          {
+            'id': 'backpack',
+            'category': 'equipment',
+            'nameKey': 'backpack',
+            'isEssential': true,
+          },
+          {
+            'id': 'sleepingBag',
+            'category': 'equipment',
+            'nameKey': 'sleepingBag',
+            'isEssential': true,
+          },
+          {
+            'id': 'hikingBoots',
+            'category': 'clothing',
+            'nameKey': 'hikingBoots',
+            'isEssential': true,
+          },
+          {
+            'id': 'trailSnacks',
+            'category': 'food',
+            'nameKey': 'trailSnacks',
+            'isEssential': false,
+          },
+          {
+            'id': 'firstAidKit',
+            'category': 'safety',
+            'nameKey': 'firstAidKit',
+            'isEssential': true,
+          },
+          {
+            'id': 'idCard',
+            'category': 'documents',
+            'nameKey': 'idCard',
+            'isEssential': true,
+          },
+          {
+            'id': 'towel',
+            'category': 'hygiene',
+            'nameKey': 'towel',
+            'isEssential': false,
+          },
         ],
       },
       'trailOverrides': {
         'sentier-bleu': {
           'addItems': [
-            {'id': 'crampons', 'category': 'equipment', 'nameKey': 'crampons', 'isEssential': true},
+            {
+              'id': 'crampons',
+              'category': 'equipment',
+              'nameKey': 'crampons',
+              'isEssential': true,
+            },
           ],
           'removeItems': ['towel'],
           'essentialOverrides': {'trailSnacks': true},
@@ -50,7 +97,17 @@ void main() {
           .map((e) => e as String)
           .toList();
 
-      expect(categories, containsAll(['equipment', 'clothing', 'food', 'safety', 'documents', 'hygiene']));
+      expect(
+        categories,
+        containsAll([
+          'equipment',
+          'clothing',
+          'food',
+          'safety',
+          'documents',
+          'hygiene',
+        ]),
+      );
       expect(categories.length, 6);
     });
 

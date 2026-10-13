@@ -1,0 +1,42 @@
+/// FACADE PUBLIQUE DE LA FEATURE `safety` — LA SEULE PORTE D ENTREE.
+///
+/// ARB-645-05-b, DECISION B DE CHRISTOPHE (03/10/2026). Une feature ne lit une
+/// autre feature QUE par sa facade. Ce fichier est cette porte pour `safety` :
+/// tout ce qu il re-exporte est public, et tout le reste de `safety` —
+/// `providers/`, `data/`, `domain/`, `presentation/` — est prive, meme si rien
+/// dans le langage ne l empeche techniquement. La garde
+/// `test/structurel/couches_respectees_645_test.dart` est ce qui l empeche.
+///
+/// CE FICHIER NE CONTIENT QUE DES `export`, ET C EST LA TOUT SON INTERET. Une
+/// facade est une REDIRECTION D IMPORT : aucun symbole n est declare ici, aucun
+/// n est renomme, aucun code n a bouge. Le `show` de chaque ligne porte la
+/// liste EXACTE des symboles qu une autre feature utilise reellement — releves
+/// un par un, pas un `export` aveugle. Ajouter un nom a un `show`, c est donc
+/// une decision : on elargit le contrat de `safety`.
+///
+/// CE QUE CETTE PORTE COUTE SI ON LA CONTOURNE. Un import direct vers
+/// `features/safety/providers/...` soude les deux features : on ne touche plus
+/// a l une sans ouvrir l autre, et le detail d implementation de `safety`
+/// devient l interface sur laquelle les autres reposent. La facade rend ce cout
+/// visible — elle ne l interdit pas, elle le NOMME.
+///
+/// LUE PAR 8 FICHIERS DE 4 FEATURES AU 07/10/2026 : `auth`, `hub`, `settings`,
+/// `trek`.
+library;
+
+export 'data/signalement_service.dart'
+    show SignalementService, WaterSourceStatus;
+export 'presentation/health_info_screen.dart'
+    show healthInfoFileProvider, healthInfoRepositoryProvider;
+export 'presentation/refus_sauvegarde_systeme_dialog.dart'
+    show RefusSauvegardeSystemeDialog;
+export 'presentation/sos_button.dart' show SosButton;
+export 'providers/health_prepare_providers.dart'
+    show healthPrepareDoneProvider, healthPrepareStepsProvider;
+export 'providers/safety_providers.dart' show ficheEcranVerrouilleProvider;
+export 'providers/signalement_providers.dart'
+    show
+        WaterSourceRef,
+        pendingSignalementCountProvider,
+        signalementServiceProvider,
+        waterSourceStatusProvider;

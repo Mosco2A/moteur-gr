@@ -1,14 +1,22 @@
+/// Commerces et services par etape, entierement pilotes par les donnees du
+/// sentier : aucun commerce ecrit dans le code.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../widgets/refresh_from_database_button.dart';
+import '../../../shared/widgets/maps_link.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/shop_info.dart';
 import '../providers/shop_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran RAVITAILLEMENT (parite GR20 `ShopDetailScreen`, data-driven — regle
 /// « donnees en externe » de Christophe #99460).
@@ -18,23 +26,23 @@ import '../providers/shop_providers.dart';
 ///   * AppBar « Ravitaillement » + back ;
 ///   * rangee de filtres horizontaux (« Tous » + 4 types) — puce selectionnee =
 ///     bordure coloree ([shopTypeFilterProvider]) ;
-///   * bandeau d'alerte « ravitaillement limite » — DATA-DRIVEN : le texte vient
-///     de la donnee du sentier ([TrailShops.limitedSupplyNote]) ; masque si
-///     absent (aucun « 8 points sur 180 km » en dur) ;
+///   * bandeau d'alerte « ravitaillement limite » — DATA-DRIVEN : le texte
+/// vient     de la donnee du sentier ([TrailShops.limitedSupplyNote]) ; masque
+/// si     absent (aucun « 8 points sur 180 km » en dur) ;
 ///   * liste des commerces groupee/ordonnee par ETAPE, chaque carte = en-tete
 ///     (icone type + nom + badge etape + horaires) + apercu produits (4 max) +
 ///     alerte « gap » optionnelle ;
 ///   * bottom sheet detail (Informations : type, etape, GPS, horaires ; Alerte
 ///     si gap ; Produits disponibles complets).
 ///
-/// Le CONTENU vient du catalogue ravitaillement du sentier ([trailShopsProvider])
-/// — PAS de `const gr20Shops` hardcode par localite. Le moteur reste GENERIQUE
-/// multi-sentiers (#84627), zero hardcode de localite ni de « GR20 ». Fallback
-/// gracieux : sentier sans donnees -> ecran informatif propre (pas de crash).
-/// Hors peau : couleurs semantiques d'AppTheme (+ `scheme.secondary` pour le
-/// type « gaz », StepWays n'ayant pas de token bleu fige). Tout libelle
-/// d'INTERFACE passe par Slang (`t.shop.*`, 5 langues) ; les donnees propres au
-/// sentier restent dans la langue de la donnee.
+/// Le CONTENU vient du catalogue ravitaillement du sentier
+/// ([trailShopsProvider]) — PAS de `const gr20Shops` hardcode par localite. Le
+/// moteur reste GENERIQUE multi-sentiers (#84627), zero hardcode de localite ni
+/// de « GR20 ». Fallback gracieux : sentier sans donnees -> ecran informatif
+/// propre (pas de crash). Hors peau : couleurs semantiques d'AppTheme (+
+/// `scheme.secondary` pour le type « gaz », StepWays n'ayant pas de token bleu
+/// fige). Tout libelle d'INTERFACE passe par Slang (`t.shop.*`, 5 langues) ;
+/// les donnees propres au sentier restent dans la langue de la donnee.
 class ShopScreen extends ConsumerWidget {
   const ShopScreen({super.key, required this.trailId});
 
@@ -43,30 +51,62 @@ class ShopScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.shop, trail: trailId);
     final t = Translations.of(context);
     final theme = Theme.of(context);
     final data = ref.watch(trailShopsProvider(trailId));
     final typeFilter = ref.watch(shopTypeFilterProvider);
 
     return Scaffold(
-      // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil + Android).
-      // Le back custom est retire (comportement repris a l'identique).
-      appBar: AppHeader(title: t.shop.title),
-      // Aucune donnee ravitaillement pour ce sentier : on n'affiche RIEN
-      // (tache 552). L'ecran portait « Ravitaillement bientot disponible » et
-      // « les commerces ... seront ajoutes prochainement » — une date que rien
-      // ne tient. Retour Chris 25/09 : « si tu ne les a pas tu ne met rien ».
-      // Un commerce absent ne modifie aucun resultat calcule ailleurs, donc il
-      // ne se commente pas. L'AppBar reste (retour possible, pas de crash).
+      // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil +
+      // Android). Le back custom est retire (comportement repris a
+      // l'identique).
+      appBar: AppHeader(
+        title: t.shop.title,
+        // MEME RAISON QUE SUR L'ECRAN TRANSPORT (tache 641) : c'est l'un des
+        // deux ecrans que Christophe a trouves vides, donc l'un des deux ou il
+        // doit pouvoir verifier tout de suite qu'une publication est bien
+        // arrivee.
+        actions: [RefreshFromDatabaseButton(trailId: trailId)],
+      ),
+      // UN ECRAN BLANC N'EST PAS UNE ABSENCE DE COMMENTAIRE, C'EST UNE PANNE
+      // APPARENTE (bug 17, Christophe 30/09 10:25 : « transport et
+      // ravitaillement ecran vide »).
+      //
+      // La tache 552 avait raison de supprimer « Ravitaillement bientot
+      // disponible » : une date que rien ne tient ne se promet pas. Mais elle
+      // l'a remplacee par un `SizedBox.shrink()`, c'est-a-dire un titre «
+      // Ravitaillement » au-dessus de RIEN. Christophe a ouvert cet ecran et
+      // n'a eu aucun moyen de savoir s'il n'y avait pas de commerce, si
+      // l'application etait cassee, ou s'il avait mal appuye. L'ecran
+      // Transport, lui, enonce un fait depuis toujours — et c'est le bon
+      // comportement.
+      //
+      // ON ENONCE DONC UN FAIT, sans date et sans promesse : aucun commerce
+      // n'est reference pour ce sentier. C'est exactement ce que dit la base,
+      // et c'est verifiable.
       body: (data == null || !data.hasShops)
-          ? const SizedBox.shrink()
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.spacingLg),
+                child: Text(
+                  t.shop.noneForTrail,
+                  key: const ValueKey('ravitaillement-aucune-donnee'),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+            )
           : _ShopBody(data: data, typeFilter: typeFilter, theme: theme),
     );
   }
 }
 
-/// Corps de l'ecran quand des donnees existent (parite GR20 : filtres + alerte +
-/// liste groupee par etape).
+/// Corps de l'ecran quand des donnees existent (parite GR20 : filtres + alerte
+/// + liste groupee par etape).
 class _ShopBody extends ConsumerWidget {
   const _ShopBody({
     required this.data,
@@ -86,16 +126,18 @@ class _ShopBody extends ConsumerWidget {
         : data.shops.where((s) => s.type == typeFilter).toList();
 
     // Regroupement/ordre par ETAPE (amelioration data-driven vs GR20 qui laisse
-    // l'ordre du const) : etapes croissantes, commerces de chaque etape ensemble.
-    final stagesOrdered =
-        filtered.map((s) => s.stageNumber).toSet().toList()..sort();
+    // l'ordre du const) : etapes croissantes, commerces de chaque etape
+    // ensemble.
+    final stagesOrdered = filtered.map((s) => s.stageNumber).toSet().toList()
+      ..sort();
 
     return Column(
       children: [
         // Filtres horizontaux (parite GR20 `_buildFilters`).
         _ShopFilters(theme: theme, typeFilter: typeFilter),
 
-        // Alerte « ravitaillement limite » DATA-DRIVEN (masquee si pas de note).
+        // Alerte « ravitaillement limite » DATA-DRIVEN (masquee si pas de
+        // note).
         if (data.hasLimitedSupplyNote)
           _SupplyAlertBanner(note: data.limitedSupplyNote, theme: theme),
 
@@ -175,7 +217,7 @@ class _ShopFilters extends ConsumerWidget {
             children: [
               _ShopFilterChip(
                 label: t.shop.filterAll,
-                icon: Icons.store,
+                icon: StepwaysIcons.boutique,
                 selected: typeFilter == null,
                 color: theme.colorScheme.secondary,
                 onSelected: () =>
@@ -188,10 +230,9 @@ class _ShopFilters extends ConsumerWidget {
                   icon: _shopTypeIcon(type),
                   selected: typeFilter == type,
                   color: _shopTypeColor(type, theme.colorScheme),
-                  onSelected: () => ref
-                          .read(shopTypeFilterProvider.notifier)
-                          .state =
-                      typeFilter == type ? null : type,
+                  onSelected: () =>
+                      ref.read(shopTypeFilterProvider.notifier).state =
+                          typeFilter == type ? null : type,
                 ),
                 const SizedBox(width: AppTheme.spacingSm),
               ],
@@ -215,7 +256,7 @@ class _ShopFilterChip extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
+  final String icon;
   final bool selected;
   final Color color;
   final VoidCallback onSelected;
@@ -230,7 +271,7 @@ class _ShopFilterChip extends StatelessWidget {
         label: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 18),
+            StepIcon(icon, size: 18),
             const SizedBox(width: 6),
             Text(label),
           ],
@@ -248,8 +289,9 @@ class _ShopFilterChip extends StatelessWidget {
   }
 }
 
-/// Bandeau d'alerte « ravitaillement limite » (parite GR20 `_buildSupplyAlert`),
-/// mais DATA-DRIVEN : le texte vient de la donnee du sentier ([note]).
+/// Bandeau d'alerte « ravitaillement limite » (parite GR20
+/// `_buildSupplyAlert`), mais DATA-DRIVEN : le texte vient de la donnee du
+/// sentier ([note]).
 class _SupplyAlertBanner extends StatelessWidget {
   const _SupplyAlertBanner({required this.note, required this.theme});
 
@@ -274,8 +316,11 @@ class _SupplyAlertBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.warning_amber,
-              color: AppTheme.orangeDifficile, size: 20),
+          const StepIcon(
+            StepwaysIcons.danger,
+            color: AppTheme.orangeDifficile,
+            size: 20,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Column(
@@ -305,9 +350,9 @@ class _SupplyAlertBanner extends StatelessWidget {
   }
 }
 
-/// Carte d'un commerce (parite GR20 `_buildShopCard`). En-tete (icone type + nom
-/// + badge etape + horaires), apercu produits (4 max), alerte « gap » optionnelle.
-/// Tap -> bottom sheet detail.
+/// Carte d'un commerce (parite GR20 `_buildShopCard`). En-tete (icone type +
+/// nom + badge etape + horaires), apercu produits (4 max), alerte « gap »
+/// optionnelle. Tap -> bottom sheet detail.
 class _ShopCard extends StatelessWidget {
   const _ShopCard({required this.shop, required this.data});
 
@@ -342,8 +387,11 @@ class _ShopCard extends StatelessWidget {
                     color: typeColor.withAlpha(30),
                     borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                   ),
-                  child: Icon(_shopTypeIcon(shop.type),
-                      color: typeColor, size: 22),
+                  child: StepIcon(
+                    _shopTypeIcon(shop.type),
+                    color: typeColor,
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: AppTheme.spacingMd),
                 Expanded(
@@ -362,11 +410,14 @@ class _ShopCard extends StatelessWidget {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 1),
+                              horizontal: 6,
+                              vertical: 1,
+                            ),
                             decoration: BoxDecoration(
                               color: AppTheme.vertFacile.withAlpha(40),
-                              borderRadius:
-                                  BorderRadius.circular(AppTheme.radiusChip),
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.radiusChip,
+                              ),
                             ),
                             child: Text(
                               t.shop.stageBadge(n: shop.stageNumber),
@@ -378,16 +429,18 @@ class _ShopCard extends StatelessWidget {
                           ),
                           if (shop.openingHours.isNotEmpty) ...[
                             const SizedBox(width: AppTheme.spacingSm),
-                            Icon(Icons.access_time,
-                                size: 14,
-                                color: AppTheme.grisGranite.withAlpha(180)),
+                            StepIcon(
+                              StepwaysIcons.clock,
+                              size: 14,
+                              color: AppTheme.grisGranite.withAlpha(180),
+                            ),
                             const SizedBox(width: 2),
                             Expanded(
                               child: Text(
                                 shop.openingHours,
-                                style: theme.textTheme.bodySmall
-                                    ?.copyWith(fontSize: 14),
-                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
                           ],
@@ -408,15 +461,19 @@ class _ShopCard extends StatelessWidget {
                 children: shop.products.take(4).map((product) {
                   return Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: scheme.surface,
                       borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                     ),
                     child: Text(
                       product,
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(fontSize: 14, fontWeight: FontWeight.w500),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   );
                 }).toList(),
@@ -428,26 +485,29 @@ class _ShopCard extends StatelessWidget {
               const SizedBox(height: AppTheme.spacingSm),
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm, vertical: AppTheme.spacingXs),
+                  horizontal: AppTheme.spacingSm,
+                  vertical: AppTheme.spacingXs,
+                ),
                 decoration: BoxDecoration(
-                  color: AppTheme.rougeUrgence.withAlpha(15),
+                  color: AppTheme.emergencyRed.withAlpha(15),
                   borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.warning_amber,
-                        size: 14, color: AppTheme.rougeUrgence),
+                    const StepIcon(
+                      StepwaysIcons.danger,
+                      size: 14,
+                      color: AppTheme.emergencyRed,
+                    ),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
                         t.shop.gapShort(n: gap),
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppTheme.rougeUrgence,
+                          color: AppTheme.emergencyRed,
                           fontWeight: FontWeight.w600,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
                       ),
                     ),
                   ],
@@ -478,8 +538,9 @@ void _showShopDetail(
     isScrollControlled: true,
     showDragHandle: true,
     shape: const RoundedRectangleBorder(
-      borderRadius:
-          BorderRadius.vertical(top: Radius.circular(AppTheme.radiusBottomSheet)),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(AppTheme.radiusBottomSheet),
+      ),
     ),
     builder: (context) {
       return DraggableScrollableSheet(
@@ -497,11 +558,17 @@ void _showShopDetail(
                 // Titre + icone type.
                 Row(
                   children: [
-                    Icon(_shopTypeIcon(shop.type), color: typeColor, size: 28),
+                    StepIcon(
+                      _shopTypeIcon(shop.type),
+                      color: typeColor,
+                      size: 28,
+                    ),
                     const SizedBox(width: AppTheme.spacingMd),
                     Expanded(
-                      child: Text(shop.name,
-                          style: theme.textTheme.headlineSmall),
+                      child: Text(
+                        shop.name,
+                        style: theme.textTheme.headlineSmall,
+                      ),
                     ),
                   ],
                 ),
@@ -509,29 +576,58 @@ void _showShopDetail(
 
                 // Informations (parite GR20 : Type, Etape, GPS, Horaires).
                 SectionHeader(
-                    title: t.shop.sectionInfo, icon: Icons.info_outline),
+                  title: t.shop.sectionInfo,
+                  icon: StepwaysIcons.info,
+                ),
                 const SizedBox(height: AppTheme.spacingSm),
                 _DetailRow(
-                    icon: Icons.category,
-                    label: t.shop.fieldType,
-                    value: _shopTypeLabel(t, shop.type)),
+                  icon: StepwaysIcons.filtres,
+                  label: t.shop.fieldType,
+                  value: _shopTypeLabel(t, shop.type),
+                ),
                 _DetailRow(
-                    icon: Icons.map,
-                    label: t.shop.fieldStage,
-                    value: t.shop.stageBadge(n: shop.stageNumber)),
-                // GPS masque si non verifie (honnetete #99460 : pas de 0,0 faux).
+                  icon: StepwaysIcons.map,
+                  label: t.shop.fieldStage,
+                  value: t.shop.stageBadge(n: shop.stageNumber),
+                ),
+                // GPS masque si non verifie (honnetete #99460 : pas de 0,0
+                // faux).
                 if (shop.hasCoordinates)
                   _DetailRow(
-                    icon: Icons.gps_fixed,
+                    icon: StepwaysIcons.maPosition,
                     label: t.shop.fieldGps,
                     value:
                         '${shop.latitude!.toStringAsFixed(4)}, ${shop.longitude!.toStringAsFixed(4)}',
                   ),
                 if (shop.openingHours.isNotEmpty)
                   _DetailRow(
-                      icon: Icons.access_time,
-                      label: t.shop.fieldHours,
-                      value: shop.openingHours),
+                    icon: StepwaysIcons.clock,
+                    label: t.shop.fieldHours,
+                    value: shop.openingHours,
+                  ),
+
+                // ADRESSE ET LIEN VERS LES CARTES (tache 641, bug 15).
+                //
+                // « appliquer la meme regle a tout lieu physique
+                // (ravitaillement, point d'eau, depart/arrivee, transport) :
+                // une adresse + un point GPS cliquable partout ou il y a un
+                // lieu » (Christophe, 30/09 10:23). Un commerce est un lieu :
+                // on y va a pied, avec un sac.
+                //
+                // PAS DE LIEN MORT : sans adresse ni point exploitable, ce
+                // widget ne rend RIEN — ni libelle vide, ni bouton inerte.
+                Padding(
+                  padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+                  child: LigneDeLieu(
+                    lieu: LieuCliquable(
+                      nom: shop.name,
+                      adresse: shop.address,
+                      lat: shop.latitude,
+                      lng: shop.longitude,
+                    ),
+                    compact: true,
+                  ),
+                ),
 
                 // Contact / site (extension StepWays, cables url_launcher).
                 if (shop.hasPhone || shop.hasWebsite) ...[
@@ -547,8 +643,11 @@ void _showShopDetail(
                               onTap: () => _call(shop.phone),
                               child: Row(
                                 children: [
-                                  Icon(Icons.phone,
-                                      size: 18, color: scheme.secondary),
+                                  StepIcon(
+                                    StepwaysIcons.telephone,
+                                    size: 18,
+                                    color: scheme.secondary,
+                                  ),
                                   const SizedBox(width: 6),
                                   Text(
                                     shop.phone,
@@ -567,8 +666,11 @@ void _showShopDetail(
                           button: true,
                           label: t.shop.a11y.website,
                           child: IconButton(
-                            icon: Icon(Icons.open_in_new,
-                                size: 18, color: scheme.secondary),
+                            icon: StepIcon(
+                              StepwaysIcons.lien,
+                              size: 18,
+                              color: scheme.secondary,
+                            ),
                             tooltip: t.shop.website,
                             onPressed: () => _openUrl(shop.website!),
                           ),
@@ -584,21 +686,25 @@ void _showShopDetail(
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppTheme.spacingMd),
                     decoration: BoxDecoration(
-                      color: AppTheme.rougeUrgence.withAlpha(20),
-                      border:
-                          Border.all(color: AppTheme.rougeUrgence.withAlpha(100)),
+                      color: AppTheme.emergencyRed.withAlpha(20),
+                      border: Border.all(
+                        color: AppTheme.emergencyRed.withAlpha(100),
+                      ),
                       borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.warning,
-                            color: AppTheme.rougeUrgence, size: 20),
+                        const StepIcon(
+                          StepwaysIcons.danger,
+                          color: AppTheme.emergencyRed,
+                          size: 20,
+                        ),
                         const SizedBox(width: AppTheme.spacingSm),
                         Expanded(
                           child: Text(
                             t.shop.gapLong(n: gap),
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: AppTheme.rougeUrgence,
+                              color: AppTheme.emergencyRed,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -612,20 +718,28 @@ void _showShopDetail(
                 // Produits disponibles (liste complete, parite GR20).
                 if (shop.hasProducts) ...[
                   SectionHeader(
-                      title: t.shop.sectionProducts,
-                      icon: Icons.shopping_basket),
+                    title: t.shop.sectionProducts,
+                    icon: StepwaysIcons.panier,
+                  ),
                   const SizedBox(height: AppTheme.spacingSm),
                   for (final product in shop.products)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: AppTheme.spacingXs),
+                      padding: const EdgeInsets.only(
+                        bottom: AppTheme.spacingXs,
+                      ),
                       child: Row(
                         children: [
-                          Icon(Icons.check_circle_outline,
-                              size: 16, color: scheme.secondary),
+                          StepIcon(
+                            StepwaysIcons.cocheCercle,
+                            size: 16,
+                            color: scheme.secondary,
+                          ),
                           const SizedBox(width: AppTheme.spacingMd),
                           Expanded(
-                            child: Text(product,
-                                style: theme.textTheme.bodyMedium),
+                            child: Text(
+                              product,
+                              style: theme.textTheme.bodyMedium,
+                            ),
                           ),
                         ],
                       ),
@@ -643,10 +757,13 @@ void _showShopDetail(
 
 /// Ligne d'information du bottom sheet (parite GR20 `_buildDetailRow`).
 class _DetailRow extends StatelessWidget {
-  const _DetailRow(
-      {required this.icon, required this.label, required this.value});
+  const _DetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -658,7 +775,7 @@ class _DetailRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: AppTheme.grisGranite),
+          StepIcon(icon, size: 18, color: AppTheme.grisGranite),
           const SizedBox(width: AppTheme.spacingMd),
           SizedBox(
             width: 70,
@@ -686,8 +803,9 @@ class _ShopFilterEmpty extends StatelessWidget {
         padding: const EdgeInsets.all(AppTheme.spacingXl),
         child: Text(
           t.shop.filterEmpty,
-          style: theme.textTheme.bodyMedium
-              ?.copyWith(color: AppTheme.grisGranite),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: AppTheme.grisGranite,
+          ),
           textAlign: TextAlign.center,
         ),
       ),
@@ -695,8 +813,8 @@ class _ShopFilterEmpty extends StatelessWidget {
   }
 }
 
-// L'ancien `_ShopEmptyState` a ete SUPPRIME (tache 552) : il n'existait que pour
-// porter « Ravitaillement bientot disponible » et « ... seront ajoutes
+// L'ancien `_ShopEmptyState` a ete SUPPRIME (tache 552) : il n'existait que
+// pour porter « Ravitaillement bientot disponible » et « ... seront ajoutes
 // prochainement ». Sans promesse a afficher, il n'a plus d'objet — le corps de
 // l'ecran rend `SizedBox.shrink()`.
 
@@ -717,20 +835,21 @@ Future<void> _openUrl(String urlStr) async {
 }
 
 /// Icone Material pour un type de commerce (parite GR20 `_typeIcon`).
-IconData _shopTypeIcon(ShopKind type) {
+String _shopTypeIcon(ShopKind type) {
   switch (type) {
     case ShopKind.epicerie:
-      return Icons.shopping_cart;
+      return StepwaysIcons.panier;
     case ShopKind.bar:
-      return Icons.restaurant;
+      return StepwaysIcons.restauration;
     case ShopKind.pharmacie:
-      return Icons.local_pharmacy;
+      return StepwaysIcons.emergency;
     case ShopKind.gaz:
-      return Icons.propane_tank;
+      return StepwaysIcons.rechaud;
   }
 }
 
-/// Libelle traduit pour un type de commerce (parite GR20 `_typeLabel`, mais i18n).
+/// Libelle traduit pour un type de commerce (parite GR20 `_typeLabel`, mais
+/// i18n).
 String _shopTypeLabel(Translations t, ShopKind type) {
   switch (type) {
     case ShopKind.epicerie:
@@ -755,7 +874,7 @@ Color _shopTypeColor(ShopKind type, ColorScheme scheme) {
     case ShopKind.bar:
       return AppTheme.orangeDifficile;
     case ShopKind.pharmacie:
-      return AppTheme.rougeUrgence;
+      return AppTheme.emergencyRed;
     case ShopKind.gaz:
       return scheme.secondary;
   }

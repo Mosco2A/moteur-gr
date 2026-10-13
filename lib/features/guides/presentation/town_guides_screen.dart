@@ -1,6 +1,11 @@
+/// Les localites d'etape qui ont un guide pratique. Le contenu vient du pack
+/// local : aucune logique reseau ici.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -8,6 +13,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../domain/town_guide.dart';
 import '../providers/guide_providers.dart';
 import 'town_guide_detail_screen.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Liste des town guides d'un sentier (F8C-02, Phase 8 P8-C, offline R3).
 ///
@@ -29,6 +35,10 @@ class TownGuidesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.townGuides, trail: trailId);
     final t = Translations.of(context);
 
     // Catalogue OFFLINE : libelles de section localises via Slang (domaine pur
@@ -104,8 +114,8 @@ class _FacilitatorNote extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.info_outline,
+            const StepIcon(
+              StepwaysIcons.info,
               size: 18,
               color: AppTheme.vertFacile,
             ),
@@ -140,6 +150,8 @@ class _TownGuideTile extends StatelessWidget {
       button: true,
       label: t.guides.a11y.guideCard(lieu: guide.nomLieu),
       child: AppCard(
+        // TACHE 639 (bug 4) : le geste est pose a l interieur, la carte le DECLARE pour etre dessinee en relief.
+        interactif: true,
         key: ValueKey('town-guide-card-${guide.id}'),
         padding: EdgeInsets.zero,
         margin: const EdgeInsets.symmetric(
@@ -147,7 +159,10 @@ class _TownGuideTile extends StatelessWidget {
           vertical: AppTheme.spacingXs,
         ),
         child: ListTile(
-          leading: const Icon(Icons.location_city, color: AppTheme.vertFacile),
+          leading: const StepIcon(
+            StepwaysIcons.ville,
+            color: AppTheme.vertFacile,
+          ),
           title: Text(
             guide.nomLieu,
             style: theme.textTheme.titleMedium?.copyWith(
@@ -160,7 +175,7 @@ class _TownGuideTile extends StatelessWidget {
               color: AppTheme.grisGranite,
             ),
           ),
-          trailing: const Icon(Icons.chevron_right),
+          trailing: const StepIcon(StepwaysIcons.chevronDroite),
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) =>

@@ -1,15 +1,21 @@
+/// Signaler en un geste, ecrit en local d'abord. Le bandeau assume la latence :
+/// visible des autres apres synchronisation, aucun temps reel promis.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
-import '../../map/providers/location_provider.dart';
+import '../../map/map_facade.dart' show locationProvider;
 import '../data/signalement_service.dart';
 import '../providers/signalement_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran de signalement terrain type Waze (F6C-03, F6.1).
 ///
@@ -88,6 +94,12 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.signalement);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final t = Translations.of(context);
     final theme = Theme.of(context);
@@ -117,7 +129,7 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
                         children: [
                           _TypeOption(
                             type: SignalementType.obstacle,
-                            icon: Icons.warning_amber_rounded,
+                            icon: StepwaysIcons.danger,
                             label: t.signalement.types.obstacle,
                             selected: _selectedType == SignalementType.obstacle,
                             onTap: () => setState(
@@ -127,7 +139,9 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
                           const SizedBox(height: AppTheme.spacingSm),
                           _TypeOption(
                             type: SignalementType.eauASec,
-                            icon: Icons.water_drop_outlined,
+                            // UN POINT D'EAU A SEC RESTE UN POINT D'EAU
+                            // (tache 772) : la goutte, pas le nuage.
+                            icon: StepwaysIcons.pointEau,
                             label: t.signalement.types.eauASec,
                             selected: _selectedType == SignalementType.eauASec,
                             onTap: () => setState(
@@ -137,7 +151,7 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
                           const SizedBox(height: AppTheme.spacingSm),
                           _TypeOption(
                             type: SignalementType.danger,
-                            icon: Icons.dangerous_outlined,
+                            icon: StepwaysIcons.refuser,
                             label: t.signalement.types.danger,
                             selected: _selectedType == SignalementType.danger,
                             onTap: () => setState(
@@ -161,7 +175,7 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
                       child: AppButton(
                         isLoading: _submitting,
                         minHeight: 52,
-                        icon: Icons.send_rounded,
+                        icon: StepwaysIcons.envoyer,
                         label: t.signalement.confirm,
                         onPressed: _submitting ? null : _confirm,
                       ),
@@ -185,7 +199,7 @@ class _TypeOption extends StatelessWidget {
   });
 
   final String type;
-  final IconData icon;
+  final String icon;
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -198,13 +212,27 @@ class _TypeOption extends StatelessWidget {
         : theme.colorScheme.outline;
 
     return Semantics(
-      button: true,
+      // L'OPTION DEJA CHOISIE NE SE RE-CHOISIT PAS (tache 638).
+      //
+      // GESTE INERTE PREEXISTANT, TROUVE PAR MESURE. Le type « Obstacle sur le
+      // sentier » est selectionne par defaut, et son option restait tapable :
+      // appuyer dessus ne changeait RIEN a l'ecran — ni effet, ni message. Le
+      // balayage « aucun geste mort » (tache 573) ne l'atteignait pas, parce
+      // qu'un geste joue avant lui changeait d'ecran et faisait classer tous les
+      // suivants « non joues ». La suppression du sentier gratuit du catalogue a
+      // decale ce balayage, et le defaut est apparu — il etait la depuis le
+      // debut.
+      //
+      // MEME GRAMMAIRE QUE L'ECRAN DE SELECTION DE SENTIER, qui desactive deja
+      // son bouton sur le sentier actif : ce qui est deja choisi se VOIT (fond
+      // teinte, bordure, coche) et ne se repropose pas.
+      button: !selected,
       selected: selected,
       label: label,
       child: InkWell(
         key: ValueKey('signalement-type-$type'),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        onTap: onTap,
+        onTap: selected ? null : onTap,
         child: Container(
           padding: const EdgeInsets.all(AppTheme.spacingMd),
           decoration: BoxDecoration(
@@ -216,11 +244,14 @@ class _TypeOption extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, color: color, size: 28),
+              StepIcon(icon, color: color, size: 28),
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(child: Text(label, style: theme.textTheme.titleMedium)),
               if (selected)
-                Icon(Icons.check_circle, color: theme.colorScheme.primary),
+                StepIcon(
+                  StepwaysIcons.cochePleine,
+                  color: theme.colorScheme.primary,
+                ),
             ],
           ),
         ),
@@ -248,8 +279,8 @@ class _LatencyBanner extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.cloud_off_outlined,
+            StepIcon(
+              StepwaysIcons.horsLigne,
               size: 20,
               color: theme.colorScheme.onSecondaryContainer,
             ),
@@ -285,8 +316,8 @@ class _SubmittedView extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.check_circle_outline,
+          StepIcon(
+            StepwaysIcons.cocheCercle,
             size: 72,
             color: theme.colorScheme.primary,
           ),

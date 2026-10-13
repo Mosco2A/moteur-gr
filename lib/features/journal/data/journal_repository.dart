@@ -1,3 +1,7 @@
+/// La facade au-dessus du carnet en base, qui convertit les lignes brutes en
+/// modeles exploitables par les ecrans.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../../../core/data/daos/journal_dao.dart';
@@ -35,12 +39,14 @@ class JournalRepository {
     required String text,
   }) async {
     final now = DateTime.now();
-    final id = await _dao.insertEntry(JournalEntriesCompanion(
-      trailId: Value(trailId),
-      stageNumber: Value(stageNumber),
-      content: Value(text),
-      createdAt: Value(now),
-    ));
+    final id = await _dao.insertEntry(
+      JournalEntriesCompanion(
+        trailId: Value(trailId),
+        stageNumber: Value(stageNumber),
+        content: Value(text),
+        createdAt: Value(now),
+      ),
+    );
     return JournalEntryModel(
       id: id,
       trailId: trailId,
@@ -67,14 +73,16 @@ class JournalRepository {
     required int photoSizeBytes,
   }) async {
     final now = DateTime.now();
-    final id = await _dao.insertEntry(JournalEntriesCompanion(
-      trailId: Value(trailId),
-      stageNumber: Value(stageNumber),
-      content: Value(text),
-      photoPath: Value(photoPath),
-      photoSizeBytes: Value(photoSizeBytes),
-      createdAt: Value(now),
-    ));
+    final id = await _dao.insertEntry(
+      JournalEntriesCompanion(
+        trailId: Value(trailId),
+        stageNumber: Value(stageNumber),
+        content: Value(text),
+        photoPath: Value(photoPath),
+        photoSizeBytes: Value(photoSizeBytes),
+        createdAt: Value(now),
+      ),
+    );
     return JournalEntryModel(
       id: id,
       trailId: trailId,

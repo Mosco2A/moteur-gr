@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
-import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/planning/domain/transport_catalog.dart';
 import 'package:moteur_gr/features/planning/domain/transport_info.dart';
 import 'package:moteur_gr/features/planning/presentation/transport_screen.dart';
@@ -13,6 +13,7 @@ import 'package:moteur_gr/features/planning/providers/transport_providers.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// PARITE GR20 (#99460) — ecran TRANSPORT (« Aller & retour », data-driven).
 ///
@@ -57,19 +58,19 @@ void main() {
   );
 
   StageModel stage(int n, String dep, String arr) => StageModel(
-        trailId: trailId,
-        stageNumber: n,
-        name: '$dep - $arr',
-        distanceKm: 10,
-        elevationGainM: 400,
-        elevationLossM: 300,
-        startLat: 0,
-        startLng: 0,
-        endLat: 0,
-        endLng: 0,
-        departureName: dep,
-        arrivalName: arr,
-      );
+    trailId: trailId,
+    stageNumber: n,
+    name: '$dep - $arr',
+    distanceKm: 10,
+    elevationGainM: 400,
+    elevationLossM: 300,
+    startLat: 0,
+    startLng: 0,
+    endLat: 0,
+    endLng: 0,
+    departureName: dep,
+    arrivalName: arr,
+  );
 
   // 3 etapes : Alpha -> Beta -> Gamma -> Delta (endpoints = Alpha / Delta).
   final testStages = [
@@ -133,19 +134,70 @@ void main() {
     ],
   );
 
+  /// Donnees transport du SENS INVERSE (SN) : on rejoint Delta et on repart
+  /// d'Alpha. Le catalogue [testTransport] ne couvre que le sens NS ; sans ce
+  /// second jeu, l'ecran en sens SN n'a rien a montrer (tache 579, LOT X).
+  const testTransportSN = TrailTransport(
+    trailId: trailId,
+    endpoints: [
+      EndpointTransport(
+        endpointName: 'Delta',
+        role: TransportRole.arrival,
+        intro: 'Intro rejoindre Delta',
+        sections: [
+          TransportSection(
+            title: 'Depuis la gare',
+            mode: TransportModeKind.train,
+            options: [
+              TransportOption(
+                mode: TransportModeKind.train,
+                title: 'Train vers Delta',
+                description: 'Ligne de test inverse',
+                contact: '+33111111111',
+                contactLabel: 'Gare Delta',
+              ),
+            ],
+          ),
+        ],
+        advices: ['Conseil Delta inverse'],
+      ),
+      EndpointTransport(
+        endpointName: 'Alpha',
+        role: TransportRole.departure,
+        intro: 'Intro repartir Alpha',
+        sections: [
+          TransportSection(
+            title: 'Vers la ville',
+            mode: TransportModeKind.bus,
+            options: [
+              TransportOption(
+                mode: TransportModeKind.bus,
+                title: 'Bus depuis Alpha',
+                description: 'Retour ville inverse',
+                contact: '+33222222222',
+                contactLabel: 'Bus Alpha',
+              ),
+            ],
+          ),
+        ],
+        advices: ['Conseil Alpha inverse'],
+      ),
+    ],
+  );
+
   List<Override> baseOverrides({
     List<StageModel>? stages,
     TrailTransport? transport = testTransport,
     String? direction,
-  }) =>
-      [
-        trailConfigProvider.overrideWithValue(testConfig),
-        stagesProvider(trailId)
-            .overrideWith((ref) => Future.value(stages ?? testStages)),
-        trailTransportProvider(trailId).overrideWithValue(transport),
-        if (direction != null)
-          selectedDirectionProvider.overrideWith((ref) => direction),
-      ];
+  }) => [
+    trailConfigProvider.overrideWithValue(testConfig),
+    stagesProvider(
+      trailId,
+    ).overrideWith((ref) => Future.value(stages ?? testStages)),
+    trailTransportProvider(trailId).overrideWithValue(transport),
+    if (direction != null)
+      selectedDirectionProvider.overrideWith((ref) => direction),
+  ];
 
   Future<void> settle(WidgetTester tester) async {
     for (var i = 0; i < 8; i++) {
@@ -211,8 +263,9 @@ void main() {
     });
 
     test('sens inverse (SN) : depart et arrivee sont echanges', () {
-      final container =
-          ProviderContainer(overrides: baseOverrides(direction: 'SN'));
+      final container = ProviderContainer(
+        overrides: baseOverrides(direction: 'SN'),
+      );
       addTearDown(container.dispose);
       container.read(stagesProvider(trailId));
       return Future<void>.delayed(const Duration(milliseconds: 50), () {
@@ -240,8 +293,9 @@ void main() {
           endLng: 0,
         ),
       ];
-      final container =
-          ProviderContainer(overrides: baseOverrides(stages: poor));
+      final container = ProviderContainer(
+        overrides: baseOverrides(stages: poor),
+      );
       addTearDown(container.dispose);
       container.read(stagesProvider(trailId));
       return Future<void>.delayed(const Duration(milliseconds: 50), () {
@@ -267,10 +321,7 @@ void main() {
         data!.forEndpoint('Ghisonaccia', TransportRole.arrival),
         isNotNull,
       );
-      expect(
-        data.forEndpoint('Porticcio', TransportRole.departure),
-        isNotNull,
-      );
+      expect(data.forEndpoint('Porticcio', TransportRole.departure), isNotNull);
       // Les 2 autres combinaisons (sens inverse) sont aussi fournies.
       expect(
         data.forEndpoint('Ghisonaccia', TransportRole.departure),
@@ -282,8 +333,72 @@ void main() {
     test('chaque onglet MaM a du contenu (sections avec options)', () {
       final data = TransportCatalog.forTrail('mare-a-mare-centre')!;
       for (final ep in data.endpoints) {
-        expect(ep.hasContent, isTrue,
-            reason: '${ep.endpointName}/${ep.role} doit avoir des options');
+        expect(
+          ep.hasContent,
+          isTrue,
+          reason: '${ep.endpointName}/${ep.role} doit avoir des options',
+        );
+      }
+    });
+
+    // AJOUTE PAR LE LOT 645-08 (voie V2, arbitrage de Christophe du
+    // 02/10/2026). Vingt-sept fois, ce catalogue livrait au randonneur un
+    // marqueur destine a l'editeur : un badge de prix vert « a completer », un
+    // bloc d'horaires qui s'achevait sur « (a completer) », un operateur
+    // nomme « Taxi (a completer) ». Rien ne le gardait.
+    test('aucune option ne livre de marqueur d editeur au randonneur', () {
+      final data = TransportCatalog.forTrail('mare-a-mare-centre')!;
+      final creux = <String>[];
+      for (final ep in data.endpoints) {
+        for (final sec in ep.sections) {
+          for (final o in sec.options) {
+            for (final champ in <String, String>{
+              'price': o.price,
+              'schedule': o.schedule,
+              'contactLabel': o.contactLabel,
+              'description': o.description,
+              'title': o.title,
+            }.entries) {
+              if (champ.value.toLowerCase().contains('completer')) {
+                creux.add(
+                  '${ep.endpointName}/${o.title} '
+                  '${champ.key} = "${champ.value}"',
+                );
+              }
+            }
+          }
+        }
+      }
+      expect(
+        creux,
+        isEmpty,
+        reason:
+            'VOIE V2 : un tarif ou un horaire inconnu est RETIRE, jamais '
+            'remplace par une chaine creuse. Un `price` ou un `schedule` non '
+            'vide rallume un badge ou un bloc d horaires qui ne dit rien.',
+      );
+    });
+
+    test('un horaire ou un tarif absent est VIDE, jamais un blanc', () {
+      // C'est la forme de l'absence qui compte : `transport_screen.dart`
+      // masque sur `isNotEmpty`, donc un espace seul rouvrirait le badge ou le
+      // bloc sombre sur du vide.
+      final data = TransportCatalog.forTrail('mare-a-mare-centre')!;
+      for (final ep in data.endpoints) {
+        for (final sec in ep.sections) {
+          for (final o in sec.options) {
+            expect(
+              o.price,
+              anyOf(isEmpty, matches(RegExp(r'\S'))),
+              reason: '${o.title} : prix blanc',
+            );
+            expect(
+              o.schedule,
+              anyOf(isEmpty, matches(RegExp(r'\S'))),
+              reason: '${o.title} : horaire blanc',
+            );
+          }
+        }
       }
     });
 
@@ -295,8 +410,9 @@ void main() {
   // --- Ecran : 2 onglets + contenu data-driven -----------------------------
 
   group('ecran transport (2 onglets, data-driven)', () {
-    testWidgets('affiche 2 onglets aller/retour avec les endpoints resolus',
-        (tester) async {
+    testWidgets('affiche 2 onglets aller/retour avec les endpoints resolus', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
@@ -313,8 +429,9 @@ void main() {
       expect(find.byType(Tab), findsNWidgets(2));
     });
 
-    testWidgets('onglet ALLER : contenu venant des donnees du sentier',
-        (tester) async {
+    testWidgets('onglet ALLER : contenu venant des donnees du sentier', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
@@ -329,20 +446,32 @@ void main() {
       expect(find.text('Conseil Alpha 1'), findsOneWidget);
     });
 
-    testWidgets('actions tel + lien presentes sur une option qui les porte',
-        (tester) async {
+    testWidgets('actions tel + lien presentes sur une option qui les porte', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
       // Contact telephonique cliquable (numero affiche) + bouton site (icone
       // open_in_new) — parite GR20 (facilitateur tel:/url).
       expect(find.text('+33123456789'), findsOneWidget);
-      expect(find.byIcon(Icons.open_in_new), findsOneWidget);
-      expect(find.byIcon(Icons.phone), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.lien,
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.telephone,
+        ),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('bascule sur l\'onglet RETOUR : contenu de l\'arrivee',
-        (tester) async {
+    testWidgets('bascule sur l\'onglet RETOUR : contenu de l\'arrivee', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(overrides: baseOverrides()));
       await settle(tester);
 
@@ -355,9 +484,21 @@ void main() {
       expect(find.text('Conseil Delta 1'), findsOneWidget);
     });
 
-    testWidgets('direction inverse (SN) : les onglets suivent le sens choisi',
-        (tester) async {
-      await tester.pumpWidget(wrap(overrides: baseOverrides(direction: 'SN')));
+    testWidgets('direction inverse (SN) : les onglets suivent le sens choisi', (
+      tester,
+    ) async {
+      // LES DONNEES DU SENS EXAMINE (tache 579, LOT X). Ce test tournait avec
+      // le catalogue du sens NS, qui ne porte AUCUNE information pour le sens
+      // SN : les deux onglets etaient donc vides. Depuis le LOT X, un ecran
+      // sans la moindre donnee transport n'affiche plus d'onglet du tout —
+      // deux onglets qui menent a deux ecrans vides sont deux gestes morts. Le
+      // test fournit maintenant les donnees du sens qu'il examine, ce qui est
+      // d'ailleurs ce qu'il pretendait verifier.
+      await tester.pumpWidget(
+        wrap(
+          overrides: baseOverrides(direction: 'SN', transport: testTransportSN),
+        ),
+      );
       await settle(tester);
 
       // En sens inverse, on part de Delta et on arrive a Alpha.
@@ -369,30 +510,45 @@ void main() {
   // --- Fallback sans donnees -----------------------------------------------
 
   group('fallback sans donnees transport', () {
-    // RETOURNE PAR LA TACHE 552. Ce test exigeait l'etat vide « Transport
-    // bientot disponible » + « les informations seront ajoutees
-    // prochainement ». Retour Chris du 25/09 : « Tu les as, tu les a pas, si tu
-    // ne les a pas tu ne met rien ». Les quatre cles sont supprimees des cinq
-    // langues. Ce qui reste exige : l'ecran tient debout, les onglets sont la,
-    // et AUCUNE promesse ne s'affiche.
-    testWidgets('sentier sans donnees : rien de promis, pas de crash',
-        (tester) async {
+    // RETOURNE PAR LA TACHE 552, PUIS PAR LA TACHE 579.
+    //
+    // 552 : ce test exigeait l'etat vide « Transport bientot disponible » + «
+    // les informations seront ajoutees prochainement ». Retour Chris du 25/09 :
+    // « Tu les as, tu les a pas, si tu ne les a pas tu ne met rien ». Les
+    // quatre cles ont ete supprimees des cinq langues, et le corps de l'onglet
+    // est devenu vide.
+    //
+    // 579 (LOT X) : ce corps vide a fabrique un autre defaut, celui que Chris
+    // deteste le plus. Les deux onglets RESTAIENT, parfaitement actifs, et
+    // faisaient passer d'un ecran vide a un autre ecran vide. On appuie, on
+    // regarde, rien ne change — l'invariante « aucun geste mort » les a
+    // declares morts, et elle avait raison. La reponse n'est pas de remettre
+    // une promesse : c'est de RETIRER le geste. Sans aucune donnee transport,
+    // il n'y a plus d'onglet, et l'ecran enonce un fait, sans date.
+    testWidgets('sentier sans donnees : aucun onglet, un fait, pas de crash', (
+      tester,
+    ) async {
       // Endpoints resolus (etapes presentes) mais AUCUNE donnee transport.
-      await tester.pumpWidget(
-        wrap(overrides: baseOverrides(transport: null)),
-      );
+      await tester.pumpWidget(wrap(overrides: baseOverrides(transport: null)));
       await settle(tester);
 
-      // Les onglets restent presents (titres d'endpoints resolus).
-      expect(find.text(t.transport.tabJoinNamed(name: 'Alpha')), findsOneWidget);
-      // Le corps ne dit RIEN — ni titre d'attente, ni date promise.
-      for (final promesse in <String>[
-        'bientôt',
-        'bientot',
-        'prochainement',
-      ]) {
-        expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
-            reason: 'l onglet transport vide promet encore « $promesse »');
+      // PLUS AUCUN ONGLET : il n'y a rien derriere, donc rien a appuyer.
+      expect(
+        find.byType(TabBar),
+        findsNothing,
+        reason: 'deux onglets vides sont deux boutons qui ne produisent rien',
+      );
+      expect(find.byType(Tab), findsNothing);
+      expect(find.text(t.transport.tabJoinNamed(name: 'Alpha')), findsNothing);
+
+      // L'ecran DIT pourquoi il est vide — un fait, pas une promesse.
+      expect(find.text(t.transport.noneForTrail), findsOneWidget);
+      for (final promesse in <String>['bientôt', 'bientot', 'prochainement']) {
+        expect(
+          find.textContaining(promesse, skipOffstage: false),
+          findsNothing,
+          reason: 'l ecran transport vide promet encore « $promesse »',
+        );
       }
       // Aucune exception de layout/plugin n'a ete levee.
       expect(tester.takeException(), isNull);
@@ -402,56 +558,73 @@ void main() {
   // --- Navigation depuis le HUB --------------------------------------------
 
   group('navigation', () {
-    testWidgets('la carte HUB « Transport » ouvre l\'ecran, retour sans crash',
-        (tester) async {
-      // Routeur minimal reproduisant l'entree HUB : une carte
-      // `Icons.directions_bus` (comme le HUB) qui `push` vers Transport.
-      final router = GoRouter(
-        initialLocation: '/home',
-        routes: [
-          GoRoute(
-            path: '/home',
-            builder: (context, state) => Scaffold(
-              body: Center(
-                child: InkWell(
-                  onTap: () => context.push('/trail/$trailId/transport'),
-                  child: const Icon(Icons.directions_bus),
+    testWidgets(
+      'la carte HUB « Transport » ouvre l\'ecran, retour sans crash',
+      (tester) async {
+        // Routeur minimal reproduisant l'entree HUB : une carte
+        // `Icons.directions_bus` (comme le HUB) qui `push` vers Transport.
+        final router = GoRouter(
+          initialLocation: '/home',
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => Scaffold(
+                body: Center(
+                  child: InkWell(
+                    onTap: () => context.push('/trail/$trailId/transport'),
+                    child: const StepIcon(StepwaysIcons.transport),
+                  ),
                 ),
               ),
             ),
-          ),
-          GoRoute(
-            path: '/trail/:id/transport',
-            builder: (context, state) => TransportScreen(
-              trailId: state.pathParameters['id'] ?? '',
+            GoRoute(
+              path: '/trail/:id/transport',
+              builder: (context, state) =>
+                  TransportScreen(trailId: state.pathParameters['id'] ?? ''),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: baseOverrides(),
+            child: TranslationProvider(
+              child: MaterialApp.router(routerConfig: router),
             ),
           ),
-        ],
-      );
+        );
+        await settle(tester);
 
-      await tester.pumpWidget(ProviderScope(
-        overrides: baseOverrides(),
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      ));
-      await settle(tester);
+        // Aller : taper la carte HUB (icone directions_bus) ouvre Transport.
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.transport,
+          ),
+          findsOneWidget,
+        );
+        await tester.tap(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.transport,
+          ),
+        );
+        await settle(tester);
+        await pumpUntil(tester, find.text(t.transport.title));
+        expect(find.text(t.transport.title), findsWidgets);
 
-      // Aller : taper la carte HUB (icone directions_bus) ouvre Transport.
-      expect(find.byIcon(Icons.directions_bus), findsOneWidget);
-      await tester.tap(find.byIcon(Icons.directions_bus));
-      await settle(tester);
-      await pumpUntil(tester, find.text(t.transport.title));
-      expect(find.text(t.transport.title), findsWidgets);
-
-      // Retour : bouton back de l'AppBar (Icons.arrow_back) -> retour au HUB
-      // sans crash (pile preservee, jamais context.go qui viderait la pile).
-      await pumpUntil(tester, find.byIcon(Icons.arrow_back));
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await settle(tester);
-      await pumpUntilGone(tester, find.text(t.transport.title));
-      expect(find.text(t.transport.title), findsNothing);
-      expect(find.byIcon(Icons.directions_bus), findsOneWidget);
-    });
+        // Retour : bouton back de l'AppBar (Icons.arrow_back) -> retour au HUB
+        // sans crash (pile preservee, jamais context.go qui viderait la pile).
+        await pumpUntil(tester, find.byType(BackButtonIcon));
+        await tester.tap(find.byType(BackButtonIcon));
+        await settle(tester);
+        await pumpUntilGone(tester, find.text(t.transport.title));
+        expect(find.text(t.transport.title), findsNothing);
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is StepIcon && w.asset == StepwaysIcons.transport,
+          ),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

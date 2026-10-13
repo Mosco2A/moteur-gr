@@ -1,3 +1,7 @@
+/// L'etat de l'enregistrement expose a l'ecran : distance, duree, denivele,
+/// vitesse, et ou en est la session.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,15 +10,35 @@ import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
-import '../../map/providers/track_position_provider.dart';
+import '../../../core/services/monetization_service.dart';
+import '../../map/map_facade.dart'
+    show
+        jalonsDesEtapesProvider,
+        prochaineFinDEtape,
+        stageDistanceCoveredProvider,
+        statsTraceProvider;
+// TACHE 651 (defaut A) : la SOURCE UNIQUE de tout l'« apres-trek » (recap,
+// diplome, journal, stats) est `latestTrekSessionProvider`. Elle doit etre
+// relue a la fin de CHAQUE finalisation, comme les trois vues du cycle de vie
+// (cf. `_finalize`). Sens unique : `adventure_recap_provider` n'importe pas ce
+// fichier, aucun cycle d'import.
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
+// TACHE 630 : la fiche d'urgence monte sur l'ecran verrouille au depart du trek
+// et en redescend a l'arrivee. Sens unique : le module securite n'importe pas ce
+// fichier, aucun cycle d'import.
+import '../../safety/safety_facade.dart' show ficheEcranVerrouilleProvider;
 // FIX-2 (M4) : invalidation des vues derivees du cycle de vie apres une
 // finalisation de session (cf. `_finalize`). Sens unique : `my_treks_provider`
 // n'importe pas ce fichier, aucun cycle d'import.
-import '../../treks/providers/my_treks_provider.dart';
+import '../../treks/treks_facade.dart'
+    show activeTrekIdProvider, currentTrailSummaryProvider, myTreksProvider;
 import '../data/background_gps_service.dart';
+import '../data/marcheur_simule_providers.dart';
 import '../data/trek_recorder.dart';
-import '../domain/models/trek_session.dart';
-import '../domain/trek_stats.dart';
+import '../../../domain/trek_session.dart';
+import '../../../domain/trek_stats.dart';
+import '../../../core/services/session_demo.dart';
+import '../../../domain/trek_session_mapping.dart';
 
 /// Etat immutable du tracking expose a l'UI.
 ///
@@ -74,12 +98,7 @@ class TrackingSessionState {
 }
 
 /// Etats possibles d'une session de tracking.
-enum TrackingSessionStatus {
-  idle,
-  recording,
-  paused,
-  stopped,
-}
+enum TrackingSessionStatus { idle, recording, paused, stopped }
 
 /// Decision de l'utilisateur face a un CONFLIT d'unicite (StepWays LOT 2, C4).
 ///
@@ -102,9 +121,8 @@ enum ActiveTrekConflictChoice {
 
 /// Callback fourni par l'UI pour resoudre un conflit d'unicite (dialog
 /// Terminer/Abandonner). Recoit le sentier DEJA en cours et renvoie le choix.
-typedef ActiveTrekConflictResolver = Future<ActiveTrekConflictChoice> Function(
-  String ongoingTrailId,
-);
+typedef ActiveTrekConflictResolver =
+    Future<ActiveTrekConflictChoice> Function(String ongoingTrailId);
 
 /// Issue d'un appel a [TrekSessionManagerNotifier.ensureSingleActiveThenStart].
 enum StartOutcome {
@@ -116,6 +134,10 @@ enum StartOutcome {
 
   /// Un autre trek etait en cours et l'utilisateur a ANNULE -> non demarre.
   cancelled,
+
+  /// LE TREK N'EST PAS ACHETE : la realisation lui est reservee (tache 594,
+  /// A1). L'UI doit DIRE pourquoi et OU acheter — jamais un bouton muet.
+  purchaseRequired,
 }
 
 /// Provider du TrekRecorder (E2.8a).
@@ -140,8 +162,7 @@ final trekRecorderProvider = Provider<TrekRecorder>((ref) {
       // GPS brut (tracking.distanceKm) qui gonfle sur un aller-retour.
       final doneKm = ref.read(stageDistanceCoveredProvider) / 1000;
       final progress = totalKm > 0 ? (doneKm / totalKm) : 0.0;
-      final remainingKm =
-          (totalKm - doneKm) < 0 ? 0.0 : (totalKm - doneKm);
+      final remainingKm = (totalKm - doneKm) < 0 ? 0.0 : (totalKm - doneKm);
       final etaMinutes = tracking.avgSpeedKmh > 0.5
           ? (remainingKm / tracking.avgSpeedKmh * 60).round()
           : 0;
@@ -168,6 +189,12 @@ final trekRecorderProvider = Provider<TrekRecorder>((ref) {
     // etape marchee : la memoire du finisher SURVIT desormais a un
     // redemarrage. Best-effort (ne casse jamais le trek). Firestore = Phase 4.
     onSessionPersist: (session) async {
+      // DEMO : LA RANDO SIMULEE NE TOUCHE PAS LA BASE (tache 634,
+      // DEM-260929-1123). Christophe : « ON EST EN MODE DEMO » = rien ne
+      // compte, « rien en base ». La session vit alors en MEMOIRE seulement —
+      // le randonneur voit son trek avancer, son journal, son arrivee, et
+      // fermer l'application n'en laisse aucune trace.
+      if (ref.read(enDemoProvider)) return;
       try {
         await ref.read(databaseProvider).trekSessionsDao.upsertSession(session);
       } catch (_) {
@@ -210,6 +237,10 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   /// via le DAO Drift, en dedupliquant implicitement par la source (l'isolate de
   /// fond applique deja son filtre de distance). Best-effort.
   Future<void> _persistBgPoint(BgTrackPoint p) async {
+    // DEMO : aucune trace GPS ecrite (tache 634). De toute facon le GPS est
+    // coupe en demo — cette garde ferme le chemin meme si un point arrivait
+    // d'une capture de fond restee armee d'une vraie rando precedente.
+    if (ref.read(enDemoProvider)) return;
     final trailId = p.trailId.isNotEmpty ? p.trailId : _activeTrailId;
     if (trailId == null || trailId.isEmpty) return;
     final dao = ref.read(databaseProvider).sessionTrackPointsDao;
@@ -222,6 +253,9 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       lat: p.latitude,
       lng: p.longitude,
       altitude: p.altitude,
+      // L'origine a traverse le tampon (lot 671-03) : un point estime arrive
+      // en base marque comme tel, un tampon d'avant vaut des releves reels.
+      source: p.source,
       recordedAt: p.timestamp,
       sessionId: session?.id,
       dayIndex: session == null
@@ -267,6 +301,9 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     // Le provider a pu etre dispose pendant un gap async (ex. ecran quitte) :
     // on evite tout acces a un Ref invalide.
     if (!ref.mounted) return;
+    // DEMO : rien en base (tache 634). L'etat reste en memoire, ce qui suffit
+    // a montrer tout le parcours et ne survit a rien.
+    if (ref.read(enDemoProvider)) return;
     try {
       await ref.read(databaseProvider).trekSessionsDao.upsertSession(session);
     } catch (_) {
@@ -330,6 +367,45 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     String trailId, {
     required ActiveTrekConflictResolver resolve,
   }) async {
+    // 0. LE DROIT DE REALISER, AVANT TOUT LE RESTE (tache 594, A1).
+    //
+    // CE QUI MANQUAIT : rien, sur tout ce chemin, ne regardait si le trek
+    // avait ete achete. La seule condition du bouton « Demarrer la randonnee »
+    // portait sur la PREPARATION (itineraire + date + programme) et cette
+    // garde-ci ne verifiait que l'UNICITE de session. Un utilisateur gratuit
+    // demarrait, enregistrait et terminait le parcours entier — alors que le
+    // modele eco reserve la realisation au trek achete. C'est le trou le plus
+    // couteux de l'inventaire 593 (§M2), et le seul atteignable en trois
+    // gestes depuis l'accueil.
+    //
+    // ON REFUSE AVANT D'OUVRIR QUOI QUE CE SOIT : aucune session creee, aucun
+    // conflit resolu, aucune capture GPS demarree. Le refus est TYPE
+    // ([StartOutcome.purchaseRequired]) pour que l'UI dise pourquoi et ou
+    // acheter — un refus muet serait un geste mort (regle du LOT X).
+    //
+    // L'ABONNE EST REFUSE LUI AUSSI : l'abo light ne debloque pas la
+    // realisation (arbitrage du 08/09, qui prime sur #99405). La vitrine
+    // (parite GR20) passe, elle est resolue `owned` par `accessFor`.
+    //
+    // EN DEMO, ON NE DEMANDE PAS LE DROIT : ON SIMULE (tache 638, bug 16,
+    // DEM-260930-1024). Christophe, 30/09 10:24 : « le bouton demarrer la rando
+    // doit etre accessible en mode demo ! ». La demo NE DEBLOQUE PAS le droit —
+    // `canRealizeTrail` repond exactement la meme chose qu'avant, et personne ne
+    // le change : elle ouvre une SIMULATION, dont pas une ligne n'atteint la
+    // base (toutes les persistances de session sont barrees plus haut dans ce
+    // fichier). C'est la difference de fond avec le drapeau d'exemption
+    // `isShowcaseTrail` que le lot 601 a supprime : la, le sentier payant
+    // devenait realisable POUR DE VRAI et invendable ; ici il ne se passe
+    // strictement rien de durable.
+    if (ref.read(enDemoProvider)) {
+      return demarrerSimulationDemo(trailId);
+    }
+
+    final monetization = ref.read(monetizationServiceProvider);
+    if (!await monetization.canRealizeTrail(trailId)) {
+      return StartOutcome.purchaseRequired;
+    }
+
     final dao = ref.read(databaseProvider).trekSessionsDao;
     final ongoing = await dao.findActiveSessions();
 
@@ -366,6 +442,174 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     return StartOutcome.started;
   }
 
+  /// DEMARRE LA SIMULATION DE LA RANDONNEE EN DEMO (tache 638, bug 16).
+  ///
+  /// Le chemin reel pose trois questions avant de demarrer : le DROIT
+  /// (`canRealizeTrail`), l'UNICITE de rando active (une requete en base) et la
+  /// capture GPS de fond. Aucune des trois n'a de sens pour une demonstration :
+  /// la premiere refuserait (la demo ne debloque rien), la deuxieme ferait
+  /// dependre une demonstration d'une vraie rando en cours, et la troisieme
+  /// demanderait une permission de localisation pour marcher sans bouger.
+  ///
+  /// ON NE TOUCHE DONC PAS A LA BASE, NI A LA VRAIE RANDO. Si une vraie session
+  /// est en cours en memoire, on REFUSE la simulation plutot que de l'ecraser :
+  /// une demonstration ne doit jamais faire perdre son trek a quelqu'un. Le
+  /// refus est type et l'ecran le dit.
+  ///
+  /// Le GPS de fond n'est pas arme (`_startBackgroundCapture` sort en demo), et
+  /// la session creee ne s'ecrit nulle part (`_persistSession` sort en demo) :
+  /// elle vit en memoire et meurt avec [arreterSimulationDemo].
+  ///
+  /// TACHE 742 — ET MAINTENANT ELLE MARCHE POUR DE BON. Christophe, 08/10
+  /// 20:19 : « Le mode demo doit fonctionner et en mode simulation pour le
+  /// sentier en mode demo !!! ». Jusqu'ici cette methode creait une session et
+  /// s'arretait la : sans GPS et sans base, PERSONNE ne disait ou se trouvait
+  /// le randonneur, donc la barre de la carte gardait ses tirets, la carte
+  /// restait nue et le journal vide (recette du build 12). Le [MarcheurSimule]
+  /// fournit desormais cette source : il avance sur la trace du sentier, et
+  /// ses positions entrent par le robinet unique — la MEME porte que les
+  /// releves reels.
+  Future<StartOutcome> demarrerSimulationDemo(String trailId) async {
+    if (!ref.read(enDemoProvider)) return StartOutcome.purchaseRequired;
+    if (state.status == TrackingSessionStatus.recording ||
+        state.status == TrackingSessionStatus.paused) {
+      // Deja en cours : idempotent si c'est la simulation, refus si c'est une
+      // vraie rando (on ne la remplace pas).
+      return _activeTrailId == trailId
+          ? StartOutcome.alreadyActiveSameTrail
+          : StartOutcome.cancelled;
+    }
+    await start(trailId);
+    await _lancerLeMarcheurSimule(trailId);
+    return StartOutcome.started;
+  }
+
+  /// FAIT PARTIR LE MARCHEUR SIMULE sur la trace du sentier [trailId].
+  ///
+  /// LA TRACE N'EST PAS INVENTEE : c'est [statsTraceProvider], celle que les
+  /// chiffres projettent deja, donc la base d'abord et l'asset embarque en
+  /// secours (tache 606). Le marcheur en suit les points dans l'ordre.
+  ///
+  /// L'HORLOGE DE LA MARCHE PART AVEC LA SESSION (`session.startedAt`) : les
+  /// releves simules portent donc des jours de marche coherents avec elle, par
+  /// le meme `dayIndexFor` qu'en vrai.
+  ///
+  /// NE LEVE JAMAIS. Un sentier sans trace ne doit pas faire echouer un depart
+  /// de demonstration : la session existe, les ecrans s'ouvrent, et il ne
+  /// manquera que le mouvement.
+  Future<void> _lancerLeMarcheurSimule(String trailId) async {
+    try {
+      final trace = await ref.read(statsTraceProvider.future);
+      if (!ref.mounted || trace == null) return;
+      final session = state.session;
+      ref
+          .read(marcheurSimuleProvider)
+          .demarrer(
+            trace: trace,
+            trailId: trailId,
+            sessionId: session?.id,
+            depart: session?.startedAt,
+          );
+    } catch (_) {
+      // Best-effort : la simulation ne doit jamais casser l'ouverture des
+      // ecrans de la demonstration.
+    }
+  }
+
+  /// FAIT SAUTER LE MARCHEUR SIMULE A LA FIN DE SON ETAPE (tache 747).
+  ///
+  /// CE QUI NE MARCHAIT PAS, MESURE. Retours de Christophe du 09/10 : « la
+  /// fleche orange ... ne fonctionne pas » (08:46) et « simuler ne fonctionne
+  /// pas du tout » (08:48). Le bouton appelait [recordStageCompleted], qui
+  /// ajoute un identifiant a `completedStages` — un ensemble que la barre de la
+  /// carte ne lit PAS, et qui ne deplace pas le marcheur d'un metre. L'etape
+  /// affichee, elle, se deduisait des positions : une demi-seconde plus tard,
+  /// le releve suivant effacait de toute facon l'effet du bouton. Deux sources
+  /// de verite, et c'est la mauvaise qui gagnait.
+  ///
+  /// CE QUE CELUI-CI FAIT : il deplace LA SOURCE — l'abscisse du marcheur — a
+  /// la borne de fin de l'etape en cours. Tout en decoule d'un coup : le nom
+  /// de l'etape, les cinq chiffres de la barre, le point bleu, le cadrage de la
+  /// carte. Aucune formule d'affichage n'est touchee, et il n'y a plus de
+  /// compteur parallele a desynchroniser.
+  ///
+  /// L'ETAPE FRANCHIE EST AUSSI NOTEE MARCHEE, par le MEME chemin de production
+  /// qu'une arrivee detectee au GPS ([recordStageCompleted]) : c'est ce que la
+  /// porte du finisher verifie, et c'est ce qui permet a « Simuler l'arrivee »
+  /// d'ouvrir les felicitations a la fin.
+  ///
+  /// Sans demo, sans session, ou deja au bout de la trace : ne fait rien et
+  /// rend `false` — l'ecran retire alors le bouton de lui-meme.
+  bool simulerLEtapeSuivante() {
+    if (!ref.read(enDemoProvider)) return false;
+    final trailId = _activeTrailId;
+    if (trailId == null) return false;
+
+    final jalons = ref.read(jalonsDesEtapesProvider(trailId));
+    if (jalons.isEmpty) return false;
+    final abscisseM = ref.read(stageDistanceCoveredProvider);
+    final cible = prochaineFinDEtape(jalons, abscisseM);
+    if (cible == null) return false;
+
+    if (!ref.read(marcheurSimuleProvider).allerA(cible)) return false;
+
+    // TOUTES LES ETAPES DESORMAIS DERRIERE SONT NOTEES MARCHEES, par le MEME
+    // chemin de production qu'une arrivee detectee au GPS. Au pluriel, parce
+    // qu'un saut peut enjamber une tranche vide : la porte du finisher exige
+    // que CHAQUE etape du parcours ait ete marchee, et une etape sautee
+    // silencieusement bloquerait les felicitations a la fin.
+    // L'identifiant du plan vaut le numero d'etape (cf. `domainStagesProvider`,
+    // `id: '${sm.stageNumber}'`), et [recordStageCompleted] est idempotent.
+    for (final jalon in jalons) {
+      if (jalon.finM <= cible) recordStageCompleted('${jalon.numero}');
+    }
+    return true;
+  }
+
+  /// ARRETE LA SIMULATION DE DEMO SANS RIEN FINALISER NI RIEN ECRIRE
+  /// (tache 638, bug 19 — la sortie atomique).
+  ///
+  /// A NE PAS CONFONDRE AVEC [stop] NI [abandon] : ceux-la FINALISENT une vraie
+  /// randonnee (statut en base, fiche d'urgence eteinte, rafraichissement des
+  /// vues de trek, drapeau finisher). Une simulation, elle, n'a rien a
+  /// finaliser : elle n'existe nulle part. On rend donc le recorder disponible
+  /// pour une VRAIE rando et on remet l'etat a zero, point.
+  ///
+  /// Appelee par `quitterLaDemo` PENDANT que la barriere d'ecriture est encore
+  /// posee — c'est ce qui garantit que l'arret lui-meme n'ecrit rien.
+  Future<void> arreterSimulationDemo() async {
+    // LE MARCHEUR S'ARRETE LE PREMIER, ET IL JETTE SES RELEVES (tache 742).
+    // C'est ici — et nulle part ailleurs — que la memoire de la marche simulee
+    // disparait : aucune minuterie ne survit a la sortie de la demo, et il ne
+    // reste pas un releve a relire. [MarcheurSimule.arreter] est idempotent, un
+    // appel sans simulation en cours est le cas le plus courant (quitter la
+    // demo sans etre parti).
+    ref.read(marcheurSimuleProvider).arreter();
+    await _bgPointsSub?.cancel();
+    _bgPointsSub = null;
+    _activeTrailId = null;
+    _currentStageId = null;
+    // Le recorder doit repartir de zero, sinon un vrai demarrage ulterieur
+    // leverait `StateError: session deja active`. En demo son unique ecriture
+    // (`_onSessionPersist`) est barree, et son tampon de points est vide puisque
+    // le GPS n'a jamais ete arme : cet arret n'ecrit rien.
+    //
+    // ON DEMANDE AVANT D'ARRETER (`isStopped`) : quitter la demo sans avoir
+    // demarre de simulation est le cas le PLUS courant, et appeler `stop()` a
+    // vide faisait remonter un `StateError` a l'ErrorHandler — un incident
+    // rapporte pour un fonctionnement normal.
+    final recorder = ref.read(trekRecorderProvider);
+    if (!recorder.isStopped) {
+      try {
+        await recorder.stop();
+      } catch (_) {
+        // Best-effort : l'arret d'une simulation ne doit rien casser.
+      }
+    }
+    ref.read(trekStatsProvider).reset();
+    state = const TrackingSessionState();
+  }
+
   /// Solde la session EN COURS [current] avant d'en demarrer une autre.
   ///
   /// Si [current] est la session vivante du notifier (etat en memoire), on
@@ -376,7 +620,8 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     TrekSession current, {
     required String status,
   }) async {
-    final isInMemory = state.session?.id == current.id &&
+    final isInMemory =
+        state.session?.id == current.id &&
         (state.status == TrackingSessionStatus.recording ||
             state.status == TrackingSessionStatus.paused);
     if (isInMemory) {
@@ -389,7 +634,10 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     }
     // Session orpheline : solder son statut en base, best-effort.
     try {
-      await ref.read(databaseProvider).trekSessionsDao.upsertSession(
+      await ref
+          .read(databaseProvider)
+          .trekSessionsDao
+          .upsertSession(
             current.copyWith(
               status: status,
               finishedAt: current.finishedAt ?? DateTime.now(),
@@ -412,6 +660,11 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   /// (`ensureBackgroundTrackingExplained`). Ici on se contente de ce qui est
   /// deja accorde : sans permission de fond la capture premier plan continue.
   Future<void> _startBackgroundCapture(String sessionId, String trailId) async {
+    // DEMO : PAS DE GPS DU TOUT (tache 634, DEM-260929-1123). Christophe
+    // demande une SIMULATION : « le randonneur avance sur les etapes sans
+    // GPS ». Armer la capture de fond ecrirait en prefs et en base, et
+    // demanderait une permission de localisation pour une demonstration.
+    if (ref.read(enDemoProvider)) return;
     try {
       final service = ref.read(backgroundGpsServiceProvider);
 
@@ -427,6 +680,14 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
         stageInfo: ref.read(trailConfigProvider).displayName,
       );
 
+      // LA FICHE D'URGENCE MONTE SUR L'ECRAN VERROUILLE (tache 630). Le trek
+      // commence : c'est le moment ou un secouriste peut avoir besoin de la lire
+      // sans deverrouiller le telephone, et c'est le moment ou la permission
+      // POST_NOTIFICATIONS vient d'etre accordee pour le service de fond. Elle
+      // s'eteindra avec le trek (voir `_finalize`). Lancee, pas attendue, et non
+      // levante : le raisonnement entier est dans `FicheEcranVerrouille`.
+      unawaited(ref.read(ficheEcranVerrouilleProvider).allumer());
+
       // Draine un eventuel reliquat tamponne (session precedente interrompue).
       await _drainBackgroundBuffer();
     } catch (_) {
@@ -435,6 +696,11 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   }
 
   /// Met en pause le tracking.
+  ///
+  /// TACHE 742 : la marche simulee se met en pause AVEC le tracking. Sans cela
+  /// une pause laissait la minuterie avancer et les chiffres monter pendant que
+  /// l'ecran annoncait une pause — deux verites au meme instant. Le temps de la
+  /// pause ne compte pas dans la vitesse moyenne (cf. `MarcheurSimule`).
   void pause() {
     if (state.status != TrackingSessionStatus.recording) {
       return;
@@ -442,10 +708,13 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
 
     final recorder = ref.read(trekRecorderProvider);
     recorder.pause();
+    ref.read(marcheurSimuleProvider).pause();
     state = state.copyWith(status: TrackingSessionStatus.paused);
   }
 
   /// Reprend le tracking apres une pause.
+  ///
+  /// TACHE 742 : la marche simulee repart avec lui, la ou elle s'etait arretee.
   void resume() {
     if (state.status != TrackingSessionStatus.paused) {
       return;
@@ -453,6 +722,7 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
 
     final recorder = ref.read(trekRecorderProvider);
     recorder.resume();
+    ref.read(marcheurSimuleProvider).reprendre();
     state = state.copyWith(status: TrackingSessionStatus.recording);
   }
 
@@ -492,7 +762,8 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
   /// notifier — cas theorique, l'orpheline est par definition hors memoire — on
   /// delegue a [abandon] (teardown complet) plutot que d'ecrire en base a cote.
   Future<bool> abandonPendingSession(TrekSession session) async {
-    final isInMemory = state.session?.id == session.id &&
+    final isInMemory =
+        state.session?.id == session.id &&
         (state.status == TrackingSessionStatus.recording ||
             state.status == TrackingSessionStatus.paused);
     if (isInMemory) {
@@ -500,7 +771,10 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       return true;
     }
     try {
-      await ref.read(databaseProvider).trekSessionsDao.upsertSession(
+      await ref
+          .read(databaseProvider)
+          .trekSessionsDao
+          .upsertSession(
             session.copyWith(
               status: 'abandoned',
               finishedAt: session.finishedAt ?? DateTime.now(),
@@ -523,6 +797,15 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       return;
     }
 
+    // LA MARCHE SIMULEE CESSE D'AVANCER, MAIS GARDE SES RELEVES (tache 742).
+    // La randonnee se termine — arrivee detectee, « Simuler l'arrivee » ou fin
+    // manuelle — et le randonneur va REGARDER sa journee. Le journal du jour
+    // lit les releves en memoire : les jeter ici viderait l'ecran qu'il vient
+    // d'ouvrir. C'est `arreterSimulationDemo` qui les jette, a la sortie de la
+    // demo, parce que c'est elle qui promet qu'il ne reste rien. Sans effet
+    // hors demo (aucun marcheur n'a demarre).
+    ref.read(marcheurSimuleProvider).terminer();
+
     // Arreter la capture de fond, draîner le reliquat et couper l'abonnement.
     try {
       final service = ref.read(backgroundGpsServiceProvider);
@@ -531,6 +814,12 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     } catch (_) {
       // Best-effort : l'arret du service ne doit pas empecher la finalisation.
     }
+
+    // ET LA FICHE D'URGENCE QUITTE L'ECRAN VERROUILLE AVEC LE TREK (tache 630).
+    // Une notification portant un nom, une adresse et un groupe sanguin ne doit
+    // pas survivre des semaines a la randonnee qui la justifiait.
+    await ref.read(ficheEcranVerrouilleProvider).eteindre();
+
     await _bgPointsSub?.cancel();
     _bgPointsSub = null;
     _activeTrailId = null;
@@ -548,18 +837,48 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     // final en base perdrait la memoire du finisher. Meme id -> derniere ecriture
     // gagnante, avec les etapes marchees preservees. `status` distingue
     // completed (finish) d'abandoned (abandon) sans autre difference.
-    if (authoritative != null) {
-      await _persistSession(
-        authoritative.copyWith(
-          status: status,
-          finishedAt: authoritative.finishedAt ?? DateTime.now(),
-        ),
-      );
+    final finalisee = authoritative?.copyWith(
+      status: status,
+      finishedAt: authoritative.finishedAt ?? DateTime.now(),
+    );
+    if (finalisee != null) {
+      await _persistSession(finalisee);
     }
 
     final stats = ref.read(trekStatsProvider);
     final finalState = TrackingSessionState(
       status: TrackingSessionStatus.stopped,
+      // LA RANDONNEE FINIE RESTE NOMMEE EN MEMOIRE (tache 809).
+      //
+      // CETTE LIGNE EST LA CORRECTION DE FOND DU LOT, et elle repare un trou
+      // qu'on ne voyait qu'en demonstration. L'etat final effacait la session :
+      // `status` passait a `stopped` et `session` repartait a `null`. Toute la
+      // memoire de ce qui venait de se terminer — quel sentier, termine ou
+      // abandonne, parcours entier ou non — ne survivait donc QUE dans la base.
+      //
+      // OR LA DEMO N'ECRIT RIEN (tache 760). Les quatre barrieres d'ecriture de
+      // ce fichier font qu'aucune ligne de session n'existe pendant une
+      // demonstration : `_persistSession` ci-dessus sort immediatement. A la
+      // seconde ou la marche simulee arrivait, l'application perdait donc TOUTE
+      // trace de l'arrivee — la memoire venait d'etre effacee, la base n'avait
+      // jamais rien recu. Le cockpit, qui lit le cycle de vie derive de la
+      // base, revoyait un sentier « a preparer » : d'ou le « Démarrer la
+      // randonnée » qui revenait apres l'arrivee, constate par Christophe.
+      //
+      // CE N'EST PAS UN DRAPEAU NOUVEAU. La session finalisee existe deja trois
+      // lignes plus haut — c'est exactement celle qu'on persiste. On cesse
+      // simplement de la jeter. Elle porte deja tout ce qu'il faut : `status`
+      // (`completed` ou `abandoned`), `finishedAt`, `completedStages` et
+      // `parcoursFullyWalked`. Hors demo, elle dit la MEME chose que la base,
+      // qui reste la source qui survit au redemarrage.
+      //
+      // LES TROIS GARDES DE CE NOTIFIER NE BOUGENT PAS. `completeOnArrival`,
+      // `recordStageCompleted`, `pause`, `resume` et `_finalize` lui-meme
+      // exigent tous un statut `recording` ou `paused` : une session gardee en
+      // memoire a l'arret ne rouvre aucune porte et ne rend rien reentrant.
+      // `arreterSimulationDemo`, qui promet qu'il ne reste rien a la sortie de
+      // la demo, remet l'etat a neuf — donc a `null` — et le promet toujours.
+      session: finalisee,
       distanceKm: stats.distanceKm,
       elevationGainM: stats.elevationGain,
       elapsedDuration: stats.elapsedDuration,
@@ -584,6 +903,38 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     ref.invalidate(currentTrailSummaryProvider);
     ref.invalidate(myTreksProvider);
     ref.invalidate(activeTrekIdProvider);
+
+    // TACHE 651, DEFAUT A (MAJEUR) — ET LA SOURCE DE L'APRES-TREK AVEC ELLES.
+    // FIX-2 avait rafraichi les trois vues du CYCLE DE VIE ci-dessus, mais pas
+    // [latestTrekSessionProvider], qui est la source UNIQUE de tout ce qui
+    // vient apres : `isRecapAvailableProvider`, `isDiplomaUnlockedProvider`,
+    // `adventureStatsProvider` (donc « Mon aventure », le diplome, le journal,
+    // les chiffres, la trace, le partage), et le verrou d'edition du programme
+    // (`trekEditLockProvider`). C'est un `FutureProvider` qui lit la base UNE
+    // fois, et il est tenu VIVANT pendant la rando par ce meme verrou : sa
+    // valeur en cache restait la session `active` d'avant la fin. Le cockpit
+    // basculait donc en phase « Apres » pendant que l'ecran de recap lisait
+    // encore « en cours » et affichait « Disponible a la fin du trek » — deux
+    // verites sur le meme trek au meme instant. Les DONNEES etaient justes en
+    // base ; seule la RELECTURE manquait. Relue ici, donc pour les trois
+    // chemins de sortie (fin manuelle, abandon, arrivee GPS).
+    //
+    // RELECTURE ATTENDUE, et non simplement invalidee : `isRecapAvailableProvider`
+    // est fail-closed pendant le chargement (jamais de faux deverrouillage), et
+    // la fin manuelle ouvre le recap DANS LA FOULEE de ce `stop()`. Une simple
+    // invalidation, paresseuse, laissait donc l'ecran s'ouvrir sur l'etat
+    // verrouille pendant la relecture — le meme ecran faux, pour une raison
+    // differente. On attend la lecture (base locale, quelques millisecondes) ;
+    // best-effort, car un echec de relecture ne doit pas empecher la fin du
+    // trek, qui est deja ecrite en base.
+    ref.invalidate(latestTrekSessionProvider);
+    try {
+      // La lecture qui suit VIDE l'invalidation en attente et attend la base :
+      // a la sortie de `stop()`, l'apres-trek est deja deverrouille.
+      await ref.read(latestTrekSessionProvider.future);
+    } catch (_) {
+      // Best-effort : le trek est termine quoi qu'il arrive.
+    }
   }
 
   /// GO-85 inc2 (persistance ALPHA, porte du finisher) — enregistre l'etape
@@ -680,5 +1031,5 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
 /// Expose un [TrackingSessionState] immutable a l'UI.
 final trekSessionManagerProvider =
     NotifierProvider<TrekSessionManagerNotifier, TrackingSessionState>(
-  TrekSessionManagerNotifier.new,
-);
+      TrekSessionManagerNotifier.new,
+    );

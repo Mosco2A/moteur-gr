@@ -2,7 +2,17 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:moteur_gr/i18n/translations.g.dart';
 
-/// LE VERDICT PORTE SUR UN DECOUPAGE, PAS SUR LA PERSONNE (tache 552, 2e passe).
+/// LE VERDICT PORTE SUR LE RYTHME DU JOUR, PAS SUR LA PERSONNE (tache 552,
+/// 2e passe ; RETOURNE PAR LA TACHE 639, bug 6).
+///
+/// CE FICHIER A ETE LA CAUSE D'UN DEFAUT, ET C'EST ECRIT ICI POUR QUE CA NE SE
+/// REPRODUISE PAS. Sa regle 2 EXIGEAIT le mot « decoupage » dans les trois
+/// verdicts, dans les cinq langues. Quand le lot 634 (86dacc67) a retire la
+/// MECANIQUE de decoupage d'etape, personne n'a touche a ce test : le mot est
+/// donc reste a l'ecran, verrouille par un garde-fou. Christophe l'a lu sur son
+/// telephone le 30/09 a 10:12 — « jour par jour on dit que la premiere etape est
+/// en decoupage trop serre alors que je ne veux pas qu on decoupe les etapes ! ».
+/// LECON : un garde-fou qui exige un MOT survit au retrait de la CHOSE.
 ///
 /// LE REPROCHE DE CHRIS, MOT POUR MOT : « ca me dit que c'est audessus de mes
 /// capacites et que je suis 3 jours au dessus du plafond, ce qui 1/ ne veut rien
@@ -47,28 +57,73 @@ void main() {
       for (final entree in interdits.entries) {
         for (final libelle in verdicts(entree.key)) {
           for (final mot in entree.value) {
-            expect(' ${libelle.toLowerCase()} ', isNot(contains(mot)),
-                reason: '${entree.key.languageCode} : le verdict « $libelle » '
-                    'parle de la personne (« $mot ») alors qu il juge un '
-                    'decoupage');
+            expect(
+              ' ${libelle.toLowerCase()} ',
+              isNot(contains(mot)),
+              reason:
+                  '${entree.key.languageCode} : le verdict « $libelle » '
+                  'parle de la personne (« $mot ») alors qu il juge un '
+                  'decoupage',
+            );
           }
         }
       }
     });
 
-    test('NOMMENT le decoupage : c est lui qui est juge', () {
-      const decoupage = <AppLocale, String>{
-        AppLocale.fr: 'découpage',
-        AppLocale.en: 'split',
-        AppLocale.de: 'aufteilung',
-        AppLocale.es: 'reparto',
-        AppLocale.it: 'divisione',
+    test('NOMMENT le RYTHME du jour : c est lui qui est juge', () {
+      // TACHE 639 — CETTE REGLE A ETE RETOURNEE, ET C EST LE CORRECTIF DU BUG 6.
+      //
+      // Elle EXIGEAIT le mot « decoupage » dans les trois verdicts, en cinq
+      // langues. C est elle qui a maintenu le vocabulaire en place alors que le
+      // lot 634 (86dacc67) avait retire la MECANIQUE : le retrait etait donc
+      // incomplet par construction, un test le verrouillait. Verbatim de
+      // Christophe (30/09 10:12, telephone, build 0.1.3 (7)) : « jour par jour on
+      // dit que la premiere etape est en decoupage trop serre alors que je ne
+      // veux pas qu on decoupe les etapes ! ».
+      //
+      // CE QUI EST JUGE N A PAS CHANGE — c est bien la JOURNEE, pas la personne
+      // (tout le raisonnement de la tache 552 tient). Ce qui change, c est le mot
+      // qui la nomme : le RYTHME du jour, et non un « decoupage » qui laissait
+      // croire qu on allait couper ses etapes.
+      const rythme = <AppLocale, String>{
+        AppLocale.fr: 'rythme',
+        AppLocale.en: 'pace',
+        AppLocale.de: 'tempo',
+        AppLocale.es: 'ritmo',
+        AppLocale.it: 'ritmo',
       };
-      for (final entree in decoupage.entries) {
+      for (final entree in rythme.entries) {
         for (final libelle in verdicts(entree.key)) {
-          expect(libelle.toLowerCase(), contains(entree.value),
-              reason: '${entree.key.languageCode} : le verdict « $libelle » ne '
-                  'dit pas CE QU IL juge');
+          expect(
+            libelle.toLowerCase(),
+            contains(entree.value),
+            reason:
+                '${entree.key.languageCode} : le verdict « $libelle » ne '
+                'dit pas CE QU IL juge',
+          );
+        }
+      }
+    });
+
+    test('et AUCUN ne dit plus « decoupage »', () {
+      const interdit = <AppLocale, List<String>>{
+        AppLocale.fr: ['découp', 'decoup', 'serré'],
+        AppLocale.en: ['split', 'tight'],
+        AppLocale.de: ['aufteil', 'knapp'],
+        AppLocale.es: ['reparto', 'divis'],
+        AppLocale.it: ['divis', 'suddivi', 'strett'],
+      };
+      for (final entree in interdit.entries) {
+        for (final libelle in verdicts(entree.key)) {
+          for (final mot in entree.value) {
+            expect(
+              libelle.toLowerCase(),
+              isNot(contains(mot)),
+              reason:
+                  '${entree.key.languageCode} : le verdict « $libelle » '
+                  'parle encore de decoupage — Christophe l a refuse',
+            );
+          }
         }
       }
     });
@@ -80,10 +135,14 @@ void main() {
       // si quelqu un rallonge un libelle sans regarder le curseur.
       for (final locale in AppLocale.values) {
         for (final libelle in verdicts(locale)) {
-          expect(libelle.length, lessThanOrEqualTo(24),
-              reason: '${locale.languageCode} : « $libelle » fait '
-                  '${libelle.length} caracteres — trop long pour la pastille du '
-                  'curseur du Programme');
+          expect(
+            libelle.length,
+            lessThanOrEqualTo(24),
+            reason:
+                '${locale.languageCode} : « $libelle » fait '
+                '${libelle.length} caracteres — trop long pour la pastille du '
+                'curseur du Programme',
+          );
         }
       }
     });
@@ -97,9 +156,13 @@ void main() {
         for (final a in libelles) {
           for (final b in libelles) {
             if (a == b) continue;
-            expect(b.startsWith(a), isFalse,
-                reason: '${locale.languageCode} : « $a » est un prefixe de '
-                    '« $b »');
+            expect(
+              b.startsWith(a),
+              isFalse,
+              reason:
+                  '${locale.languageCode} : « $a » est un prefixe de '
+                  '« $b »',
+            );
           }
         }
       }
@@ -112,9 +175,15 @@ void main() {
     // quand l'app compte des journees est exactement ce qui fait dire a Chris
     // qu'il ne comprend pas le texte.
     //
-    // RESTE VOLONTAIREMENT HORS DE CETTE LISTE : advice.balanced (« Repartis les
-    // etapes pour lisser l'effort au fil des jours ») parle bien des etapes —
-    // c'est leur repartition DANS les journees, le mot y est juste.
+    // RESTENT VOLONTAIREMENT HORS DE CETTE LISTE, et pour la meme raison : ils
+    // parlent de l'ETAPE en tant qu'objet du topo, pas d'une journee mal nommee.
+    //   * advice.balanced (« Repartis les etapes pour lisser l'effort au fil des
+    //     jours ») : c'est leur repartition DANS les journees ;
+    //   * advice.hardStageAlert (tache 569, R4 — il remplace advice.split, qui
+    //     n'existe plus) : « une etape s'arrete la ou il y a un toit » est
+    //     precisement CE QU'ON EXPLIQUE au randonneur pour justifier qu'on ne
+    //     lui conseille plus de couper sa journee en deux. Retirer le mot y
+    //     detruirait l'argument.
     List<String> libellesJournee(AppLocale locale) {
       final f = locale.buildSync().feasibility.formula;
       return [
@@ -126,13 +195,15 @@ void main() {
         f.stageDominantFactor(factor: 'X'),
         f.restTwoDays,
         f.limitingFactors.distance,
-        f.advice.split(stage: 'X'),
+        f.advice.noViableDuration(stage: 'X'),
         f.advice.rest(stages: 'X'),
+        f.advice.restReference(stages: 'X'),
         f.advice.restAdvised(days: '1', stages: 'X'),
+        f.advice.restAdvisedReference(days: '1', stages: 'X'),
       ];
     }
 
-    test('le mot « etape » a disparu de ces onze libelles, en 5 langues', () {
+    test('le mot « etape » a disparu de ces treize libelles, en 5 langues', () {
       const motEtape = <AppLocale, String>{
         AppLocale.fr: 'étape',
         AppLocale.en: 'stage',
@@ -142,9 +213,13 @@ void main() {
       };
       for (final entree in motEtape.entries) {
         for (final libelle in libellesJournee(entree.key)) {
-          expect(libelle.toLowerCase(), isNot(contains(entree.value)),
-              reason: '${entree.key.languageCode} : « $libelle » dit encore '
-                  '« ${entree.value} » alors que l app compte des journees');
+          expect(
+            libelle.toLowerCase(),
+            isNot(contains(entree.value)),
+            reason:
+                '${entree.key.languageCode} : « $libelle » dit encore '
+                '« ${entree.value} » alors que l app compte des journees',
+          );
         }
       }
     });
@@ -168,16 +243,27 @@ void main() {
         final aNommerLeJour = <String>[
           f.stagesTitle,
           f.hardestStage(stage: 'X'),
-          f.advice.split(stage: 'X'),
+          // Tache 569 (R4) : l'alerte remplace le conseil de decoupe, et elle
+          // doit nommer la JOURNEE qui fait mal — c'est elle que le randonneur
+          // va chercher dans sa liste.
+          f.advice.hardStageAlert(stage: 'X'),
+          f.advice.noViableDuration(stage: 'X'),
           f.advice.rest(stages: 'X'),
+          f.advice.restReference(stages: 'X'),
           f.advice.restAdvised(days: '1', stages: 'X'),
+          f.advice.restAdvisedReference(days: '1', stages: 'X'),
         ];
         for (final libelle in aNommerLeJour) {
-          final nomme =
-              entree.value.any((m) => libelle.toLowerCase().contains(m));
-          expect(nomme, isTrue,
-              reason: '${entree.key.languageCode} : « $libelle » ne nomme pas '
-                  'le jour (aucune des formes ${entree.value})');
+          final nomme = entree.value.any(
+            (m) => libelle.toLowerCase().contains(m),
+          );
+          expect(
+            nomme,
+            isTrue,
+            reason:
+                '${entree.key.languageCode} : « $libelle » ne nomme pas '
+                'le jour (aucune des formes ${entree.value})',
+          );
         }
       }
     });

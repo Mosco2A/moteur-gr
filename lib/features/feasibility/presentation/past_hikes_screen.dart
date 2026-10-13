@@ -1,7 +1,13 @@
+/// L'interview des cinq dernieres randos, en chiffres seulement : le champ
+/// texte libre a ete retire a la tache 570.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -9,12 +15,23 @@ import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/past_hike.dart';
 import '../providers/hiker_profile_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran « Vos 5 dernieres randos » (StepWays LOT 4, Ph3).
 ///
 /// Interview des 5 dernieres randos notables [date, jours, marche moy/j, D+
-/// total, distance totale] + 1 champ texte libre GLOBAL « difficultes ». La
-/// faisabilite en DEDUIT le niveau reel. Tous textes via Slang (`t.pastHikes`).
+/// total, distance totale]. La faisabilite en DEDUIT le niveau reel. Tous
+/// textes via Slang (`t.pastHikes`).
+///
+/// LE CHAMP TEXTE LIBRE « DIFFICULTES » A ETE RETIRE (tache 570, S2). Il etait
+/// saisi, persiste en prefs, recopie dans un miroir Drift, synchronise au
+/// cloud, restaure a la reinstallation — ET LU PAR PERSONNE : son provider
+/// n'apparaissait que dans cet ecran et dans lui-meme, et le depot l'ecrivait
+/// noir sur blanc (« V1 : STOCKEE seulement, l'IA la lira en V2 »). Decision de
+/// Chris du 26/09 : « sinon tu le vire pour l'instant ». Collecter une donnee
+/// personnelle que rien ne lit n'est pas du code mort, c'est un manquement a la
+/// minimisation (RGPD art. 5.1.c) : elle part, et avec elle son etage de
+/// stockage et sa remontee au cloud.
 class PastHikesScreen extends ConsumerStatefulWidget {
   const PastHikesScreen({super.key});
 
@@ -23,20 +40,11 @@ class PastHikesScreen extends ConsumerStatefulWidget {
 }
 
 class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
-  final _noteController = TextEditingController();
-  bool _noteLoaded = false;
-
-  @override
-  void dispose() {
-    _noteController.dispose();
-    super.dispose();
-  }
-
   Future<void> _addOrEdit({PastHike? existing, required int count}) async {
     if (existing == null && count >= 5) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.pastHikes.maxReached)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.pastHikes.maxReached)));
       return;
     }
     final result = await showModalBottomSheet<PastHike>(
@@ -68,9 +76,15 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
     }
     await ref.read(pastHikesProvider.notifier).saveAll(updated);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.pastHikes.saved)),
-      );
+      // LE RETOUR DE CE CHEMIN, C'EST LA LISTE (tache 568, Q3). La feuille
+      // modale s'est deja fermee (`Navigator.pop` de `_HikeEditorSheet._submit`)
+      // et la rando apparait dans la liste juste derriere : le randonneur EST
+      // revenu la d'ou il venait. On ne depile PAS l'ecran ici — il en saisit
+      // jusqu'a cinq et redige sa note de difficultes en dessous. Le bouton qui
+      // conclut le passage sur l'ecran, et qui depile, est `_saveNote`.
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.pastHikes.saved)));
     }
   }
 
@@ -81,16 +95,33 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
     await ref.read(pastHikesProvider.notifier).saveAll(updated);
   }
 
-  Future<void> _saveNote() async {
-    await ref
-        .read(experienceNoteProvider.notifier)
-        .save(_noteController.text.trim());
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.pastHikes.difficultiesSaved)),
-      );
-      FocusScope.of(context).unfocus();
-    }
+  /// RAMENE le randonneur la d'ou il venait (acquis de la tache 568, Q3).
+  ///
+  /// DEFAUT DE CHRIS DU 26/09 09:59, verbatim : « Apres 5 derniere rando,
+  /// enregistrer dit que la note est enregistree mais ne revient pas a
+  /// faisabilite ». La tache 568 avait ajoute ce retour a la sauvegarde de la
+  /// note ; la tache 570 a retire la note, PAS LE RETOUR — le randonneur a
+  /// toujours besoin d'une porte de sortie une fois ses randos saisies, et la
+  /// perdre serait une regression de la 568 deguisee en nettoyage.
+  ///
+  /// CE BOUTON N'ENREGISTRE PLUS RIEN, ET IL NE LE DIT PLUS. Chaque rando est
+  /// deja persistee a son ajout (`saveAll` dans [_addOrEdit]) : annoncer
+  /// « Enregistrer » ici promettait une sauvegarde qui avait deja eu lieu. Le
+  /// libelle dit desormais ce que le geste fait vraiment.
+  ///
+  /// Le chemin d'ajout d'une rando, lui, ramene A LA LISTE (la feuille modale se
+  /// ferme) et NE depile PAS l'ecran — on en saisit jusqu'a cinq, et depiler y
+  /// rendrait « Ajouter une rando » inutilisable au-dela de la premiere.
+  void _backToFeasibility() {
+    FocusScope.of(context).unfocus();
+    // `pop` du routeur : la pile est preservee, aucun ecran n'est recree.
+    if (context.canPop()) context.pop();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.pastHikes);
   }
 
   @override
@@ -98,15 +129,6 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
     final theme = Theme.of(context);
     final ph = t.pastHikes;
     final hikesAsync = ref.watch(pastHikesProvider);
-    final noteAsync = ref.watch(experienceNoteProvider);
-
-    // Hydrate le champ note une fois (sans ecraser la saisie en cours).
-    noteAsync.whenData((text) {
-      if (!_noteLoaded) {
-        _noteController.text = text;
-        _noteLoaded = true;
-      }
-    });
 
     return Scaffold(
       appBar: AppHeader(title: ph.title),
@@ -122,7 +144,8 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
               if (hikes.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: AppTheme.spacingLg),
+                    vertical: AppTheme.spacingLg,
+                  ),
                   child: Text(
                     ph.empty,
                     textAlign: TextAlign.center,
@@ -142,30 +165,19 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
               if (hikes.length < 5)
                 AppButton(
                   variant: AppButtonVariant.outline,
-                  icon: Icons.add,
+                  icon: StepwaysIcons.plus,
                   label: ph.addHike,
                   onPressed: () => _addOrEdit(count: hikes.length),
                 ),
               const SizedBox(height: AppTheme.spacingXl),
-              // Champ texte libre GLOBAL « difficultes rencontrees ».
-              Text(ph.difficultiesTitle, style: theme.textTheme.titleMedium),
-              const SizedBox(height: AppTheme.spacingSm),
-              TextField(
-                controller: _noteController,
-                maxLines: 4,
-                decoration: InputDecoration(
-                  hintText: ph.difficultiesHint,
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusInput),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppTheme.spacingBase),
+              // PLUS DE CHAMP « DIFFICULTES RENCONTREES » ICI (tache 570, S2) :
+              // il etait stocke sur trois etages et lu par personne. Rien ne le
+              // remplace — on ne comble pas la place laissee par une donnee
+              // qu'on vient de juger inutile.
               AppButton(
-                icon: Icons.save,
-                label: ph.save,
-                onPressed: _saveNote,
+                icon: StepwaysIcons.flecheArriere,
+                label: ph.backToFeasibility,
+                onPressed: _backToFeasibility,
               ),
             ],
           );
@@ -190,7 +202,8 @@ class _HikeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ph = t.pastHikes;
-    final date = '${hike.date.day.toString().padLeft(2, '0')}/'
+    final date =
+        '${hike.date.day.toString().padLeft(2, '0')}/'
         '${hike.date.month.toString().padLeft(2, '0')}/${hike.date.year}';
     return AppCard(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
@@ -205,13 +218,13 @@ class _HikeCard extends StatelessWidget {
                 children: [
                   IconButton(
                     visualDensity: VisualDensity.compact,
-                    icon: const Icon(Icons.edit, size: 20),
+                    icon: const StepIcon(StepwaysIcons.crayon, size: 20),
                     tooltip: ph.editHike,
                     onPressed: onEdit,
                   ),
                   IconButton(
                     visualDensity: VisualDensity.compact,
-                    icon: const Icon(Icons.delete_outline, size: 20),
+                    icon: const StepIcon(StepwaysIcons.corbeille, size: 20),
                     tooltip: ph.deleteHike,
                     onPressed: onDelete,
                   ),
@@ -224,19 +237,19 @@ class _HikeCard extends StatelessWidget {
             runSpacing: AppTheme.spacingXs,
             children: [
               _Chip(
-                icon: Icons.calendar_today,
+                icon: StepwaysIcons.calendrier,
                 text: '${hike.days} ${ph.fieldDays.toLowerCase()}',
               ),
               _Chip(
-                icon: Icons.straighten,
+                icon: StepwaysIcons.distance,
                 text: '${hike.totalDistanceKm.round()} km',
               ),
               _Chip(
-                icon: Icons.trending_up,
+                icon: StepwaysIcons.denivelePlus,
                 text: '${hike.totalElevationGain} m D+',
               ),
               _Chip(
-                icon: Icons.schedule,
+                icon: StepwaysIcons.clock,
                 text:
                     '${hike.avgWalkHoursPerDay.toStringAsFixed(1)} h/${ph.perDay}',
               ),
@@ -250,7 +263,7 @@ class _HikeCard extends StatelessWidget {
 
 class _Chip extends StatelessWidget {
   const _Chip({required this.icon, required this.text});
-  final IconData icon;
+  final String icon;
   final String text;
   @override
   Widget build(BuildContext context) {
@@ -258,7 +271,7 @@ class _Chip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: theme.colorScheme.primary),
+        StepIcon(icon, size: 16, color: theme.colorScheme.primary),
         const SizedBox(width: 4),
         Text(text, style: theme.textTheme.bodySmall),
       ],
@@ -323,8 +336,8 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
   /// enregistre.
   void _submit() {
     final fieldsOk = _formKey.currentState?.validate() ?? false;
-    final hasEffort = _elevCtrl.text.trim().isNotEmpty ||
-        _distCtrl.text.trim().isNotEmpty;
+    final hasEffort =
+        _elevCtrl.text.trim().isNotEmpty || _distCtrl.text.trim().isNotEmpty;
     if (!fieldsOk || !hasEffort) {
       setState(() => _formError = hasEffort ? null : t.pastHikes.errorEffort);
       return;
@@ -368,7 +381,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
             // Date
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.calendar_today),
+              leading: const StepIcon(StepwaysIcons.calendrier),
               title: Text(ph.fieldDate),
               trailing: Text(
                 '${_date.day.toString().padLeft(2, '0')}/'
@@ -389,44 +402,74 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
             // SAISIE (maxLength) ET A LA VALIDATION (min/max metier + message
             // clair). Bornes = mandat : jours 1-60, marche 0-24 h/j,
             // denivele 0-5000 m, distance 0-100 km.
-            _num(_daysCtrl, ph.fieldDays, Icons.event,
-                decimal: false,
-                min: 1,
-                max: 60,
-                maxLength: 2,
-                required: true,
-                error: ph.errorDays),
-            _num(_hoursCtrl, ph.fieldAvgHours, Icons.schedule,
-                min: 0, max: 24, maxLength: 4, error: ph.errorHours),
-            _num(_elevCtrl, ph.fieldElevation, Icons.trending_up,
-                decimal: false,
-                min: 0,
-                max: 5000,
-                maxLength: 4,
-                error: ph.errorElevation),
-            _num(_distCtrl, ph.fieldDistance, Icons.straighten,
-                min: 0, max: 100, maxLength: 5, error: ph.errorDistance),
+            _num(
+              _daysCtrl,
+              ph.fieldDays,
+              StepwaysIcons.calendrier,
+              decimal: false,
+              min: 1,
+              max: 60,
+              maxLength: 2,
+              required: true,
+              error: ph.errorDays,
+            ),
+            _num(
+              _hoursCtrl,
+              ph.fieldAvgHours,
+              StepwaysIcons.clock,
+              min: 0,
+              max: 24,
+              maxLength: 4,
+              error: ph.errorHours,
+            ),
+            _num(
+              _elevCtrl,
+              ph.fieldElevation,
+              StepwaysIcons.denivelePlus,
+              decimal: false,
+              min: 0,
+              max: 5000,
+              maxLength: 4,
+              error: ph.errorElevation,
+            ),
+            _num(
+              _distCtrl,
+              ph.fieldDistance,
+              StepwaysIcons.distance,
+              min: 0,
+              max: 100,
+              maxLength: 5,
+              error: ph.errorDistance,
+            ),
             if (_formError case final message?)
               Padding(
                 padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
                 child: Row(
                   children: [
-                    Icon(Icons.error_outline,
-                        size: 18, color: theme.colorScheme.error),
+                    StepIcon(
+                      StepwaysIcons.danger,
+                      size: 18,
+                      color: theme.colorScheme.error,
+                    ),
                     const SizedBox(width: AppTheme.spacingXs),
                     Expanded(
                       child: Text(
                         message,
                         key: const ValueKey('past-hike-form-error'),
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(color: theme.colorScheme.error),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.error,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             const SizedBox(height: AppTheme.spacingLg),
-            AppButton(icon: Icons.check, label: ph.save, onPressed: _submit),
+            AppButton(
+              icon: StepwaysIcons.coche,
+              label: ph.save,
+              onPressed: _submit,
+            ),
           ],
         ),
       ),
@@ -445,7 +488,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
   Widget _num(
     TextEditingController c,
     String label,
-    IconData icon, {
+    String icon, {
     required num min,
     required num max,
     required int maxLength,
@@ -478,7 +521,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
           labelText: label,
           // Compteur masque : la borne est deja portee par maxLength (physique).
           counterText: '',
-          prefixIcon: Icon(icon),
+          prefixIcon: StepIcon(icon),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusInput),
           ),

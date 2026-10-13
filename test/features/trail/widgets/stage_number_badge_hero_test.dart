@@ -13,9 +13,7 @@ void main() {
   group('StageNumberBadge', () {
     testWidgets('rend le numero et un Hero avec le bon tag', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(body: StageNumberBadge(number: 7)),
-        ),
+        const MaterialApp(home: Scaffold(body: StageNumberBadge(number: 7))),
       );
 
       expect(find.text('7'), findsOneWidget);
@@ -28,9 +26,7 @@ void main() {
     testWidgets('animate: false -> aucun Hero', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: StageNumberBadge(number: 7, animate: false),
-          ),
+          home: Scaffold(body: StageNumberBadge(number: 7, animate: false)),
         ),
       );
 
@@ -38,14 +34,15 @@ void main() {
       expect(find.text('7'), findsOneWidget);
     });
 
-    testWidgets('anime la transition liste -> detail (Hero en vol)',
-        (tester) async {
+    testWidgets('anime la transition liste -> detail (Hero en vol)', (
+      tester,
+    ) async {
       final navKey = GlobalKey<NavigatorState>();
 
       // Ecran "detail" : meme badge, meme tag -> cible du vol Hero.
       Widget detail() => const Scaffold(
-            body: Center(child: StageNumberBadge(number: 3, size: 64)),
-          );
+        body: Center(child: StageNumberBadge(number: 3, size: 64)),
+      );
 
       // Ecran "liste" : badge tappable qui pousse le detail.
       await tester.pumpWidget(
@@ -55,9 +52,9 @@ void main() {
             body: Center(
               child: Builder(
                 builder: (context) => GestureDetector(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(builder: (_) => detail()),
-                  ),
+                  onTap: () => Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute<void>(builder: (_) => detail())),
                   child: const StageNumberBadge(number: 3),
                 ),
               ),

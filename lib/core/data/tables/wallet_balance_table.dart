@@ -8,9 +8,10 @@ import 'package:drift/drift.dart';
 /// ([lifetimeEarnedSteps] / [lifetimeSpentSteps]) — entiers uniquement, zero
 /// nominatif (miroir cloud non nominatif, A5).
 ///
-/// Schema CANONIQUE : la persistance durable reste SharedPreferences aujourd'hui
-/// (DB volatile en memoire), Drift est hydrate au boot depuis les prefs
-/// (couche `WalletStore`, ST2). Ajoutee en migration v24.
+/// Schema CANONIQUE : la persistance durable reste SharedPreferences aujourd'hui,
+/// Drift est hydrate au boot depuis les prefs (couche `WalletStore`, ST2). La base
+/// n'est plus volatile depuis la tache 613 ; l'arbitrage qui laisse les prefs en
+/// source durable est explique dans `WalletStore`. Ajoutee en migration v24.
 class WalletBalance extends Table {
   /// Identifiant utilisateur (hash SHA-256 deterministe) — cle primaire.
   TextColumn get userId => text()();

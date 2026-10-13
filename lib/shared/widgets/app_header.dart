@@ -1,3 +1,7 @@
+/// La barre du haut, commune a tous les ecrans : retour, titre, accueil. Elle
+/// REMPLACE l'AppBar maison de chaque page — jamais les deux.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +9,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/routing/home_location_provider.dart';
 import '../../i18n/translations.g.dart';
+import '../../core/branding/stepways_icons.dart';
+import 'app_button.dart';
 
 /// En-tete universel de navigation StepWays (LOT 3 — refonte nav hub-and-push).
 ///
@@ -78,9 +84,8 @@ class AppHeader extends ConsumerWidget implements PreferredSizeWidget {
   final PreferredSizeWidget? bottom;
 
   @override
-  Size get preferredSize => Size.fromHeight(
-        kToolbarHeight + (bottom?.preferredSize.height ?? 0),
-      );
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 
   /// Geste retour : pop si possible, sinon route vers l'accueil ([home] résolu).
   void _handleBack(BuildContext context, String home) {
@@ -107,13 +112,17 @@ class AppHeader extends ConsumerWidget implements PreferredSizeWidget {
         title: Text(t.navPilote.exitTitle),
         content: Text(t.navPilote.exitMessage),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.navPilote.exitCancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.navPilote.exitCancel),
           ),
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.navPilote.exitConfirm,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.navPilote.exitConfirm),
           ),
         ],
       ),
@@ -150,7 +159,7 @@ class AppHeader extends ConsumerWidget implements PreferredSizeWidget {
         if (actions != null) ...actions!,
         if (showHome)
           IconButton(
-            icon: const Icon(Icons.home_outlined),
+            icon: const StepIcon(StepwaysIcons.hebergement),
             tooltip: t.nav.home,
             // Le bouton Accueil ne QUITTE JAMAIS l'app (Up-like, AUDIT §M-3).
             onPressed: () => context.go(home),

@@ -1,3 +1,7 @@
+/// Terminer un trek A LA MAIN, sans dependre de la detection GPS d'arrivee : le
+/// symetrique du bouton de depart, en fin de cockpit.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,9 +10,10 @@ import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
-import '../../../treks/domain/trek_lifecycle_state.dart';
-import '../../../treks/providers/my_treks_provider.dart';
-import '../../../trek/providers/tracking_providers.dart';
+import '../../../../shared/widgets/app_button.dart';
+import '../../../trek/trek_facade.dart' show trekSessionManagerProvider;
+import '../../../../core/branding/stepways_icons.dart';
+import '../cockpit_phase.dart';
 
 /// Bouton « Terminer le trek » (Finitions V1, point 3 — décision Chris).
 ///
@@ -17,10 +22,10 @@ import '../../../trek/providers/tracking_providers.dart';
 /// « Démarrer » : bouton ORANGE (parité GR20 `orangeTerre`), placé EN FIN DE
 /// SCROLL du cockpit (sous toutes les cartes), pleine largeur hauteur 52.
 ///
-/// VISIBILITÉ : ne s'affiche QUE lorsqu'un trek est réellement EN COURS
-/// (session `active`|`paused`, état vivant du tracking OU état dérivé
-/// `inProgress` du sentier actif). Sinon `SizedBox.shrink` (rien) — jamais de
-/// bouton « Terminer » quand il n'y a rien à terminer.
+/// VISIBILITÉ : ne s'affiche QUE lorsqu'un trek est réellement EN COURS, et
+/// c'est [cockpitPhaseProvider] qui le dit — la même source que « Préparer »,
+/// « Démarrer » et « Acheter » depuis la tâche 809. Sinon `SizedBox.shrink`
+/// (rien) — jamais de bouton « Terminer » quand il n'y a rien à terminer.
 ///
 /// COMPORTEMENT au clic : confirmation (« Terminer maintenant ? — les étapes
 /// restantes ne seront pas marquées ») puis, si confirmé, appelle
@@ -52,19 +57,18 @@ class _FinishTrekButtonState extends ConsumerState<FinishTrekButton> {
 
   @override
   Widget build(BuildContext context) {
-    // Trek en cours ? On suit d'abord l'état VIVANT du tracking (recording /
-    // paused), puis, à défaut (session persistée pas encore reprise en mémoire
-    // après un redémarrage), l'état DÉRIVÉ `inProgress` du sentier actif.
-    final tracking = ref.watch(trekSessionManagerProvider);
-    final liveActive = tracking.status == TrackingSessionStatus.recording ||
-        tracking.status == TrackingSessionStatus.paused;
-    final derivedInProgress = ref.watch(
-          currentTrailSummaryProvider.select((a) => a.value?.state),
-        ) ==
-        TrekLifecycleState.inProgress;
-
+    // Trek en cours ? LA PHASE LE DIT, ET ELLE SEULE (tâche 809).
+    //
+    // Ce bouton faisait lui-même le mélange « état vivant du suivi OU état
+    // dérivé `inProgress` » — le TROISIÈME endroit du cockpit à le faire. Il
+    // marchait, en démonstration comme ailleurs, parce qu'il pensait bien à
+    // l'état vivant ; c'est précisément ce qui rendait l'incohérence des deux
+    // autres difficile à voir. Le mélange est fait une fois, en amont.
+    //
     // Rien à terminer -> pas de bouton (jamais de « Terminer » hors rando).
-    if (!liveActive && !derivedInProgress) return const SizedBox.shrink();
+    if (ref.watch(cockpitPhaseProvider) != CockpitPhase.hike) {
+      return const SizedBox.shrink();
+    }
 
     // Orange de parité GR20 (orangeTerre) — même token que le reste des CTA.
     final orange = CategoryIconColors.of(context).orange;
@@ -74,15 +78,14 @@ class _FinishTrekButtonState extends ConsumerState<FinishTrekButton> {
       child: SizedBox(
         width: double.infinity,
         height: 52,
-        child: FilledButton.icon(
+        child: AppButton(
           key: const ValueKey(kFinishTrekButtonKey),
+          variant: AppButtonVariant.filledTone,
+          tone: orange,
+          icon: StepwaysIcons.depart,
+          iconSize: 22,
+          label: t.hub.finishTrek.action,
           onPressed: _finishing ? null : () => _onFinishPressed(context),
-          icon: const Icon(Icons.flag_outlined, size: 22),
-          label: Text(t.hub.finishTrek.action),
-          style: FilledButton.styleFrom(
-            backgroundColor: orange,
-            foregroundColor: Colors.white,
-          ),
         ),
       ),
     );
@@ -106,15 +109,18 @@ class _FinishTrekButtonState extends ConsumerState<FinishTrekButton> {
         title: Text(t.hub.finishTrek.confirmTitle),
         content: Text(t.hub.finishTrek.confirmBody),
         actions: [
-          TextButton(
+          AppButton(
             key: const ValueKey(kFinishTrekCancelKey),
+            variant: AppButtonVariant.text,
+            label: t.hub.finishTrek.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.hub.finishTrek.cancel),
           ),
-          FilledButton(
+          AppButton(
             key: const ValueKey(kFinishTrekConfirmKey),
+            label: t.hub.finishTrek.confirm,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.hub.finishTrek.confirm),
           ),
         ],
       ),

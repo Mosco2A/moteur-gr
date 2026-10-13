@@ -1,3 +1,7 @@
+/// La peau CHOISIE, son eligibilite et la peau REELLEMENT appliquee apres repli
+/// : changer de peau reconstruit le theme a chaud.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/settings/data/settings_service.dart';
@@ -76,8 +80,7 @@ class SkinNotifier extends Notifier<AppSkin> {
 }
 
 /// Provider de la peau choisie (persistee). Cf. [SkinNotifier].
-final skinProvider =
-    NotifierProvider<SkinNotifier, AppSkin>(SkinNotifier.new);
+final skinProvider = NotifierProvider<SkinNotifier, AppSkin>(SkinNotifier.new);
 
 /// Eligibilite Grand Air du sentier actif — drapeau `hasCoverPhotos`.
 ///
@@ -116,8 +119,7 @@ final trailHasCoverPhotosProvider = Provider<bool>((ref) {
 /// il se re-applique des qu'un sentier eligible est actif.
 final effectiveSkinProvider = Provider<AppSkin>((ref) {
   final selected = ref.watch(skinProvider);
-  if (selected == AppSkin.grandAir &&
-      !ref.watch(trailHasCoverPhotosProvider)) {
+  if (selected == AppSkin.grandAir && !ref.watch(trailHasCoverPhotosProvider)) {
     return AppSkin.sentierVivant;
   }
   return selected;

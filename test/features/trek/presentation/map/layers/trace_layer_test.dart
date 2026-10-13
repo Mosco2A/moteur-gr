@@ -22,9 +22,7 @@ void main() {
           home: Scaffold(
             body: FlutterMap(
               options: const MapOptions(),
-              children: [
-                TraceLayer(points: points),
-              ],
+              children: [TraceLayer(points: points)],
             ),
           ),
         ),

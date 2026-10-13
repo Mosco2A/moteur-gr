@@ -47,23 +47,26 @@ void main() {
       expect(restored.id, 0);
     });
 
-    test('valeurs par defaut correctes (id=0, isChecked=false, customNote=null)', () {
-      const item = ChecklistItemModel(
-        templateId: 'hat',
-        name: 'hat',
-        category: 'clothing',
-      );
+    test(
+      'valeurs par defaut correctes (id=0, isChecked=false, customNote=null)',
+      () {
+        const item = ChecklistItemModel(
+          templateId: 'hat',
+          name: 'hat',
+          category: 'clothing',
+        );
 
-      expect(item.id, 0);
-      expect(item.isChecked, false);
-      expect(item.customNote, isNull);
+        expect(item.id, 0);
+        expect(item.isChecked, false);
+        expect(item.customNote, isNull);
 
-      final jsonMap = item.toJson();
-      final restored = ChecklistItemModel.fromJson(jsonMap);
-      expect(restored.id, 0);
-      expect(restored.isChecked, false);
-      expect(restored.customNote, isNull);
-    });
+        final jsonMap = item.toJson();
+        final restored = ChecklistItemModel.fromJson(jsonMap);
+        expect(restored.id, 0);
+        expect(restored.isChecked, false);
+        expect(restored.customNote, isNull);
+      },
+    );
   });
 
   group('ChecklistTemplateItem JSON', () {
@@ -100,11 +103,7 @@ void main() {
     });
 
     test('isEssential par defaut a false dans fromJson', () {
-      final json = {
-        'id': 'towel',
-        'category': 'hygiene',
-        'nameKey': 'towel',
-      };
+      final json = {'id': 'towel', 'category': 'hygiene', 'nameKey': 'towel'};
 
       final item = ChecklistTemplateItem.fromJson(json);
       expect(item.isEssential, false);
@@ -115,12 +114,15 @@ void main() {
     test('fromJson charge correctement les overrides', () {
       final json = {
         'addItems': [
-          {'id': 'crampons', 'category': 'equipment', 'nameKey': 'crampons', 'isEssential': true},
+          {
+            'id': 'crampons',
+            'category': 'equipment',
+            'nameKey': 'crampons',
+            'isEssential': true,
+          },
         ],
         'removeItems': ['swimsuit'],
-        'essentialOverrides': {
-          'hikingPoles': true,
-        },
+        'essentialOverrides': {'hikingPoles': true},
       };
 
       final override = TrailChecklistOverride.fromJson(json);

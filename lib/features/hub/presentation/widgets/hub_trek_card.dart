@@ -1,3 +1,7 @@
+/// La carte qui reflete le CYCLE DE VIE du sentier actif, et plus seulement
+/// l'etat du suivi en memoire : a preparer, en cours, en pause, fini.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,61 +13,63 @@ import '../../../../shared/widgets/app_button.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_data_stat.dart';
-import '../../../map/providers/track_position_provider.dart';
-import '../../../treks/domain/trek_lifecycle_state.dart';
-import '../../../treks/providers/my_treks_provider.dart';
-import '../../../trek/providers/tracking_providers.dart';
+import '../../../map/map_facade.dart' show stageDistanceCoveredProvider;
+import '../../../trek/trek_facade.dart'
+    show TrackingSessionState, trekSessionManagerProvider;
+import '../../../../core/branding/stepways_icons.dart';
+import '../cockpit_phase.dart';
 
 /// Carte principale du trek (RF-4 / #ET-1 / #ET-2), enrichie du cycle de vie
 /// multi-trek (StepWays LOT 2, Phase 5).
 ///
-/// Reflete l'[TrekLifecycleState] DERIVE du sentier actif
-/// ([currentTrailSummaryProvider]) — plus seulement l'etat en memoire du
-/// tracking :
-///   * inProgress (session `active`|`paused`) : carte « en cours » avec stats
-///     temps reel du jour + CTA « Reprendre la navigation » (#R08) ;
-///   * completed (finisher legitime) : carte de fin avec « Revoir »
-///     (`/trail/:id/recap`) + « Diplôme » (`/trail/:id/diploma`) ;
-///   * owned / prepared : CTA « Démarrer » qui passe par la GARDE d'unicite C4
-///     ([TrekSessionManagerNotifier.ensureSingleActiveThenStart]) — un dialog
-///     Terminer/Abandonner s'interpose si un AUTRE trek est deja en cours.
+/// Elle a TROIS VISAGES, et c'est [CockpitPhase] qui choisit lequel — la meme
+/// source que « Préparer », « Démarrer » et « Acheter » depuis la tache 809 :
+///   * [CockpitPhase.hike] : carte « en cours » avec stats temps reel du jour
+///     + CTA « Reprendre la navigation » (#R08) ;
+///   * [CockpitPhase.after] : carte de fin, porte unique « Mon aventure »
+///     (`/trail/:id/recap`), qui ouvre elle-meme le diplome et le journal ;
+///   * [CockpitPhase.prepare] : carte d'invite. Le CTA « Démarrer » a QUITTE
+///     cette carte (retour Christophe #3) et vit en bas du cockpit.
 ///
-/// La bascule inProgress prend en compte L'ETAT VIVANT du tracking en priorite
-/// (stats du jour disponibles) et RETOMBE sur l'etat derive (session persistee
-/// non encore reprise en memoire, ex. apres redemarrage). D1 (arbitrage
-/// #94902) : le mode demo reste masque — la carte ne connait que le trek reel.
+/// ELLE CONNAIT DESORMAIS LA DEMONSTRATION, ET C'EST UN CHANGEMENT ASSUME. Son
+/// en-tete disait « le mode demo reste masque — la carte ne connait que le trek
+/// reel » (D1, arbitrage #94902) : vrai tant qu'elle lisait la base, que
+/// la demo n'ecrit pas. En lisant la phase, elle voit l'arrivee d'une marche
+/// simulee et pose sa carte de fin. D1 parlait de ne pas inventer un trek de
+/// demonstration a cote du vrai ; ici le trek EST le vrai Mare a Mare, et c'est
+/// sa marche qui est simulee. Rien n'est acquis pour autant : aucun droit n'est
+/// accorde, et la porte qu'elle ouvre reste celle de l'apres-randonnee reelle.
 class HubTrekCard extends ConsumerWidget {
   const HubTrekCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tracking = ref.watch(trekSessionManagerProvider);
-    final liveActive =
-        tracking.status == TrackingSessionStatus.recording ||
-        tracking.status == TrackingSessionStatus.paused;
-
-    // Une session vivante prime : stats du jour disponibles -> carte active.
-    if (liveActive) {
-      return _ActiveTrekCard(tracking: tracking);
-    }
-
-    // Sinon on suit l'etat DERIVE du sentier actif (session persistee /
-    // progression). Pendant le calcul ou en erreur, on retombe sur la carte
-    // « aucun trek » (invite a demarrer) — jamais d'ecran casse.
-    final summaryAsync = ref.watch(currentTrailSummaryProvider);
-    final state = summaryAsync.asData?.value?.state;
-
-    switch (state) {
-      case TrekLifecycleState.inProgress:
-        // Session persistee en cours mais tracking en memoire pas (encore)
-        // repris : on montre la carte active avec l'etat courant (stats a 0
-        // jusqu'a reprise de la navigation).
-        return _ActiveTrekCard(tracking: tracking);
-      case TrekLifecycleState.completed:
+    // CETTE CARTE NE DERIVE PLUS SON ETAT, ELLE LIT LA PHASE (tache 809).
+    //
+    // Elle melangeait elle-meme l'etat vivant du suivi et l'etat derive de la
+    // base — le MEME melange que faisait l'ecran du cockpit, et qu'un troisieme
+    // widget faisait encore ailleurs. Trois recalculs du meme fait, avec trois
+    // chances de ne pas tomber d'accord. Le melange est desormais fait UNE
+    // fois, dans [cockpitPhaseProvider].
+    //
+    // CE QUE CE SEUL CHANGEMENT REPARE, ET C'EST LE DEFAUT (b) DE CHRISTOPHE :
+    // « demarrer la randonne, le bouton aparait encore une fois la randonnee
+    // finie au lieu d acceder a la post rando ». En demonstration, la base ne
+    // voyait jamais l'arrivee, donc cette carte retombait sur [_StartTrekCard]
+    // (« prêt à partir ») et la porte « Mon aventure » de [_CompletedTrekCard]
+    // ne s'ouvrait JAMAIS. La phase connaissant maintenant l'arrivee sans la
+    // base, c'est bien la carte de fin qui se pose, avec sa porte.
+    switch (ref.watch(cockpitPhaseProvider)) {
+      case CockpitPhase.hike:
+        // Rando active : stats du jour + reprise de la navigation. Couvre aussi
+        // la session persistee pas (encore) reprise en memoire apres un
+        // redemarrage — les stats valent alors 0 jusqu'a la reprise.
+        return _ActiveTrekCard(tracking: ref.watch(trekSessionManagerProvider));
+      case CockpitPhase.after:
         return const _CompletedTrekCard();
-      case TrekLifecycleState.owned:
-      case TrekLifecycleState.prepared:
-      case null:
+      case CockpitPhase.prepare:
+        // Pendant le calcul, en erreur, ou sans aucun trek : la carte d'invite
+        // a demarrer — jamais d'ecran casse.
         return const _StartTrekCard();
     }
   }
@@ -83,13 +89,14 @@ class _ActiveTrekCard extends ConsumerWidget {
     final totalKm = ref.watch(
       trailConfigProvider.select((c) => c.totalDistanceKm),
     );
-    // Finitions V1 (point 7) : « distance parcourue » = distance PROJETÉE sur le
-    // tracé ([stageDistanceCoveredProvider], mètres), la MÊME source unique que
-    // la carte, l'overlay et le widget (correctif build 117 / E10 RF-10). L'ancien
-    // affichage lisait `tracking.distanceKm` (cumul GPS brut de [TrekStats]), qui
-    // reste bloqué à 0 : le pipeline `TrekStats.addPoint`/`updateStats` N'EST PAS
-    // câblé (aucun appelant) -> d'où le « 0.0 km » constaté en QA. La source
-    // projetée, elle, est alimentée et ne gonfle pas sur un aller-retour.
+    // Finitions V1 (point 7) : « distance parcourue » = distance PROJETÉE sur
+    // le tracé ([stageDistanceCoveredProvider], mètres), la MÊME source unique
+    // que la carte, l'overlay et le widget (correctif build 117 / E10 RF-10).
+    // L'ancien affichage lisait `tracking.distanceKm` (cumul GPS brut de
+    // [TrekStats]), qui reste bloqué à 0 : le pipeline
+    // `TrekStats.addPoint`/`updateStats` N'EST PAS câblé (aucun appelant) ->
+    // d'où le « 0.0 km » constaté en QA. La source projetée, elle, est
+    // alimentée et ne gonfle pas sur un aller-retour.
     final coveredKm = ref.watch(stageDistanceCoveredProvider) / 1000.0;
     final progress = totalKm > 0 ? (coveredKm / totalKm).clamp(0.0, 1.0) : 0.0;
     final percent = (progress * 100).round();
@@ -109,8 +116,8 @@ class _ActiveTrekCard extends ConsumerWidget {
             children: [
               // Icone "en cours" en vert categoriel (parite GR20 Navigation ->
               // vertMaquis) plutot que l'accent-sentier unique (#IR02).
-              Icon(
-                Icons.directions_walk,
+              StepIcon(
+                StepwaysIcons.pas,
                 color: CategoryIconColors.of(context).green,
               ),
               const SizedBox(width: AppTheme.spacingSm),
@@ -120,17 +127,15 @@ class _ActiveTrekCard extends ConsumerWidget {
                 child: Text(
                   t.hub.trekCard.activeTitle,
                   style: theme.textTheme.titleLarge,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
           const SizedBox(height: AppTheme.spacingBase),
           // Stats du jour (distance / denivele / temps) : gros chiffres data
-          // via AppDataStat (SW-SKIN-L5), role data tabular L1. Chaque tuile est
-          // `Expanded` (repartition en largeur egale, ex-`_Stat`), alignee a
-          // gauche. Valeur formatee avec unite incluse -> iso-texte pour les
+          // via AppDataStat (SW-SKIN-L5), role data tabular L1. Chaque tuile
+          // est `Expanded` (repartition en largeur egale, ex-`_Stat`), alignee
+          // a gauche. Valeur formatee avec unite incluse -> iso-texte pour les
           // tests existants (find.text('12.5 km') / '640 m').
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +189,7 @@ class _ActiveTrekCard extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: AppButton(
-              icon: Icons.navigation_outlined,
+              icon: StepwaysIcons.maPosition,
               label: t.hub.trekCard.resume,
               // Ph4 (hub-and-push, SPEC §5) : push -> retour propre au cockpit.
               onPressed: () => context.push('/map'),
@@ -221,19 +226,21 @@ class _StartTrekCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Icone "carte" en vert categoriel (parite GR20 Navigation ->
-              // vertMaquis) plutot que l'accent-sentier unique (#IR02).
-              Icon(
-                Icons.map_outlined,
-                color: CategoryIconColors.of(context).green,
-              ),
+              // TACHE 639 (bug 3) — LE DESSIN DE CETTE TUILE EST BICOLORE.
+              //
+              // Il portait la couleur categorielle verte, donc le trace
+              // monochrome teinte : c'est exactement ce que Christophe a vu
+              // (« pret a partir non plus »). Sur la tuile d'etat du cockpit,
+              // le vert categoriel n'apporte rien que le bicolore ne dise mieux
+              // — le trace duo porte deja le vert #1F3D2B de l'identite. On
+              // retire donc la couleur imposee, et la regle de
+              // [iconeBicolorePour] fait sortir « carte » en bicolore.
+              const StepIcon.tuile(StepwaysIcons.map),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
                   t.hub.trekCard.noTrekTitle,
                   style: theme.textTheme.titleLarge,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -275,17 +282,14 @@ class _CompletedTrekCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.emoji_events_outlined,
-                color: AppTheme.vertFacile,
-              ),
+              // TACHE 639 (bug 3) : tuile d'etat de fin de trek = un sujet. Le
+              // diplome est l'une des 20 rubriques, il a un trace bicolore.
+              const StepIcon.tuile(StepwaysIcons.diploma),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
                   t.hub.trekCard.completedTitle,
                   style: theme.textTheme.titleLarge,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -306,7 +310,7 @@ class _CompletedTrekCard extends ConsumerWidget {
             width: double.infinity,
             child: AppButton(
               key: const ValueKey('completed-review'),
-              icon: Icons.landscape_outlined,
+              icon: StepwaysIcons.sommet,
               label: t.hub.cards.recap,
               onPressed: () => context.push('/trail/$trailId/recap'),
             ),

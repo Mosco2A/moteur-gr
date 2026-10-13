@@ -132,23 +132,26 @@ void main() {
       expect(find.text(t.journal.share), findsOneWidget);
     });
 
-    testWidgets('debloque mais encore vierge : l ecran annonce aussi ses blocs',
-        (tester) async {
-      await tester.pumpWidget(ecran(acces: const AsyncData(false)));
-      await tester.pump();
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
+    testWidgets(
+      'debloque mais encore vierge : l ecran annonce aussi ses blocs',
+      (tester) async {
+        await tester.pumpWidget(ecran(acces: const AsyncData(false)));
+        await tester.pump();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.text(t.journal.empty), findsOneWidget);
-      expect(find.text(t.journal.dayTrace), findsOneWidget);
-      expect(find.text(t.journal.daySummary), findsOneWidget);
-      // Et le journal ouvert garde son bouton d ajout.
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-    });
+        expect(find.text(t.journal.empty), findsOneWidget);
+        expect(find.text(t.journal.dayTrace), findsOneWidget);
+        expect(find.text(t.journal.daySummary), findsOneWidget);
+        // Et le journal ouvert garde son bouton d ajout.
+        expect(find.byType(FloatingActionButton), findsOneWidget);
+      },
+    );
   });
 
-  testWidgets('sentier debloque : le journal s ouvre normalement',
-      (tester) async {
+  testWidgets('sentier debloque : le journal s ouvre normalement', (
+    tester,
+  ) async {
     await tester.pumpWidget(ecran(acces: const AsyncData(false)));
     await tester.pump();
     await tester.pump();
@@ -168,10 +171,13 @@ void main() {
     expect(find.text(t.journal.title), findsWidgets);
   });
 
-  testWidgets('FAIL-CLOSED : acces en erreur = verrouille, jamais ouvert',
-      (tester) async {
+  testWidgets('FAIL-CLOSED : acces en erreur = verrouille, jamais ouvert', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      ecran(acces: AsyncError(Exception('droits illisibles'), StackTrace.empty)),
+      ecran(
+        acces: AsyncError(Exception('droits illisibles'), StackTrace.empty),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -188,10 +194,9 @@ void main() {
     /// docstring qui NOMME une API ne la consomme pas. Sans ce filtrage, le
     /// journal se signalerait lui-meme, lui dont le docstring explique
     /// justement pourquoi il ne s appuie PAS sur ces drapeaux.
-    String lireCodeSeul(String chemin) => File(chemin)
-        .readAsLinesSync()
-        .where((l) => !l.trimLeft().startsWith('//'))
-        .join(' ');
+    String lireCodeSeul(String chemin) => File(
+      chemin,
+    ).readAsLinesSync().where((l) => !l.trimLeft().startsWith('//')).join(' ');
 
     List<String> fichiersDeLib() => Directory('lib')
         .listSync(recursive: true)
@@ -202,8 +207,21 @@ void main() {
 
     test('TrailFeatures et featuresForTrail restent un CUL-DE-SAC : aucun '
         'ecran ne les consulte', () {
+      // LOT 645-06, VAGUE 2 : `monetization_service.dart` a ete scinde en
+      // `part` du meme dossier. On ecarte donc toute la BIBLIOTHEQUE de
+      // monetisation — racine et morceaux — et non plus le seul fichier qui
+      // la portait en entier. L attente, elle, ne bouge pas : c est toujours
+      // « aucun AUTRE fichier de lib/ ne consulte ces drapeaux ».
+      // LOT 645-06b : plus de `part` (regle 12) ; le service est une facade
+      // composee de bibliotheques voisines `lib/core/services/monetization_*`
+      // (les drapeaux vivent dans `monetization_access.dart`). On ecarte donc
+      // ces fichiers-la, et eux seuls.
       final consommateurs = fichiersDeLib()
-          .where((p) => !p.endsWith('monetization_service.dart'))
+          .where(
+            (p) => !p
+                .replaceAll(r'\', '/')
+                .contains('lib/core/services/monetization_'),
+          )
           .where((p) {
             final c = lireCodeSeul(p);
             return c.contains('featuresForTrail(') ||
@@ -215,7 +233,8 @@ void main() {
       expect(
         consommateurs,
         isEmpty,
-        reason: 'Si ce test tombe, quelqu un vient de brancher la structure '
+        reason:
+            'Si ce test tombe, quelqu un vient de brancher la structure '
             'TrailFeatures. Ce n est pas interdit — mais il faut alors '
             'trancher : soit elle devient la source d acces et isDemoModeProvider '
             's aligne dessus, soit elle disparait. Les deux coexistant, on '
@@ -225,12 +244,13 @@ void main() {
 
     test('la SOURCE UNIQUE d acces reste isDemoModeProvider, et on sait qui '
         'l utilise', () {
-      final ecrans = fichiersDeLib()
-          .where((p) => p.contains('presentation'))
-          .where((p) => lireCodeSeul(p).contains('isDemoModeProvider('))
-          .map((p) => p.split(RegExp(r'[\\/]')).last)
-          .toList()
-        ..sort();
+      final ecrans =
+          fichiersDeLib()
+              .where((p) => p.contains('presentation'))
+              .where((p) => lireCodeSeul(p).contains('isDemoModeProvider('))
+              .map((p) => p.split(RegExp(r'[\\/]')).last)
+              .toList()
+            ..sort();
 
       // Etat constate au correctif L7-3 : l entrainement (verrou ecrit en
       // cycle precedent) et le journal (ce correctif). Les autres promesses du

@@ -1,3 +1,7 @@
+/// Le carnet, groupe par jour du plus recent au plus ancien : notes et photos
+/// ensemble.
+library;
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,19 +12,24 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../core/engine/trail_engine.dart';
-import '../../../core/map/test_inert_tile_provider.dart';
+import '../../../core/analytics/screen_entry.dart';
+import '../../../core/map/fond_de_carte.dart';
 import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/services/session_demo.dart';
+import '../../../shared/widgets/attribution_osm.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/bandeau_matiere_fabriquee.dart';
 import '../../../shared/widgets/paywall_sheet.dart';
 import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
 import '../providers/journal_day_providers.dart';
 import '../providers/journal_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran principal du journal de trek (E3.1c).
 ///
@@ -62,15 +71,32 @@ class JournalScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.journal, trail: trailId);
+    // EN DEMO, LE JOURNAL S'OUVRE — EN LECTURE (tache 638, bugs 14 et 16).
+    //
+    // Sans cette branche, la demo tombait sur la vue VERROUILLEE : le sentier
+    // reel n'est pas achete, donc `isDemoMode` vaut vrai, donc le journal
+    // proposait de le debloquer. Or la demande de Christophe est de « montrer
+    // comment marche l appli de A a Z », journal compris, et la simulation du
+    // trek (bug 16) passe par le journal du jour.
+    //
+    // CE N'EST PAS UN DROIT ACCORDE : rien ne s'ecrit (les quatre gestes du
+    // journal sont barres en demo), et l'ajout de note est visiblement
+    // indisponible. On OUVRE UNE VITRINE, on ne deverrouille pas un carnet.
+    if (ref.watch(enDemoProvider)) {
+      return _UnlockedJournal(trailId: trailId);
+    }
     // Acces REACTIF (L7-3) : il se reevalue des qu'un achat pose le droit.
     final accesAsync = ref.watch(isDemoModeProvider(trailId));
     return accesAsync.when(
       loading: () => const _JournalShell(
         child: Center(child: CircularProgressIndicator()),
       ),
-      error: (_, __) => _JournalShell(
-        child: _LockedJournalView(trailId: trailId),
-      ),
+      error: (_, __) =>
+          _JournalShell(child: _LockedJournalView(trailId: trailId)),
       data: (isDemo) => isDemo
           ? _JournalShell(child: _LockedJournalView(trailId: trailId))
           : _UnlockedJournal(trailId: trailId),
@@ -122,7 +148,7 @@ class _LockedJournalView extends ConsumerWidget {
     final entryCount = ref.watch(
       journalScreenProvider.select((s) => s.entries.length),
     );
-    final carte = _LockedJournalCard(
+    final card = _LockedJournalCard(
       trailId: trailId,
       // L'aperçu de ce que contient le journal n'a de sens que tant qu'il n'y a
       // rien a lire : des qu'il y a des pages, elles parlent mieux que lui.
@@ -132,7 +158,7 @@ class _LockedJournalView extends ConsumerWidget {
     if (entryCount == 0) {
       return ListView(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
-        children: [carte],
+        children: [card],
       );
     }
 
@@ -141,7 +167,7 @@ class _LockedJournalView extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
-          child: carte,
+          child: card,
         ),
         const Divider(height: 1),
         // CONSULTATION SEULE : navigateur de jour, trace, resume et notes, sans
@@ -164,7 +190,8 @@ class _LockedJournalCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final trail = ref.watch(trailConfigProvider);
+    // Le sentier actif n'est plus lu ici : le prix du deblocage est resolu par
+    // le geste unique [buyTrail] (tache 614), pas par l'appelant.
     return AppCard(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       child: Column(
@@ -172,7 +199,11 @@ class _LockedJournalCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.lock, color: theme.colorScheme.primary, size: 22),
+              StepIcon(
+                StepwaysIcons.cadenas,
+                color: theme.colorScheme.primary,
+                size: 22,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -192,13 +223,9 @@ class _LockedJournalCard extends ConsumerWidget {
           ],
           const SizedBox(height: AppTheme.spacingBase),
           AppButton(
-            icon: Icons.lock_open,
+            icon: StepwaysIcons.cadenasOuvert,
             label: t.journal.lockedUnlock,
-            onPressed: () => showPaywallSheet(
-              context,
-              trailId: trailId,
-              totalStages: trail.totalStages,
-            ),
+            onPressed: () => buyTrail(context, ref, trailId: trailId),
           ),
         ],
       ),
@@ -222,21 +249,18 @@ class _JournalContentPreview extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _JournalPreviewRow(
-          icon: Icons.route_outlined,
+          icon: StepwaysIcons.itineraire,
           label: journalT.dayTrace,
         ),
         _JournalPreviewRow(
-          icon: Icons.insights_outlined,
+          icon: StepwaysIcons.statistiques,
           label: journalT.daySummary,
         ),
         _JournalPreviewRow(
-          icon: Icons.edit_note,
+          icon: StepwaysIcons.crayon,
           label: journalT.entriesOfDay,
         ),
-        _JournalPreviewRow(
-          icon: Icons.photo_camera_outlined,
-          label: journalT.addPhoto,
-        ),
+        _JournalPreviewRow(icon: StepwaysIcons.photo, label: journalT.addPhoto),
       ],
     );
   }
@@ -246,7 +270,7 @@ class _JournalContentPreview extends StatelessWidget {
 class _JournalPreviewRow extends StatelessWidget {
   const _JournalPreviewRow({required this.icon, required this.label});
 
-  final IconData icon;
+  final String icon;
   final String label;
 
   @override
@@ -256,11 +280,9 @@ class _JournalPreviewRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: theme.colorScheme.primary),
+          StepIcon(icon, size: 18, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(label, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
@@ -311,14 +333,39 @@ class _UnlockedJournal extends ConsumerWidget {
             ),
         ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : entryCount == 0
-          ? _EmptyJournalView(journalT: journalT)
-          : const _JournalDayView(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddNoteDialog(context, ref, stageCount),
-        child: const Icon(Icons.add),
+      // EN DEMONSTRATION, LE CARNET DIT QUE SES PAGES SONT FABRIQUEES
+      // (tache 810). Le bandeau est posé ICI, au-dessus du corps, et non dans
+      // [_JournalDayView] : la vue par jour est partagee avec l'etat verrouille
+      // en lecture seule (`_LockedJournalView`), qui montre les VRAIES pages du
+      // randonneur — y glisser l'avertissement l'aurait fait mentir.
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(
+              AppTheme.spacingBase,
+              AppTheme.spacingBase,
+              AppTheme.spacingBase,
+              0,
+            ),
+            child: BandeauMatiereFabriquee(),
+          ),
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : entryCount == 0
+                ? _EmptyJournalView(journalT: journalT)
+                : const _JournalDayView(),
+          ),
+        ],
+      ),
+      // GRISE EN DEMO (tache 638, bug 14) : une note de journal s'ecrit en base.
+      // Le journal se LIT en demo, il ne s'ecrit pas — et le bouton le montre.
+      floatingActionButton: GriseEnDemo(
+        child: FloatingActionButton(
+          onPressed: () => _showAddNoteDialog(context, ref, stageCount),
+          child: const StepIcon(StepwaysIcons.plus),
+        ),
       ),
     );
   }
@@ -391,7 +438,11 @@ class _EmptyJournalView extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
         const SizedBox(height: AppTheme.spacingLg),
-        Icon(Icons.book_outlined, size: 80, color: theme.colorScheme.primary),
+        StepIcon(
+          StepwaysIcons.journal,
+          size: 80,
+          color: theme.colorScheme.primary,
+        ),
         const SizedBox(height: AppTheme.spacingLg),
         Text(
           journalT.empty,
@@ -496,8 +547,9 @@ class _DayTraceCard extends ConsumerWidget {
       orElse: () => const SizedBox.shrink(),
       data: (points) {
         if (points.length < 2) return const SizedBox.shrink();
-        final latLngs =
-            points.map((p) => LatLng(p.lat, p.lng)).toList(growable: false);
+        final latLngs = points
+            .map((p) => LatLng(p.lat, p.lng))
+            .toList(growable: false);
         return AppCard(
           padding: const EdgeInsets.all(AppTheme.spacingMd),
           child: Column(
@@ -505,8 +557,11 @@ class _DayTraceCard extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.route_outlined,
-                      size: 18, color: theme.colorScheme.primary),
+                  StepIcon(
+                    StepwaysIcons.itineraire,
+                    size: 18,
+                    color: theme.colorScheme.primary,
+                  ),
                   const SizedBox(width: AppTheme.spacingXs),
                   Text(
                     journalT.dayTrace,
@@ -535,15 +590,7 @@ class _DayTraceCard extends ConsumerWidget {
                       ),
                     ),
                     children: [
-                      TileLayer(
-                        urlTemplate:
-                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.moteur-gr.app',
-                        // En test, fournisseur inerte : aucune requete
-                        // reseau. En production, `null` -> fournisseur par
-                        // defaut, comportement inchange.
-                        tileProvider: inertTileProviderOrNull(),
-                      ),
+                      const FondDeCarte.duSentierActif(),
                       PolylineLayer(
                         polylines: [
                           Polyline(
@@ -559,6 +606,9 @@ class _DayTraceCard extends ConsumerWidget {
                           _traceDot(latLngs.last, theme.colorScheme.tertiary),
                         ],
                       ),
+                      // ODbL : les tuiles viennent d OpenStreetMap, la carte
+                      // le dit (integration 647).
+                      const AttributionOsm(),
                     ],
                   ),
                 ),
@@ -572,17 +622,17 @@ class _DayTraceCard extends ConsumerWidget {
 
   /// Pastille de depart / d'arrivee du trace.
   static Marker _traceDot(LatLng at, Color color) => Marker(
-        point: at,
-        width: 16,
-        height: 16,
-        child: Container(
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2),
-          ),
-        ),
-      );
+    point: at,
+    width: 16,
+    height: 16,
+    child: Container(
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+    ),
+  );
 }
 
 /// Resume chiffre de la journee affichee + cumul depuis le depart
@@ -617,8 +667,11 @@ class _DaySummaryCard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.insights_outlined,
-                        size: 18, color: theme.colorScheme.primary),
+                    StepIcon(
+                      StepwaysIcons.statistiques,
+                      size: 18,
+                      color: theme.colorScheme.primary,
+                    ),
                     const SizedBox(width: AppTheme.spacingXs),
                     Text(
                       journalT.daySummary,
@@ -750,9 +803,11 @@ class _DayNavigator extends ConsumerWidget {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left),
+            icon: const StepIcon(StepwaysIcons.chevronGauche),
             tooltip: journalT.dayNavPrevious,
-            onPressed: hasPrevious ? () => notifier.select(days[index - 1]) : null,
+            onPressed: hasPrevious
+                ? () => notifier.select(days[index - 1])
+                : null,
           ),
           Expanded(
             child: Column(
@@ -768,10 +823,7 @@ class _DayNavigator extends ConsumerWidget {
                 Text(
                   [
                     journalT.dayOfTrek(day: index + 1),
-                    journalT.dayCounter(
-                      index: index + 1,
-                      total: days.length,
-                    ),
+                    journalT.dayCounter(index: index + 1, total: days.length),
                   ].join(' · '),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -782,7 +834,7 @@ class _DayNavigator extends ConsumerWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.chevron_right),
+            icon: const StepIcon(StepwaysIcons.chevronDroite),
             tooltip: journalT.dayNavNext,
             onPressed: hasNext ? () => notifier.select(days[index + 1]) : null,
           ),
@@ -802,7 +854,10 @@ const double _entryPhotoHeight = 120;
 /// systeme : date lisible, etape, puis la note. Une entree photo sans
 /// texte donne un en-tete seul — jamais une chaine vide, qui ferait
 /// apparaitre un partage muet.
-String journalShareText(JournalEntryModel entry, Translations$journal$fr journalT) {
+String journalShareText(
+  JournalEntryModel entry,
+  Translations$journal$fr journalT,
+) {
   final dateFormat = DateFormat(
     'EEEE d MMMM yyyy',
     LocaleSettings.currentLocale.languageCode,
@@ -871,7 +926,11 @@ class _JournalEntryTile extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.terrain, size: 16, color: theme.colorScheme.primary),
+              StepIcon(
+                StepwaysIcons.sommet,
+                size: 16,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: AppTheme.spacingXs),
               Text(
                 stageLabel,
@@ -887,6 +946,10 @@ class _JournalEntryTile extends ConsumerWidget {
                 ),
               ),
               PopupMenuButton<String>(
+                // TACHE 632 — sans `icon`, le framework pose son propre
+                // `Icons.more_vert` : la seule facon de le remplacer est de le
+                // fournir.
+                icon: const StepIcon(StepwaysIcons.menu),
                 onSelected: (value) {
                   // Double verrou : l'entree du menu n'existe pas en lecture
                   // seule, et l'action refuse quand meme d'agir.
@@ -901,11 +964,7 @@ class _JournalEntryTile extends ConsumerWidget {
                     // CORRECTIF L4-4 : le messenger est capture AVANT tout
                     // await — la feuille de partage ferme le menu, son
                     // `context` ne peut plus servir a afficher l'erreur.
-                    _shareEntry(
-                      entry,
-                      journalT,
-                      ScaffoldMessenger.of(context),
-                    );
+                    _shareEntry(entry, journalT, ScaffoldMessenger.of(context));
                   }
                 },
                 itemBuilder: (context) => [
@@ -913,7 +972,7 @@ class _JournalEntryTile extends ConsumerWidget {
                     value: 'share',
                     child: Row(
                       children: [
-                        const Icon(Icons.share_outlined, size: 20),
+                        const StepIcon(StepwaysIcons.partager, size: 20),
                         const SizedBox(width: 8),
                         Text(journalT.share),
                       ],
@@ -924,7 +983,7 @@ class _JournalEntryTile extends ConsumerWidget {
                       value: 'delete',
                       child: Row(
                         children: [
-                          const Icon(Icons.delete_outline, size: 20),
+                          const StepIcon(StepwaysIcons.corbeille, size: 20),
                           const SizedBox(width: 8),
                           Text(journalT.delete),
                         ],
@@ -963,7 +1022,7 @@ class _JournalEntryTile extends ConsumerWidget {
                   errorBuilder: (_, __, ___) => Container(
                     color: theme.colorScheme.surfaceContainerHighest,
                     child: const Center(
-                      child: Icon(Icons.broken_image, size: 32),
+                      child: StepIcon(StepwaysIcons.imageManquante, size: 32),
                     ),
                   ),
                 ),
@@ -995,7 +1054,7 @@ class _AddNoteDialogSlang extends StatefulWidget {
 
   /// [photoPath] : fichier source choisi, `null` pour une note sans photo.
   final void Function(int stageNumber, String content, String? photoPath)
-      onSave;
+  onSave;
 
   @override
   State<_AddNoteDialogSlang> createState() => _AddNoteDialogSlangState();
@@ -1037,12 +1096,12 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_camera_outlined),
+              leading: const StepIcon(StepwaysIcons.photo),
               title: Text(journalT.camera),
               onTap: () => Navigator.of(ctx).pop(ImageSource.camera),
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
+              leading: const StepIcon(StepwaysIcons.photo),
               title: Text(journalT.gallery),
               onTap: () => Navigator.of(ctx).pop(ImageSource.gallery),
             ),
@@ -1083,6 +1142,9 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
             // dur (compte du GR20) laissait choisir des etapes inexistantes sur
             // un sentier a 7, 12 ou 5 etapes.
             DropdownButtonFormField<int>(
+              // TACHE 632 — meme raison : la fleche du menu deroulant est
+              // fournie par le framework tant qu'on ne la donne pas.
+              icon: const StepIcon(StepwaysIcons.flecheBas, size: 20),
               initialValue: _stageNumber,
               items: List.generate(widget.stageCount, (i) => i + 1)
                   .map(
@@ -1111,10 +1173,12 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
             // entree ne pouvait porter que du texte, et la galerie du Diplome
             // (qui filtre les entrees avec photo) restait toujours vide.
             if (_photoPath == null)
-              OutlinedButton.icon(
+              AppButton(
+                variant: AppButtonVariant.outline,
+                icon: StepwaysIcons.photo,
+                iconSize: 18,
+                label: journalT.addPhoto,
                 onPressed: _choosePhotoSource,
-                icon: const Icon(Icons.add_a_photo_outlined),
-                label: Text(journalT.addPhoto),
               )
             else
               // APERCU EN VIGNETTE DE TAILLE FIXE — ET SURTOUT PAS de largeur
@@ -1151,15 +1215,21 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
                         height: _photoPreviewSize,
                         color: theme.colorScheme.surfaceContainerHighest,
                         child: const Center(
-                          child: Icon(Icons.broken_image, size: 32),
+                          child: StepIcon(
+                            StepwaysIcons.imageManquante,
+                            size: 32,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  TextButton.icon(
+                  AppButton(
+                    variant: AppButtonVariant.text,
+                    icon: StepwaysIcons.croix,
+                    iconSize: 18,
+                    label: journalT.removePhoto,
+                    isFullWidth: false,
                     onPressed: () => setState(() => _photoPath = null),
-                    icon: const Icon(Icons.close),
-                    label: Text(journalT.removePhoto),
                   ),
                 ],
               ),
@@ -1167,9 +1237,11 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
         ),
       ),
       actions: [
-        TextButton(
+        AppButton(
+          variant: AppButtonVariant.text,
+          label: journalT.cancel,
+          isFullWidth: false,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(journalT.cancel),
         ),
         AppButton(
           label: journalT.save,

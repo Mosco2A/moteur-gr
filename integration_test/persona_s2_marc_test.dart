@@ -5,8 +5,17 @@
 // Objectif persona : evaluer vite un trek dur et se lancer.
 // Parcours vise (PLAN_TEST_PERSONAS S2) :
 //   selectionne un trek dur -> faisabilite « go » rapide -> « Mes treks »
-//   multi-treks -> cockpit -> reglages (change la langue, voit la version
-//   v0.1.2) -> profil.
+//   multi-treks -> cockpit -> reglages (change la langue, voit la version du
+//   paquet installe) -> profil.
+//
+// TACHE 650 — DEUX ATTENTES PERIMEES CORRIGEES ICI, ET AUCUNE AFFAIBLIE :
+//   * le bouton du catalogue s'appelle « Préparer » depuis le lot 639 (la cle
+//     `catalog-enter-<id>`, elle, n'a pas bouge) ;
+//   * la version n'est plus recopiee a la main (elle disait encore 0.1.2 alors
+//     que le build 8 est en 0.1.4+8) : elle est LUE sur le paquet installe.
+// « Mes treks » est VIDE au premier lancement depuis le lot 638 — plus aucun
+// sentier n'est offert — donc le repli catalogue est desormais le chemin
+// NORMAL de ce scenario, et non plus un signal QA.
 //
 // Pilote l UI reelle, capture chaque etape, LOGue les coincements. Zero modif app.
 
@@ -14,8 +23,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/features/consent/presentation/consent_settings_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
@@ -27,9 +38,25 @@ import 'persona_harness.dart';
 
 const String P = 'S2_Marc';
 
-/// Version attendue dans les reglages, lue dans le PUBSPEC du projet (0.1.2+3).
-/// On garde la partie « 0.1.2 » : le build number bouge, pas la version.
-const String kVersionAttendue = '0.1.2';
+/// LA VERSION ATTENDUE DANS LES REGLAGES — LUE, PLUS JAMAIS RECOPIEE
+/// (tache 650).
+///
+/// CE QUI N'ALLAIT PAS. Ce fichier portait `const kVersionAttendue = '0.1.2'`,
+/// recopie a la main du pubspec du jour. Le pubspec dit 0.1.4+8 depuis le
+/// build 8 : le scenario exigeait donc l'affichage d'une version que
+/// l'application n'a plus. C'est la meme faute que « Entrer » — une valeur du
+/// produit figee dans le test, qui vieillit en silence et finit par rendre le
+/// test menteur.
+///
+/// CE QU'ON FAIT. On lit la version PAR LE MEME CHEMIN QUE L'ECRAN
+/// ([PackageInfo.fromPlatform], `settings_screen.dart`), c'est-a-dire sur le
+/// paquet reellement installe. L'exigence ne faiblit pas, elle se durcit : elle
+/// devient « les reglages affichent la version DU PAQUET INSTALLE », ce qui est
+/// la vraie question, et elle ne peut plus se perimer.
+Future<String> _versionDuPaquet() async {
+  final info = await PackageInfo.fromPlatform();
+  return info.version;
+}
 
 /// Ecrit la fiche et la rando de Marc par le chemin de production.
 Future<void> _poserLeProfilDeMarc(WidgetTester tester) async {
@@ -37,12 +64,16 @@ Future<void> _poserLeProfilDeMarc(WidgetTester tester) async {
     final element = tester.element(find.byType(Navigator).first);
     final c = ProviderScope.containerOf(element, listen: false);
     await tester.runAsync(() async {
-      await c.read(hikerProfileProvider.notifier).save(const HikerProfile(
-            age: 28,
-            heightCm: 178,
-            weightKg: 72,
-            sex: HikerSex.male,
-          ));
+      await c
+          .read(hikerProfileProvider.notifier)
+          .save(
+            const HikerProfile(
+              age: 28,
+              heightCm: 178,
+              weightKg: 72,
+              sex: HikerSex.male,
+            ),
+          );
       await c.read(pastHikesProvider.notifier).saveAll(<PastHike>[
         PastHike(
           date: DateTime(2024, 7, 1),
@@ -58,7 +89,11 @@ Future<void> _poserLeProfilDeMarc(WidgetTester tester) async {
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
     logStep(P, 'profil', 'fiche et rando de Marc ecrites par les notifiers');
   } catch (e) {
-    logStep(P, 'profil', 'COINCE : impossible de poser le profil de Marc : \$e');
+    logStep(
+      P,
+      'profil',
+      'COINCE : impossible de poser le profil de Marc : \$e',
+    );
   }
 }
 
@@ -81,7 +116,12 @@ void main() {
     logStep(P, 'boot', 'Lancement de app.main()');
     installerVeilleEcranSysteme(P);
     app.main();
-    await settleAndShoot(tester, P, '01_boot', timeout: const Duration(seconds: 12));
+    await settleAndShoot(
+      tester,
+      P,
+      '01_boot',
+      timeout: const Duration(seconds: 12),
+    );
 
     // Consentement pub + onboarding (bilingue, Marc est presse -> Passer/Skip).
     await completeOnboardingIfPresent(tester, P);
@@ -91,10 +131,14 @@ void main() {
     _logLocation(tester, P, 'accueil');
     await settleAndShoot(tester, P, '03_mes_treks');
     // Compter les cartes de trek possedees (cle trek-summary-*).
-    final trekCards = find
-        .byWidgetPredicate((w) => w.key.toString().contains('trek-summary-'));
-    logStep(P, 'mes_treks',
-        'Treks possedes visibles (cartes trek-summary-*) = ${trekCards.evaluate().length}');
+    final trekCards = find.byWidgetPredicate(
+      (w) => w.key.toString().contains('trek-summary-'),
+    );
+    logStep(
+      P,
+      'mes_treks',
+      'Treks possedes visibles (cartes trek-summary-*) = ${trekCards.evaluate().length}',
+    );
 
     // --- Selectionne un trek (entre dans le cockpit) ---
     // Marc ouvre un trek depuis « Mes treks » : tap sur la 1re carte. NB : s il a
@@ -104,24 +148,43 @@ void main() {
     if (present(trekCards)) {
       await tester.tap(trekCards.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
-      logStep(P, 'selection', 'TAP OK : ouverture du 1er trek possede -> cockpit');
+      logStep(
+        P,
+        'selection',
+        'TAP OK : ouverture du 1er trek possede -> cockpit',
+      );
     } else {
-      logStep(P, 'selection',
-          'FINDING : « Mes treks » VIDE apres skip onboarding (0 trek possede). '
-          'Repli catalogue.');
+      logStep(
+        P,
+        'selection',
+        '« Mes treks » est VIDE au premier lancement (0 trek possede) — '
+            'ce n est PLUS un signal QA depuis le lot 638 : c est la decision de '
+            'Christophe du 29/09 14:17 (« je n ai droit a rien »). On passe donc '
+            'par le catalogue, qui est le chemin normal.',
+      );
       if (!present(textFrEn('Catalogue des sentiers', 'Trail catalog'))) {
-        await tapIfPresent(tester, textFrEn('Découvrir des sentiers', 'Discover trails'),
-            P, 'selection', 'Decouvrir des sentiers (repli)', warnIfMissing: false);
-      }
-      await tapIfPresent(
+        await tapIfPresent(
           tester,
-          find.byKey(const ValueKey('catalog-enter-mare-a-mare-centre')),
+          textFrEn('Découvrir des sentiers', 'Discover trails'),
           P,
           'selection',
-          'Entrer dans la vitrine (repli)');
-      // FIX CYCLE 2 (issue 1) : « Entrer » ouvre desormais le COCKPIT /home
-      // (prepa), plus la carte live. `_goHome` reste un filet idempotent (etat
-      // connu) au cas ou l'entree serait detournee.
+          'Decouvrir des sentiers (repli)',
+          warnIfMissing: false,
+        );
+      }
+      // TACHE 650 — LE BOUTON S'APPELLE « PREPARER » DEPUIS LE LOT 639, et la
+      // preparation sans achat est ROUVERTE (decision du 30/09 12:41, avec
+      // publicite). La CLE, elle, n'a pas bouge : on vise la cle.
+      await tapIfPresent(
+        tester,
+        boutonPreparer(kSentierDeProduction),
+        P,
+        'selection',
+        '« Préparer » le sentier de production (repli)',
+      );
+      // « Preparer » ouvre le COCKPIT /home (prepa), pas la carte live.
+      // `_goHome` reste un filet idempotent (etat connu) au cas ou l'entree
+      // serait detournee.
       await _goHome(tester, P);
     }
     await settleAndShoot(tester, P, '04_cockpit');
@@ -150,8 +213,13 @@ void main() {
     // PRESSE — il valide pour voir tout de suite son resultat, exactement comme
     // un vrai utilisateur qui veut un « go / no go » immediat.
     if (present(find.text(t.feasibility.flow.validate))) {
-      await exigeTap(tester, find.text(t.feasibility.flow.validate), P,
-          'faisabilite', '« Valider et voir mon résultat » du flux guide');
+      await exigeTap(
+        tester,
+        find.text(t.feasibility.flow.validate),
+        P,
+        'faisabilite',
+        '« Valider et voir mon résultat » du flux guide',
+      );
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
       await settleAndShoot(tester, P, '05b_faisabilite_verdict');
     }
@@ -162,23 +230,25 @@ void main() {
     // d'origine) : DEUX LIBELLES DISPARUS. Le verdict n'etait donc jamais lu et
     // le run restait vert. Il est desormais EXIGE, avec les libelles de l'app.
     exige(
-        P,
-        'faisabilite',
-        verdictMarc != null,
-        'Marc obtient un verdict REEL et lisible ("${t.feasibility.formula.verdicts.green}" / '
-            '"${t.feasibility.formula.verdicts.orange}" / '
-            '"${t.feasibility.formula.verdicts.red}") — c est TOUT ce qu il '
-            'vient chercher');
+      P,
+      'faisabilite',
+      verdictMarc != null,
+      'Marc obtient un verdict REEL et lisible ("${t.feasibility.formula.verdicts.green}" / '
+          '"${t.feasibility.formula.verdicts.orange}" / '
+          '"${t.feasibility.formula.verdicts.red}") — c est TOUT ce qu il '
+          'vient chercher',
+    );
     // EXIGENCE RETOURNEE (tache 552) — la mention hors-perimetre « le poids de
     // ton sac n entre pas dans ce feu » est SUPPRIMEE : elle expliquait une
     // absence sans rien changer au resultat. Pour un utilisateur presse, c etait
     // meme la premiere phrase a survoler. On verrouille son absence.
     exigeAbsent(
-        find.byIcon(Icons.visibility_off_outlined),
-        P,
-        'faisabilite',
-        'la mention hors-perimetre sous le feu tricolore (supprimee, '
-        'tache 552)');
+      find.byIcon(Icons.visibility_off_outlined),
+      P,
+      'faisabilite',
+      'la mention hors-perimetre sous le feu tricolore (supprimee, '
+          'tache 552)',
+    );
     // Retour cockpit par le routeur (etat connu).
     await _goHome(tester, P);
 
@@ -190,74 +260,127 @@ void main() {
     await _scrollToTop(tester, P);
     await settleAndShoot(tester, P, '06_retour_cockpit');
     final ctaMarc = textFrEn('Démarrer la randonnée', 'Start the trek');
-    await scrollUntil(tester, ctaMarc, P, 'cockpit',
-        'CTA Demarrer la randonnee (BAS du cockpit)', maxScrolls: 25);
+    await scrollUntil(
+      tester,
+      ctaMarc,
+      P,
+      'cockpit',
+      'CTA Demarrer la randonnee (BAS du cockpit)',
+      maxScrolls: 25,
+    );
     logStep(
-        P,
-        'cockpit',
-        'CTA Demarrer present = ${present(ctaMarc)} ; '
-            'Reprendre present = ${present(textFrEn('Reprendre la navigation', 'Resume navigation'))}');
+      P,
+      'cockpit',
+      'CTA Demarrer present = ${present(ctaMarc)} ; '
+          'Reprendre present = ${present(textFrEn('Reprendre la navigation', 'Resume navigation'))}',
+    );
     // EXIGENCE — Marc veut SE LANCER : le cockpit doit lui offrir une porte de
     // depart (« Démarrer la randonnée » ou « Reprendre la navigation »).
     exige(
-        P,
-        'cockpit',
-        present(ctaMarc) ||
-            present(textFrEn('Reprendre la navigation', 'Resume navigation')),
-        'le cockpit propose une porte de depart (Démarrer ou Reprendre)');
+      P,
+      'cockpit',
+      present(ctaMarc) ||
+          present(textFrEn('Reprendre la navigation', 'Resume navigation')),
+      'le cockpit propose une porte de depart (Démarrer ou Reprendre)',
+    );
 
     // --- Reglages : changer la langue + voir la version ---
     // Acces reglages via l icone parametres du header du cockpit.
-    final gearBtn = find.byIcon(Icons.settings_outlined);
+    // TACHE 650 — L'ICONE N'EST PLUS UNE ICONE MATERIAL (lot 632). On vise
+    // l'infobulle, qui est aussi le libelle d'accessibilite, et on la LIT dans
+    // l'i18n : `find.byIcon(Icons.settings_outlined)` ne trouvait plus rien.
+    final gearBtn = find.byTooltip(t.nav.settings);
     await exigeTap(
-        tester, gearBtn, P, 'reglages', 'icone Reglages du header du cockpit');
+      tester,
+      gearBtn,
+      P,
+      'reglages',
+      'icone Reglages du header du cockpit',
+    );
     await settleAndShoot(tester, P, '07_reglages');
 
     // Changer la langue : taper « English » (ListTile de la section langue).
     // LIBELLES REELS : les noms de langue sont des ENDONYMES non traduits
     // (`AppLanguageValues.labels`), « English » et « Français ». Ils ne sont pas
     // dans l'i18n : c'est normal, et c'est la raison du faux positif N1.
-    final langOk = await exigeTap(tester, find.text('English'), P, 'reglages',
-        'entree de langue « English » dans les reglages');
+    final langOk = await exigeTap(
+      tester,
+      find.text('English'),
+      P,
+      'reglages',
+      'entree de langue « English » dans les reglages',
+    );
     await settleAndShoot(tester, P, '08_langue_en');
     if (langOk) {
       // EXIGENCE — la bascule doit etre REELLE : l'interface passe en anglais.
       // On lit les libelles ANGLAIS de l'app (pas une devinette).
-      final switched = present(find.text('Settings')) ||
+      final switched =
+          present(find.text('Settings')) ||
           present(find.text('Language')) ||
           present(find.text('Version'));
-      exige(P, 'reglages', switched,
-          'le changement de langue bascule REELLEMENT l interface en anglais');
+      exige(
+        P,
+        'reglages',
+        switched,
+        'le changement de langue bascule REELLEMENT l interface en anglais',
+      );
       // Remettre le francais pour ne pas perturber les autres scenarios.
-      await tapIfPresent(tester, find.text('Français'), P, 'reglages',
-          'remettre Francais (endonyme)', warnIfMissing: false);
+      await tapIfPresent(
+        tester,
+        find.text('Français'),
+        P,
+        'reglages',
+        'remettre Francais (endonyme)',
+        warnIfMissing: false,
+      );
       await pumpAndSettleTolerant(tester);
       // EXIGENCE — et le retour au francais doit marcher aussi (aller-retour).
       exige(
-          P,
-          'reglages',
-          present(find.text('Paramètres')) || present(find.text('Langue')),
-          'le retour au francais bascule l interface dans l autre sens');
+        P,
+        'reglages',
+        present(find.text('Paramètres')) || present(find.text('Langue')),
+        'le retour au francais bascule l interface dans l autre sens',
+      );
     }
 
-    // Voir la version : defiler jusqu a la section version et lire « 0.1.2 »
-    // (version courante — pubspec 0.1.2+3, lue via PackageInfo).
-    await scrollUntil(tester, find.textContaining(kVersionAttendue), P, 'version',
-        'numero de version ($kVersionAttendue)');
-    final versionShown = present(find.textContaining(kVersionAttendue));
-    logStep(P, 'version',
-        'Version $kVersionAttendue visible dans les reglages = $versionShown');
-    // EXIGENCE — la version affichee est celle du pubspec. C'est ce qui permet
-    // a Chris de savoir QUELLE version il tient en main.
-    exige(P, 'version', versionShown,
-        'la version $kVersionAttendue est affichee dans les reglages');
+    // Voir la version : defiler jusqu'a la section version et la comparer a
+    // celle du PAQUET INSTALLE (tache 650 — plus aucune version recopiee ici).
+    final versionAttendue = await _versionDuPaquet();
+    await scrollUntil(
+      tester,
+      find.textContaining(versionAttendue),
+      P,
+      'version',
+      'numero de version ($versionAttendue)',
+    );
+    final versionShown = present(find.textContaining(versionAttendue));
+    logStep(
+      P,
+      'version',
+      'Version du paquet installe = $versionAttendue ; visible dans les '
+          'reglages = $versionShown',
+    );
+    // EXIGENCE — la version affichee est celle du paquet reellement installe.
+    // C'est ce qui permet a Christophe de savoir QUELLE version il tient en main.
+    exige(
+      P,
+      'version',
+      versionShown,
+      'les reglages affichent la version DU PAQUET INSTALLE ($versionAttendue)',
+    );
     await settleAndShoot(tester, P, '09_version');
 
     // --- Profil ---
     await _back(tester, P, 'profil');
     // Icone profil du header du cockpit.
-    await exigeTap(tester, find.byIcon(Icons.person_outline), P, 'profil',
-        'icone Profil du header du cockpit');
+    // TACHE 650 — meme cause, meme parade que pour les reglages (lot 632).
+    await exigeTap(
+      tester,
+      find.byTooltip(t.hub.profileTooltip),
+      P,
+      'profil',
+      'icone Profil du header du cockpit',
+    );
     await settleAndShoot(tester, P, '10_profil');
     _logLocation(tester, P, 'profil');
 
@@ -289,11 +412,15 @@ void main() {
     // Faisabilite, capture 12c a l'appui). On EXIGE donc que le run n'ait pas
     // ete couvert : ainsi un run invalide se declare invalide, au lieu de se
     // faire passer pour un rapport de defauts.
-    exige(P, 'run_valide', ecransSystemeBloquants().isEmpty,
-        'aucune fenetre systeme n a recouvert l application pendant le run '
-        '(sinon le run est INVALIDE, pas le produit — relancer avec les demons '
-        'persona_perm_granter et persona_dialog_dismisser). Bloquants vus : '
-        '${ecransSystemeBloquants().join(", ")}');
+    exige(
+      P,
+      'run_valide',
+      ecransSystemeBloquants().isEmpty,
+      'aucune fenetre systeme n a recouvert l application pendant le run '
+          '(sinon le run est INVALIDE, pas le produit — relancer avec les demons '
+          'persona_perm_granter et persona_dialog_dismisser). Bloquants vus : '
+          '${ecransSystemeBloquants().join(", ")}',
+    );
     poigneeSemantique.dispose();
     verdictPersona(P, minimumExigences: 12);
   });
@@ -377,8 +504,11 @@ String? _logVisibleVerdict(WidgetTester tester, String persona) {
       return libelle;
     }
   }
-  logStep(persona, 'verdict',
-      'Aucun des TROIS verdicts reels visible — voir capture');
+  logStep(
+    persona,
+    'verdict',
+    'Aucun des TROIS verdicts reels visible — voir capture',
+  );
   return null;
 }
 
@@ -457,8 +587,14 @@ Future<bool> _openHubCard(
       await pumpAndSettleTolerant(tester);
     }
   }
-  await tapIfPresent(tester, card, persona, etape, 'ouvrir « $cardLabel »',
-      warnIfMissing: false);
+  await tapIfPresent(
+    tester,
+    card,
+    persona,
+    etape,
+    'ouvrir « $cardLabel »',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
   var reached = present(find.text(expectedTitle));
   // Filet deep-link (cible identique au hub) si la carte n'a pas abouti.
@@ -468,30 +604,146 @@ Future<bool> _openHubCard(
       _push(tester, fallbackPath(id), persona);
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
       reached = present(find.text(expectedTitle));
-      logStep(persona, etape,
-          'Carte HUB « $cardLabel » non atteinte -> filet deep-link '
-          '${fallbackPath(id)} (cible identique au hub).');
+      logStep(
+        persona,
+        etape,
+        'Carte HUB « $cardLabel » non atteinte -> filet deep-link '
+        '${fallbackPath(id)} (cible identique au hub).',
+      );
     }
   }
   if (shot != null) await settleAndShoot(tester, persona, shot);
-  logStep(persona, etape,
-      'Ecran « $expectedTitle » atteint = $reached (loc=${_currentLocation(tester)}).');
+  logStep(
+    persona,
+    etape,
+    'Ecran « $expectedTitle » atteint = $reached (loc=${_currentLocation(tester)}).',
+  );
   return reached;
+}
+
+/// Chemin de la route qui porte l'ecran [ecran], s'il est AU DESSUS de la pile
+/// (LOT 645-F1) ; null sinon.
+///
+/// POURQUOI PAS [_currentLocation]. Sous go_router 13, `push` empile la route
+/// sans changer `routerDelegate.currentConfiguration.uri` : apres
+/// `context.push('/consent')` depuis les Reglages, cette adresse reste celle
+/// des Reglages. Le [GoRouterState] de la page, lui, est celui de la route
+/// poussee — et `ModalRoute.isCurrent` dit qu'elle est bien au premier plan.
+String? _routeCouranteDe(WidgetTester tester, Finder ecran) {
+  try {
+    final element = tester.element(ecran.first);
+    if (ModalRoute.of(element)?.isCurrent != true) return null;
+    return GoRouterState.of(element).uri.path;
+  } catch (_) {
+    return null;
+  }
+}
+
+/// #D22 — RETRAIT AUSSI SIMPLE QUE L'OCTROI, joue sur une finalite (LOT 645-F1).
+///
+/// On prend le PARTAGE SOCIAL : sa revocation n'efface rien sur l'appareil
+/// (seule la finalite sante emporte la morphologie, cf.
+/// `ConsentController._effacerCeQueProtege`) et elle ne declenche ni
+/// permission systeme ni formulaire publicitaire natif. Un geste inverse
+/// l'etat, un second geste identique le restaure : les deux sens (octroi et
+/// retrait) coutent le MEME geste, et le consentement de Marc ressort tel qu'il
+/// est entre — un harnais qui changerait un consentement au passage fausserait
+/// la suite. La bascule est cherchee par sa cle SOUS l'ecran de consentement.
+Future<void> _basculerPuisRetirerUneFinalite(
+  WidgetTester tester,
+  String persona,
+) async {
+  const cle = ValueKey('consent-toggle-socialSharing');
+  final bascule = find.descendant(
+    of: find.byType(ConsentSettingsScreen),
+    matching: find.byKey(cle),
+  );
+  Finder basculeA(bool valeur) => find.descendant(
+    of: find.byType(ConsentSettingsScreen),
+    matching: find.byWidgetPredicate(
+      (w) => w is SwitchListTile && w.key == cle && w.value == valeur,
+    ),
+  );
+
+  if (!exige(
+    persona,
+    'consent',
+    await waitFor(tester, bascule, timeout: const Duration(seconds: 6)),
+    'la bascule de la finalite « partage social » est affichee',
+  )) {
+    return;
+  }
+  final initial = tester.widget<SwitchListTile>(bascule.first).value;
+
+  var tape = await tapIfPresent(
+    tester,
+    bascule,
+    persona,
+    'consent',
+    'basculer le partage social (etat initial = $initial)',
+    warnIfMissing: false,
+  );
+  final inverse =
+      tape &&
+      await waitFor(
+        tester,
+        basculeA(!initial),
+        timeout: const Duration(seconds: 6),
+      );
+  exige(
+    persona,
+    'consent',
+    inverse,
+    'un geste ${initial ? 'retire' : 'accorde'} le consentement « partage '
+        'social » (bascule $initial -> ${!initial})',
+  );
+  if (!inverse) return;
+
+  tape = await tapIfPresent(
+    tester,
+    bascule,
+    persona,
+    'consent',
+    'rebasculer le partage social (retour a $initial)',
+    warnIfMissing: false,
+  );
+  final restaure =
+      tape &&
+      await waitFor(
+        tester,
+        basculeA(initial),
+        timeout: const Duration(seconds: 6),
+      );
+  exige(
+    persona,
+    'consent',
+    restaure,
+    'le MEME geste ${initial ? 'accorde' : 'retire'} a nouveau le '
+        'consentement (bascule ${!initial} -> $initial) : retrait aussi '
+        'simple que l octroi (#D22)',
+  );
 }
 
 /// Ouvre les REGLAGES depuis le cockpit (icone parametres du header), best effort.
 Future<void> _openSettings(WidgetTester tester, String persona) async {
   await _goHome(tester, persona);
   await _scrollToTop(tester, persona);
-  await tapIfPresent(tester, find.byIcon(Icons.settings_outlined), persona,
-      'reglages', 'ouvrir Reglages (icone parametres)');
+  await tapIfPresent(
+    tester,
+    find.byTooltip(t.nav.settings),
+    persona,
+    'reglages',
+    'ouvrir Reglages (icone parametres)',
+  );
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 }
 
 /// TOUR LOGISTIQUE + COMPTE de Marc (extension GO-46). Blocs independants et
 /// defensifs : ecrans logistique par carte HUB, ecrans compte par les Reglages.
 Future<void> _logisticsAndAccountTour(
-    WidgetTester tester, String persona) async {
+  WidgetTester tester,
+  String persona,
+) async {
   // --- #P19 ITINERAIRE (carte HUB « Itinéraire » -> /trail/:id/itinerary) ---
   // Decision : deroule des etapes du sentier (parite GR20). Element metier : un
   // en-tete de totaux (« km ») ou l'etat vide (aucune etape chargee).
@@ -500,113 +752,198 @@ Future<void> _logisticsAndAccountTour(
   // `reached` ne pouvait donc JAMAIS etre vrai : le bloc entier etait mort, et
   // son echec silencieux. On lit desormais le titre dans l'i18n de l'app.
   final atteintItineraire = await _openHubCard(
-      tester, persona, 'itineraire', t.itinerary.title, t.itinerary.title,
-      shot: 'S2E_19_itineraire',
-      fallbackPath: (id) => '/trail/$id/itinerary');
-  exige(persona, 'itineraire', atteintItineraire,
-      'l ecran Itineraire est atteint (carte du hub ou route du hub)');
+    tester,
+    persona,
+    'itineraire',
+    t.itinerary.title,
+    t.itinerary.title,
+    shot: 'S2E_19_itineraire',
+    fallbackPath: (id) => '/trail/$id/itinerary',
+  );
+  exige(
+    persona,
+    'itineraire',
+    atteintItineraire,
+    'l ecran Itineraire est atteint (carte du hub ou route du hub)',
+  );
   if (atteintItineraire) {
-    final hasContent = present(find.textContaining('km')) ||
+    final hasContent =
+        present(find.textContaining('km')) ||
         present(find.text(t.itinerary.empty));
-    exige(persona, 'itineraire', hasContent,
-        'l Itineraire affiche un contenu (totaux en km, ou etat vide explicite)');
+    exige(
+      persona,
+      'itineraire',
+      hasContent,
+      'l Itineraire affiche un contenu (totaux en km, ou etat vide explicite)',
+    );
   }
 
   // --- #P23 TRANSPORT (carte HUB « Transport » -> /trail/:id/transport) ---
   // Decision : onglets ALLER / RETOUR (data-driven, direction-aware). On BASCULE
   // sur le 2e onglet (repartir) pour jouer la logistique retour (parite GR20).
   if (await _openHubCard(
-      tester, persona, 'transport', 'Transport', 'Transport',
-      shot: 'S2E_23_transport',
-      fallbackPath: (id) => '/trail/$id/transport')) {
+    tester,
+    persona,
+    'transport',
+    'Transport',
+    'Transport',
+    shot: 'S2E_23_transport',
+    fallbackPath: (id) => '/trail/$id/transport',
+  )) {
     // Deux onglets (Tab) : on tape le second (index 1) via le TabBar.
     final tabs = find.byType(Tab);
     if (tabs.evaluate().length >= 2) {
       await tester.tap(tabs.at(1), warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
-      logStep(persona, 'transport',
-          'TAP OK : onglet RETOUR (repartir de l arrivee). #P23 couvert.');
+      logStep(
+        persona,
+        'transport',
+        'TAP OK : onglet RETOUR (repartir de l arrivee). #P23 couvert.',
+      );
     } else {
-      logStep(persona, 'transport',
-          'Onglets transport introuvables (fallback sans donnees ?) — #P23 atteint.');
+      logStep(
+        persona,
+        'transport',
+        'Onglets transport introuvables (fallback sans donnees ?) — #P23 atteint.',
+      );
     }
     await settleAndShoot(tester, persona, 'S2E_23b_transport_retour');
   }
 
   // --- #P28 GUIDES VILLES (carte HUB « Guides des villes » -> /trail/:id/guides)
   //     + #P29 DETAIL guide (tap 1re carte town-guide-card-*). ---
-  if (await _openHubCard(tester, persona, 'guides', 'Guides des villes',
-      'Guides des villes',
-      shot: 'S2E_28_guides',
-      fallbackPath: (id) => '/trail/$id/guides')) {
+  if (await _openHubCard(
+    tester,
+    persona,
+    'guides',
+    'Guides des villes',
+    'Guides des villes',
+    shot: 'S2E_28_guides',
+    fallbackPath: (id) => '/trail/$id/guides',
+  )) {
     final guideCard = find.byWidgetPredicate(
-        (w) => w.key.toString().contains('town-guide-card-'));
+      (w) => w.key.toString().contains('town-guide-card-'),
+    );
     if (present(guideCard)) {
       await tester.tap(guideCard.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
       await settleAndShoot(tester, persona, 'S2E_29_guide_detail');
-      logStep(persona, 'guides',
-          'TAP OK : detail d un guide ville ouvert (loc=${_currentLocation(tester)}). '
-          '#P28 + #P29 couverts.');
+      logStep(
+        persona,
+        'guides',
+        'TAP OK : detail d un guide ville ouvert (loc=${_currentLocation(tester)}). '
+            '#P28 + #P29 couverts.',
+      );
       await _back(tester, persona, 'guides');
     } else {
       final empty = present(find.byKey(const ValueKey('town-guides-empty')));
-      logStep(persona, 'guides',
-          'Aucune carte de guide (liste vide=$empty) — #P28 atteint, #P29 sans '
-          'donnee (aucun guide pour ce sentier). Signal QA data.');
+      logStep(
+        persona,
+        'guides',
+        'Aucune carte de guide (liste vide=$empty) — #P28 atteint, #P29 sans '
+            'donnee (aucun guide pour ce sentier). Signal QA data.',
+      );
       await settleAndShoot(tester, persona, 'S2E_29_guide_detail');
     }
   }
 
   // --- #P38 /consent (#D22) : gestion RGPD granulaire depuis les Reglages ---
-  // Decision : consentement par finalite, retrait aussi simple que l'octroi. On
-  // BASCULE une finalite (1er Switch de la liste) pour jouer le geste metier.
+  // Decision : consentement par finalite, retrait aussi simple que l'octroi.
+  //
+  // LOT 645-F1 — CE BLOC SE DECLARAIT COUVERT SANS RIEN OUVRIR. Le libelle
+  // « Confidentialité et consentement » est porte TROIS fois : l'en-tete de
+  // section des Reglages (texte nu, non tapable), le titre de la tuile qui
+  // ouvre /consent, et le titre de l'ecran /consent lui-meme. L'ancien parcours
+  // tapait `find.text(...)`, qui tombait sur l'en-tete : rien ne s'ouvrait. Il
+  // concluait ensuite « ecran /consent atteint » en cherchant le MEME libelle,
+  // present sur l'ecran de depart, puis basculait le premier Switch trouve —
+  // celui des Reglages. #P38 et #D22 etaient comptes couverts a tort.
+  //
+  // CE QU'ON FAIT. On tape la TUILE (le ListTile qui porte le libelle, seul
+  // widget tapable des trois), et l'arrivee se prouve par ce qui N'EXISTE QUE
+  // sur l'ecran de consentement : l'ecran [ConsentSettingsScreen] monte, porte
+  // par la route `/consent`, et c'est la route du DESSUS de la pile (cf.
+  // [_routeCouranteDe]). Chaque etape est une EXIGENCE : si la tuile ne s'ouvre
+  // pas, le scenario echoue.
   await _openSettings(tester, persona);
-  await scrollUntil(tester, find.text('Confidentialité et consentement'),
-      persona, 'consent', 'tuile Confidentialite et consentement (Reglages)');
-  if (await tapIfPresent(
-      tester, find.text('Confidentialité et consentement'), persona, 'consent',
-      'ouvrir la gestion du consentement', warnIfMissing: false)) {
+  final tuileConsentement = find.widgetWithText(
+    ListTile,
+    t.consent.settingsEntry,
+  );
+  await scrollUntil(
+    tester,
+    tuileConsentement,
+    persona,
+    'consent',
+    'tuile Confidentialite et consentement (Reglages)',
+  );
+  if (await exigeTap(
+    tester,
+    tuileConsentement,
+    persona,
+    'consent',
+    'tuile « Confidentialité et consentement » des Reglages',
+  )) {
+    final ecranConsentement = find.byType(ConsentSettingsScreen);
+    final vu = await waitFor(
+      tester,
+      ecranConsentement,
+      timeout: const Duration(seconds: 6),
+    );
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    final route = vu ? _routeCouranteDe(tester, ecranConsentement) : null;
     await settleAndShoot(tester, persona, 'S2E_38_consent');
-    final onConsent = present(find.text('Confidentialité et consentement'));
-    // Bascule une finalite (Switch dans un ConsentPurposeTile).
-    final sw = find.byType(Switch);
-    var toggled = false;
-    if (present(sw)) {
-      await tester.tap(sw.first, warnIfMissed: false);
-      await pumpAndSettleTolerant(tester);
-      toggled = true;
+    final surConsentement = exige(
+      persona,
+      'consent',
+      route == '/consent',
+      'la tuile ouvre REELLEMENT la gestion du consentement '
+          '(ConsentSettingsScreen monte, route courante /consent ; '
+          'route lue = $route)',
+    );
+    if (surConsentement) {
+      await _basculerPuisRetirerUneFinalite(tester, persona);
+      await settleAndShoot(tester, persona, 'S2E_38b_consent_bascule');
+      await _back(tester, persona, 'consent');
     }
-    logStep(persona, 'consent',
-        'Ecran /consent atteint = $onConsent ; finalite basculee = $toggled. '
-        '#P38 + #D22 couverts.');
-    await settleAndShoot(tester, persona, 'S2E_38b_consent_bascule');
-    await _back(tester, persona, 'consent');
-  } else {
-    logStep(persona, 'consent',
-        'COINCE : tuile « Confidentialite et consentement » introuvable dans '
-        'les Reglages. #P38/#D22 non joues. Signal QA.');
   }
 
   // --- #P39 /recovery-code (#D20) : code de reconnexion depuis les Reglages ---
   // Decision : afficher le code (cle du coffre chiffre) pour le NOTER. On verifie
   // le titre + le label « Votre code » + un bouton copier.
   await _openSettings(tester, persona);
-  await scrollUntil(tester, find.text(t.recovery.title), persona,
-      'recovery', 'tuile Mon code de reconnexion (Reglages)');
-  if (await exigeTap(tester, find.text(t.recovery.title), persona,
-      'recovery', 'tuile « Mon code de reconnexion » des Reglages')) {
+  await scrollUntil(
+    tester,
+    find.text(t.recovery.title),
+    persona,
+    'recovery',
+    'tuile Mon code de reconnexion (Reglages)',
+  );
+  if (await exigeTap(
+    tester,
+    find.text(t.recovery.title),
+    persona,
+    'recovery',
+    'tuile « Mon code de reconnexion » des Reglages',
+  )) {
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     await settleAndShoot(tester, persona, 'S2E_39_recovery_code');
-    final onRecovery = present(find.text(t.recovery.codeLabel)) ||
+    final onRecovery =
+        present(find.text(t.recovery.codeLabel)) ||
         present(find.textContaining('code de reconnexion'));
-    logStep(persona, 'recovery',
-        'Ecran /recovery-code atteint = $onRecovery. #P39 + #D20 couverts.');
+    logStep(
+      persona,
+      'recovery',
+      'Ecran /recovery-code atteint = $onRecovery. #P39 + #D20 couverts.',
+    );
     // EXIGENCE — ce code est la SEULE cle de reconnexion du coffre : il doit
     // etre reellement affiche, sinon l'utilisateur perd son compte.
-    exige(persona, 'recovery', onRecovery,
-        'le code de reconnexion est REELLEMENT affiche (cle du coffre chiffre)');
+    exige(
+      persona,
+      'recovery',
+      onRecovery,
+      'le code de reconnexion est REELLEMENT affiche (cle du coffre chiffre)',
+    );
     await _back(tester, persona, 'recovery');
   }
 
@@ -618,18 +955,28 @@ Future<void> _logisticsAndAccountTour(
   // simuler. On ouvre le Profil et on consigne l'absence.
   await _goHome(tester, persona);
   await _scrollToTop(tester, persona);
-  await tapIfPresent(tester, find.byIcon(Icons.person_outline), persona,
-      'wallet', 'ouvrir Profil (Mon compte)', warnIfMissing: false);
+  await tapIfPresent(
+    tester,
+    find.byTooltip(t.hub.profileTooltip),
+    persona,
+    'wallet',
+    'ouvrir Profil (Mon compte)',
+    warnIfMissing: false,
+  );
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
   await settleAndShoot(tester, persona, 'S2E_01dec_profil_wallet');
-  final hasWallet = present(find.textContaining('solde')) ||
+  final hasWallet =
+      present(find.textContaining('solde')) ||
       present(find.textContaining('Solde')) ||
       present(find.textContaining('étapes acquises'));
-  logStep(persona, 'wallet',
-      'CONSTAT #D01 : affichage wallet/solde present dans « Mon compte » = '
-      '$hasWallet (ATTENDU false — aucun ecran wallet en nav V1). Trou reel '
-      'documente pour Chris : #D01 non couvrable sans ecran « Mon compte » '
-      'exposant les deux poches (wallet fongible + etapes acquises).');
+  logStep(
+    persona,
+    'wallet',
+    'CONSTAT #D01 : affichage wallet/solde present dans « Mon compte » = '
+        '$hasWallet (ATTENDU false — aucun ecran wallet en nav V1). Trou reel '
+        'documente pour Chris : #D01 non couvrable sans ecran « Mon compte » '
+        'exposant les deux poches (wallet fongible + etapes acquises).',
+  );
 
   // Retour cockpit propre.
   await _goHome(tester, persona);

@@ -1,3 +1,7 @@
+/// Un puits distant VOLONTAIREMENT inerte tant que le serveur n'est pas branche
+/// : les contributions restent en file, elles ne sont pas perdues.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/database.dart';

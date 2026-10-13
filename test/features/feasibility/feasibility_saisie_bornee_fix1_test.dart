@@ -42,8 +42,9 @@ void main() {
     return ProviderScope(
       overrides: [
         databaseProvider.overrideWithValue(db),
-        hikerProfileRepositoryProvider
-            .overrideWithValue(HikerProfileRepository(db: db, prefs: prefs)),
+        hikerProfileRepositoryProvider.overrideWithValue(
+          HikerProfileRepository(db: db, prefs: prefs),
+        ),
       ],
       // L'ecran est atteint par un push depuis /home (comme en prod) : le
       // `Navigator.pop()` de la sauvegarde a bien une page ou revenir.
@@ -68,9 +69,7 @@ void main() {
               GoRoute(
                 path: '/home',
                 builder: (_, __) => const Scaffold(body: SizedBox()),
-                routes: [
-                  GoRoute(path: 'screen', builder: (_, __) => screen),
-                ],
+                routes: [GoRoute(path: 'screen', builder: (_, __) => screen)],
               ),
               GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
               GoRoute(path: '/consent', builder: (_, __) => const SizedBox()),
@@ -82,8 +81,9 @@ void main() {
   }
 
   group('M5 — une rando vide ne peut plus fausser la deduction de niveau', () {
-    testWidgets('tous champs vides : refus avec message, rien enregistre',
-        (tester) async {
+    testWidgets('tous champs vides : refus avec message, rien enregistre', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 2400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -102,14 +102,18 @@ void main() {
       // Message explicite (le nombre de jours manque ET aucun effort n'est
       // renseigne) et la feuille RESTE ouverte : rien n'a ete invente.
       expect(find.text(t.pastHikes.errorDays), findsOneWidget);
-      expect(find.byKey(const ValueKey('past-hike-form-error')), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('past-hike-form-error')),
+        findsOneWidget,
+      );
       expect(find.text(t.pastHikes.fieldDays), findsOneWidget);
       // Aucune rando n'a ete ajoutee (l'ecran affiche toujours l'etat vide).
       expect(find.text(t.pastHikes.saved), findsNothing);
     });
 
-    testWidgets('jours seuls ne suffisent pas : il faut D+ ou distance',
-        (tester) async {
+    testWidgets('jours seuls ne suffisent pas : il faut D+ ou distance', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 2400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -121,12 +125,17 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.widgetWithText(TextFormField, t.pastHikes.fieldDays), '3');
+        find.widgetWithText(TextFormField, t.pastHikes.fieldDays),
+        '3',
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text(t.pastHikes.save).last);
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('past-hike-form-error')), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('past-hike-form-error')),
+        findsOneWidget,
+      );
       expect(find.text(t.pastHikes.errorEffort), findsOneWidget);
     });
 
@@ -142,9 +151,13 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.widgetWithText(TextFormField, t.pastHikes.fieldDays), '3');
+        find.widgetWithText(TextFormField, t.pastHikes.fieldDays),
+        '3',
+      );
       await tester.enterText(
-          find.widgetWithText(TextFormField, t.pastHikes.fieldDistance), '42');
+        find.widgetWithText(TextFormField, t.pastHikes.fieldDistance),
+        '42',
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.text(t.pastHikes.save).last);
       await tester.pumpAndSettle();
@@ -165,20 +178,24 @@ void main() {
       await tester.pumpWidget(wrap('screen', const HikerProfileScreen()));
       await tester.pumpAndSettle();
 
-      final height =
-          find.widgetWithText(TextFormField, t.hikerProfile.fieldHeight);
+      final height = find.widgetWithText(
+        TextFormField,
+        t.hikerProfile.fieldHeight,
+      );
       await tester.enterText(height, '1280');
       await tester.pumpAndSettle();
 
       // La barriere physique tient (128), mais elle PARLE.
       expect(find.text(t.hikerProfile.errorHeight), findsOneWidget);
       final field = tester.widget<TextField>(
-          find.descendant(of: height, matching: find.byType(TextField)));
+        find.descendant(of: height, matching: find.byType(TextField)),
+      );
       expect(field.controller!.text, '128');
     });
 
-    testWidgets('une saisie qui tient dans le champ n affiche rien',
-        (tester) async {
+    testWidgets('une saisie qui tient dans le champ n affiche rien', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 2600);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -188,8 +205,9 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.widgetWithText(TextFormField, t.hikerProfile.fieldHeight),
-          '175');
+        find.widgetWithText(TextFormField, t.hikerProfile.fieldHeight),
+        '175',
+      );
       await tester.pumpAndSettle();
       expect(find.text(t.hikerProfile.errorHeight), findsNothing);
     });
@@ -227,16 +245,23 @@ void main() {
       // Kosovo et l ile de l Ascension) : sans cette regle, l application
       // refusait a quelqu un le pays qu elle venait elle-meme de lui proposer.
       for (final code in kSelectableNonIsoCountryCodes) {
-        expect(Country.tryParse(code), isNotNull,
-            reason: '$code doit bien etre propose par le selecteur');
-        expect(isValidIsoCountryCode(code), isTrue,
-            reason: '$code est proposable, il doit donc etre enregistrable');
+        expect(
+          Country.tryParse(code),
+          isNotNull,
+          reason: '$code doit bien etre propose par le selecteur',
+        );
+        expect(
+          isValidIsoCountryCode(code),
+          isTrue,
+          reason: '$code est proposable, il doit donc etre enregistrable',
+        );
       }
     });
 
     testWidgets('AUCUNE SAISIE LIBRE : le champ pays n est plus un champ de '
-        'texte, et il dit « non precise » tant que rien n est choisi',
-        (tester) async {
+        'texte, et il dit « non precise » tant que rien n est choisi', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 2600);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -276,7 +301,11 @@ void main() {
       // Fiche deja saisie, pays = Allemagne.
       await HikerProfileRepository(db: db, prefs: prefs).saveProfile(
         const HikerProfile(
-            age: 40, heightCm: 178, weightKg: 75, countryIso: 'DE'),
+          age: 40,
+          heightCm: 178,
+          weightKg: 75,
+          countryIso: 'DE',
+        ),
       );
 
       await tester.pumpWidget(wrap('screen', const HikerProfileScreen()));
@@ -285,10 +314,14 @@ void main() {
       final field = find.byKey(const ValueKey('hiker-profile-country-field'));
       // « Allemagne », pas « DE » : c est tout l objet du retour #2. Le nom vient
       // du delegue `CountryLocalizations` pose sur l application (langue fr).
-      expect(find.descendant(of: field, matching: find.text('Allemagne')),
-          findsOneWidget);
-      expect(find.descendant(of: field, matching: find.text('DE')),
-          findsNothing);
+      expect(
+        find.descendant(of: field, matching: find.text('Allemagne')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: field, matching: find.text('DE')),
+        findsNothing,
+      );
     });
 
     testWidgets('un code illisible venu d ailleurs (sauvegarde restauree) n est '
@@ -303,7 +336,11 @@ void main() {
       // telle qu elle est stockee, sans la verifier.
       await HikerProfileRepository(db: db, prefs: prefs).saveProfile(
         const HikerProfile(
-            age: 40, heightCm: 178, weightKg: 75, countryIso: 'ZZ'),
+          age: 40,
+          heightCm: 178,
+          weightKg: 75,
+          countryIso: 'ZZ',
+        ),
       );
 
       await tester.pumpWidget(wrap('screen', const HikerProfileScreen()));
@@ -311,7 +348,9 @@ void main() {
 
       final field = find.byKey(const ValueKey('hiker-profile-country-field'));
       expect(
-          find.descendant(of: field, matching: find.text('ZZ')), findsNothing);
+        find.descendant(of: field, matching: find.text('ZZ')),
+        findsNothing,
+      );
       // Le champ repart a « non precise » : deux taps suffisent a rechoisir.
       expect(
         find.descendant(
@@ -348,8 +387,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Le champ porte desormais le pays choisi, ecrit en clair.
-      expect(find.descendant(of: field, matching: find.text('Allemagne')),
-          findsOneWidget);
+      expect(
+        find.descendant(of: field, matching: find.text('Allemagne')),
+        findsOneWidget,
+      );
       expect(
         find.descendant(
           of: field,
@@ -361,7 +402,9 @@ void main() {
       // Et l enregistrement ne peut plus buter sur un code pays : il n y a plus
       // de code pays a se tromper.
       await tester.enterText(
-          find.widgetWithText(TextFormField, t.hikerProfile.fieldAge), '40');
+        find.widgetWithText(TextFormField, t.hikerProfile.fieldAge),
+        '40',
+      );
       final save = find.text(t.hikerProfile.save);
       await tester.ensureVisible(save);
       await tester.pumpAndSettle();

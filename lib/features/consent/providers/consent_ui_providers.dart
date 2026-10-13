@@ -1,3 +1,7 @@
+/// L'etat de TOUTES les finalites en lecture reactive : l'ecran suit le flux
+/// des decisions du service, il ne le recopie pas.
+library;
+
 // D4A-02 — Providers de l'UI de consentement (design D4 CORDO #86166).
 //
 // Pont entre le [ConsentService] (D4A-01) et l'UI : expose l'etat de
@@ -10,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
-import '../../feasibility/providers/hiker_profile_provider.dart';
+import '../../feasibility/feasibility_facade.dart' show hikerProfileProvider;
 
 /// Etat de consentement de TOUTES les finalites (lecture reactive).
 ///
@@ -38,14 +42,15 @@ import '../../feasibility/providers/hiker_profile_provider.dart';
 ///
 /// Reste invalidable (l'effacement art. 17 retire les cles SANS prendre de
 /// decision, donc sans evenement sur le flux : voir `accountErasureProvider`).
-final consentStatesProvider =
-    StreamProvider<Map<ConsentPurpose, ConsentState>>((ref) async* {
-  final service = await ref.watch(consentServiceReadyProvider.future);
-  yield service.allStates();
-  await for (final _ in service.changes) {
+final consentStatesProvider = StreamProvider<Map<ConsentPurpose, ConsentState>>(
+  (ref) async* {
+    final service = await ref.watch(consentServiceReadyProvider.future);
     yield service.allStates();
-  }
-});
+    await for (final _ in service.changes) {
+      yield service.allStates();
+    }
+  },
+);
 
 /// Vrai si au moins une finalite necessite une (re)demande de consentement.
 ///
@@ -73,9 +78,17 @@ class ConsentController {
 
   /// Accorde le consentement pour [purpose] (acte positif explicite) puis
   /// rafraichit l'etat affiche.
-  Future<void> grant(ConsentPurpose purpose) async {
+  /// [declencheur] par defaut « reglages » : la decision vient de l ecran
+  /// Confidentialite, ou le randonneur est venu de lui-meme. Une re-demande
+  /// APRES MODIFICATION DES DONNEES passe par le meme chemin mais le dit
+  /// (`modificationDesDonnees`) — et le registre en base doit pouvoir les
+  /// distinguer, sinon il ne prouve pas que la re-demande a eu lieu.
+  Future<void> grant(
+    ConsentPurpose purpose, {
+    ConsentTrigger declencheur = ConsentTrigger.settings,
+  }) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
-    await service.grant(purpose);
+    await service.grant(purpose, declencheur: declencheur);
     _ref.invalidate(consentStatesProvider);
     _ref.invalidate(consentPromptNeededProvider);
   }
@@ -97,14 +110,63 @@ class ConsentController {
   /// traitements, pas un enregistrement local : leur revocation les arrete, il
   /// n'y a rien a retirer de l'appareil. Le jour ou l'une d'elles stocke
   /// quelque chose, c'est ici que son effacement se branche.
-  Future<void> revoke(ConsentPurpose purpose) async {
+  Future<void> revoke(
+    ConsentPurpose purpose, {
+    ConsentTrigger declencheur = ConsentTrigger.settings,
+  }) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
-    await service.revoke(purpose);
-    if (purpose == ConsentPurpose.healthData) {
-      await _ref.read(hikerProfileProvider.notifier).forgetMorphology();
+    await service.revoke(purpose, declencheur: declencheur);
+    await _effacerCeQueProtege(purpose);
+    _ref.invalidate(consentStatesProvider);
+    _ref.invalidate(consentPromptNeededProvider);
+  }
+
+  /// TOUT REFUSER EN UN SEUL GESTE (tache 580, Y1).
+  ///
+  /// POURQUOI CETTE METHODE EXISTE. Accorder se faisait finalite par finalite,
+  /// refuser aussi — mais le libelle « Tout refuser » (`consent.declineAll`),
+  /// traduit dans les cinq langues depuis le LOT 4, ne vivait que sur
+  /// `ConsentOnboardingScreen`, un ecran qu'aucune route n'ouvre. Le retrait
+  /// doit etre AUSSI SIMPLE QUE L'OCTROI (RGPD art. 7-3) : il lui fallait un
+  /// geste sur l'ecran que l'utilisateur atteint reellement.
+  ///
+  /// CE QU'ELLE FAIT, ET CE N'EST PAS UN AFFICHAGE :
+  ///  * elle pose une decision NEGATIVE HORODATEE sur CHAQUE finalite — un
+  ///    refus est une decision, pas un silence. Sans cela `needsPrompt`
+  ///    continuerait de reclamer un choix deja fait ;
+  ///  * elle EFFACE, pour chaque finalite, ce que ce consentement protegeait —
+  ///    par le meme chemin que [revoke], donc sans seconde definition de « ce
+  ///    que cette finalite garde sur l'appareil ».
+  ///
+  /// UN SEUL RAFRAICHISSEMENT A LA FIN : quatre invalidations successives
+  /// feraient reconstruire l'ecran a chaque finalite, avec des etats
+  /// intermediaires ou la moitie est refusee et l'autre non.
+  Future<void> declineAll() async {
+    final service = await _ref.read(consentServiceReadyProvider.future);
+    for (final purpose in ConsentPurpose.values) {
+      await service.revoke(purpose, declencheur: ConsentTrigger.settings);
+      await _effacerCeQueProtege(purpose);
     }
     _ref.invalidate(consentStatesProvider);
     _ref.invalidate(consentPromptNeededProvider);
+  }
+
+  /// CE QUE LE RETRAIT DE [purpose] EMPORTE DE L'APPAREIL.
+  ///
+  /// UN SEUL ENDROIT, parce que [revoke] et [declineAll] doivent effacer
+  /// EXACTEMENT la meme chose : deux listes finiraient par diverger, et c'est
+  /// la divergence — pas l'oubli — qui produit un refus qui laisse des traces.
+  ///
+  /// SEULE [ConsentPurpose.healthData] a aujourd'hui une donnee a retirer ici :
+  /// la morphologie de la fiche randonneur (age, taille, poids), donnee de
+  /// sante au sens de l'article 9. Les trois autres finalites gouvernent des
+  /// TRAITEMENTS, pas un enregistrement local : leur retrait les arrete, il n'y
+  /// a rien a reprendre a l'appareil. Le jour ou l'une d'elles stocke quelque
+  /// chose, c'est ICI que son effacement se branche.
+  Future<void> _effacerCeQueProtege(ConsentPurpose purpose) async {
+    if (purpose == ConsentPurpose.healthData) {
+      await _ref.read(hikerProfileProvider.notifier).forgetMorphology();
+    }
   }
 
   /// Applique une decision booleenne (utilisee par les bascules de l'UI).

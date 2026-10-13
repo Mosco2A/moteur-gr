@@ -1,3 +1,7 @@
+/// Itineraires proposes pour un sentier : les variantes de parcours entre
+/// lesquelles le marcheur choisit.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -20,15 +24,16 @@ class TrailItinerariesDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere un itineraire par son id
   Future<TrailItinerary?> getById(String id) {
-    return (select(trailItineraries)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(
+      trailItineraries,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Recupere les itineraires d'un sentier
   Future<List<TrailItinerary>> getByTrailId(String trailId) {
-    return (select(trailItineraries)
-          ..where((t) => t.trailId.equals(trailId)))
-        .get();
+    return (select(
+      trailItineraries,
+    )..where((t) => t.trailId.equals(trailId))).get();
   }
 
   /// Insere ou remplace un itineraire

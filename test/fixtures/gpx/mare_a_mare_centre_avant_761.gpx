@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="MoteurGR-MareaMareCentre"
+     xmlns="http://www.topografix.com/GPX/1/1"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1
+       http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>Mare a Mare Centre</name>
+    <desc>Trace du sentier Mare a Mare Centre, traversee Est-Ouest de la Corse. 7 etapes de Ghisonaccia a Porticcio.</desc>
+  </metadata>
+  <trk>
+    <name>mare-a-mare-centre</name>
+    <trkseg>
+      <!-- Etape 1 : Ghisonaccia - Catastaghju -->
+      <trkpt lat="42.0156" lon="9.4039"><ele>5</ele></trkpt>
+      <trkpt lat="42.0100" lon="9.3900"><ele>45</ele></trkpt>
+      <trkpt lat="42.0020" lon="9.3780"><ele>120</ele></trkpt>
+      <trkpt lat="41.9950" lon="9.3700"><ele>280</ele></trkpt>
+      <trkpt lat="41.9870" lon="9.3500"><ele>420</ele></trkpt>
+      <trkpt lat="41.9780" lon="9.3300"><ele>580</ele></trkpt>
+      <trkpt lat="41.9700" lon="9.3100"><ele>650</ele></trkpt>
+      <trkpt lat="41.9630" lon="9.2980"><ele>700</ele></trkpt>
+      <trkpt lat="41.9567" lon="9.2864"><ele>720</ele></trkpt>
+      <!-- Etape 2 : Catastaghju - Cozzano -->
+      <trkpt lat="41.9550" lon="9.2800"><ele>750</ele></trkpt>
+      <trkpt lat="41.9520" lon="9.2650"><ele>830</ele></trkpt>
+      <trkpt lat="41.9480" lon="9.2400"><ele>950</ele></trkpt>
+      <trkpt lat="41.9450" lon="9.2300"><ele>1020</ele></trkpt>
+      <trkpt lat="41.9430" lon="9.2200"><ele>1050</ele></trkpt>
+      <trkpt lat="41.9420" lon="9.2100"><ele>980</ele></trkpt>
+      <trkpt lat="41.9400" lon="9.2050"><ele>850</ele></trkpt>
+      <trkpt lat="41.9392" lon="9.1978"><ele>730</ele></trkpt>
+      <!-- Etape 3 : Cozzano - Guitera-les-Bains -->
+      <trkpt lat="41.9380" lon="9.1900"><ele>750</ele></trkpt>
+      <trkpt lat="41.9350" lon="9.1800"><ele>720</ele></trkpt>
+      <trkpt lat="41.9270" lon="9.1700"><ele>650</ele></trkpt>
+      <trkpt lat="41.9220" lon="9.1600"><ele>620</ele></trkpt>
+      <trkpt lat="41.9180" lon="9.1500"><ele>600</ele></trkpt>
+      <trkpt lat="41.9147" lon="9.1411"><ele>580</ele></trkpt>
+      <!-- Etape 4 : Guitera-les-Bains - Zicavo -->
+      <trkpt lat="41.9140" lon="9.1380"><ele>590</ele></trkpt>
+      <trkpt lat="41.9120" lon="9.1300"><ele>680</ele></trkpt>
+      <trkpt lat="41.9080" lon="9.1250"><ele>850</ele></trkpt>
+      <trkpt lat="41.9050" lon="9.1180"><ele>1050</ele></trkpt>
+      <trkpt lat="41.9020" lon="9.1100"><ele>920</ele></trkpt>
+      <trkpt lat="41.8980" lon="9.1050"><ele>800</ele></trkpt>
+      <trkpt lat="41.8947" lon="9.0958"><ele>700</ele></trkpt>
+      <!-- Etape 5 : Zicavo - Cuttoli-Corticchiato -->
+      <trkpt lat="41.8950" lon="9.0900"><ele>720</ele></trkpt>
+      <trkpt lat="41.8980" lon="9.0800"><ele>780</ele></trkpt>
+      <trkpt lat="41.9050" lon="9.0700"><ele>850</ele></trkpt>
+      <trkpt lat="41.9100" lon="9.0600"><ele>920</ele></trkpt>
+      <trkpt lat="41.9150" lon="9.0500"><ele>870</ele></trkpt>
+      <trkpt lat="41.9220" lon="9.0350"><ele>780</ele></trkpt>
+      <trkpt lat="41.9250" lon="9.0200"><ele>700</ele></trkpt>
+      <trkpt lat="41.9283" lon="9.0086"><ele>620</ele></trkpt>
+      <!-- Etape 6 : Cuttoli-Corticchiato - Bastelica -->
+      <trkpt lat="41.9320" lon="9.0100"><ele>650</ele></trkpt>
+      <trkpt lat="41.9400" lon="9.0150"><ele>720</ele></trkpt>
+      <trkpt lat="41.9500" lon="9.0300"><ele>900</ele></trkpt>
+      <trkpt lat="41.9600" lon="9.0400"><ele>950</ele></trkpt>
+      <trkpt lat="41.9700" lon="9.0500"><ele>1000</ele></trkpt>
+      <trkpt lat="41.9850" lon="9.0600"><ele>920</ele></trkpt>
+      <trkpt lat="42.0028" lon="9.0694"><ele>800</ele></trkpt>
+      <!-- Etape 7 : Bastelica - Porticcio -->
+      <trkpt lat="41.9950" lon="9.0550"><ele>750</ele></trkpt>
+      <trkpt lat="41.9800" lon="9.0300"><ele>620</ele></trkpt>
+      <trkpt lat="41.9600" lon="9.0000"><ele>480</ele></trkpt>
+      <trkpt lat="41.9400" lon="8.9700"><ele>350</ele></trkpt>
+      <trkpt lat="41.9200" lon="8.9400"><ele>250</ele></trkpt>
+      <trkpt lat="41.9100" lon="8.9200"><ele>180</ele></trkpt>
+      <trkpt lat="41.8910" lon="8.8600"><ele>80</ele></trkpt>
+      <trkpt lat="41.8903" lon="8.8128"><ele>5</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

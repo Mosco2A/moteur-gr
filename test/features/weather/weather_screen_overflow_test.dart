@@ -123,8 +123,9 @@ void main() {
       expect(find.text(t.weather.allStages), findsOneWidget);
     });
 
-    testWidgets('cloisonnement : aucun libellé GR20 / Fra li Monti',
-        (tester) async {
+    testWidgets('cloisonnement : aucun libellé GR20 / Fra li Monti', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(390, 2400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -142,10 +143,7 @@ void main() {
   group('non-regression overflow largeurs mobiles', () {
     const mobileWidths = <double>[360, 390, 412];
 
-    Future<List<String>> overflowsAt(
-      WidgetTester tester,
-      double width,
-    ) async {
+    Future<List<String>> overflowsAt(WidgetTester tester, double width) async {
       final captured = <String>[];
       final previous = FlutterError.onError;
       FlutterError.onError = (details) {
@@ -185,8 +183,7 @@ void main() {
         expect(
           overflows,
           isEmpty,
-          reason:
-              'WeatherScreen deborde a ${width.toInt()} px : $overflows',
+          reason: 'WeatherScreen deborde a ${width.toInt()} px : $overflows',
         );
       });
     }

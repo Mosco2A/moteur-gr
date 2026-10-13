@@ -42,14 +42,12 @@ void main() {
   Widget buildFilterBar({List<PoiModel>? pois}) {
     return ProviderScope(
       overrides: [
-        poisProvider('test-trail').overrideWith(
-          (ref) => Future.value(pois ?? testPois),
-        ),
+        poisProvider(
+          'test-trail',
+        ).overrideWith((ref) => Future.value(pois ?? testPois)),
       ],
       child: const MaterialApp(
-        home: Scaffold(
-          body: PoiFilterBar(trailId: 'test-trail'),
-        ),
+        home: Scaffold(body: PoiFilterBar(trailId: 'test-trail')),
       ),
     );
   }
@@ -120,14 +118,13 @@ void main() {
       expect(waterChip.selected, isTrue);
     });
 
-    testWidgets('n\'affiche rien quand la liste de POIs est vide',
-        (tester) async {
+    testWidgets('n\'affiche rien quand la liste de POIs est vide', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildFilterBar(pois: []));
       await tester.pumpAndSettle();
 
       expect(find.byType(FilterChip), findsNothing);
     });
-
-    
   });
 }

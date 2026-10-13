@@ -1,3 +1,7 @@
+/// La carte de partage carree, dessinee avec les chiffres du trek et la marque
+/// du sentier actif.
+library;
+
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -24,13 +28,13 @@ class ShareCardGenerator {
     required GlobalKey repaintKey,
   }) async {
     try {
-      final boundary = repaintKey.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
+      final boundary =
+          repaintKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
       if (boundary == null) return null;
 
       final image = await boundary.toImage(pixelRatio: pixelRatio);
-      final byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       return byteData?.buffer.asUint8List();
     } catch (_) {
       return null;
@@ -79,9 +83,9 @@ class ShareCardBranding {
 
   /// Génère les couleurs du gradient pour le fond de la carte
   List<Color> get gradientColors => [
-        primaryColor,
-        secondaryColor.withAlpha(200),
-      ];
+    primaryColor,
+    secondaryColor.withAlpha(200),
+  ];
 }
 
 /// Données pour une carte de partage.

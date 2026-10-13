@@ -1,10 +1,16 @@
+/// Un sentier dans le catalogue, avec la taille de son telechargement et son
+/// statut local.
+library;
+
 import 'package:flutter/material.dart';
 
+import '../../../core/data/revision_de_donnee.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/catalog_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Libelles i18n pour les statuts de telechargement.
 ///
@@ -112,7 +118,10 @@ class TrailCatalogCard extends StatelessWidget {
           Row(
             children: [
               ExcludeSemantics(
-                child: Icon(Icons.terrain, color: theme.colorScheme.primary),
+                child: StepIcon(
+                  StepwaysIcons.sommet,
+                  color: theme.colorScheme.primary,
+                ),
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -143,8 +152,8 @@ class TrailCatalogCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const ExcludeSemantics(
-                    child: Icon(
-                      Icons.storage,
+                    child: StepIcon(
+                      StepwaysIcons.horsLigne,
                       size: 14,
                       color: AppTheme.grisTexteSecondaire,
                     ),
@@ -162,17 +171,28 @@ class TrailCatalogCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const ExcludeSemantics(
-                    child: Icon(
-                      Icons.update,
+                    child: StepIcon(
+                      StepwaysIcons.miseAJour,
                       size: 14,
                       color: AppTheme.grisTexteSecondaire,
                     ),
                   ),
                   const SizedBox(width: 4),
-                  Text(
-                    'v${entry.dataVersion}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppTheme.grisTexteSecondaire,
+                  // FLEXIBLE PARCE QUE LE LIBELLE A GRANDI (tache 610). Il valait
+                  // « v5 », il vaut « 28/09/2026 » : a textScale 2x sur un ecran
+                  // de 320 points la ligne debordait de 6 points — mesure, pas
+                  // supposition, c est le test d accessibilite qui l a dit. Un
+                  // texte qui peut se raccourcir vaut mieux qu un debordement, et
+                  // mieux qu un libelle raccourci pour tout le monde a cause du
+                  // pire cas.
+                  Flexible(
+                    child: Text(
+                      _dateLisible(entry.dataVersion),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.grisTexteSecondaire,
+                      ),
                     ),
                   ),
                 ],
@@ -195,7 +215,7 @@ class TrailCatalogCard extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: AppButton(
-            icon: Icons.download,
+            icon: StepwaysIcons.download,
             label: _CatalogLabels.download,
             onPressed: onDownload,
           ),
@@ -223,14 +243,14 @@ class TrailCatalogCard extends StatelessWidget {
               const SizedBox(height: AppTheme.spacingSm),
             ],
             // SW-SKIN-L3e : OutlinedButton.icon rouge -> AppButton outline avec
-            // tone:rougeUrgence (teinte texte/icone/bordure = couleur SEMANTIQUE
+            // tone:emergencyRed (teinte texte/icone/bordure = couleur SEMANTIQUE
             // de suppression). Pleine largeur (SizedBox width infinity conserve).
             SizedBox(
               width: double.infinity,
               child: AppButton(
                 variant: AppButtonVariant.outline,
-                tone: AppTheme.rougeUrgence,
-                icon: Icons.delete_outline,
+                tone: AppTheme.emergencyRed,
+                icon: StepwaysIcons.corbeille,
                 label: _CatalogLabels.delete,
                 onPressed: onDelete,
               ),
@@ -252,7 +272,7 @@ class TrailCatalogCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                icon: Icons.system_update_alt,
+                icon: StepwaysIcons.download,
                 label: _CatalogLabels.update,
                 onPressed: onUpdate,
               ),
@@ -264,20 +284,24 @@ class TrailCatalogCard extends StatelessWidget {
     }
   }
 
-  /// Bouton primaire "Entrer dans le sentier" (i18n catalog.enter, design #88246).
+  /// Bouton primaire « Preparer » (i18n `catalog.prepare`, design #88246).
+  ///
+  /// TACHE 639 (bug 2) : il disait « Entrer ». Le sentier est deja telecharge,
+  /// donc deja possede — l'action est bien la PREPARATION, et elle porte le meme
+  /// verbe que sur la carte du catalogue et sur la fiche du sentier.
   Widget _buildEnterButton(BuildContext context) {
     final t = Translations.of(context);
     return SizedBox(
       width: double.infinity,
       child: Semantics(
         button: true,
-        label: t.catalog.a11y.enterButton(nom: entry.trailId),
+        label: t.catalog.a11y.prepareButton(nom: entry.trailId),
         // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage #A5),
         // pleine largeur (SizedBox width infinity conserve). key/Semantics gardees.
         child: AppButton(
           key: ValueKey('trail-enter-${entry.trailId}'),
-          icon: Icons.arrow_forward,
-          label: t.catalog.enter,
+          icon: StepwaysIcons.programme,
+          label: t.catalog.prepare,
           onPressed: onEnter,
         ),
       ),
@@ -316,4 +340,23 @@ class _StatusBadge extends StatelessWidget {
       ),
     );
   }
+}
+
+/// LA DATE DE PUBLICATION, TELLE QUE LE RANDONNEUR LA LIT.
+///
+/// CE QUE CE LIBELLE MONTRAIT AVANT LA TACHE 610, ET POURQUOI C EST MIEUX
+/// MAINTENANT. La carte affichait « v1 », « v2 » a cote d une icone de mise a
+/// jour : un numero interne de publication, qui ne disait RIEN au randonneur — il
+/// ne peut pas savoir si « v2 » date d hier ou de l an dernier. Le modele
+/// d horodatage rend ce numero lisible sans rien ajouter : la donnee PORTE sa date.
+///
+/// [HorodatageServeur.origine] designe un sentier embarque dans l application, qui
+/// n a jamais ete publie par un serveur : il n a donc pas de date de mise a jour a
+/// montrer, et on ecrit un tiret plutot que le 1er janvier 1970.
+String _dateLisible(HorodatageServeur instant) {
+  if (instant == HorodatageServeur.origine) return '—';
+  final d = instant.date.toLocal();
+  final jour = d.day.toString().padLeft(2, '0');
+  final mois = d.month.toString().padLeft(2, '0');
+  return '$jour/$mois/${d.year}';
 }

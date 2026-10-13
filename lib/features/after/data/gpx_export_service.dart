@@ -1,3 +1,7 @@
+/// L'ECRITURE d'un GPX, qui n'existait pas : l'app savait lire, pas ecrire, et
+/// l'export restait un TODO.
+library;
+
 import 'dart:io';
 
 import 'package:gpx/gpx.dart';
@@ -68,9 +72,7 @@ class GpxExportService {
         desc: description,
         time: (generatedAt ?? DateTime.now()).toUtc(),
       )
-      ..trks = [
-        Trk(name: trackName, desc: description, trksegs: segments),
-      ];
+      ..trks = [Trk(name: trackName, desc: description, trksegs: segments)];
 
     return GpxWriter().asString(gpx, pretty: true);
   }
@@ -100,11 +102,12 @@ class GpxExportService {
   static String gpxFileName(String trailId, {DateTime? at}) {
     final when = at ?? DateTime.now();
     final safeTrail = trailId.toLowerCase().replaceAll(
-          RegExp(r'[^a-z0-9-]'),
-          '-',
-        );
+      RegExp(r'[^a-z0-9-]'),
+      '-',
+    );
     String two(int v) => v.toString().padLeft(2, '0');
-    final stamp = '${when.year}${two(when.month)}${two(when.day)}'
+    final stamp =
+        '${when.year}${two(when.month)}${two(when.day)}'
         '-${two(when.hour)}${two(when.minute)}${two(when.second)}';
     return 'trace-$safeTrail-$stamp.gpx';
   }

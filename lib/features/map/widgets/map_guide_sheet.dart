@@ -1,11 +1,17 @@
+/// La legende des pastilles de la carte : sans elle, le marcheur voyait des
+/// ronds de couleur sans savoir lequel est une source.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../poi/domain/poi_type_config.dart';
-import '../../poi/domain/poi_type_label.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/poi/poi_type_config.dart';
+import '../../../shared/poi/poi_type_label.dart';
 import '../providers/map_pois_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ouvre le GUIDE DE LA CARTE (LOT D, tâche 554 — manque réel n°2).
 ///
@@ -64,8 +70,8 @@ class _MapGuideSheet extends ConsumerWidget {
     // Types de points réellement présents sur le sentier courant. En attente ou
     // en erreur : liste vide -> la légende des points disparaît, celle des
     // boutons reste. Jamais de spinner bloquant pour un écran d'explication.
-    final types = ref.watch(availablePoiTypesProvider(trailId)).value ??
-        const <String>{};
+    final types =
+        ref.watch(availablePoiTypesProvider(trailId)).value ?? const <String>{};
     final sortedTypes = types.toList()..sort();
 
     return SafeArea(
@@ -83,13 +89,10 @@ class _MapGuideSheet extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, color: scheme.primary),
+                  StepIcon(StepwaysIcons.info, color: scheme.primary),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
-                    child: Text(
-                      t.map.title,
-                      style: theme.textTheme.titleLarge,
-                    ),
+                    child: Text(t.map.title, style: theme.textTheme.titleLarge),
                   ),
                 ],
               ),
@@ -102,7 +105,7 @@ class _MapGuideSheet extends ConsumerWidget {
                 children: [
                   // --- Ce qui se lit SUR la carte ---
                   _GuideRow(
-                    icon: Icons.my_location,
+                    icon: StepwaysIcons.maPosition,
                     color: scheme.primary,
                     label: t.a11y.userPosition,
                     description: t.map.guide.position,
@@ -111,7 +114,7 @@ class _MapGuideSheet extends ConsumerWidget {
                   // couleur du sentier courant (jamais un rouge en dur comme
                   // dans la référence, qui n'a qu'un sentier).
                   _GuideRow(
-                    icon: Icons.timeline,
+                    icon: StepwaysIcons.statistiques,
                     color: scheme.primary,
                     label: t.itinerary.title,
                     description: t.map.guide.track,
@@ -138,36 +141,54 @@ class _MapGuideSheet extends ConsumerWidget {
                   const SizedBox(height: AppTheme.spacingSm),
                   _GuideSection(title: t.map.guide.buttonsTitle),
                   _GuideRow(
-                    icon: Icons.layers,
+                    icon: StepwaysIcons.calques,
                     color: scheme.primary,
                     label: t.map.layers,
                     description: t.map.layersSubtitle,
                   ),
                   _GuideRow(
-                    icon: Icons.photo_camera,
+                    icon: StepwaysIcons.photo,
                     color: AppTheme.orangeDifficile,
                     label: t.journal.addPhoto,
                     description: t.map.guide.photo,
                   ),
+                  // SOS — L'ENTREE EST VRAIE, ET ELLE DIT MAINTENANT SA
+                  // CONDITION (tache 568, Q5).
+                  //
+                  // LE SOUPCON DE DEPART etait que le guide documentait « une
+                  // icone SOS qui n'existe sur aucun ecran ». LA MESURE DIT
+                  // AUTRE CHOSE, et il faut le dire : l'icone EXISTE, portee par
+                  // [SosButton] (`Icons.emergency`), pose dans la colonne de
+                  // gauche de cette meme carte (`map_screen.dart`) et en FAB du
+                  // cockpit. Ce qui etait FAUX, c'est le texte : cette pastille
+                  // SE MASQUE hors rando active, alors que ce guide s'ouvre a
+                  // tout moment depuis la carte. Un randonneur qui le lisait en
+                  // preparation cherchait un bouton absent.
+                  //
+                  // On ne retire donc pas l'entree — ce serait cacher la
+                  // fonction la plus importante de l'ecran. On rend le texte
+                  // EXACT, en nommant la condition, exactement comme la ligne
+                  // « etape en cours » nomme deja la sienne (« un tiret signifie
+                  // que la randonnee n'a pas encore demarre »).
                   _GuideRow(
-                    icon: Icons.emergency,
-                    color: AppTheme.rougeUrgence,
+                    icon: StepwaysIcons.emergency,
+                    color: AppTheme.emergencyRed,
                     label: t.a11y.sos,
-                    description: t.map.guide.sos,
+                    description: '${t.map.guide.sos} ${t.map.guide.onlyInTrek}',
                   ),
                   _GuideRow(
-                    icon: Icons.my_location,
+                    icon: StepwaysIcons.maPosition,
                     color: scheme.primary,
                     label: t.a11y.centerOnMe,
                     description: t.map.guide.centerOnMe,
                   ),
                   _GuideRow(
-                    icon: Icons.add,
+                    icon: StepwaysIcons.plus,
                     color: scheme.primary,
                     label: t.a11y.zoomIn,
                   ),
                   _GuideRow(
-                    icon: Icons.remove,
+                    icon: StepwaysIcons.moins,
                     color: scheme.primary,
                     label: t.a11y.zoomOut,
                   ),
@@ -176,22 +197,24 @@ class _MapGuideSheet extends ConsumerWidget {
                   const SizedBox(height: AppTheme.spacingSm),
                   _GuideSection(title: t.stage.statistics),
                   _GuideRow(
-                    icon: Icons.linear_scale,
+                    icon: StepwaysIcons.echelle,
                     color: scheme.primary,
                     label: t.nav.currentStage,
                     description: t.map.guide.currentStage,
                   ),
                   _GuideRow(
-                    icon: Icons.warning_amber_rounded,
-                    color: AppTheme.rougeUrgence,
+                    icon: StepwaysIcons.danger,
+                    color: AppTheme.emergencyRed,
                     label: t.map.offTrackChip,
                     description: t.map.guide.offTrack,
                   ),
                   const SizedBox(height: AppTheme.spacingBase),
                   Center(
-                    child: TextButton(
+                    child: AppButton(
+                      variant: AppButtonVariant.text,
+                      label: t.programme.info.close,
+                      isFullWidth: false,
                       onPressed: () => Navigator.of(ctx).pop(),
-                      child: Text(t.programme.info.close),
                     ),
                   ),
                   const SizedBox(height: AppTheme.spacingBase),
@@ -239,7 +262,7 @@ class _GuideRow extends StatelessWidget {
     this.description,
   });
 
-  final IconData icon;
+  final String icon;
   final Color color;
   final String label;
   final String? description;
@@ -258,7 +281,7 @@ class _GuideRow extends StatelessWidget {
               color: color.withAlpha(30),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 20, color: color),
+            child: StepIcon(icon, size: 20, color: color),
           ),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(

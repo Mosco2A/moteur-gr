@@ -29,8 +29,7 @@ class PastHikeEntries extends Table {
   IntColumn get days => integer().withDefault(const Constant(1))();
 
   /// Temps moyen de marche PAR JOUR, en heures.
-  RealColumn get avgWalkHoursPerDay =>
-      real().withDefault(const Constant(0))();
+  RealColumn get avgWalkHoursPerDay => real().withDefault(const Constant(0))();
 
   /// Denivele positif TOTAL de la rando, en metres (habitude du D+).
   IntColumn get totalElevationGain =>

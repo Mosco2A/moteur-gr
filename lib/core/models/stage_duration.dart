@@ -1,4 +1,4 @@
-import 'stage.dart';
+import 'stage_row.dart';
 
 /// Duree d'etape — source unique de verite (parite GR20, socle « donnees
 /// externes »).
@@ -53,7 +53,8 @@ int estimatedStageDurationMinutes({
   required int elevationGainM,
 }) {
   final hours =
-      distanceKm / kWalkingKmPerHour + elevationGainM / kWalkingElevationMPerHour;
+      distanceKm / kWalkingKmPerHour +
+      elevationGainM / kWalkingElevationMPerHour;
   return (hours * 60).round();
 }
 

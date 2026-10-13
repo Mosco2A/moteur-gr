@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/theme/app_skin.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/shared/widgets/app_data_stat.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests widget d'AppDataStat (SW-SKIN-L5).
 ///
@@ -10,10 +11,7 @@ import 'package:moteur_gr/shared/widgets/app_data_stat.dart';
 /// la semantique ("label : value unit" + ExcludeSemantics du visuel), et la
 /// bascule mono pilotee par la peau (Topographique).
 void main() {
-  Widget wrap({
-    required Widget child,
-    AppSkin skin = AppSkin.sentierVivant,
-  }) {
+  Widget wrap({required Widget child, AppSkin skin = AppSkin.sentierVivant}) {
     return MaterialApp(
       theme: AppTheme.buildLightTheme(
         primaryColor: const Color(0xFF2E7D32),
@@ -24,10 +22,13 @@ void main() {
     );
   }
 
-  testWidgets('valeur en role data tabular (FontFeature tabularFigures)',
-      (tester) async {
+  testWidgets('valeur en role data tabular (FontFeature tabularFigures)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      wrap(child: const AppDataStat(value: '12.4', unit: 'km', label: 'Distance')),
+      wrap(
+        child: const AppDataStat(value: '12.4', unit: 'km', label: 'Distance'),
+      ),
     );
 
     expect(find.text('12.4'), findsOneWidget);
@@ -42,45 +43,55 @@ void main() {
     expect(valueText.style?.fontWeight, FontWeight.w700);
   });
 
-  testWidgets('valeur sans unite separee (unite incluse dans value)',
-      (tester) async {
+  testWidgets('valeur sans unite separee (unite incluse dans value)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      wrap(child: const AppDataStat(value: '350 m', label: 'D+')),
+      wrap(
+        child: const AppDataStat(value: '350 m', label: 'D+'),
+      ),
     );
     // Iso-rendu HUD : la valeur formatee "350 m" reste UN seul Text.
     expect(find.text('350 m'), findsOneWidget);
     expect(find.text('D+'), findsOneWidget);
   });
 
-  testWidgets('semantique : un noeud "label : value unit", visuel exclu',
-      (tester) async {
+  testWidgets('semantique : un noeud "label : value unit", visuel exclu', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      wrap(child: const AppDataStat(value: '840', unit: 'm', label: 'D+')),
+      wrap(
+        child: const AppDataStat(value: '840', unit: 'm', label: 'D+'),
+      ),
     );
 
     // Le label semantique combine label + valeur + unite.
-    expect(
-      find.bySemanticsLabel('D+ : 840 m'),
-      findsOneWidget,
-    );
+    expect(find.bySemanticsLabel('D+ : 840 m'), findsOneWidget);
   });
 
-  testWidgets('icone optionnelle rendue (teintee accent) — cas HUD',
-      (tester) async {
+  testWidgets('icone optionnelle rendue (teintee accent) — cas HUD', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrap(
         child: const AppDataStat(
-          icon: Icons.straighten,
+          icon: StepwaysIcons.distance,
           value: '5.2 km',
           label: 'Distance',
         ),
       ),
     );
-    expect(find.byIcon(Icons.straighten), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.distance,
+      ),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('peau Topographique -> valeur en fonte monospace (cockpit)',
-      (tester) async {
+  testWidgets('peau Topographique -> valeur en fonte monospace (cockpit)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrap(
         skin: AppSkin.topographique,
@@ -97,10 +108,13 @@ void main() {
     );
   });
 
-  testWidgets('peau Sentier Vivant -> PAS de monospace (role data L1)',
-      (tester) async {
+  testWidgets('peau Sentier Vivant -> PAS de monospace (role data L1)', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-      wrap(child: const AppDataStat(value: '2559', unit: 'm', label: 'Alt')),
+      wrap(
+        child: const AppDataStat(value: '2559', unit: 'm', label: 'Alt'),
+      ),
     );
     final valueText = tester.widget<Text>(find.text('2559'));
     expect(valueText.style?.fontFamily, isNot('monospace'));

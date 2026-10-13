@@ -1,8 +1,12 @@
+/// Indice d'effort depuis une trace, en fonction PURE sans Flutter. Le bareme
+/// IBP n'etant pas public, c'est une approximation assumee.
+library;
+
 import '../../../core/geo/geo_utils.dart';
 // Simplificateur Douglas-Peucker cote trek (opere sur le `TrackPoint` trek,
 // lat/lng/elevation). Alias pour lever l'homonymie avec core/geo/douglas_peucker.
-import '../../trek/data/track_simplifier.dart' as trek_simplifier;
-import '../../trek/domain/models/track_point.dart';
+import '../../trek/trek_facade.dart' as trek_simplifier show DouglasPeucker;
+import '../../../domain/track_point.dart';
 
 /// Resultat du calcul d'effort IBP depuis un trace GPX.
 class IbpResult {
@@ -86,8 +90,10 @@ class IbpCalculator {
     }
 
     // Lisse le bruit d'altitude avant d'integrer les pentes.
-    final pts =
-        trek_simplifier.DouglasPeucker.simplify(trace, simplifyEpsilonDegrees);
+    final pts = trek_simplifier.DouglasPeucker.simplify(
+      trace,
+      simplifyEpsilonDegrees,
+    );
     final ref = pts.length >= 2 ? pts : trace;
 
     double distanceM = 0;
@@ -98,8 +104,7 @@ class IbpCalculator {
     for (var i = 1; i < ref.length; i++) {
       final a = ref[i - 1];
       final b = ref[i];
-      final segDist =
-          GeoUtils.haversineDistance(a.lat, a.lng, b.lat, b.lng);
+      final segDist = GeoUtils.haversineDistance(a.lat, a.lng, b.lat, b.lng);
       final dAlt = b.elevation - a.elevation;
       distanceM += segDist;
 

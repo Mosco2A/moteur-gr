@@ -1,3 +1,7 @@
+/// La polyligne de la trace, qui prend des coordonnees brutes et non un
+/// TrackPoint : elle reste decouplee du modele metier.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';

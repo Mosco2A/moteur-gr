@@ -87,10 +87,7 @@ void main() {
   });
 
   group('EtaService.estimate (waypoint + fin + confiance)', () {
-    EtaInput input({
-      double pace = 1.1,
-      bool degraded = false,
-    }) {
+    EtaInput input({double pace = 1.1, bool degraded = false}) {
       return EtaInput(
         distanceToWaypointM: 1000,
         ascentToWaypointM: 60,
@@ -131,26 +128,30 @@ void main() {
 
       final future = service.estimateStream().take(2).toList();
       ctrl
-        ..add(const EtaInput(
-          distanceToWaypointM: 500,
-          ascentToWaypointM: 0,
-          descentToWaypointM: 0,
-          distanceToStageEndM: 2000,
-          ascentToStageEndM: 0,
-          descentToStageEndM: 0,
-          observedPaceMps: 1.0,
-          gpsDegraded: false,
-        ))
-        ..add(const EtaInput(
-          distanceToWaypointM: 300,
-          ascentToWaypointM: 0,
-          descentToWaypointM: 0,
-          distanceToStageEndM: 1500,
-          ascentToStageEndM: 0,
-          descentToStageEndM: 0,
-          observedPaceMps: 1.0,
-          gpsDegraded: true,
-        ));
+        ..add(
+          const EtaInput(
+            distanceToWaypointM: 500,
+            ascentToWaypointM: 0,
+            descentToWaypointM: 0,
+            distanceToStageEndM: 2000,
+            ascentToStageEndM: 0,
+            descentToStageEndM: 0,
+            observedPaceMps: 1.0,
+            gpsDegraded: false,
+          ),
+        )
+        ..add(
+          const EtaInput(
+            distanceToWaypointM: 300,
+            ascentToWaypointM: 0,
+            descentToWaypointM: 0,
+            distanceToStageEndM: 1500,
+            ascentToStageEndM: 0,
+            descentToStageEndM: 0,
+            observedPaceMps: 1.0,
+            gpsDegraded: true,
+          ),
+        );
       await ctrl.close();
 
       final results = await future;

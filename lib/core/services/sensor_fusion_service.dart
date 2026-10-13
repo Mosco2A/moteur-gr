@@ -1,3 +1,7 @@
+/// Altitude relative derivee du barometre puis RECALEE sur un point GPS fiable,
+/// pour corriger la derive, en Flutter pur.
+library;
+
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -34,12 +38,13 @@ class SensorFusionService {
     Stream<BarometerEvent> Function()? barometerStream,
     Stream<int> Function()? stepCountStream,
     Duration? barometerProbeTimeout,
-  })  : _barometerStreamFactory =
-            barometerStream ?? (() => barometerEventStream()),
-        _stepCountStreamFactory = stepCountStream ??
-            (() => Pedometer.stepCountStream.map((e) => e.steps)),
-        _barometerProbeTimeout =
-            barometerProbeTimeout ?? const Duration(seconds: 3);
+  }) : _barometerStreamFactory =
+           barometerStream ?? (() => barometerEventStream()),
+       _stepCountStreamFactory =
+           stepCountStream ??
+           (() => Pedometer.stepCountStream.map((e) => e.steps)),
+       _barometerProbeTimeout =
+           barometerProbeTimeout ?? const Duration(seconds: 3);
 
   final Stream<BarometerEvent> Function() _barometerStreamFactory;
   final Stream<int> Function() _stepCountStreamFactory;
@@ -139,7 +144,7 @@ class SensorFusionService {
           _referenceHPa ??= event.pressure;
           final relative =
               pressureToAltitude(event.pressure, _referenceHPa!) +
-                  _altitudeOffsetMetres;
+              _altitudeOffsetMetres;
           if (!controller.isClosed) controller.add(relative);
         },
         onError: (Object error, StackTrace stackTrace) {

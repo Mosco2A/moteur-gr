@@ -1,8 +1,13 @@
+/// Le cochage au fur et a mesure du remplissage du sac, avec son compteur et sa
+/// roue : un etat de session, non persiste.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/checklist_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Section « Preparation du sac » — CLONE GR20 (_PreparationSection).
 ///
@@ -37,11 +42,11 @@ class _ChecklistPreparationSectionState
     final theme = Theme.of(context);
     final ui = t.checklist.ui;
 
-    final selectedItems =
-        widget.items.where((i) => i.isChecked).toList();
+    final selectedItems = widget.items.where((i) => i.isChecked).toList();
     final totalItems = selectedItems.length;
-    final preparedCount =
-        selectedItems.where((i) => _preparedIds.contains(i.template.id)).length;
+    final preparedCount = selectedItems
+        .where((i) => _preparedIds.contains(i.template.id))
+        .length;
     final allPrepared = totalItems > 0 && preparedCount == totalItems;
 
     if (totalItems == 0) return const SizedBox.shrink();
@@ -68,8 +73,8 @@ class _ChecklistPreparationSectionState
               padding: const EdgeInsets.all(AppTheme.spacingBase),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.backpack,
+                  StepIcon(
+                    StepwaysIcons.sacADos,
                     color: allPrepared
                         ? AppTheme.vertFacile
                         : AppTheme.orangeDifficile,
@@ -118,14 +123,17 @@ class _ChecklistPreparationSectionState
                           ),
                         ),
                         if (allPrepared)
-                          const Icon(Icons.check,
-                              size: 20, color: AppTheme.vertFacile),
+                          const StepIcon(
+                            StepwaysIcons.coche,
+                            size: 20,
+                            color: AppTheme.vertFacile,
+                          ),
                       ],
                     ),
                   ),
                   const SizedBox(width: AppTheme.spacingSm),
-                  Icon(
-                    _isExpanded ? Icons.expand_less : Icons.expand_more,
+                  StepIcon(
+                    _isExpanded ? StepwaysIcons.replier : StepwaysIcons.deplier,
                     color: AppTheme.grisGranite,
                   ),
                 ],
@@ -149,8 +157,11 @@ class _ChecklistPreparationSectionState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.check_circle,
-                      size: 20, color: AppTheme.vertFacile),
+                  const StepIcon(
+                    StepwaysIcons.cochePleine,
+                    size: 20,
+                    color: AppTheme.vertFacile,
+                  ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Text(
                     '${ui.prepAllReady} \u{1F3D4}\u{FE0F}',
@@ -207,8 +218,6 @@ class _ChecklistPreparationSectionState
                                   : null,
                               color: isPrepared ? AppTheme.grisGranite : null,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -258,8 +267,8 @@ class _ChecklistPreDepartureSectionState
     final theme = Theme.of(context);
     final ui = t.checklist.ui;
     final items = _items;
-    final allChecked = _checked.length == items.length &&
-        _checked.values.every((v) => v);
+    final allChecked =
+        _checked.length == items.length && _checked.values.every((v) => v);
     final counterLabel = ui.preDepartureCounter
         .replaceAll('{checked}', '${_checked.values.where((v) => v).length}')
         .replaceAll('{total}', '${items.length}');
@@ -267,8 +276,8 @@ class _ChecklistPreDepartureSectionState
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingMd),
       child: ExpansionTile(
-        leading: Icon(
-          allChecked ? Icons.check_circle : Icons.playlist_add_check,
+        leading: StepIcon(
+          allChecked ? StepwaysIcons.cochePleine : StepwaysIcons.coche,
           color: allChecked ? AppTheme.vertFacile : AppTheme.orangeDifficile,
           size: 22,
         ),
@@ -291,8 +300,7 @@ class _ChecklistPreDepartureSectionState
             dense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 8),
             value: isChecked,
-            onChanged: (val) =>
-                setState(() => _checked[index] = val ?? false),
+            onChanged: (val) => setState(() => _checked[index] = val ?? false),
             title: Text(
               items[index],
               style: theme.textTheme.bodyMedium?.copyWith(

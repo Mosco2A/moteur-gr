@@ -7,7 +7,8 @@ import 'package:moteur_gr/core/config/trail_selection.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/trek/data/trek_session_manager.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
 import 'package:moteur_gr/features/trek/providers/session_recovery_provider.dart';
 import 'package:moteur_gr/features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
@@ -44,10 +45,12 @@ void main() {
   /// Container cable sur la DB in-memory + une session orpheline eventuelle.
   /// [pending] null => aucune orpheline detectee.
   ProviderContainer makeContainer(PendingSession? pending) {
-    final container = ProviderContainer(overrides: [
-      databaseProvider.overrideWithValue(db),
-      pendingSessionProvider.overrideWith((ref) async => pending),
-    ]);
+    final container = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        pendingSessionProvider.overrideWith((ref) async => pending),
+      ],
+    );
     addTearDown(container.dispose);
     return container;
   }
@@ -87,9 +90,13 @@ void main() {
   });
 
   testWidgets('session orpheline detectee -> dialog affiche', (tester) async {
-    await tester.pumpWidget(wrap(makeContainer(
-      PendingSession(session: orphan(), age: const Duration(hours: 2)),
-    )));
+    await tester.pumpWidget(
+      wrap(
+        makeContainer(
+          PendingSession(session: orphan(), age: const Duration(hours: 2)),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(
@@ -98,8 +105,9 @@ void main() {
     );
   });
 
-  testWidgets('Reprendre -> ecrit selectedTrailId + navigue /home',
-      (tester) async {
+  testWidgets('Reprendre -> ecrit selectedTrailId + navigue /home', (
+    tester,
+  ) async {
     final container = makeContainer(
       PendingSession(session: orphan(), age: const Duration(hours: 2)),
     );
@@ -116,8 +124,9 @@ void main() {
     expect(find.text('HOME_STUB'), findsOneWidget);
   });
 
-  testWidgets('Abandonner -> session soldee en base (status=abandoned)',
-      (tester) async {
+  testWidgets('Abandonner -> session soldee en base (status=abandoned)', (
+    tester,
+  ) async {
     // La session orpheline existe en base (comme apres un crash) : on doit
     // pouvoir la relire soldee apres l'abandon.
     final session = orphan();
@@ -148,8 +157,9 @@ void main() {
     expect(ongoing, isEmpty);
   });
 
-  testWidgets('le dialog ne se represente pas apres traitement',
-      (tester) async {
+  testWidgets('le dialog ne se represente pas apres traitement', (
+    tester,
+  ) async {
     final session = orphan();
     await db.trekSessionsDao.upsertSession(session);
     final container = makeContainer(

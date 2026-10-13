@@ -1,10 +1,16 @@
+/// Les phases du test de six minutes et leur chrono : un etat immuable, pour
+/// que l'ecran ne puisse pas en inventer un intermediaire.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../notifications/providers/notification_provider.dart';
-import '../../trek/data/gps_service.dart';
+import '../../notifications/notifications_facade.dart'
+    show notificationServiceProvider;
+import '../../trek/trek_facade.dart'
+    show GpsPermissionResultValues, GpsService, gpsServiceProvider;
 import '../data/hiker_profile_repository.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/walk_test_norms.dart';
@@ -37,6 +43,7 @@ class WalkTestState {
     this.countdownRemaining = kWalkTestCountdown,
     this.distanceMeters = 0,
     this.result,
+    this.gpsUnavailable = false,
   });
 
   final WalkTestPhase phase;
@@ -53,12 +60,20 @@ class WalkTestState {
   /// Resultat date (non-null en phase [WalkTestPhase.done]).
   final WalkTestResult? result;
 
+  /// Vrai quand la position n'a pas pu etre DEMANDEE du tout (tache 579).
+  ///
+  /// Distingue « l'utilisateur a refuse » (message : autorisez la localisation)
+  /// de « l'appareil n'a pas su repondre » (message : la position n'est pas
+  /// disponible). Sans cette distinction, le second cas ne produisait RIEN.
+  final bool gpsUnavailable;
+
   WalkTestState copyWith({
     WalkTestPhase? phase,
     Duration? remaining,
     Duration? countdownRemaining,
     double? distanceMeters,
     WalkTestResult? result,
+    bool? gpsUnavailable,
   }) {
     return WalkTestState(
       phase: phase ?? this.phase,
@@ -66,6 +81,7 @@ class WalkTestState {
       countdownRemaining: countdownRemaining ?? this.countdownRemaining,
       distanceMeters: distanceMeters ?? this.distanceMeters,
       result: result ?? this.result,
+      gpsUnavailable: gpsUnavailable ?? this.gpsUnavailable,
     );
   }
 }
@@ -89,8 +105,7 @@ class WalkTestController extends Notifier<WalkTestState> {
   String? _reminderTitle;
   String? _reminderBody;
 
-  HikerProfileRepository get _repo =>
-      ref.read(hikerProfileRepositoryProvider);
+  HikerProfileRepository get _repo => ref.read(hikerProfileRepositoryProvider);
 
   @override
   WalkTestState build() {
@@ -107,9 +122,27 @@ class WalkTestController extends Notifier<WalkTestState> {
     _reminderTitle = reminderTitle;
     _reminderBody = reminderBody;
     final gps = ref.read(gpsServiceProvider);
-    final permission = await gps.requestPermission();
+    // LA DEMANDE DE PERMISSION POUVAIT LEVER, ET PERSONNE NE LA RATTRAPAIT
+    // (tache 579, LOT X). `onPressed` rendait un `Future` que rien n'attendait :
+    // quand le service de localisation n'est pas joignable — pas de materiel,
+    // service systeme coupe, canal de plateforme absent — l'exception partait
+    // dans le vide et l'ecran restait EXACTEMENT le meme. Le randonneur appuyait
+    // sur « Demarrer le test », rien ne bougeait, et rien ne lui disait pourquoi.
+    final String permission;
+    try {
+      permission = await gps.requestPermission();
+    } on Object {
+      state = state.copyWith(
+        phase: WalkTestPhase.gpsDenied,
+        gpsUnavailable: true,
+      );
+      return;
+    }
     if (permission != GpsPermissionResultValues.granted) {
-      state = state.copyWith(phase: WalkTestPhase.gpsDenied);
+      state = state.copyWith(
+        phase: WalkTestPhase.gpsDenied,
+        gpsUnavailable: false,
+      );
       return;
     }
 
@@ -118,8 +151,7 @@ class WalkTestController extends Notifier<WalkTestState> {
 
     // Compte a rebours de preparation.
     var cd = kWalkTestCountdown;
-    _countdownTicker =
-        Timer.periodic(const Duration(seconds: 1), (timer) {
+    _countdownTicker = Timer.periodic(const Duration(seconds: 1), (timer) {
       cd -= const Duration(seconds: 1);
       if (cd <= Duration.zero) {
         timer.cancel();
@@ -235,8 +267,7 @@ class WalkTestController extends Notifier<WalkTestState> {
 
 /// Provider du controleur de test 6 minutes.
 final walkTestControllerProvider =
-    NotifierProvider<WalkTestController, WalkTestState>(
-        WalkTestController.new);
+    NotifierProvider<WalkTestController, WalkTestState>(WalkTestController.new);
 
 /// Dernier resultat DATE du test 6 min (null = jamais fait -> fallback).
 final walkTestResultProvider = FutureProvider<WalkTestResult?>((ref) {

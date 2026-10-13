@@ -3,13 +3,17 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
+import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/providers/service_providers.dart';
 import 'package:moteur_gr/core/services/demo_mode_service.dart';
 import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
+import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 
 /// CORRECTIF L5-5 — DETAIL JOUR PAR JOUR DE L'AVENTURE.
@@ -51,19 +55,19 @@ void main() {
   });
 
   StagesCompanion stage(int n) => StagesCompanion(
-        trailId: const Value(trailId),
-        stageNumber: Value(n),
-        name: Value('Etape $n'),
-        distanceKm: const Value(10.0),
-        elevationGainM: const Value(500),
-        elevationLossM: const Value(400),
-        description: const Value('desc'),
-        startLat: const Value(42.0),
-        startLng: const Value(9.0),
-        endLat: const Value(42.1),
-        endLng: const Value(9.1),
-        difficulty: const Value('moderate'),
-      );
+    trailId: const Value(trailId),
+    stageNumber: Value(n),
+    name: Value('Etape $n'),
+    distanceKm: const Value(10.0),
+    elevationGainM: const Value(500),
+    elevationLossM: const Value(400),
+    description: const Value('desc'),
+    startLat: const Value(42.0),
+    startLng: const Value(9.0),
+    endLat: const Value(42.1),
+    endLng: const Value(9.1),
+    difficulty: const Value('moderate'),
+  );
 
   Future<void> traceAt({
     required DateTime at,
@@ -81,28 +85,31 @@ void main() {
       lng: 9.0,
       altitude: altitude,
       recordedAt: at,
+      source: TrackPointSource.gps,
     );
   }
 
-  ProviderContainer makeContainer() => ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(config),
-        currentTrailIdProvider.overrideWith((ref) => trailId),
-        demoModeServiceProvider.overrideWithValue(
-          DemoModeService(showcaseTrailIds: const <String>{}),
-        ),
-      ]);
+  ProviderContainer makeContainer() => ProviderContainer(
+    overrides: [
+      databaseProvider.overrideWithValue(db),
+      trailConfigProvider.overrideWithValue(config),
+      currentTrailIdProvider.overrideWith((ref) => trailId),
+      demoModeServiceProvider.overrideWithValue(DemoModeService()),
+    ],
+  );
 
   Future<void> seed() async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-    await db.trekSessionsDao.upsertSession(TrekSession(
-      id: 'sess-l5',
-      trailId: trailId,
-      startedAt: DateTime.utc(2026, 6, 10, 8),
-      finishedAt: DateTime.utc(2026, 6, 13, 18),
-      status: 'completed',
-      completedStages: const ['1', '2', '3'],
-    ));
+    await db.trekSessionsDao.upsertSession(
+      TrekSession(
+        id: 'sess-l5',
+        trailId: trailId,
+        startedAt: DateTime.utc(2026, 6, 10, 8),
+        finishedAt: DateTime.utc(2026, 6, 13, 18),
+        status: 'completed',
+        completedStages: const ['1', '2', '3'],
+      ),
+    );
   }
 
   group('L5-5 — journees derivees de la trace', () {
@@ -111,21 +118,24 @@ void main() {
       final base = DateTime.utc(2026, 6, 10, 8);
       await traceAt(at: base, lat: 42.000, dayIndex: 1, stageId: '1');
       await traceAt(
-          at: base.add(const Duration(hours: 3)),
-          lat: 42.020,
-          dayIndex: 1,
-          stageId: '1',
-          altitude: 1200);
+        at: base.add(const Duration(hours: 3)),
+        lat: 42.020,
+        dayIndex: 1,
+        stageId: '1',
+        altitude: 1200,
+      );
       await traceAt(
-          at: base.add(const Duration(days: 1)),
-          lat: 43.000,
-          dayIndex: 2,
-          stageId: '2');
+        at: base.add(const Duration(days: 1)),
+        lat: 43.000,
+        dayIndex: 2,
+        stageId: '2',
+      );
       await traceAt(
-          at: base.add(const Duration(days: 1, hours: 4)),
-          lat: 43.030,
-          dayIndex: 2,
-          stageId: '2');
+        at: base.add(const Duration(days: 1, hours: 4)),
+        lat: 43.030,
+        dayIndex: 2,
+        stageId: '2',
+      );
 
       final c = makeContainer();
       addTearDown(c.dispose);
@@ -145,20 +155,23 @@ void main() {
       final base = DateTime.utc(2026, 6, 10, 6);
       await traceAt(at: base, lat: 42.00, dayIndex: 1, stageId: '1');
       await traceAt(
-          at: base.add(const Duration(hours: 4)),
-          lat: 42.05,
-          dayIndex: 1,
-          stageId: '1');
+        at: base.add(const Duration(hours: 4)),
+        lat: 42.05,
+        dayIndex: 1,
+        stageId: '1',
+      );
       await traceAt(
-          at: base.add(const Duration(hours: 5)),
-          lat: 42.06,
-          dayIndex: 1,
-          stageId: '2');
+        at: base.add(const Duration(hours: 5)),
+        lat: 42.06,
+        dayIndex: 1,
+        stageId: '2',
+      );
       await traceAt(
-          at: base.add(const Duration(hours: 9)),
-          lat: 42.10,
-          dayIndex: 1,
-          stageId: '2');
+        at: base.add(const Duration(hours: 9)),
+        lat: 42.10,
+        dayIndex: 1,
+        stageId: '2',
+      );
 
       final c = makeContainer();
       addTearDown(c.dispose);
@@ -170,56 +183,132 @@ void main() {
       expect(days.single.stageIds, ['1', '2']);
     });
 
-    test('JOURNEE DE REPOS : aucune etape, la journee existe quand meme',
-        () async {
-      await seed();
-      final base = DateTime.utc(2026, 6, 10, 8);
-      await traceAt(at: base, lat: 42.00, dayIndex: 1, stageId: '1');
-      await traceAt(
+    test(
+      'JOURNEE DE REPOS : aucune etape, la journee existe quand meme',
+      () async {
+        await seed();
+        final base = DateTime.utc(2026, 6, 10, 8);
+        await traceAt(at: base, lat: 42.00, dayIndex: 1, stageId: '1');
+        await traceAt(
           at: base.add(const Duration(hours: 2)),
           lat: 42.02,
           dayIndex: 1,
-          stageId: '1');
-      // Jour 2 : une balade autour du village, aucune etape terminee.
-      await traceAt(at: base.add(const Duration(days: 1)), lat: 42.02, dayIndex: 2);
-      await traceAt(
+          stageId: '1',
+        );
+        // Jour 2 : une balade autour du village, aucune etape terminee.
+        await traceAt(
+          at: base.add(const Duration(days: 1)),
+          lat: 42.02,
+          dayIndex: 2,
+        );
+        await traceAt(
           at: base.add(const Duration(days: 1, hours: 1)),
           lat: 42.025,
-          dayIndex: 2);
+          dayIndex: 2,
+        );
 
-      final c = makeContainer();
-      addTearDown(c.dispose);
-      final days = await c.read(adventureDaysProvider.future);
+        final c = makeContainer();
+        addTearDown(c.dispose);
+        final days = await c.read(adventureDaysProvider.future);
 
-      expect(days.length, 2);
-      expect(days.last.stageIds, isEmpty);
-      expect(days.last.stats.hasData, isTrue);
-    });
+        expect(days.length, 2);
+        expect(days.last.stageIds, isEmpty);
+        expect(days.last.stats.hasData, isTrue);
+      },
+    );
 
-    test('trace anterieure a la migration v26 : regroupement calendaire',
-        () async {
-      await seed();
-      final base = DateTime.utc(2026, 6, 10, 8);
-      // Aucun dayIndex : ces points sont des rescapes de l'ancien schema.
-      await traceAt(at: base, lat: 42.00);
-      await traceAt(at: base.add(const Duration(hours: 2)), lat: 42.02);
-      await traceAt(at: base.add(const Duration(days: 1)), lat: 43.00);
-      await traceAt(at: base.add(const Duration(days: 1, hours: 2)), lat: 43.02);
+    test(
+      'trace anterieure a la migration v26 : regroupement calendaire',
+      () async {
+        await seed();
+        final base = DateTime.utc(2026, 6, 10, 8);
+        // Aucun dayIndex : ces points sont des rescapes de l'ancien schema.
+        await traceAt(at: base, lat: 42.00);
+        await traceAt(at: base.add(const Duration(hours: 2)), lat: 42.02);
+        await traceAt(at: base.add(const Duration(days: 1)), lat: 43.00);
+        await traceAt(
+          at: base.add(const Duration(days: 1, hours: 2)),
+          lat: 43.02,
+        );
 
-      final c = makeContainer();
-      addTearDown(c.dispose);
-      final days = await c.read(adventureDaysProvider.future);
+        final c = makeContainer();
+        addTearDown(c.dispose);
+        final days = await c.read(adventureDaysProvider.future);
 
-      expect(days.length, 2);
-      expect(days.every((d) => d.dayIndex == null), isTrue);
-      expect(days.first.date, DateTime(2026, 6, 10));
-    });
+        expect(days.length, 2);
+        expect(days.every((d) => d.dayIndex == null), isTrue);
+        expect(days.first.date, DateTime(2026, 6, 10));
+      },
+    );
 
     test('aucune trace : liste vide, pas une journee fantome', () async {
       await seed();
       final c = makeContainer();
       addTearDown(c.dispose);
       expect(await c.read(adventureDaysProvider.future), isEmpty);
+    });
+  });
+
+  group('671-06 — chaque journee se mesure SUR LE TRACE', () {
+    test('le perimetre reste LA JOURNEE DE MARCHE ; la distance et le D+ '
+        'sont ceux de la tranche, la duree celle des releves', () async {
+      await seed();
+      // Un trace sur le meridien 9° E : une bosse de 60 m entre deux releves
+      // que la corde du jour 1 ne voit pas, puis le jour 2 plus au nord.
+      TrackPoint p(double lat, double alt) => TrackPoint(
+        lat: lat,
+        lng: 9.0,
+        altitude: alt,
+        distanceFromStart: (lat - 42.0) * 111194.93,
+      );
+      final trace = [
+        p(42.000, 900),
+        p(42.005, 960),
+        p(42.010, 900),
+        p(42.020, 900),
+        p(42.030, 1000),
+      ];
+      final base = DateTime.utc(2026, 6, 10, 8);
+      await traceAt(at: base, lat: 42.000, dayIndex: 1);
+      await traceAt(
+        at: base.add(const Duration(hours: 1)),
+        lat: 42.010,
+        dayIndex: 1,
+      );
+      await traceAt(
+        at: base.add(const Duration(days: 1)),
+        lat: 42.020,
+        dayIndex: 2,
+      );
+      await traceAt(
+        at: base.add(const Duration(days: 1, hours: 1)),
+        lat: 42.030,
+        dayIndex: 2,
+        altitude: 1000,
+      );
+
+      final c = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(config),
+          currentTrailIdProvider.overrideWith((ref) => trailId),
+          demoModeServiceProvider.overrideWithValue(DemoModeService()),
+          gpxTrackProvider(trailId).overrideWith((ref) async => trace),
+        ],
+      );
+      addTearDown(c.dispose);
+      final days = await c.read(adventureDaysProvider.future);
+
+      expect(days, hasLength(2));
+      // La bosse de 60 m du jour 1, invisible des deux releves a 900 m.
+      expect(days.first.stats.elevationGainM, 60);
+      expect(days.first.stats.elevationLossM, 60);
+      expect(days.first.stats.duration, const Duration(hours: 1));
+      expect(days.first.stats.pointCount, 2);
+      // Le jour 2 ne compte que sa journee, pas la nuit qui le precede.
+      expect(days.last.stats.distanceKm, closeTo(1.112, 0.001));
+      expect(days.last.stats.elevationGainM, 100);
+      expect(days.last.stats.duration, const Duration(hours: 1));
     });
   });
 }

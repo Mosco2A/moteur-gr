@@ -12,9 +12,11 @@ import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/providers/service_providers.dart';
 import 'package:moteur_gr/core/services/demo_mode_service.dart';
 import 'package:moteur_gr/features/after/presentation/adventure_recap_screen.dart';
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
+import 'package:moteur_gr/domain/trek_session_mapping.dart';
 
 /// PARITE GR20, LOT 3 (#99433), point 3.A / critere (c) — l'ecran Recap
 /// « Mon aventure » affiche les stats de la SESSION REELLE et est accessible
@@ -42,40 +44,36 @@ void main() {
   late AppDatabase db;
 
   StagesCompanion stage(int n) => StagesCompanion(
-        trailId: const Value(trailId),
-        stageNumber: Value(n),
-        name: Value('Etape $n'),
-        distanceKm: const Value(10.0),
-        elevationGainM: const Value(500),
-        elevationLossM: const Value(400),
-        description: const Value('desc'),
-        startLat: const Value(42.0),
-        startLng: const Value(9.0),
-        endLat: const Value(42.1),
-        endLng: const Value(9.1),
-        difficulty: const Value('moderate'),
-      );
+    trailId: const Value(trailId),
+    stageNumber: Value(n),
+    name: Value('Etape $n'),
+    distanceKm: const Value(10.0),
+    elevationGainM: const Value(500),
+    elevationLossM: const Value(400),
+    description: const Value('desc'),
+    startLat: const Value(42.0),
+    startLng: const Value(9.0),
+    endLat: const Value(42.1),
+    endLng: const Value(9.1),
+    difficulty: const Value('moderate'),
+  );
 
   TrekSession sess({
     required String status,
     List<String> completed = const [],
     bool fullyWalked = false,
     DateTime? finishedAt,
-  }) =>
-      TrekSession(
-        id: 'sess-recap',
-        trailId: trailId,
-        startedAt: DateTime.utc(2026, 6, 15, 8),
-        finishedAt: finishedAt,
-        status: status,
-        completedStages: completed,
-        parcoursFullyWalked: fullyWalked,
-      );
+  }) => TrekSession(
+    id: 'sess-recap',
+    trailId: trailId,
+    startedAt: DateTime.utc(2026, 6, 15, 8),
+    finishedAt: finishedAt,
+    status: status,
+    completedStages: completed,
+    parcoursFullyWalked: fullyWalked,
+  );
 
-  Future<void> pumpRecap(
-    WidgetTester tester, {
-    bool showcase = false,
-  }) async {
+  Future<void> pumpRecap(WidgetTester tester) async {
     LocaleSettings.setLocaleRaw('fr');
     await tester.pumpWidget(
       ProviderScope(
@@ -83,11 +81,7 @@ void main() {
           databaseProvider.overrideWithValue(db),
           trailConfigProvider.overrideWithValue(config),
           currentTrailIdProvider.overrideWith((ref) => trailId),
-          demoModeServiceProvider.overrideWithValue(
-            DemoModeService(
-              showcaseTrailIds: showcase ? {trailId} : <String>{},
-            ),
-          ),
+          demoModeServiceProvider.overrideWithValue(DemoModeService()),
         ],
         // AppHeader (Ph5/L6d) utilise GoRouter -> GoRouter minimal (+ /my-treks).
         child: MaterialApp.router(
@@ -95,8 +89,9 @@ void main() {
             initialLocation: '/recap',
             routes: [
               GoRoute(
-                  path: '/recap',
-                  builder: (_, __) => const AdventureRecapScreen()),
+                path: '/recap',
+                builder: (_, __) => const AdventureRecapScreen(),
+              ),
               GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
               // R10 (LOT L10) : cible du nouveau bouton « Voir mon journal ».
               GoRoute(
@@ -123,15 +118,18 @@ void main() {
     await db.close();
   });
 
-  testWidgets('FINISHER : recap affiche stats reelles + bandeau finisher',
-      (tester) async {
+  testWidgets('FINISHER : recap affiche stats reelles + bandeau finisher', (
+    tester,
+  ) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-    await db.trekSessionsDao.upsertSession(sess(
-      status: 'completed',
-      completed: const ['1', '2', '3', '4'],
-      fullyWalked: true,
-      finishedAt: DateTime.utc(2026, 6, 18, 18),
-    ));
+    await db.trekSessionsDao.upsertSession(
+      sess(
+        status: 'completed',
+        completed: const ['1', '2', '3', '4'],
+        fullyWalked: true,
+        finishedAt: DateTime.utc(2026, 6, 18, 18),
+      ),
+    );
 
     await pumpRecap(tester);
 
@@ -141,9 +139,9 @@ void main() {
     expect(find.text(t.recap.finisherTitle), findsOneWidget);
     // Stats reelles : 4/4 etapes, 40 km, 2000 m D+ (pas les totaux config).
     expect(
-      find.text(t.recap.stages
-          .replaceAll('{done}', '4')
-          .replaceAll('{total}', '4')),
+      find.text(
+        t.recap.stages.replaceAll('{done}', '4').replaceAll('{total}', '4'),
+      ),
       findsOneWidget,
     );
     expect(
@@ -158,15 +156,18 @@ void main() {
     expect(find.text(t.recap.viewDiploma), findsOneWidget);
   });
 
-  testWidgets('ABANDON : recap accessible + bandeau parcours partiel',
-      (tester) async {
+  testWidgets('ABANDON : recap accessible + bandeau parcours partiel', (
+    tester,
+  ) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-    await db.trekSessionsDao.upsertSession(sess(
-      status: 'abandoned',
-      completed: const ['1', '2'],
-      fullyWalked: false,
-      finishedAt: DateTime.utc(2026, 6, 16, 12),
-    ));
+    await db.trekSessionsDao.upsertSession(
+      sess(
+        status: 'abandoned',
+        completed: const ['1', '2'],
+        fullyWalked: false,
+        finishedAt: DateTime.utc(2026, 6, 16, 12),
+      ),
+    );
 
     await pumpRecap(tester);
 
@@ -174,9 +175,9 @@ void main() {
     expect(find.text(t.recap.partialTitle), findsOneWidget);
     // Stats reelles : 2/4 etapes marchees, 20 km.
     expect(
-      find.text(t.recap.stages
-          .replaceAll('{done}', '2')
-          .replaceAll('{total}', '4')),
+      find.text(
+        t.recap.stages.replaceAll('{done}', '2').replaceAll('{total}', '4'),
+      ),
       findsOneWidget,
     );
     expect(
@@ -187,8 +188,7 @@ void main() {
     expect(find.text(t.recap.viewDiploma), findsNothing);
   });
 
-  testWidgets('ACTIF (ni fini ni abandonne, hors vitrine) : etat verrouille',
-      (tester) async {
+  testWidgets('ACTIF (ni fini ni abandonne) : etat verrouille', (tester) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
     await db.trekSessionsDao.upsertSession(sess(status: 'active'));
 
@@ -196,20 +196,35 @@ void main() {
 
     // Etat verrouille (parite GR20) : titre « disponible a la fin » + cadenas.
     expect(find.text(t.recap.lockedTitle), findsOneWidget);
-    expect(find.byIcon(Icons.lock_outline), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.cadenas,
+      ),
+      findsOneWidget,
+    );
     // Pas de bandeau finisher/partiel.
     expect(find.text(t.recap.finisherTitle), findsNothing);
     expect(find.text(t.recap.partialTitle), findsNothing);
   });
 
-  testWidgets('VITRINE : recap accessible meme sans session', (tester) async {
+  testWidgets('AUCUNE SESSION : recap VERROUILLE, meme en demonstration', (
+    tester,
+  ) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-    // Aucune session persistee.
-    await pumpRecap(tester, showcase: true);
+    // Aucune session persistee. AVANT LA TACHE 601, un sentier declare
+    // vitrine ouvrait ici « Mon aventure » sur une aventure inexistante.
+    await pumpRecap(tester);
 
-    // Accessible (demo) : pas d'etat verrouille.
-    expect(find.byIcon(Icons.lock_outline), findsNothing);
-    expect(find.text(t.recap.statsSection), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is StepIcon && w.asset == StepwaysIcons.cadenas,
+      ),
+      findsOneWidget,
+      reason:
+          'un recap sans aventure ne raconte rien. Sur le sentier '
+          'gratuit, le trek se termine vraiment : le recap s ouvre alors '
+          'sur des chiffres reels',
+    );
   });
 
   // -------------------------------------------------------------------------
@@ -223,27 +238,32 @@ void main() {
   group('R10 — entree JOURNAL depuis l\'ecran apres-trek', () {
     testWidgets('FINISHER : le bouton Journal est propose', (tester) async {
       await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-      await db.trekSessionsDao.upsertSession(sess(
-        status: 'completed',
-        completed: const ['1', '2', '3', '4'],
-        fullyWalked: true,
-        finishedAt: DateTime.utc(2026, 6, 18, 18),
-      ));
+      await db.trekSessionsDao.upsertSession(
+        sess(
+          status: 'completed',
+          completed: const ['1', '2', '3', '4'],
+          fullyWalked: true,
+          finishedAt: DateTime.utc(2026, 6, 18, 18),
+        ),
+      );
 
       await pumpRecap(tester);
 
       expect(find.text(t.recap.viewJournal), findsOneWidget);
     });
 
-    testWidgets('ABANDON : le Journal reste propose MEME sans diplome',
-        (tester) async {
+    testWidgets('ABANDON : le Journal reste propose MEME sans diplome', (
+      tester,
+    ) async {
       await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-      await db.trekSessionsDao.upsertSession(sess(
-        status: 'abandoned',
-        completed: const ['1', '2'],
-        fullyWalked: false,
-        finishedAt: DateTime.utc(2026, 6, 16, 12),
-      ));
+      await db.trekSessionsDao.upsertSession(
+        sess(
+          status: 'abandoned',
+          completed: const ['1', '2'],
+          fullyWalked: false,
+          finishedAt: DateTime.utc(2026, 6, 16, 12),
+        ),
+      );
 
       await pumpRecap(tester);
 
@@ -252,14 +272,18 @@ void main() {
       expect(find.text(t.recap.viewJournal), findsOneWidget);
     });
 
-    testWidgets('le bouton Journal OUVRE bien l\'ecran journal', (tester) async {
+    testWidgets('le bouton Journal OUVRE bien l\'ecran journal', (
+      tester,
+    ) async {
       await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-      await db.trekSessionsDao.upsertSession(sess(
-        status: 'completed',
-        completed: const ['1', '2', '3', '4'],
-        fullyWalked: true,
-        finishedAt: DateTime.utc(2026, 6, 18, 18),
-      ));
+      await db.trekSessionsDao.upsertSession(
+        sess(
+          status: 'completed',
+          completed: const ['1', '2', '3', '4'],
+          fullyWalked: true,
+          finishedAt: DateTime.utc(2026, 6, 18, 18),
+        ),
+      );
 
       await pumpRecap(tester);
 

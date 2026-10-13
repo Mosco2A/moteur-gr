@@ -29,13 +29,15 @@ void main() {
   // SW-SKIN-L2 : la peau (defaut sentierVivant) est desormais requise ; elle
   // n'affecte ni la typo ni les couleurs testees ici (neutralite L2).
   ThemeData light() => AppTheme.buildLightTheme(
-      primaryColor: primary,
-      secondaryColor: secondary,
-      skin: AppSkin.sentierVivant);
+    primaryColor: primary,
+    secondaryColor: secondary,
+    skin: AppSkin.sentierVivant,
+  );
   ThemeData dark() => AppTheme.buildDarkTheme(
-      primaryColor: primary,
-      secondaryColor: secondary,
-      skin: AppSkin.sentierVivant);
+    primaryColor: primary,
+    secondaryColor: secondary,
+    skin: AppSkin.sentierVivant,
+  );
 
   /// Laisse les futures de chargement de police se resoudre puis absorbe
   /// l'exception google_fonts (police non bundlee + pas de reseau en test).
@@ -44,8 +46,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1));
     final ex = tester.takeException();
     if (ex != null) {
-      expect(ex.toString().toLowerCase(), contains('font'),
-          reason: 'seule l\'exception de chargement google_fonts est toleree');
+      expect(
+        ex.toString().toLowerCase(),
+        contains('font'),
+        reason: 'seule l\'exception de chargement google_fonts est toleree',
+      );
     }
   }
 
@@ -53,8 +58,7 @@ void main() {
     for (final entry in {'clair': light, 'sombre': dark}.entries) {
       final buildTheme = entry.value;
 
-      testWidgets('theme ${entry.key} : titres en Montserrat',
-          (tester) async {
+      testWidgets('theme ${entry.key} : titres en Montserrat', (tester) async {
         final tt = buildTheme().textTheme;
         // Roles titres/display/labels -> Montserrat (parite GR20).
         expect(tt.displayLarge?.fontFamily, contains('Montserrat'));
@@ -76,35 +80,38 @@ void main() {
         await drainFontLoad(tester);
       });
 
-      testWidgets('theme ${entry.key} : tailles et poids inchanges (echelle typo)',
-          (tester) async {
-        final tt = buildTheme().textTheme;
-        // On n'assigne QUE la famille : tailles/poids restent ceux d'origine.
-        expect(tt.displayLarge?.fontSize, 34);
-        expect(tt.displayLarge?.fontWeight, FontWeight.w700);
-        expect(tt.headlineLarge?.fontSize, 28);
-        expect(tt.headlineLarge?.fontWeight, FontWeight.w700);
-        expect(tt.headlineMedium?.fontSize, 24);
-        expect(tt.headlineMedium?.fontWeight, FontWeight.w700);
-        expect(tt.headlineSmall?.fontSize, 22);
-        expect(tt.headlineSmall?.fontWeight, FontWeight.w600);
-        expect(tt.titleLarge?.fontSize, 20);
-        expect(tt.titleLarge?.fontWeight, FontWeight.w600);
-        expect(tt.titleMedium?.fontSize, 18);
-        expect(tt.titleMedium?.fontWeight, FontWeight.w600);
-        expect(tt.bodyLarge?.fontSize, 20);
-        expect(tt.bodyLarge?.fontWeight, FontWeight.w500);
-        expect(tt.bodyMedium?.fontSize, 18);
-        expect(tt.bodyMedium?.fontWeight, FontWeight.w400);
-        expect(tt.bodySmall?.fontSize, 16);
-        expect(tt.bodySmall?.fontWeight, FontWeight.w400);
-        expect(tt.labelLarge?.fontSize, 16);
-        expect(tt.labelLarge?.fontWeight, FontWeight.w600);
-        await drainFontLoad(tester);
-      });
+      testWidgets(
+        'theme ${entry.key} : tailles et poids inchanges (echelle typo)',
+        (tester) async {
+          final tt = buildTheme().textTheme;
+          // On n'assigne QUE la famille : tailles/poids restent ceux d'origine.
+          expect(tt.displayLarge?.fontSize, 34);
+          expect(tt.displayLarge?.fontWeight, FontWeight.w700);
+          expect(tt.headlineLarge?.fontSize, 28);
+          expect(tt.headlineLarge?.fontWeight, FontWeight.w700);
+          expect(tt.headlineMedium?.fontSize, 24);
+          expect(tt.headlineMedium?.fontWeight, FontWeight.w700);
+          expect(tt.headlineSmall?.fontSize, 22);
+          expect(tt.headlineSmall?.fontWeight, FontWeight.w600);
+          expect(tt.titleLarge?.fontSize, 20);
+          expect(tt.titleLarge?.fontWeight, FontWeight.w600);
+          expect(tt.titleMedium?.fontSize, 18);
+          expect(tt.titleMedium?.fontWeight, FontWeight.w600);
+          expect(tt.bodyLarge?.fontSize, 20);
+          expect(tt.bodyLarge?.fontWeight, FontWeight.w500);
+          expect(tt.bodyMedium?.fontSize, 18);
+          expect(tt.bodyMedium?.fontWeight, FontWeight.w400);
+          expect(tt.bodySmall?.fontSize, 16);
+          expect(tt.bodySmall?.fontWeight, FontWeight.w400);
+          expect(tt.labelLarge?.fontSize, 16);
+          expect(tt.labelLarge?.fontWeight, FontWeight.w600);
+          await drainFontLoad(tester);
+        },
+      );
 
-      testWidgets('theme ${entry.key} : couleur de texte preservee',
-          (tester) async {
+      testWidgets('theme ${entry.key} : couleur de texte preservee', (
+        tester,
+      ) async {
         final tt = buildTheme().textTheme;
         // Clair -> noir (0xFF212121) ; sombre -> gris clair (0xFFF5F5F5).
         final expected = entry.key == 'clair'
@@ -119,8 +126,9 @@ void main() {
   });
 
   group('SW-SKIN-L1 — role data (chiffres tabulaires)', () {
-    testWidgets('dataTextStyleBase : Montserrat w700 + tabularFigures',
-        (tester) async {
+    testWidgets('dataTextStyleBase : Montserrat w700 + tabularFigures', (
+      tester,
+    ) async {
       final style = AppTheme.dataTextStyleBase;
       expect(style.fontFamily, contains('Montserrat'));
       expect(style.fontWeight, FontWeight.w700);
@@ -128,8 +136,9 @@ void main() {
       await drainFontLoad(tester);
     });
 
-    testWidgets('dataTextStyle(context) : tabular + taille/couleur du theme',
-        (tester) async {
+    testWidgets('dataTextStyle(context) : tabular + taille/couleur du theme', (
+      tester,
+    ) async {
       late TextStyle resolved;
       await tester.pumpWidget(
         MaterialApp(
@@ -145,7 +154,10 @@ void main() {
 
       expect(resolved.fontFamily, contains('Montserrat'));
       expect(resolved.fontWeight, FontWeight.w700);
-      expect(resolved.fontFeatures, contains(const FontFeature.tabularFigures()));
+      expect(
+        resolved.fontFeatures,
+        contains(const FontFeature.tabularFigures()),
+      );
       // Herite la taille du role headlineMedium (24) du theme actif.
       expect(resolved.fontSize, 24);
       await drainFontLoad(tester);

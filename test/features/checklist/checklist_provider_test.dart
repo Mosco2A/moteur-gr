@@ -19,10 +19,12 @@ void main() {
 
     setUp(() {
       db = AppDatabase(NativeDatabase.memory());
-      container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(testTrailConfig),
-      ]);
+      container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(testTrailConfig),
+        ],
+      );
     });
 
     tearDown(() async {
@@ -50,8 +52,9 @@ void main() {
 
       final state = container.read(checklistProvider);
       expect(state.checkedCount, 1);
-      final backpack = state.items
-          .firstWhere((i) => i.template.id == 'backpack');
+      final backpack = state.items.firstWhere(
+        (i) => i.template.id == 'backpack',
+      );
       expect(backpack.isChecked, true);
     });
 
@@ -65,8 +68,9 @@ void main() {
 
       final state = container.read(checklistProvider);
       expect(state.checkedCount, 0);
-      final backpack = state.items
-          .firstWhere((i) => i.template.id == 'backpack');
+      final backpack = state.items.firstWhere(
+        (i) => i.template.id == 'backpack',
+      );
       expect(backpack.isChecked, false);
     });
 
@@ -129,46 +133,59 @@ void main() {
 
     // LOT 1 (retour Chris #12) : le poids du sac DERIVE du poids de la fiche
     // profil. On teste la mecanique d'injection au niveau du provider.
-    test('seedBodyWeightFromProfile injecte le poids morpho (defaut 70 -> 82)',
-        () async {
-      container.read(checklistProvider);
-      await Future<void>.delayed(const Duration(milliseconds: 200));
+    test(
+      'seedBodyWeightFromProfile injecte le poids morpho (defaut 70 -> 82)',
+      () async {
+        container.read(checklistProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 200));
 
-      // Defaut de reference GR20 tant qu'aucune source.
-      expect(container.read(checklistProvider).bodyWeightKg,
-          kDefaultBodyWeightKg);
+        // Defaut de reference GR20 tant qu'aucune source.
+        expect(
+          container.read(checklistProvider).bodyWeightKg,
+          kDefaultBodyWeightKg,
+        );
 
-      container.read(checklistProvider.notifier).seedBodyWeightFromProfile(82);
+        container
+            .read(checklistProvider.notifier)
+            .seedBodyWeightFromProfile(82);
 
-      final state = container.read(checklistProvider);
-      expect(state.bodyWeightKg, 82);
-      expect(state.bodyWeightEdited, false);
-      // Le ratio sac/corps utilise bien la nouvelle source de verite.
-      expect(state.backpackRatio, closeTo(state.checkedWeightKg / 82, 0.0001));
-    });
+        final state = container.read(checklistProvider);
+        expect(state.bodyWeightKg, 82);
+        expect(state.bodyWeightEdited, false);
+        // Le ratio sac/corps utilise bien la nouvelle source de verite.
+        expect(
+          state.backpackRatio,
+          closeTo(state.checkedWeightKg / 82, 0.0001),
+        );
+      },
+    );
 
-    test('seedBodyWeightFromProfile n ecrase PAS une saisie manuelle',
-        () async {
-      container.read(checklistProvider);
-      await Future<void>.delayed(const Duration(milliseconds: 200));
+    test(
+      'seedBodyWeightFromProfile n ecrase PAS une saisie manuelle',
+      () async {
+        container.read(checklistProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 200));
 
-      final notifier = container.read(checklistProvider.notifier);
-      // L'utilisateur saisit un poids a la main dans l'ecran Sac (override).
-      notifier.setBodyWeight(95);
-      expect(container.read(checklistProvider).bodyWeightEdited, true);
+        final notifier = container.read(checklistProvider.notifier);
+        // L'utilisateur saisit un poids a la main dans l'ecran Sac (override).
+        notifier.setBodyWeight(95);
+        expect(container.read(checklistProvider).bodyWeightEdited, true);
 
-      // Une injection ulterieure depuis le profil ne doit PAS l'ecraser.
-      notifier.seedBodyWeightFromProfile(70);
-      expect(container.read(checklistProvider).bodyWeightKg, 95);
-    });
+        // Une injection ulterieure depuis le profil ne doit PAS l'ecraser.
+        notifier.seedBodyWeightFromProfile(70);
+        expect(container.read(checklistProvider).bodyWeightKg, 95);
+      },
+    );
 
     test('seedBodyWeightFromProfile ignore les valeurs <= 0', () async {
       container.read(checklistProvider);
       await Future<void>.delayed(const Duration(milliseconds: 200));
 
       container.read(checklistProvider.notifier).seedBodyWeightFromProfile(0);
-      expect(container.read(checklistProvider).bodyWeightKg,
-          kDefaultBodyWeightKg);
+      expect(
+        container.read(checklistProvider).bodyWeightKg,
+        kDefaultBodyWeightKg,
+      );
     });
   });
 
@@ -181,38 +198,22 @@ void main() {
     });
 
     test('progress est 0 si totalCount est 0', () {
-      const state = ChecklistState(
-        items: [],
-        checkedCount: 0,
-        totalCount: 0,
-      );
+      const state = ChecklistState(items: [], checkedCount: 0, totalCount: 0);
       expect(state.progress, 0.0);
     });
 
     test('isComplete est false si totalCount est 0', () {
-      const state = ChecklistState(
-        items: [],
-        checkedCount: 0,
-        totalCount: 0,
-      );
+      const state = ChecklistState(items: [], checkedCount: 0, totalCount: 0);
       expect(state.isComplete, false);
     });
 
     test('isComplete est true quand tout est coche', () {
-      const state = ChecklistState(
-        items: [],
-        checkedCount: 5,
-        totalCount: 5,
-      );
+      const state = ChecklistState(items: [], checkedCount: 5, totalCount: 5);
       expect(state.isComplete, true);
     });
 
     test('progress calcule le bon ratio', () {
-      const state = ChecklistState(
-        items: [],
-        checkedCount: 3,
-        totalCount: 10,
-      );
+      const state = ChecklistState(items: [], checkedCount: 3, totalCount: 10);
       expect(state.progress, closeTo(0.3, 0.01));
     });
   });

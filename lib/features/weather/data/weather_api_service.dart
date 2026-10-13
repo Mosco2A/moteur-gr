@@ -1,8 +1,13 @@
+/// L'appel a Open-Meteo, gratuit et sans cle, et la lecture de sa reponse : le
+/// seul endroit qui parle au fournisseur.
+library;
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
+import '../domain/forecast_reach.dart';
 import '../models/weather_forecast.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -11,10 +16,14 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 ///
 /// Encapsule la requete HTTP vers Open-Meteo et le parsing
 /// de la reponse en [WeatherForecast].
-/// Previsions a 7 jours : temperature, precipitations, vent, UV.
+///
+/// PORTEE (tache 572) : [forecastHorizonDays] jours — la portee annoncee a
+/// l'ecran DERIVE de la meme constante, l'appel ne peut donc pas promettre
+/// moins que ce que l'ecran affiche. Borne du fournisseur : `forecast_days`
+/// accepte 0-16, defaut 7. Voir `domain/forecast_reach.dart` pour la decision
+/// et ses sources.
 class WeatherApiService {
-  WeatherApiService({http.Client? client})
-      : _client = client ?? http.Client();
+  WeatherApiService({http.Client? client}) : _client = client ?? http.Client();
 
   final http.Client _client;
 
@@ -39,6 +48,10 @@ class WeatherApiService {
   ///
   /// Retourne null en cas d'erreur reseau ou de reponse invalide.
   /// Les coordonnees doivent provenir de la base Drift (pas en dur).
+  ///
+  /// Le bulletin rendu porte son INSTANT DE RELEVE ([WeatherForecast.fetchedAt])
+  /// — sans lui, aucun ecran ne peut dire si une donnee est fraiche, et un
+  /// rafraichissement reussi est invisible (tache 572, U2/U3).
   Future<WeatherForecast?> fetchForecast({
     required double latitude,
     required double longitude,
@@ -47,7 +60,7 @@ class WeatherApiService {
       final uri = Uri.parse(
         '$baseUrl?latitude=$latitude&longitude=$longitude'
         '&daily=$_dailyParams'
-        '&timezone=auto&forecast_days=7',
+        '&timezone=auto&forecast_days=$forecastHorizonDays',
       );
 
       final response = await _client.get(uri).timeout(timeout);
@@ -58,7 +71,7 @@ class WeatherApiService {
       }
 
       final json = jsonDecode(response.body) as Map<String, dynamic>;
-      return WeatherForecast.fromOpenMeteo(json);
+      return WeatherForecast.fromOpenMeteo(json).withFetchedAt(DateTime.now());
     } catch (e) {
       _log.w('[WeatherApiService] Erreur recuperation meteo: $e');
       return null;

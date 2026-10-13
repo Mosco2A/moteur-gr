@@ -1,0 +1,18 @@
+# GENERE PAR tool/set_branding.py — variante active : foret
+# Ne pas editer a la main : relancer `python tool/set_branding.py <famille> <splash>`.
+#
+#   dart run flutter_native_splash:create
+#
+# LIMITE SYSTEME, pas un defaut de l'app (README de Christophe) : sur Android 12+
+# le systeme impose sa propre fenetre de demarrage et n'affiche QUE le picto
+# centre sur la couleur unie — le fond avec les cretes ne sort que sur iOS et
+# Android < 12.
+flutter_native_splash:
+  color: "#1F3D2B"
+  background_image: assets/splash/foret-background.png
+  image: assets/splash/foret-logo.png
+  fullscreen: true
+  android_12:
+    color: "#1F3D2B"
+    image: assets/splash/foret-android12.png
+  web: false

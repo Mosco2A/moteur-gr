@@ -1,11 +1,21 @@
+/// Le poids du sac rapporte au poids du corps, en cinq paliers (12/15/20/25 %),
+/// avec son conseil et sa jauge.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
-import '../../feasibility/domain/body_weight_reference.dart';
-import '../../feasibility/domain/hiker_input_bounds.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show
+        WeightReferenceFallback,
+        isValidBodyWeightKg,
+        kWeightMaxKg,
+        kWeightMinKg;
+import '../../../core/branding/stepways_icons.dart';
 
 /// Formate un poids en grammes avec separateur de milliers (parite GR20).
 /// Ex: 1600 -> "1 600 g", 350 -> "350 g".
@@ -26,38 +36,37 @@ String formatChecklistGrams(int grams) {
 /// Memes seuils que GR20 « Materiel & Sac » : 12 / 15 / 20 / 25 %. Couleurs
 /// semantiques via [AppTheme] (hors systeme de peaux) — les paliers
 /// intermediaires (jaune-vert, rouge fonce) sont des couleurs fixes comme GR20.
-({Color color, String advice, IconData icon}) checklistRatioAdvice(
-    double ratio) {
+({Color color, String advice, String icon}) checklistRatioAdvice(double ratio) {
   final w = t.checklist.weight;
   if (ratio < 0.12) {
     return (
       color: AppTheme.vertFacile,
       advice: w.adviceUltraLight,
-      icon: Icons.check_circle,
+      icon: StepwaysIcons.cochePleine,
     );
   } else if (ratio < 0.15) {
     return (
-      color: const Color(0xFF9ACD32), // jaune-vert (parite GR20)
+      color: CouleursSemantiques.jauneVertSacLeger,
       advice: w.adviceOk,
-      icon: Icons.check_circle,
+      icon: StepwaysIcons.cochePleine,
     );
   } else if (ratio < 0.20) {
     return (
       color: AppTheme.orangeDifficile,
       advice: w.adviceHeavy,
-      icon: Icons.warning_amber,
+      icon: StepwaysIcons.danger,
     );
   } else if (ratio < 0.25) {
     return (
-      color: AppTheme.rougeUrgence,
+      color: AppTheme.emergencyRed,
       advice: w.adviceTooHeavy,
-      icon: Icons.error,
+      icon: StepwaysIcons.danger,
     );
   } else {
     return (
-      color: const Color(0xFF8B0000), // rouge fonce (parite GR20)
+      color: CouleursSemantiques.rougeSombreSacDangereux,
       advice: w.adviceDanger,
-      icon: Icons.error,
+      icon: StepwaysIcons.danger,
     );
   }
 }
@@ -102,7 +111,7 @@ class ChecklistWeightBanner extends StatelessWidget {
               color: a.color.withAlpha(40),
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
             ),
-            child: Icon(Icons.luggage, size: 32, color: a.color),
+            child: StepIcon(StepwaysIcons.sacADos, size: 32, color: a.color),
           ),
           const SizedBox(width: AppTheme.spacingBase),
           Expanded(
@@ -119,7 +128,7 @@ class ChecklistWeightBanner extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: AppTheme.spacingSm),
-                    Icon(a.icon, size: 20, color: a.color),
+                    StepIcon(a.icon, size: 20, color: a.color),
                   ],
                 ),
                 const SizedBox(height: 2),
@@ -127,10 +136,7 @@ class ChecklistWeightBanner extends StatelessWidget {
                   a.advice,
                   style: theme.textTheme.bodySmall?.copyWith(color: a.color),
                 ),
-                Text(
-                  itemsLabel,
-                  style: theme.textTheme.bodySmall,
-                ),
+                Text(itemsLabel, style: theme.textTheme.bodySmall),
               ],
             ),
           ),
@@ -145,15 +151,16 @@ class ChecklistWeightBanner extends StatelessWidget {
 /// FIX-1 (finding B1, BLOQUANT) : ce champ n'avait NI filtre de saisie, NI
 /// longueur max, NI borne haute — il etait hors `Form`, donc sans validator.
 /// L'app affichait « Poids du sac : Infinity kg » et « 150000000.0 kg » sans le
-/// moindre message, et une fois `Infinity` pose, plus rien ne le reinitialisait.
-/// Le champ applique desormais EXACTEMENT le modele de la fiche morpho :
-///  - a la saisie : chiffres et separateur decimal uniquement (le signe moins et
-///    les lettres — donc « Infinity » et « abc » — n'entrent plus), 5 caracteres
-///    max, depassement SIGNALE (pas de troncature muette) ;
+/// moindre message, et une fois `Infinity` pose, plus rien ne le
+/// reinitialisait. Le champ applique desormais EXACTEMENT le modele de la fiche
+/// morpho :
+///  - a la saisie : chiffres et separateur decimal uniquement (le signe moins
+/// et    les lettres — donc « Infinity » et « abc » — n'entrent plus), 5
+/// caracteres    max, depassement SIGNALE (pas de troncature muette) ;
 ///  - a la validation : bornes [kWeightMinKg]..[kWeightMaxKg] avec le MEME
 ///    message borne que la morpho, affiche sous la ligne ;
-///  - une valeur refusee n'est JAMAIS propagee : la jauge garde le dernier poids
-///    valide au lieu d'afficher un verdict absurde.
+///  - une valeur refusee n'est JAMAIS propagee : la jauge garde le dernier
+/// poids    valide au lieu d'afficher un verdict absurde.
 class ChecklistBodyWeightRow extends StatefulWidget {
   const ChecklistBodyWeightRow({
     super.key,
@@ -191,10 +198,12 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
   @override
   void initState() {
     super.initState();
-    _controller =
-        TextEditingController(text: widget.bodyWeightKg.toStringAsFixed(0));
-    // Sortie du champ : on reaffiche TOUJOURS le poids reellement utilise par la
-    // jauge. Le texte a l'ecran ne peut donc pas rester sur une valeur refusee.
+    _controller = TextEditingController(
+      text: widget.bodyWeightKg.toStringAsFixed(0),
+    );
+    // Sortie du champ : on reaffiche TOUJOURS le poids reellement utilise par
+    // la jauge. Le texte a l'ecran ne peut donc pas rester sur une valeur
+    // refusee.
     _focusNode.addListener(_onFocusChange);
   }
 
@@ -269,21 +278,22 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
         children: [
           Row(
             children: [
-              Icon(Icons.monitor_weight_outlined,
-                  size: 18, color: theme.colorScheme.primary),
+              StepIcon(
+                StepwaysIcons.weight,
+                size: 18,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               // LIBELLE « Poids du corps » — PLUS DE COUPE (retour Chris #10,
               // tache 553). Il partage sa ligne avec un champ de saisie de
-              // 120 px et la pastille de ratio : sur un telephone etroit ou avec
-              // une police grossie, il ne restait pas de quoi l'ecrire en
+              // 120 px et la pastille de ratio : sur un telephone etroit ou
+              // avec une police grossie, il ne restait pas de quoi l'ecrire en
               // entier, et l'ellipse mangeait le mot qui dit DE QUOI on parle.
               // Deux lignes, et il se lit.
               Flexible(
                 child: Text(
                   weightT.bodyWeight,
                   style: theme.textTheme.bodyMedium,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(width: AppTheme.spacingSm),
@@ -293,14 +303,15 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
                   key: const ValueKey('checklist-body-weight-field'),
                   controller: _controller,
                   focusNode: _focusNode,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   textAlign: TextAlign.center,
                   maxLength: kBodyWeightFieldMaxLength,
                   // BARRIERE DE SAISIE (modele morpho) : chiffres + separateur
-                  // decimal uniquement. Le signe moins et les lettres ne sont plus
-                  // saisissables, donc « -50 », « abc » et « Infinity » n'arrivent
-                  // jamais jusqu'au parse.
+                  // decimal uniquement. Le signe moins et les lettres ne sont
+                  // plus saisissables, donc « -50 », « abc » et « Infinity »
+                  // n'arrivent jamais jusqu'au parse.
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                     NotifyingLengthLimitingTextInputFormatter(
@@ -314,16 +325,18 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
                       },
                     ),
                   ],
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 6,
                     ),
                     isDense: true,
-                    // Compteur masque : la borne est portee par maxLength (barriere
-                    // physique) et par le message borne sous la ligne.
+                    // Compteur masque : la borne est portee par maxLength
+                    // (barriere physique) et par le message borne sous la
+                    // ligne.
                     counterText: '',
                     suffixText: weightT.kilograms,
                     errorText: _error != null ? '' : null,
@@ -349,15 +362,19 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
               padding: const EdgeInsets.only(top: AppTheme.spacingXs),
               child: Row(
                 children: [
-                  Icon(Icons.error_outline,
-                      size: 16, color: theme.colorScheme.error),
+                  StepIcon(
+                    StepwaysIcons.danger,
+                    size: 16,
+                    color: theme.colorScheme.error,
+                  ),
                   const SizedBox(width: AppTheme.spacingXs),
                   Expanded(
                     child: Text(
                       message,
                       key: const ValueKey('checklist-body-weight-error'),
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(color: theme.colorScheme.error),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.error,
+                      ),
                     ),
                   ),
                 ],
@@ -440,21 +457,23 @@ class ChecklistWeightGauge extends StatelessWidget {
       gaugeColor = AppTheme.vertFacile;
       gaugeLabel = w.gaugeUltraLight;
     } else if (pct < 15) {
-      gaugeColor = const Color(0xFF9ACD32);
+      gaugeColor = CouleursSemantiques.jauneVertSacLeger;
       gaugeLabel = w.gaugeOk;
     } else if (pct < 20) {
       gaugeColor = AppTheme.orangeDifficile;
       gaugeLabel = w.gaugeHeavy;
     } else if (pct < 25) {
-      gaugeColor = AppTheme.rougeUrgence;
+      gaugeColor = AppTheme.emergencyRed;
       gaugeLabel = w.gaugeWarn;
     } else {
-      gaugeColor = const Color(0xFF8B0000);
+      gaugeColor = CouleursSemantiques.rougeSombreSacDangereux;
       gaugeLabel = w.gaugeDanger;
     }
 
-    final pctLabel = w.percentOfReference
-        .replaceAll('{pct}', pct.toStringAsFixed(1));
+    final pctLabel = w.percentOfReference.replaceAll(
+      '{pct}',
+      pct.toStringAsFixed(1),
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -481,14 +500,14 @@ class ChecklistWeightGauge extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          // HAUTEUR RESERVEE A LA JAUGE *ET* A SES REPERES (tache 553). La barre
-          // ne fait que 12 px, mais les reperes 15/20/25 % sont poses en
-          // `Positioned(top: 14)`, donc SOUS elle : un `Stack` se dimensionne sur
-          // ses enfants NON positionnes (la barre, 12 px) et rogne par defaut ce
-          // qui depasse (`Clip.hardEdge`) — les trois reperes etaient donc
-          // decoupes. On reserve 34 px (14 px de decalage + la hauteur d'une
-          // ligne de 14 px) : les reperes s'affichent, et le conseil qui vient
-          // juste apres ne leur passe pas dessus.
+          // HAUTEUR RESERVEE A LA JAUGE *ET* A SES REPERES (tache 553). La
+          // barre ne fait que 12 px, mais les reperes 15/20/25 % sont poses en
+          // `Positioned(top: 14)`, donc SOUS elle : un `Stack` se dimensionne
+          // sur ses enfants NON positionnes (la barre, 12 px) et rogne par
+          // defaut ce qui depasse (`Clip.hardEdge`) — les trois reperes etaient
+          // donc decoupes. On reserve 34 px (14 px de decalage + la hauteur
+          // d'une ligne de 14 px) : les reperes s'affichent, et le conseil qui
+          // vient juste apres ne leur passe pas dessus.
           SizedBox(
             height: 34,
             child: Stack(
@@ -514,25 +533,37 @@ class ChecklistWeightGauge extends StatelessWidget {
                   left:
                       MediaQuery.of(context).size.width * 0.5 * (15 / 30) - 16,
                   top: 14,
-                  child: Text('15%',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: 14, color: AppTheme.grisGranite)),
+                  child: Text(
+                    '15%',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontSize: 14,
+                      color: AppTheme.grisGranite,
+                    ),
+                  ),
                 ),
                 Positioned(
                   left:
                       MediaQuery.of(context).size.width * 0.5 * (20 / 30) - 16,
                   top: 14,
-                  child: Text('20%',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: 14, color: AppTheme.grisGranite)),
+                  child: Text(
+                    '20%',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontSize: 14,
+                      color: AppTheme.grisGranite,
+                    ),
+                  ),
                 ),
                 Positioned(
                   left:
                       MediaQuery.of(context).size.width * 0.5 * (25 / 30) - 16,
                   top: 14,
-                  child: Text('25%',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: 14, color: AppTheme.grisGranite)),
+                  child: Text(
+                    '25%',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontSize: 14,
+                      color: AppTheme.grisGranite,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -540,12 +571,12 @@ class ChecklistWeightGauge extends StatelessWidget {
           const SizedBox(height: 4),
           // LE CONSEIL, SOUS LA JAUGE, EN PLEINE LARGEUR (retour Chris #10,
           // tache 553). C'est la phrase qui DIT QUOI FAIRE — « Attention
-          // genoux ! Allegez le sac » — et c'est celle qui etait systematiquement
-          // coupee : coincee a droite du pourcentage sur trois cinquiemes de
-          // ligne, avec `maxLines: 1` et une ellipse. Elle a desormais toute la
-          // largeur et autant de lignes qu'il lui en faut : aucune ellipse, rien
-          // a deviner. Elle est juste sous la jauge, a l'endroit ou l'oeil arrive
-          // apres avoir lu la couleur de la barre.
+          // genoux ! Allegez le sac » — et c'est celle qui etait
+          // systematiquement coupee : coincee a droite du pourcentage sur trois
+          // cinquiemes de ligne, avec `maxLines: 1` et une ellipse. Elle a
+          // desormais toute la largeur et autant de lignes qu'il lui en faut :
+          // aucune ellipse, rien a deviner. Elle est juste sous la jauge, a
+          // l'endroit ou l'oeil arrive apres avoir lu la couleur de la barre.
           Text(
             gaugeLabel,
             key: const ValueKey('checklist-gauge-advice'),
@@ -557,15 +588,19 @@ class ChecklistWeightGauge extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             w.gaugeObjectiveReference,
-            style: theme.textTheme.bodySmall
-                ?.copyWith(fontSize: 14, fontStyle: FontStyle.italic),
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontSize: 14,
+              fontStyle: FontStyle.italic,
+            ),
           ),
           // DIRE DE QUOI LE POURCENTAGE EST LE POURCENTAGE (#7-e).
           if (referenceFallback == null && loadBaseKg > 0) ...[
             const SizedBox(height: 2),
             Text(
-              w.referenceExplainer
-                  .replaceAll('{kg}', loadBaseKg.toStringAsFixed(1)),
+              w.referenceExplainer.replaceAll(
+                '{kg}',
+                loadBaseKg.toStringAsFixed(1),
+              ),
               key: const ValueKey('checklist-reference-explainer'),
               style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
             ),

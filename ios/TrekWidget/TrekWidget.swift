@@ -14,7 +14,7 @@
 // - widget_trek_stage_index
 // - widget_trek_total_stages
 //
-// Prerequis : App Group configure dans Xcode (ex: group.com.only1cent.moteurGr)
+// Prerequis : App Group configure dans Xcode (ex: group.com.only1cent.stepways)
 // Le widget sera ajoute au projet Xcode comme extension WidgetKit.
 
 import WidgetKit
@@ -54,7 +54,7 @@ struct TrekProgressEntry: TimelineEntry {
 /// fournit les entrees au widget WidgetKit.
 struct TrekProgressProvider: TimelineProvider {
     // App Group ID pour partage de donnees Flutter <-> Widget
-    private let appGroupId = "group.com.only1cent.moteurGr"
+    private let appGroupId = "group.com.only1cent.stepways"
     private let prefix = "flutter.widget_trek_"
 
     func placeholder(in context: Context) -> TrekProgressEntry {
@@ -139,7 +139,7 @@ struct TrekWidgetEntryView: View {
     /// par l'app (cle widget_trek_theme_color, ARGB int), sinon
     /// gris ardoise neutre du moteur (#37474F).
     private var themeBackgroundColor: Color {
-        let defaults = UserDefaults(suiteName: "group.com.only1cent.moteurGr")
+        let defaults = UserDefaults(suiteName: "group.com.only1cent.stepways")
         let argb = defaults?.integer(forKey: "flutter.widget_trek_theme_color") ?? 0
         guard argb != 0 else {
             return Color(red: 0.216, green: 0.278, blue: 0.310) // #37474F

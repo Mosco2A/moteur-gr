@@ -1,3 +1,7 @@
+/// Kudos et fil d'activite tenus hors-ligne : ecriture locale immediate, envoi
+/// differe, et activites moderees masquees a la lecture.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -38,8 +42,9 @@ class KudosFeedDao extends DatabaseAccessor<AppDatabase>
 
   /// Marque un kudo en echec et stocke l'erreur (incremente attempts).
   Future<void> markKudoFailed(int kudoId, String error) async {
-    final row = await (select(kudosLocal)..where((t) => t.id.equals(kudoId)))
-        .getSingleOrNull();
+    final row = await (select(
+      kudosLocal,
+    )..where((t) => t.id.equals(kudoId))).getSingleOrNull();
     if (row == null) return;
     await (update(kudosLocal)..where((t) => t.id.equals(kudoId))).write(
       KudosLocalCompanion(
@@ -60,26 +65,30 @@ class KudosFeedDao extends DatabaseAccessor<AppDatabase>
   /// Existe-t-il deja un kudo local de [fromUidHash] sur [targetActivityId] ?
   /// (Garde-fou d'idempotence cote cache, complementaire de la cle distante.)
   Future<bool> hasKudoLocal(String fromUidHash, String targetActivityId) async {
-    final row = await (select(kudosLocal)
-          ..where((t) =>
-              t.fromUidHash.equals(fromUidHash) &
-              t.targetActivityId.equals(targetActivityId)))
-        .getSingleOrNull();
+    final row =
+        await (select(kudosLocal)..where(
+              (t) =>
+                  t.fromUidHash.equals(fromUidHash) &
+                  t.targetActivityId.equals(targetActivityId),
+            ))
+            .getSingleOrNull();
     return row != null;
   }
 
   /// Compte les kudos locaux d'une activite (compteur affiche, cache).
   Future<int> kudosCountForActivity(String targetActivityId) async {
-    final rows = await (select(kudosLocal)
-          ..where((t) => t.targetActivityId.equals(targetActivityId)))
-        .get();
+    final rows = await (select(
+      kudosLocal,
+    )..where((t) => t.targetActivityId.equals(targetActivityId))).get();
     return rows.length;
   }
 
   // --- Fil d'activite (cache local) ---
 
   /// Insere ou met a jour un lot d'activites (cache local, idempotent).
-  Future<void> upsertActivities(List<ActivityFeedCacheCompanion> entries) async {
+  Future<void> upsertActivities(
+    List<ActivityFeedCacheCompanion> entries,
+  ) async {
     await batch((b) {
       b.insertAllOnConflictUpdate(activityFeedCache, entries);
     });

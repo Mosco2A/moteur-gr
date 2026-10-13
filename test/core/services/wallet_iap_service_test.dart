@@ -57,10 +57,12 @@ void main() {
       expect(kWalletIapRealModeEnabled, isFalse);
     });
 
-    test('purchaseEnabled reflete le kill-switch (false = pas de bouton achat)',
-        () {
-      expect(makeService().purchaseEnabled, isFalse);
-    });
+    test(
+      'purchaseEnabled reflete le kill-switch (false = pas de bouton achat)',
+      () {
+        expect(makeService().purchaseEnabled, isFalse);
+      },
+    );
 
     test('isAvailable = false en mode stub', () async {
       expect(await makeService().isAvailable(), isFalse);
@@ -75,38 +77,47 @@ void main() {
       expect(await makeService().queryProducts(), isEmpty);
     });
 
-    test('les achats sont court-circuites en stub (aucun paiement reel)',
-        () async {
-      final service = makeService();
-      expect(await service.buyCredits(kWalletCredits11), isFalse);
-      expect(await service.buyNoAdsSubscription(), isFalse);
-      // restore et startListening sont des no-op silencieux en stub.
-      await service.restorePurchases();
-      service.startListening();
-      // Aucune livraison : wallet inchange, aucune source sans-pub.
-      expect(walletStore.balanceSteps, 0);
-      expect(await db.noAdsDao.getAll(), isEmpty);
-    });
+    test(
+      'les achats sont court-circuites en stub (aucun paiement reel)',
+      () async {
+        final service = makeService();
+        expect(await service.buyCredits(kWalletCredits11), isFalse);
+        expect(await service.buyNoAdsSubscription(), isFalse);
+        // restore et startListening sont des no-op silencieux en stub.
+        await service.restorePurchases();
+        service.startListening();
+        // Aucune livraison : wallet inchange, aucune source sans-pub.
+        expect(walletStore.balanceSteps, 0);
+        expect(await db.noAdsDao.getAll(), isEmpty);
+      },
+    );
   });
 
   group('ST3 productIds (SANS prefixe pack_) + grille credits', () {
-    test('les 4 productIds sont sans prefixe pack_ et bien nommes', () {
+    test('les 5 productIds sont sans prefixe pack_ et bien nommes', () {
       expect(kWalletCredits11, 'stepways_credits_11');
+      expect(kWalletCredits16, 'stepways_credits_16');
       expect(kWalletCredits25, 'stepways_credits_25');
       expect(kWalletCredits50, 'stepways_credits_50');
       expect(kWalletSubNoAdsMonthly, 'stepways_sub_noads_monthly');
       for (final id in kWalletProductIds) {
-        expect(id.startsWith('pack_'), isFalse,
-            reason: 'prefixe pack_ deja pris par les packs de cartes');
+        expect(
+          id.startsWith('pack_'),
+          isFalse,
+          reason: 'prefixe pack_ deja pris par les packs de cartes',
+        );
       }
     });
 
-    test('kWalletProductIds = 3 recharges + 1 abo', () {
-      expect(kWalletProductIds, hasLength(4));
+    test('kWalletProductIds = 4 recharges + 1 abo', () {
+      // QUATRE RECHARGES DEPUIS LA TACHE 813 : le palier de seize etapes est
+      // entre entre celui de onze et celui de vingt-cinq.
+      expect(kWalletProductIds, hasLength(5));
       expect(
         kWalletProductIds,
         containsAll(<String>{
           kWalletCredits11,
+          kWalletCredits16,
           kWalletCredits25,
           kWalletCredits50,
           kWalletSubNoAdsMonthly,
@@ -116,6 +127,7 @@ void main() {
 
     test('la grille de credits mappe chaque recharge sur son nb d etapes', () {
       expect(kWalletCreditStepsByProduct[kWalletCredits11], 11);
+      expect(kWalletCreditStepsByProduct[kWalletCredits16], 16);
       expect(kWalletCreditStepsByProduct[kWalletCredits25], 25);
       expect(kWalletCreditStepsByProduct[kWalletCredits50], 50);
       // L'abo ne credite pas d'etapes : absent de la grille.

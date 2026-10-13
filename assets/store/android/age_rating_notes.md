@@ -1,4 +1,4 @@
-# Google Play — Classification du contenu & déclarations (The Ways)
+# Google Play — Classification du contenu & déclarations (StepWays)
 
 Référence pour le questionnaire de classification du contenu (IARC) et les
 déclarations sensibles de la Play Console. Aucune marque de sentier : le contenu
@@ -15,8 +15,8 @@ Réponses attendues (application sans contenu sensible) :
 - Substances contrôlées (drogue, alcool, tabac) : Aucune
 - Jeux d'argent (réels ou simulés) : Aucun
 - Contenu généré par les utilisateurs partagé publiquement : Non
-  (le journal et les photos restent locaux ; le partage de position se fait
-  via un lien privé choisi par l'utilisateur, pas un flux public)
+  (le journal et les photos restent locaux ; il n'existe aucun partage de
+  position en temps réel)
 - Achats intégrés : Oui le cas échéant (déverrouillage premium paramétrable)
 - Publicités : selon configuration produit (mode gratuit avec publicité possible)
 
@@ -30,9 +30,7 @@ renseigner dans la section « Autorisations sensibles » :
 
 > L'application enregistre l'itinéraire de randonnée de l'utilisateur en
 > arrière-plan (écran éteint, dans le sac) afin de ne pas interrompre le suivi
-> GPS pendant l'effort, et de permettre, lorsque l'utilisateur l'active, le
-> partage de sa position en temps réel avec ses proches pour des raisons de
-> sécurité en montagne. La fonctionnalité est strictement liée à une
+> GPS pendant l'effort. La fonctionnalité est strictement liée à une
 > randonnée active et déclenchée par l'utilisateur. Aucune donnée de
 > localisation n'est collectée à des fins publicitaires.
 
@@ -43,8 +41,8 @@ pour la localisation en arrière-plan).
 ## Section « Sécurité des données » (Data Safety)
 
 - Localisation (précise) : collectée, utilisée pour la fonctionnalité de l'app
-  (navigation, suivi), partagée uniquement sur action de l'utilisateur (lien de
-  suivi). Chiffrée en transit. Suppression possible.
+  (navigation, suivi). Le partage de position en temps réel n'est pas actif
+  (politique de confidentialité publiée, § 4.1). Suppression possible.
 - Photos : restent sur l'appareil (carnet de route local). Non transmises sauf
   configuration cloud explicite du sentier (Phase 4+).
 - Aucune donnée vendue à des tiers.
@@ -56,7 +54,7 @@ Les éléments suivants existent déjà sur `main` et ne doivent PAS être recr�
   LOCATION, FOREGROUND_SERVICE_LOCATION, POST_NOTIFICATIONS) + service
   `GeolocatorLocationService` typé `location`.
 - Configuration de signature (`signingConfigs` release/debug),
-  `minSdk = 23`, `targetSdk = 35`, `applicationId = com.only1cent.moteur_gr`.
+  `minSdk = 23`, `targetSdk = 35`, `applicationId = com.only1cent.stepways`.
 
 ## Politique de confidentialité
 

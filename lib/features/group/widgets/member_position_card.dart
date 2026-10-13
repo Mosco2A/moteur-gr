@@ -1,8 +1,13 @@
+/// La position d'un membre AVEC sa fraicheur teintee : une position d'il y a
+/// quatre heures ne se lit pas comme une position actuelle.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../models/group_member.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Carte affichant la position d un membre du groupe.
 /// Couleur de fraicheur : vert < 1h, orange < 3h, rouge > 3h.
@@ -57,7 +62,7 @@ class MemberPositionCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Icon(Icons.access_time, size: 16, color: freshness.color),
+              StepIcon(StepwaysIcons.clock, size: 16, color: freshness.color),
               const SizedBox(height: AppTheme.spacingXs),
               Text(
                 freshness.label,

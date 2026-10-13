@@ -1,8 +1,12 @@
+/// L'import GPX pilote par la CONFIGURATION du sentier actif, et plus par des
+/// bornes et des refuges ecrits en dur.
+library;
+
 import 'package:gpx/gpx.dart';
 
 import '../../../core/geo/geo_utils.dart';
-import '../../trek/domain/models/stage.dart';
-import '../../trek/domain/models/track_point.dart';
+import '../../../domain/stage.dart';
+import '../../../domain/track_point.dart';
 
 /// Parametres d'import GPX DERIVES du sentier actif (data-driven, zero hardcode).
 ///
@@ -223,10 +227,7 @@ class ImportedTrekData {
   final int? invalidValue;
 
   /// Fabrique une trace invalide portant un [reason] typé (i18n cote UI).
-  factory ImportedTrekData.invalid(
-    ImportInvalidReason reason, {
-    int? value,
-  }) {
+  factory ImportedTrekData.invalid(ImportInvalidReason reason, {int? value}) {
     final now = DateTime.now();
     return ImportedTrekData(
       trackPoints: const [],
@@ -313,12 +314,14 @@ class GpxImportService {
     // Conversion en TrackPoint du domaine (lat/lng/elevation/timestamp).
     final trackPoints = <TrackPoint>[];
     for (final wpt in wpts) {
-      trackPoints.add(TrackPoint(
-        lat: wpt.lat ?? 0,
-        lng: wpt.lon ?? 0,
-        elevation: wpt.ele ?? 0,
-        timestamp: wpt.time,
-      ));
+      trackPoints.add(
+        TrackPoint(
+          lat: wpt.lat ?? 0,
+          lng: wpt.lon ?? 0,
+          elevation: wpt.ele ?? 0,
+          timestamp: wpt.time,
+        ),
+      );
     }
 
     // Controle « hors trace » (non bloquant) : proportion de points eloignes du
@@ -328,14 +331,17 @@ class GpxImportService {
       for (final tp in trackPoints) {
         var minDist = double.infinity;
         for (final ref in config.referencePoints) {
-          final dist =
-              GeoUtils.haversineDistance(tp.lat, tp.lng, ref.lat, ref.lon);
+          final dist = GeoUtils.haversineDistance(
+            tp.lat,
+            tp.lng,
+            ref.lat,
+            ref.lon,
+          );
           if (dist < minDist) minDist = dist;
         }
         if (minDist > config.outOfTraceToleranceMeters) outOfToleranceCount++;
       }
-      final percent =
-          (outOfToleranceCount / trackPoints.length * 100).round();
+      final percent = (outOfToleranceCount / trackPoints.length * 100).round();
       if (percent > 30) {
         warnings.add(ImportWarning(ImportWarningType.offTrail, percent));
       }
@@ -348,8 +354,12 @@ class GpxImportService {
     for (final tp in trackPoints) {
       for (final ref in config.referencePoints) {
         if (detectedIds.contains(ref.stage.id)) continue;
-        final dist =
-            GeoUtils.haversineDistance(tp.lat, tp.lng, ref.lat, ref.lon);
+        final dist = GeoUtils.haversineDistance(
+          tp.lat,
+          tp.lng,
+          ref.lat,
+          ref.lon,
+        );
         if (dist < config.stageDetectionRadiusMeters) {
           detectedIds.add(ref.stage.id);
           stagesDetected.add(ref.stage);

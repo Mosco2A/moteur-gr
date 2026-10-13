@@ -1,15 +1,22 @@
+/// Les fiches rangees PAR THEMES et non a plat, avec les liens reseau tires de
+/// la donnee — jamais inventes.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../domain/models/tip_card.dart';
-import '../domain/models/tip_theme.dart';
+import '../../../domain/tip_card.dart';
+import '../../../domain/tip_theme.dart';
 import '../providers/tip_cards_provider.dart';
 import 'tip_points_list.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran FICHES CONSEILS — refonte StepWays LOT 5 (sous-ensemble C).
 ///
@@ -37,6 +44,10 @@ class TipsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.tips);
     final theme = Theme.of(context);
     final sections = ref.watch(tipCardsByThemeProvider);
 
@@ -82,7 +93,7 @@ class _ThemeSection extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
+              StepIcon(
                 _themeIcon(TipTheme.iconFor(section.theme)),
                 size: 20,
                 color: theme.colorScheme.primary,
@@ -175,16 +186,20 @@ class _SocialLinks extends StatelessWidget {
       runSpacing: AppTheme.spacingSm,
       children: [
         if (fb != null && fb.isNotEmpty)
-          OutlinedButton.icon(
+          AppButton(
+            variant: AppButtonVariant.outline,
+            icon: StepwaysIcons.partager,
+            iconSize: 18,
+            label: t.tips.viewOnFacebook,
             onPressed: () => _open(context, fb),
-            icon: const Icon(Icons.facebook, size: 18),
-            label: Text(t.tips.viewOnFacebook),
           ),
         if (ig != null && ig.isNotEmpty)
-          OutlinedButton.icon(
+          AppButton(
+            variant: AppButtonVariant.outline,
+            icon: StepwaysIcons.photo,
+            iconSize: 18,
+            label: t.tips.viewOnInstagram,
             onPressed: () => _open(context, ig),
-            icon: const Icon(Icons.camera_alt_outlined, size: 18),
-            label: Text(t.tips.viewOnInstagram),
           ),
       ],
     );
@@ -202,8 +217,8 @@ class _EmptyThemed extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.menu_book_outlined,
+            StepIcon(
+              StepwaysIcons.journal,
               size: 48,
               color: theme.colorScheme.onSurface.withAlpha(120),
             ),
@@ -223,21 +238,21 @@ class _EmptyThemed extends StatelessWidget {
 }
 
 /// Resout le nom d'icone de theme (donnee) en [IconData] (couche UI).
-IconData _themeIcon(String name) {
+String _themeIcon(String name) {
   switch (name) {
     case 'backpack':
-      return Icons.backpack;
+      return StepwaysIcons.sacADos;
     case 'health_and_safety':
-      return Icons.health_and_safety;
+      return StepwaysIcons.ficheMedicale;
     case 'healing':
-      return Icons.healing;
+      return StepwaysIcons.ficheMedicale;
     case 'wb_sunny':
-      return Icons.wb_sunny;
+      return StepwaysIcons.soleil;
     case 'cabin':
-      return Icons.cabin;
+      return StepwaysIcons.nuitees;
     case 'forest':
-      return Icons.forest;
+      return StepwaysIcons.foret;
     default:
-      return Icons.info_outline;
+      return StepwaysIcons.info;
   }
 }

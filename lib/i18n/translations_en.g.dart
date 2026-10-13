@@ -61,7 +61,6 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$diploma$en diploma = _Translations$diploma$en._(_root);
 	@override late final _Translations$notifications$en notifications = _Translations$notifications$en._(_root);
 	@override late final _Translations$settings$en settings = _Translations$settings$en._(_root);
-	@override late final _Translations$appearance$en appearance = _Translations$appearance$en._(_root);
 	@override late final _Translations$feedback$en feedback = _Translations$feedback$en._(_root);
 	@override late final _Translations$auth$en auth = _Translations$auth$en._(_root);
 	@override late final _Translations$feasibility$en feasibility = _Translations$feasibility$en._(_root);
@@ -69,6 +68,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$en goodies = _Translations$goodies$en._(_root);
 	@override late final _Translations$noData$en noData = _Translations$noData$en._(_root);
 	@override late final _Translations$catalog$en catalog = _Translations$catalog$en._(_root);
+	@override late final _Translations$demo$en demo = _Translations$demo$en._(_root);
 	@override late final _Translations$updates$en updates = _Translations$updates$en._(_root);
 	@override late final _Translations$follow$en follow = _Translations$follow$en._(_root);
 	@override late final _Translations$cloud$en cloud = _Translations$cloud$en._(_root);
@@ -83,7 +83,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$gamification$en gamification = _Translations$gamification$en._(_root);
 	@override late final _Translations$shareVisibility$en shareVisibility = _Translations$shareVisibility$en._(_root);
 	@override late final _Translations$waypoints$en waypoints = _Translations$waypoints$en._(_root);
-	@override late final _Translations$packs$en packs = _Translations$packs$en._(_root);
+	@override late final _Translations$cartesHorsLigne$en cartesHorsLigne = _Translations$cartesHorsLigne$en._(_root);
 	@override late final _Translations$guides$en guides = _Translations$guides$en._(_root);
 	@override late final _Translations$health$en health = _Translations$health$en._(_root);
 	@override late final _Translations$trailSelection$en trailSelection = _Translations$trailSelection$en._(_root);
@@ -109,6 +109,8 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$sos$en sos = _Translations$sos$en._(_root);
 	@override late final _Translations$recovery$en recovery = _Translations$recovery$en._(_root);
 	@override late final _Translations$common$en common = _Translations$common$en._(_root);
+	@override late final _Translations$systemBackup$en systemBackup = _Translations$systemBackup$en._(_root);
+	@override late final _Translations$lieu$en lieu = _Translations$lieu$en._(_root);
 }
 
 // Path: a11y
@@ -228,11 +230,11 @@ class _Translations$hub$en extends Translations$hub$fr {
 	@override String get greetingFallback => 'Hiker';
 	@override String get infoTooltip => 'About this trail';
 	@override String get profileTooltip => 'My profile';
-	@override String get infoSheetBody => 'This trail guides you every step of the way: plan your itinerary, pack your bag, then set off with GPS navigation. Every feature is reachable from this home screen.';
+	@override String get infoSheetBody => 'Plan your itinerary, then your bag. Then set off with GPS navigation. It all starts from this screen.';
 	@override late final _Translations$hub$trekCard$en trekCard = _Translations$hub$trekCard$en._(_root);
 	@override late final _Translations$hub$weather$en weather = _Translations$hub$weather$en._(_root);
 	@override String get startCta => 'Start the trek';
-	@override String get startGateHint => 'Complete Itinerary, Date and Programme first to start.';
+	@override String get startGateHint => 'To start: Itinerary, Calendar, Programme, and Medical card with its advice read.';
 	@override String get prepareExpand => 'Show preparation';
 	@override String get prepareCollapse => 'Collapse';
 	@override late final _Translations$hub$sections$en sections = _Translations$hub$sections$en._(_root);
@@ -257,8 +259,15 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get layersSubtitle => 'Choose what to show on the map';
 	@override String stageRemaining({required Object km}) => '${km} km left';
 	@override String get offTrackChip => 'Off track';
+	@override String get perimetreEtape => 'Stage';
+	@override String get perimetreSentier => 'Trail';
+	@override String get basculerVersSentier => 'View whole trail';
+	@override String get basculerVersEtape => 'View stage';
+	@override String get etapeFinie => 'Well done, stage complete!';
 	@override late final _Translations$map$guide$en guide = _Translations$map$guide$en._(_root);
 	@override String get supplyDismiss => 'Dismiss alert';
+	@override String get pinMergedTitle => 'Several markers at the same place';
+	@override late final _Translations$map$attribution$en attribution = _Translations$map$attribution$en._(_root);
 }
 
 // Path: stage
@@ -348,6 +357,7 @@ class _Translations$gps$en extends Translations$gps$fr {
 	@override String get disabled => 'Location service disabled';
 	@override String get offTrack => 'Off track';
 	@override String get centerOnMe => 'Center on my position';
+	@override String get centeredOnTrack => 'Location unavailable — map recentred on the route';
 }
 
 // Path: navAlert
@@ -407,6 +417,8 @@ class _Translations$itinerary$en extends Translations$itinerary$fr {
 		one: '${n} stage',
 		other: '${n} stages',
 	);
+	@override String get daysTotal => 'Days in total';
+	@override String daysBreakdown({required Object walk, required Object rest}) => '${walk} walking days + ${rest} rest days';
 }
 
 // Path: tracking
@@ -435,8 +447,11 @@ class _Translations$tracking$en extends Translations$tracking$fr {
 	@override String get avgSpeed => 'Avg speed';
 	@override String get altitude => 'Altitude';
 	@override String get total => 'Total';
+	@override String get remaining => 'Remaining';
 	@override String get covered => 'Covered';
+	@override String get stagesDone => 'Stages';
 	@override late final _Translations$tracking$backgroundRationale$en backgroundRationale = _Translations$tracking$backgroundRationale$en._(_root);
+	@override late final _Translations$tracking$stepCounting$en stepCounting = _Translations$tracking$stepCounting$en._(_root);
 }
 
 // Path: checklist
@@ -465,6 +480,10 @@ class _Translations$checklist$en extends Translations$checklist$fr {
 	@override String get seasonalAdd => 'Add';
 	@override String get seasonalAdded => 'Added';
 	@override String seasonalWeight({required Object g}) => '${g} g';
+	@override String get demoBridledTitle => 'Trial version';
+	@override String get demoBridledBody => 'The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.';
+	@override String get demoLockedCategory => 'Buy the hike for this category';
+	@override String get demoUnlockCta => 'Buy the hike';
 }
 
 // Path: journal
@@ -513,7 +532,7 @@ class _Translations$journal$en extends Translations$journal$fr {
 	@override String get shareError => 'Sharing failed';
 	@override String get lockedTitle => 'The journal is part of the pack';
 	@override String get lockedBody => 'Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.';
-	@override String get lockedUnlock => 'Unlock';
+	@override String get lockedUnlock => 'Buy';
 }
 
 // Path: weather
@@ -550,10 +569,17 @@ class _Translations$weather$en extends Translations$weather$fr {
 	@override String get stormAlertsToggleOff => 'Storm alerts off';
 	@override String lastUpdate({required Object date}) => 'Updated ${date}';
 	@override String get guideTitle => 'Understanding the weather';
-	@override String get guideBody => 'Forecasts cover 7 days for each stage. Watch storm and wind alerts: in the mountains, weather changes fast. When offline, the last saved data is shown.';
+	@override String get guideBody => 'Forecasts are given STAGE BY STAGE: for each day of your plan, the weather at that day\'s arrival point. They reach 10 days at most; the first 7 are reliable, the next ones are only a trend, and beyond that the app says so instead of making it up. Every bulletin shows when it was fetched: in the mountains, with no network, the last fetch is what stays on screen.';
 	@override late final _Translations$weather$source$en source = _Translations$weather$source$en._(_root);
 	@override late final _Translations$weather$recommendation$en recommendation = _Translations$weather$recommendation$en._(_root);
 	@override late final _Translations$weather$alert$en alert = _Translations$weather$alert$en._(_root);
+	@override late final _Translations$weather$program$en program = _Translations$weather$program$en._(_root);
+	@override late final _Translations$weather$freshness$en freshness = _Translations$weather$freshness$en._(_root);
+	@override late final _Translations$weather$duration$en duration = _Translations$weather$duration$en._(_root);
+	@override String refreshFailed({required Object date}) => 'Update failed. The data shown was fetched on ${date}.';
+	@override String get refreshFailedNoData => 'Update failed and no data is saved.';
+	@override String refreshedAt({required Object date}) => 'Data updated (${date})';
+	@override String refreshPartial({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).';
 }
 
 // Path: share
@@ -604,7 +630,7 @@ class _Translations$diploma$en extends Translations$diploma$fr {
 	@override String get recapStages => '{count} stages completed';
 	@override String get recapDistance => '{km} km covered';
 	@override String get recapElevation => '{meters} m elevation';
-	@override String get recapDuration => '{days} days of trekking';
+	@override String get recapDuration => '{days} days in total, walking and rest included';
 	@override String get recapMapTrace => 'Route trace';
 	@override String get recapNoMap => 'Trace not available';
 	@override String get recapJournalEntries => '{count} journal entries';
@@ -635,6 +661,9 @@ class _Translations$notifications$en extends Translations$notifications$fr {
 	@override String get schedulerCountdownBody => 'Departure in 2 days. Check your checklist and the weather.';
 	@override String get schedulerDailyTitle => 'Have a great trek day!';
 	@override String get schedulerDailyBody => 'Check the weather and prepare today\'s stage.';
+	@override String get permissionBlockedTitle => 'Notifications blocked';
+	@override String get permissionBlockedBody => 'Your phone is blocking notifications from the app: no reminder and no alert will reach you.';
+	@override String get permissionAsk => 'Allow notifications';
 }
 
 // Path: settings
@@ -671,26 +700,6 @@ class _Translations$settings$en extends Translations$settings$fr {
 	@override String get departureDate => 'Departure date';
 }
 
-// Path: appearance
-class _Translations$appearance$en extends Translations$appearance$fr {
-	_Translations$appearance$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Appearance';
-	@override String get subtitle => 'Choose the app’s look and feel';
-	@override String get skinSentierVivant => 'Living Trail';
-	@override String get skinSentierVivantDesc => 'Modern and colorful, the trail color takes the stage';
-	@override String get skinTopographique => 'Topographic';
-	@override String get skinTopographiqueDesc => 'Ordnance-map style, data first';
-	@override String get skinGrandAir => 'Great Outdoors';
-	@override String get skinGrandAirDesc => 'Full-screen photos, adventure-journal feel';
-	@override String get unavailableOnTrail => 'Unavailable on this trail';
-	@override String get changeSkin => 'Change skin';
-	@override String get selected => 'Selected';
-}
-
 // Path: feedback
 class _Translations$feedback$en extends Translations$feedback$fr {
 	_Translations$feedback$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -712,6 +721,11 @@ class _Translations$feedback$en extends Translations$feedback$fr {
 	@override String get sending => 'Sending...';
 	@override String get thanks => 'Thank you for your feedback!';
 	@override String get pending => 'pending';
+	@override String get emptyMessage => 'Write your message before sending it.';
+	@override String get sendFailed => 'Your message could not be saved.';
+	@override String get keptLocally => 'Saved on this phone. Your feedback will be sent as soon as sending is possible.';
+	@override String get keptLocallyNotice => 'Feedback sending is not open yet: your messages are kept on this phone.';
+	@override String get sentThanks => 'Thank you, your feedback has been sent.';
 }
 
 // Path: auth
@@ -742,6 +756,7 @@ class _Translations$auth$en extends Translations$auth$fr {
 	@override String get chooseAvatar => 'Choose an avatar';
 	@override String get errorLoading => 'Loading error';
 	@override String appVersion({required Object version, required Object build}) => 'StepWays v${version} (build ${build})';
+	@override String get errorTimeout => 'Your account did not respond. Check your connection, then try again.';
 }
 
 // Path: feasibility
@@ -753,7 +768,7 @@ class _Translations$feasibility$en extends Translations$feasibility$fr {
 	// Translations
 	@override String get restart => 'Start over';
 	@override String get objectiveTitle => 'Feasibility for this trek';
-	@override String get objectiveIntro => 'Verdict based on your real profile crossed with the trek requirements.';
+	@override String get objectiveIntro => 'This verdict crosses your real profile with the trek\'s demands.';
 	@override String get openProfile => 'My details';
 	@override String get openWalkTest => '6-minute test';
 	@override String get openPastHikes => 'My last 5 hikes';
@@ -792,7 +807,7 @@ class _Translations$tips$en extends Translations$tips$fr {
 	@override late final _Translations$tips$seasons$en seasons = _Translations$tips$seasons$en._(_root);
 	@override String get altitude => 'Min. altitude';
 	@override String get screenTitle => 'Advice sheets';
-	@override String get screenIntro => 'Everything to make your hike a success';
+	@override String get screenIntro => 'Preparation, gear, safety, health.';
 	@override String get followUs => 'Follow us:';
 	@override String get viewOnFacebook => 'View on Facebook';
 	@override String get viewOnInstagram => 'Instagram';
@@ -833,11 +848,68 @@ class _Translations$catalog$en extends Translations$catalog$fr {
 
 	// Translations
 	@override String get title => 'Trail catalog';
-	@override String get enter => 'Enter';
+	@override String get prepare => 'Prepare';
 	@override String get mustDownload => 'Download this trail to explore it.';
 	@override String get emptyTitle => 'No trail available';
 	@override String get emptySubtitle => 'No trail is offered in the catalog yet.';
 	@override late final _Translations$catalog$a11y$en a11y = _Translations$catalog$a11y$en._(_root);
+	@override String freeTrailName({required Object nom}) => '${nom} — Free demo';
+	@override String get freeBadge => 'Free';
+	@override String freeTrailTagline({required Object etapes}) => 'The first ${etapes} stages, on us. Everything works: planning, start, navigation, journal, finish.';
+	@override String get loadFailedTitle => 'Trail list unavailable';
+	@override String get loadFailedSubtitle => 'The trail list could not be retrieved right now. Trails you already downloaded remain available offline.';
+	@override String get loadFailedRetry => 'Try again';
+	@override String get staleNoticeOffline => 'Offline: these are the trails you already downloaded. The full list will refresh once you are back online.';
+}
+
+// Path: demo
+class _Translations$demo$en extends Translations$demo$fr {
+	_Translations$demo$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get matiereFabriquee => 'Made-up example for the demo: these figures and notes are not yours, and nothing is saved.';
+	@override String carnetNoteDepart({required Object nom}) => 'Day one: ${nom}. The pack feels heavy, but the trail is ours.';
+	@override String carnetNoteMontee({required Object nom}) => '${nom}. Long climb in the cool of the morning, a break halfway up.';
+	@override String carnetNoteVillage({required Object nom}) => '${nom}. Arrived in the early afternoon, a quiet evening at the stop.';
+	@override String carnetNoteArrivee({required Object nom}) => '${nom}. Last stage, and that is that. My legs will remember it.';
+	@override String get bandeau => 'DEMO MODE';
+	@override String get quitter => 'Exit';
+	@override String get boutonTitre => 'Try the demo';
+	@override String get boutonSous => 'The whole app. Nothing is saved.';
+	@override String get rienNeCompte => 'You are in demo mode: nothing is saved. No stages, no diploma, no purchase.';
+	@override String get simulerEtape => 'Simulate the next stage';
+	@override String get simulerFin => 'Simulate the finish';
+	@override String get simulerRelancer => 'Restart the demo';
+	@override String marcheSimulee({required Object facteur}) => 'Simulated walk — time sped up ×${facteur}';
+	@override String get arriveeTitre => 'Well done, you made it!';
+	@override String get arriveeTexte => 'You completed the trail in demo mode. Nothing was saved.';
+	@override String get arriveeChiffres => 'Your demo';
+	@override String get arriveeFermer => 'Close';
+	@override String get sortieTitre => 'End of demo';
+	@override String get sortieEnTeteCatalogue => 'The demo stays at the top of the trail list.';
+	@override String get sortieDansMonCompte => 'The button leaves the catalogue. The demo stays in “My account”.';
+	@override String get cacherLabel => 'Hide demo mode';
+	@override String get sortieConfirmer => 'Leave the demo';
+	@override String get sortieAnnuler => 'Continue the demo';
+	@override String get indisponible => 'Not available in demo';
+	@override String get departSimule => 'In demo, starting launches a simulated hike: nothing is saved.';
+	@override String get compteTitre => 'Demo mode';
+	@override String get compteRelancer => 'See the demo again';
+	@override String get compteRelancerSous => 'The whole app. Nothing is saved.';
+	@override String get compteReafficher => 'Show the demo button in the catalogue';
+	@override String get compteReafficherSous => 'The button comes back to the top of the trail list';
+	@override String get collecteTitre => 'What the calculation used';
+	@override String get collecteIntro => 'The information used to work out feasibility.';
+	@override String get collecteProfil => 'Your profile';
+	@override String get collecteForme => 'Your fitness';
+	@override String get collecteExperience => 'Your experience';
+	@override String get collecteSaison => 'Departure season';
+	@override String get collecteSentier => 'The trail';
+	@override String get collecteJours => 'Number of days';
+	@override String get collecteAbsent => 'Not provided';
+	@override String get sortieFaite => 'You have left the demo.';
 }
 
 // Path: updates
@@ -912,20 +984,89 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	// Translations
 	@override String get demoBanner => 'Demo mode — tap to unlock';
 	@override String get paywallTitle => 'Unlock this trek';
-	@override String get paywallBody => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.';
+	@override String get paywallBody => 'Planning is free, with ads. Walking this trek is paid in steps, taken from your account. You fill your account one step at a time, with a pack, or with the subscription.';
 	@override String get featureMap => 'Offline map + GPS + live tracking';
 	@override String get featureJournal => 'Full trek journal';
 	@override String get featureDiploma => 'End-of-trek diploma';
 	@override String get featureFollowers => '2 free followers';
 	@override String get featureNoAds => 'Zero ads';
-	@override String get buyCta => 'Unlock this trek';
-	@override String buyCtaWithPrice({required Object price}) => 'Unlock this trek — €${price}';
-	@override String get rewardedCta => 'Watch an ad (24 h ad-free)';
+	@override String get buyCta => 'Buy';
+	@override String buyCtaWithSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'Buy — ${n} step',
+		other: 'Buy — ${n} steps',
+	);
+	@override String get complementTitle => 'You are short of steps';
+	@override String get complementBody => 'You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.';
+	@override String complementDoorExact({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'Buy the complement — ${n} step',
+		other: 'Buy the complement — ${n} steps',
+	);
+	@override String complementDoorPack({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'Get a pack — ${n} step',
+		other: 'Get a pack — ${n} steps',
+	);
+	@override String get complementExactPending => 'Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.';
+	@override String get rewardedCta => 'A day without ads — watch a video';
 	@override String get rewardedEarned => 'Thanks! Ad-free for 24 h.';
 	@override String get rewardedUnavailable => 'No video available right now.';
 	@override String get walletTitle => 'Step account';
 	@override String get walletSubtitle => 'Your steps unlock hikes';
 	@override String get walletUnit => 'steps';
+	@override String get storeUnavailable => 'Payment is not available right now.';
+	@override String get restoreUnavailable => 'Cannot restore: payment is not available right now.';
+	@override String get restoreRequested => 'Restore requested. Your purchases will reappear shortly.';
+	@override String get restoreCta => 'Restore my purchases';
+	@override String get restoreWhatItCovers => 'Restoring brings back your subscription and your top-ups. Hikes unlocked with your steps are stored on this device.';
+	@override String get rechargeTitle => 'Top up my step account';
+	@override String get rechargeSubtitle => 'Steps unlock hikes. They are yours for life.';
+	@override String get rechargeBalance => 'Current balance';
+	@override String packSteps({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} step',
+		other: '${n} steps',
+	);
+	@override String get rechargeCta => 'Top up';
+	@override String get subscriptionTitle => 'Ad-free subscription';
+	@override String get subscriptionSubtitle => 'No ads anywhere, as long as the subscription is active.';
+	@override String get subscriptionIncludesNoAds => 'No ads, across the whole app';
+	@override String subscriptionIncludesAllowance({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} step credited every month',
+		other: '${n} steps credited every month',
+	);
+	@override String get subscriptionExcludes => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.';
+	@override String get subscriptionCta => 'Subscribe';
+	@override String get subscriptionActive => 'Subscription active';
+	@override String subscriptionActiveUntil({required Object date}) => 'Active until ${date}';
+	@override String get subscriptionInactive => 'No active subscription';
+	@override String get subscriptionAllowancePending => 'The allowance amount has not been set yet.';
+	@override String get realizationLockedTitle => 'This hike is not unlocked';
+	@override String get realizationLockedBody => 'Hiking a route requires unlocking it first. Preparing stays free.';
+	@override String get buyOutcomeOwned => 'Hike unlocked. Enjoy the trail!';
+	@override String get buyOutcomeAlreadyOwned => 'This hike is already unlocked.';
+	@override String buyOutcomeOffline({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'You are ${n} step short and payment requires a connection. Nothing was charged.',
+		other: 'You are ${n} steps short and payment requires a connection. Nothing was charged.',
+	);
+	@override String get buyOutcomeFailed => 'The payment did not go through. Nothing was charged.';
+	@override String get buyOutcomeUnknownPrice => 'This trail is not on sale right now. Nothing was charged.';
+	@override String get buyOutcomeDemo => 'You are in demo mode: no purchase is possible, and nothing was charged.';
+	@override String subscriptionPrice({required Object price}) => '${price} per month';
+	@override String get subscriptionAllowanceForLife => 'Credited steps are yours for life, even if you stop the subscription.';
+	@override String get cancelCta => 'Stop my subscription';
+	@override String get cancelExplains => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited steps stay yours.';
+	@override String get cancelStoreUnavailable => 'The store could not be opened. Open it yourself, then go to Subscriptions.';
+	@override String get adsBadgePub => 'With ads';
+	@override String get adsBadgeAbonne => 'Subscriber — ad-free';
+	@override String get adsBadgeAchete => 'Purchased — ad-free';
+	@override String adsBadgeVideo({required Object reste}) => 'Ad-free — ${reste}';
+	@override String get adsA11yPub => 'An ad will be shown when preparing';
+	@override String adsResteHeures({required Object heures}) => '${heures} h left';
+	@override String adsResteMinutes({required Object minutes}) => '${minutes} min left';
+	@override String get removeAdsCta => 'Remove ads';
+	@override String get removeAdsTitle => 'Remove advertising';
+	@override String get removeAdsSubscribe => 'Subscribe';
+	@override String get removeAdsSubscribeBody => 'Ad-free everywhere, as long as the subscription is active.';
+	@override String get removeAdsWatch => 'Watch a video';
+	@override String get removeAdsWatchBody => 'Ad-free for 24 h. Nothing else: no steps, no hike unlocked.';
 }
 
 // Path: signalement
@@ -984,7 +1125,7 @@ class _Translations$training$en extends Translations$training$fr {
 	@override String get paywallTitle => 'Personalised training plan';
 	@override String paywallIncludedIn({required Object trail}) => 'Included in the « ${trail} » pack.';
 	@override String get paywallSubtitle => 'Plan tailored to your profile and departure date.';
-	@override String get unlock => 'Unlock';
+	@override String get unlock => 'Buy';
 	@override String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'A progressive ${weeks}-week plan to tackle the ${km} km and about ${elevation} m of elevation gain.';
 	@override String countdown({required Object days}) => 'Departure in ${days} days';
 	@override String planOverWeeks({required Object n}) => '${n}-week plan';
@@ -993,7 +1134,16 @@ class _Translations$training$en extends Translations$training$fr {
 	@override String get inviteSetDate => 'Set your departure date in the Calendar to enable the countdown.';
 	@override String get inviteFillProfile => 'Fill in your info sheet to tailor the plan to your profile.';
 	@override String get cautionVerdictNotice => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.';
-	@override String departureTooClose({required Object days}) => '${days} days left: plan condensed to the available time.';
+	@override String freqPerWeek({required Object n}) => '${n}× per week';
+	@override String get freqOncePerPhase => 'once during the phase';
+	@override String get freqFinalWeek => 'the final week only';
+	@override String get freqSourceNotice => 'The frequencies are not in-house numbers: 3 endurance sessions and 2 strength sessions a week, 2 rest days, after REI (Conditioning for Backpacking), Terres d\'Aventure and the 2020 WHO guidelines.';
+	@override String get noDateWhy => 'Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.';
+	@override String get tooShortTitle => 'No preparation offered';
+	@override String tooShortWhy({required Object days, required Object weeks}) => 'There are ${days} days left before departure, less than ${weeks} weeks. No physical preparation is offered to you: below ${weeks} weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This ${weeks}-week floor is the one trek operators use — Terres d\'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload.';
+	@override String get demoBridledTitle => 'Trial version';
+	@override String get demoBridledBody => 'The first phase is playable for pretend: your ticks are not kept. The next phases open with the hike.';
+	@override String get demoLockedPhase => 'Unlock the hike to see the sessions';
 }
 
 // Path: eta
@@ -1106,24 +1256,41 @@ class _Translations$waypoints$en extends Translations$waypoints$fr {
 	@override late final _Translations$waypoints$contribution$en contribution = _Translations$waypoints$contribution$en._(_root);
 }
 
-// Path: packs
-class _Translations$packs$en extends Translations$packs$fr {
-	_Translations$packs$en._(TranslationsEn root) : this._root = root, super.internal(root);
+// Path: cartesHorsLigne
+class _Translations$cartesHorsLigne$en extends Translations$cartesHorsLigne$fr {
+	_Translations$cartesHorsLigne$en._(TranslationsEn root) : this._root = root, super.internal(root);
 
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Trail packs';
-	@override String get subtitle => 'Download a pack to hike 100% offline.';
-	@override String get alaCarteNote => 'A la carte: buy only the pack you need, no subscription.';
-	@override String size({required Object mo}) => '${mo} MB';
-	@override late final _Translations$packs$states$en states = _Translations$packs$states$en._(_root);
-	@override late final _Translations$packs$actions$en actions = _Translations$packs$actions$en._(_root);
-	@override late final _Translations$packs$progress$en progress = _Translations$packs$progress$en._(_root);
-	@override late final _Translations$packs$delete$en delete = _Translations$packs$delete$en._(_root);
-	@override String get empty => 'No pack available for this trail.';
-	@override late final _Translations$packs$a11y$en a11y = _Translations$packs$a11y$en._(_root);
-	@override late final _Translations$packs$types$en types = _Translations$packs$types$en._(_root);
+	@override String get title => 'Offline maps';
+	@override String get intro => 'One single download: the maps for the whole route, so you can walk without a network.';
+	@override String get unSeulGeste => 'The whole route at once, no parts to choose from.';
+	@override String poids({required Object mo}) => '${mo} MB to download';
+	@override String poidsTotal({required Object mo}) => 'Total size for the route: ${mo} MB';
+	@override String reprise({required Object mo}) => '${mo} MB are already on the phone: resuming will only download the rest.';
+	@override String get telecharger => 'DOWNLOAD THE MAPS FOR THE ROUTE';
+	@override String get reprendre => 'RESUME THE DOWNLOAD';
+	@override String get reessayer => 'TRY AGAIN';
+	@override String get annuler => 'CANCEL';
+	@override String get supprimer => 'DELETE THE MAPS';
+	@override String enCours({required Object recus, required Object total}) => '${recus} MB of ${total} MB';
+	@override String get verification => 'Checking the map';
+	@override String get pretes => 'Maps ready offline';
+	@override String pretesPoids({required Object mo}) => '${mo} MB on the phone';
+	@override String get libere => 'Maps deleted, space freed.';
+	@override String get supprimerTitre => 'Delete the maps?';
+	@override String get supprimerCorps => 'The maps will be removed from the phone to free up space. You can download them again.';
+	@override String get supprimerAnnuler => 'Cancel';
+	@override String get supprimerConfirmer => 'Delete';
+	@override String horsWifiTitre({required Object mo}) => '${mo} MB on your mobile data?';
+	@override String get horsWifiCorps => 'You are not on Wi-Fi. A route\'s maps can weigh heavily on a mobile plan.';
+	@override String get horsWifiAttendre => 'Wait for Wi-Fi';
+	@override String get horsWifiContinuer => 'Download anyway';
+	@override late final _Translations$cartesHorsLigne$refus$en refus = _Translations$cartesHorsLigne$refus$en._(_root);
+	@override late final _Translations$cartesHorsLigne$echec$en echec = _Translations$cartesHorsLigne$echec$en._(_root);
+	@override String get demoIndisponible => 'Downloading the maps is not available during the demo.';
+	@override late final _Translations$cartesHorsLigne$a11y$en a11y = _Translations$cartesHorsLigne$a11y$en._(_root);
 }
 
 // Path: guides
@@ -1167,6 +1334,16 @@ class _Translations$health$en extends Translations$health$fr {
 	@override late final _Translations$health$a11y$en a11y = _Translations$health$a11y$en._(_root);
 	@override late final _Translations$health$delete$en delete = _Translations$health$delete$en._(_root);
 	@override late final _Translations$health$consent$en consent = _Translations$health$consent$en._(_root);
+	@override late final _Translations$health$advice$en advice = _Translations$health$advice$en._(_root);
+	@override late final _Translations$health$section$en section = _Translations$health$section$en._(_root);
+	@override String get bloodTypeUnknown => 'I don\'t know';
+	@override String bloodTypeLegacy({required Object valeur}) => 'Your previous entry « ${valeur} » is not a recognised blood group. Choose from the list.';
+	@override late final _Translations$health$organDonor$en organDonor = _Translations$health$organDonor$en._(_root);
+	@override late final _Translations$health$contacts$en contacts = _Translations$health$contacts$en._(_root);
+	@override late final _Translations$health$cards$en cards = _Translations$health$cards$en._(_root);
+	@override late final _Translations$health$phoneCard$en phoneCard = _Translations$health$phoneCard$en._(_root);
+	@override String get localOnlyPriceTitle => 'Switching phones means typing it in again';
+	@override String get localOnlyPrice => 'If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.';
 }
 
 // Path: trailSelection
@@ -1177,7 +1354,7 @@ class _Translations$trailSelection$en extends Translations$trailSelection$fr {
 
 	// Translations
 	@override String get title => 'Switch trail';
-	@override String get subtitle => 'Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.';
+	@override String get subtitle => 'Pick the trail to explore. The whole app (map, stages, points of interest, offline maps, guides) follows your selection.';
 	@override String get current => 'Active trail';
 	@override String get select => 'Choose this trail';
 	@override String get selected => 'Selected trail';
@@ -1197,7 +1374,7 @@ class _Translations$consent$en extends Translations$consent$fr {
 	@override String get settingsTitle => 'Privacy and consent';
 	@override String get settingsIntro => 'Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.';
 	@override String get settingsEntry => 'Privacy and consent';
-	@override String get settingsEntryDesc => 'Manage my permissions (location, sharing, health)';
+	@override String get settingsEntryDesc => 'Manage my permissions (location, sharing, advertising, health)';
 	@override late final _Translations$consent$purposes$en purposes = _Translations$consent$purposes$en._(_root);
 	@override String get healthBadge => 'Sensitive data';
 	@override String get healthWarning => 'Heart rate is health data (GDPR article 9). This consent is requested separately and is never bundled with the others. Your health data is not sent to our servers.';
@@ -1209,12 +1386,15 @@ class _Translations$consent$en extends Translations$consent$fr {
 	@override String get notDecided => 'Awaiting your choice';
 	@override String get acceptSelected => 'Confirm my choices';
 	@override String get declineAll => 'Decline all';
+	@override String get declineAllNote => 'Decline all withdraws your five permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.';
+	@override String get declineAllCancel => 'Cancel';
 	@override String get continueLabel => 'Continue';
 	@override String get privacyPolicyLink => 'Read the privacy policy';
+	@override String get adsPrivacyOptions => 'Advertising privacy options';
 	@override String get reviewNeeded => 'Our policy has changed: please review your choices.';
 	@override late final _Translations$consent$a11y$en a11y = _Translations$consent$a11y$en._(_root);
 	@override String get healthDataMorphoNote => 'Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.';
-	@override String get healthBackupNote => 'Without this permission, your medical information sheet is not backed up: you will not be able to retrieve it on another phone, nor show it to rescuers from a new device.';
+	@override String get healthBackupNote => 'This permission does not cover your medical card: that one is never backed up, neither by us nor anywhere else, with or without permission. If you switch phones you will type it in again. That is the price of keeping it to yourself.';
 }
 
 // Path: erasure
@@ -1260,8 +1440,8 @@ class _Translations$moderation$en extends Translations$moderation$fr {
 	@override String get submit => 'Send report';
 	@override String get submitting => 'Sending…';
 	@override String get sent => 'Report sent. Thank you, a moderator will review it.';
-	@override String get errorRequired => 'Please fill in the reason, your email and the good-faith declaration.';
-	@override String get errorGeneric => 'The report could not be sent. Please try again.';
+	@override String get errorRequired => 'Fill in the reason, your email and the good-faith declaration.';
+	@override String get errorGeneric => 'The report could not be sent. Try again.';
 	@override String get cancel => 'Cancel';
 	@override String get reasonsTitle => 'Why was this content restricted?';
 	@override String get reasonsIntro => 'In accordance with article 17, here is the reason for the moderation decision regarding your content.';
@@ -1275,7 +1455,7 @@ class _Translations$moderation$en extends Translations$moderation$fr {
 	@override String get complaintExposeHint => 'Describe the reasons for your challenge.';
 	@override String get complaintSubmit => 'Send challenge';
 	@override String get complaintSent => 'Challenge recorded. It will be reviewed.';
-	@override String get complaintEmpty => 'Please explain your challenge.';
+	@override String get complaintEmpty => 'Explain your challenge.';
 	@override late final _Translations$moderation$a11y$en a11y = _Translations$moderation$a11y$en._(_root);
 }
 
@@ -1309,7 +1489,7 @@ class _Translations$recap$en extends Translations$recap$fr {
 	@override String get stages => '{done} / {total} stages walked';
 	@override String get distance => '{km} km travelled';
 	@override String get elevation => '{meters} m of elevation gain';
-	@override String get duration => '{days} days';
+	@override String get duration => '{days} days in total, walking and rest included';
 	@override String get dates => 'From {start} to {end}';
 	@override String get viewDiploma => 'View my diploma';
 	@override String get viewJournal => 'View my journal';
@@ -1378,7 +1558,7 @@ class _Translations$calendar$en extends Translations$calendar$fr {
 	@override String get adjustStages => 'ADJUST STAGES';
 	@override String get stageSingular => 'Stage {n}';
 	@override String get stagesPlural => 'Stages {list}';
-	@override String get splitStages => 'Split the stages';
+	@override String get splitStages => 'Ungroup the day';
 	@override String get mergeWithNext => 'Merge with the next day';
 	@override late final _Translations$calendar$weekdays$en weekdays = _Translations$calendar$weekdays$en._(_root);
 	@override late final _Translations$calendar$legend$en legend = _Translations$calendar$legend$en._(_root);
@@ -1421,6 +1601,7 @@ class _Translations$transport$en extends Translations$transport$fr {
 	@override String get adviceTitle => 'Practical tips';
 	@override String get website => 'Website';
 	@override late final _Translations$transport$a11y$en a11y = _Translations$transport$a11y$en._(_root);
+	@override String get noneForTrail => 'No transport information for this trail.';
 }
 
 // Path: fireRisk
@@ -1450,6 +1631,10 @@ class _Translations$fireRisk$en extends Translations$fireRisk$fr {
 	@override late final _Translations$fireRisk$number$en number = _Translations$fireRisk$number$en._(_root);
 	@override late final _Translations$fireRisk$empty$en empty = _Translations$fireRisk$empty$en._(_root);
 	@override late final _Translations$fireRisk$a11y$en a11y = _Translations$fireRisk$a11y$en._(_root);
+	@override String get refreshNothing => 'Nothing to update right now.';
+	@override String refreshPartial({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).';
+	@override String refreshedAt({required Object date}) => 'Data updated (${date})';
+	@override String stagePlace({required Object place}) => 'Arrival: ${place}';
 }
 
 // Path: shop
@@ -1479,6 +1664,7 @@ class _Translations$shop$en extends Translations$shop$fr {
 	@override String get website => 'Website';
 	@override String get filterEmpty => 'No shop for this filter.';
 	@override late final _Translations$shop$a11y$en a11y = _Translations$shop$a11y$en._(_root);
+	@override String get noneForTrail => 'No shop is listed for this trail.';
 }
 
 // Path: summary
@@ -1569,6 +1755,8 @@ class _Translations$myTreks$en extends Translations$myTreks$fr {
 	@override String progressLabel({required Object percent}) => '${percent} % of the trail';
 	@override late final _Translations$myTreks$a11y$en a11y = _Translations$myTreks$a11y$en._(_root);
 	@override String get settingsSubtitle => 'Language, units, theme';
+	@override String get emptyCatalogueOuDemo => 'You do not have a trail yet. Open the catalogue to choose one, or try the demo at the top of the list.';
+	@override String get emptyCatalogueSeul => 'You do not have a trail yet. Open the catalogue to choose one.';
 }
 
 // Path: trekState
@@ -1594,6 +1782,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get fieldAge => 'Age';
 	@override String get hintAge => 'In years';
 	@override String get errorAge => 'Invalid age (18 to 120 years)';
+	@override String get ageUsage => 'What your age is used for: it sets the reference distance of your walk test, and it lowers the retained level by one notch from 60, by two from 75. It is used for nothing else, and none of it leaves your phone.';
 	@override String get fieldHeight => 'Height';
 	@override String get hintHeight => 'In centimetres';
 	@override String get errorHeight => 'Invalid height (60 to 255 cm)';
@@ -1602,6 +1791,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get errorWeight => 'Invalid weight (25 to 200 kg)';
 	@override String get errorCountry => 'Invalid country code (e.g. FR)';
 	@override String get errorEmpty => 'Empty profile: enter at least your age, height or weight.';
+	@override String get errorSaveFailed => 'Your details could not be saved. Nothing was changed: try again.';
 	@override String get errorConsentRequired => 'Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.';
 	@override String get fieldSex => 'Sex (optional)';
 	@override String get sexFemale => 'Female';
@@ -1609,6 +1799,9 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get sexUnspecified => 'Unspecified';
 	@override String get fieldCountry => 'Country';
 	@override String get countryUnspecified => 'Unspecified';
+	@override String get countryPickerTitle => 'Choose a country';
+	@override String get countrySearchHint => 'Search for a country';
+	@override String get countryNoResult => 'No country matches';
 	@override String get hintCountry => 'Code (e.g. FR)';
 	@override String get consentTitle => 'Body metrics (GDPR article 9)';
 	@override String get consentBody => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.';
@@ -1651,6 +1844,7 @@ class _Translations$walkTest$en extends Translations$walkTest$fr {
 	@override late final _Translations$walkTest$levels$en levels = _Translations$walkTest$levels$en._(_root);
 	@override String get absoluteScaleNotice => 'Your level is read on the raw distance scale: the comparison to a reference was not established for your build, so we do not apply it. Your test itself remains perfectly valid.';
 	@override String get ageClampNotice => 'Beyond 80 the test reference stops: it is computed as at 80, and we say so.';
+	@override String get gpsUnavailable => 'Location is not available on this device: the test cannot measure distance.';
 }
 
 // Path: pastHikes
@@ -1678,11 +1872,9 @@ class _Translations$pastHikes$en extends Translations$pastHikes$fr {
 	@override String get editHike => 'Edit hike';
 	@override String get deleteHike => 'Delete';
 	@override String get save => 'Save';
+	@override String get backToFeasibility => 'Back to feasibility';
 	@override String get saved => 'Hikes saved';
 	@override String get maxReached => 'Maximum of 5 hikes reached.';
-	@override String get difficultiesTitle => 'Difficulties encountered';
-	@override String get difficultiesHint => 'One text for all these hikes: blisters, knees on descents, breathlessness at altitude, heat stress...';
-	@override String get difficultiesSaved => 'Note saved';
 }
 
 // Path: ffrando
@@ -1716,6 +1908,12 @@ class _Translations$sos$en extends Translations$sos$fr {
 	@override String get positionTitle => 'Your current position';
 	@override String get positionUnavailable => 'GPS position unavailable';
 	@override String get gpsAcquiring => 'Acquiring GPS…';
+	@override String get ageNow => 'Position just now';
+	@override String ageMinutes({required Object minutes}) => 'Position ${minutes} min ago';
+	@override String ageHours({required Object hours, required Object minutes}) => 'Position ${hours} h ${minutes} ago';
+	@override String get estimated => 'Estimated on the trail from your steps';
+	@override String freshFailed({required Object seconds}) => 'No newer position within ${seconds} s: the last known one is still shown.';
+	@override String get unavailableHelp => 'Call 112 anyway: give the last place you passed (hut, pass, trail marker) and stay where you are if you can.';
 	@override String positionLine({required Object lat, required Object lng, required Object alt}) => 'Position: ${lat}, ${lng}  -  Alt. ${alt} m';
 	@override String get noContacts => 'No contact configured';
 	@override String callContact({required Object name}) => 'Call ${name}';
@@ -1724,6 +1922,7 @@ class _Translations$sos$en extends Translations$sos$fr {
 	@override String get cancel => 'Cancel';
 	@override String get call => 'Call 112';
 	@override late final _Translations$sos$medicalId$en medicalId = _Translations$sos$medicalId$en._(_root);
+	@override String cannotCall({required Object number}) => 'This device cannot place the call. Dial ${number}.';
 }
 
 // Path: recovery
@@ -1736,12 +1935,14 @@ class _Translations$recovery$en extends Translations$recovery$fr {
 	@override String get section => 'Account and recovery';
 	@override String get sectionDesc => 'View my recovery code';
 	@override String get title => 'My recovery code';
-	@override String get intro => 'This code unlocks your vault (profile, personal info and step balance) on another phone. Write it down and keep it safe: it works like a password.';
+	@override String get intro => 'This code unlocks your vault (nickname, avatar and step balance) on another phone. Write it down and keep it safe: it works like a password. Your medical card is NOT in it: it never leaves this phone.';
 	@override String get codeLabel => 'Your code';
 	@override String get copy => 'Copy code';
 	@override String get copied => 'Code copied';
 	@override String get warning => 'No one else can read your vault, not even us. If you lose this code, your data will be permanently unrecoverable.';
 	@override String get error => 'Unable to generate the code right now.';
+	@override String get noVaultTitle => 'No vault to unlock yet';
+	@override String get noVaultBody => 'Online backup is not enabled on this installation: your data stays on this phone. There is therefore no vault to unlock elsewhere, and no code to write down for now.';
 }
 
 // Path: common
@@ -1762,6 +1963,50 @@ class _Translations$common$en extends Translations$common$fr {
 	@override String get viewOnMap => 'View on map';
 	@override String get error => 'Error';
 	@override String pageNotFound({required Object path}) => 'Page not found: ${path}';
+	@override String get retry => 'Try again';
+	@override String get retrying => 'Trying again…';
+	@override String get retryFailed => 'The new attempt did not work.';
+}
+
+// Path: systemBackup
+class _Translations$systemBackup$en extends Translations$systemBackup$fr {
+	_Translations$systemBackup$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Your phone\'s backup';
+	@override String get refuseGoogle => 'I refuse to have my data backed up to the Google cloud';
+	@override String get refuseApple => 'I refuse to have my data backed up to iCloud';
+	@override String get explainGoogle => 'Your phone backs itself up to Google. This box is ticked in advance and keeps on this phone everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.';
+	@override String get explainApple => 'Your phone backs itself up to iCloud. This box is ticked in advance and keeps on this phone everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.';
+	@override String get cost => 'If you leave it ticked and you change phone or reinstall the app, you start from scratch. Your progress, your journal, your completed treks and your photos will not come back. On this phone nothing is deleted: a completed trek keeps its track and its logbook for life. But nothing follows you elsewhere.';
+	@override String get whatComesBack => 'If you untick it, your progress, your journal, your completed treks and your medical card go into the backup, and come back on your next phone. Never your photos or your settings: copying the photos would double the space taken on your phone.';
+	@override String get notOurServers => 'None of this goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system.';
+	@override String get confirm => 'Got it';
+	@override String get a11yCheckbox => 'Refuse the backup of all my data by the system of the phone';
+}
+
+// Path: lieu
+class _Translations$lieu$en extends Translations$lieu$fr {
+	_Translations$lieu$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get ouvrirDansLesCartes => 'Open in maps';
+	@override String get cartesIndisponibles => 'No maps app could be opened on this device.';
+	@override String get adresse => 'Address';
+	@override String get telephoner => 'Call';
+	@override String get siteOfficiel => 'Official website';
+	@override String get aCompleter => 'Information still to be confirmed';
+	@override String get source => 'Source';
+	@override late final _Translations$lieu$a11y$en a11y = _Translations$lieu$a11y$en._(_root);
+	@override String get rafraichir => 'Refresh from the database';
+	@override String rafraichirFait({required Object n}) => '${n} item(s) updated from the database.';
+	@override String get rafraichirDejaAJour => 'Already up to date: the database holds nothing newer.';
+	@override String get rafraichirHorsLigne => 'No network: what you see is what is on the phone.';
+	@override String get rafraichirEchec => 'The update failed. The data on the phone is intact.';
 }
 
 // Path: hub.trekCard
@@ -1778,7 +2023,7 @@ class _Translations$hub$trekCard$en extends Translations$hub$trekCard$fr {
 	@override String progressLabel({required Object percent}) => '${percent}% of the trail';
 	@override String get resume => 'Resume navigation';
 	@override String get noTrekTitle => 'Ready to go?';
-	@override String get noTrekBody => 'Plan your itinerary, then start your trek whenever you\'re ready.';
+	@override String get noTrekBody => 'Plan your itinerary, then start your trek.';
 	@override String get plan => 'Plan my trek';
 	@override String get completedTitle => 'Trek completed';
 }
@@ -1793,7 +2038,6 @@ class _Translations$hub$weather$en extends Translations$hub$weather$fr {
 	@override String get title => 'Today\'s weather';
 	@override String get unavailable => 'Weather unavailable right now.';
 	@override String get alertStorm => 'Storm alert';
-	@override String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
 }
 
 // Path: hub.sections
@@ -1817,7 +2061,7 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 
 	// Translations
 	@override String get feasibility => 'Feasibility';
-	@override String get feasibilitySub => 'Assess your level';
+	@override String get feasibilitySub => 'Within your reach?';
 	@override String get itinerary => 'Itinerary';
 	@override String get itinerarySub => 'Your stages, day by day';
 	@override String get programme => 'Programme';
@@ -1832,12 +2076,20 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get checklistSub => 'Prepare your backpack';
 	@override String get training => 'Physical prep';
 	@override String get trainingSub => 'Your training programme';
+	@override String get health => 'Medical card';
+	@override String get healthSub => 'Fill it in before you leave';
+	@override String get cartes => 'Offline maps';
+	@override String get cartesSub => 'Download the maps for the route';
 	@override String get offline => 'Discover trails';
 	@override String get offlineSub => 'Browse the catalogue';
 	@override String get group => 'My group';
 	@override String get groupSub => 'Track your companions';
 	@override String get navigation => 'Navigation';
 	@override String get navigationSub => 'Map and GPS tracking';
+	@override String get emergency => 'Emergency';
+	@override String get emergencySub => '112, rescue and contacts';
+	@override String get signalement => 'Report';
+	@override String get signalementSub => 'Obstacle, water point, hazard';
 	@override String get journal => 'Journal';
 	@override String get journalSub => 'Your notes and memories';
 	@override String get accommodations => 'Accommodation';
@@ -1861,7 +2113,7 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get fire => 'Fire';
 	@override String get fireSub => 'Risks & alerts';
 	@override String get adjust => 'Adjust the route';
-	@override String get adjustSub => 'Change my upcoming days';
+	@override String get adjustSub => 'Change your upcoming days';
 }
 
 // Path: hub.fab
@@ -1884,7 +2136,7 @@ class _Translations$hub$finishTrek$en extends Translations$hub$finishTrek$fr {
 	// Translations
 	@override String get action => 'Finish trek';
 	@override String get confirmTitle => 'Finish trek?';
-	@override String get confirmBody => 'The trek will be marked as finished. Stages you haven\'t walked won\'t be validated. You can still review your adventure.';
+	@override String get confirmBody => 'The trek goes to finished. Stages you haven\'t walked won\'t be validated.';
 	@override String get confirm => 'Finish';
 	@override String get cancel => 'Cancel';
 }
@@ -1897,14 +2149,26 @@ class _Translations$map$guide$en extends Translations$map$guide$fr {
 
 	// Translations
 	@override String get buttonsTitle => 'Buttons';
-	@override String get position => 'Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.';
-	@override String get track => 'The trail line, in its own colour. It is the reference the off-track alert uses.';
-	@override String get centerOnMe => 'Brings the map back to your position after you have dragged it.';
-	@override String get photo => 'Takes a photo and adds it to the day\'s journal, without leaving the map.';
+	@override String get position => 'Your GPS position, updated as you walk. If the dot disappears, check the location permission.';
+	@override String get track => 'The trail line. The off-track alert refers to it.';
+	@override String get centerOnMe => 'Brings the map back to your position.';
+	@override String get photo => 'Takes a photo for the day\'s journal.';
 	@override String get sos => 'Opens the emergency call with your GPS coordinates. To be used only in a real emergency.';
-	@override String get currentStage => 'What is left to walk on the current stage. A dash means the hike has not started yet.';
-	@override String get offTrack => 'Lights up when you move away from the line. Come back to the trail to clear it.';
+	@override String get onlyInTrek => 'Only visible once the hike has started.';
+	@override String get currentStage => 'What is left to walk on the current stage. A dash: the hike has not started.';
+	@override String get offTrack => 'Lights up when you move away from the line. Come back to it to clear it.';
 	@override late final _Translations$map$guide$poi$en poi = _Translations$map$guide$poi$en._(_root);
+}
+
+// Path: map.attribution
+class _Translations$map$attribution$en extends Translations$map$attribution$fr {
+	_Translations$map$attribution$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get licence => 'Map data under ODbL licence — view the licence';
+	@override String get traces => 'Trail tracks surveyed in OpenStreetMap';
 }
 
 // Path: stage.difficulty
@@ -1999,6 +2263,28 @@ class _Translations$tracking$backgroundRationale$en extends Translations$trackin
 	@override String get ifRefused => 'If you decline, the hike still starts: your track is recorded as long as the app stays on screen.';
 	@override String get allow => 'Show the request';
 	@override String get later => 'Later';
+}
+
+// Path: tracking.stepCounting
+class _Translations$tracking$stepCounting$en extends Translations$tracking$stepCounting$fr {
+	_Translations$tracking$stepCounting$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Counting your steps during the hike';
+	@override String get body => 'StepWays counts your steps to follow your progress without keeping the GPS on all the time: your battery lasts the day. The count stays on your phone, nothing leaves it. Your phone will ask you to allow physical activity.';
+	@override String get ifRefused => 'If you decline, the hike still starts.';
+	@override String get allow => 'Show the request';
+	@override String get later => 'Later';
+	@override String get whyGps => 'Without your step count, StepWays follows your progress with GPS alone: the battery drains faster. You can allow it at any time in the settings.';
+	@override String get continuousGps => 'You are not on the known trail: StepWays keeps the GPS on to follow you, and the battery drains faster.';
+	@override String get settingsTitle => 'Step count';
+	@override String get stateGranted => 'Allowed: your steps help follow your progress without draining the battery.';
+	@override String get stateDenied => 'Not allowed: StepWays follows your progress with GPS alone. Tap to allow it.';
+	@override String get statePermanentlyDenied => 'Denied in the phone settings: StepWays follows your progress with GPS alone. Tap to open the settings.';
+	@override String get stateUnavailable => 'Your phone does not count steps: StepWays follows your progress with GPS alone.';
+	@override String get stateStreamError => 'Step counting stopped: StepWays follows your progress with GPS alone.';
 }
 
 // Path: checklist.categories
@@ -2246,6 +2532,7 @@ class _Translations$checklist$ui$en extends Translations$checklist$ui$fr {
 	@override String get validateAnyway => 'Validate anyway';
 	@override String get bagValidatedMissingSnack => 'Pack validated (with missing items)!';
 	@override String get shareGroupHint => 'Join a group to share your checklist.';
+	@override String get shareFailed => 'Sharing could not open on this device.';
 }
 
 // Path: checklist.seasons
@@ -2301,6 +2588,51 @@ class _Translations$weather$alert$en extends Translations$weather$alert$fr {
 	@override late final _Translations$weather$alert$fire$en fire = _Translations$weather$alert$fire$en._(_root);
 }
 
+// Path: weather.program
+class _Translations$weather$program$en extends Translations$weather$program$fr {
+	_Translations$weather$program$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Weather stage by stage';
+	@override String get subtitle => 'The weather where you will be, on the day you will be there.';
+	@override String dayLabel({required Object day}) => 'Day ${day}';
+	@override String get restDay => 'Rest';
+	@override String place({required Object place}) => 'at ${place}';
+	@override String get trendBadge => 'Trend';
+	@override String trendHint({required Object reliable}) => 'Beyond ${reliable} days this is only a trend: a 10-day forecast is right about half the time.';
+	@override String beyondHorizon({required Object horizon}) => 'No forecast yet: forecasts only reach ${horizon} days ahead.';
+	@override String get noData => 'No data for this place.';
+	@override String get unknownDeparture => 'Pick your departure date: without it there is no way to tell which day you reach which stage.';
+}
+
+// Path: weather.freshness
+class _Translations$weather$freshness$en extends Translations$weather$freshness$fr {
+	_Translations$weather$freshness$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get justNow => 'Fetched just now';
+	@override String at({required Object date}) => 'Fetched on ${date}';
+	@override String stale({required Object duration}) => 'Fetched ${duration} ago, no update since';
+	@override String get never => 'Never fetched';
+}
+
+// Path: weather.duration
+class _Translations$weather$duration$en extends Translations$weather$duration$fr {
+	_Translations$weather$duration$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get seconds => 'a few seconds';
+	@override String minutes({required Object n}) => '${n} min';
+	@override String hours({required Object n}) => '${n} h';
+	@override String days({required Object n}) => '${n} d';
+}
+
 // Path: feasibility.gaps
 class _Translations$feasibility$gaps$en extends Translations$feasibility$gaps$fr {
 	_Translations$feasibility$gaps$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -2325,7 +2657,14 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 
 	// Translations
 	@override String get title => 'Feasibility for this trek';
-	@override String get intro => 'We compare each walking day\'s effort to what your profile can handle. Green, orange or red light.';
+	@override String get answerTitle => 'Can you do it?';
+	@override String answerGreen({required Object days}) => 'Yes. This trail is within your reach in ${days} days.';
+	@override String answerOrange({required Object days}) => 'Yes, in ${days} days. But one day will be hard.';
+	@override String get answerRed => 'Not yet. One day of this trail asks more than you can hold today. Get fitter, or go outside summer.';
+	@override String answerDaysNote({required Object walking, required Object rest}) => 'The trail walks in ${walking} days. ${rest} rest day(s) advised.';
+	@override String answerNoRest({required Object walking}) => 'The trail walks in ${walking} days.';
+	@override String get explainToggle => 'How this result is worked out';
+	@override String get intro => 'We compare each day\'s effort to what you can hold. Green, orange or red.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})';
 	@override String get stagesTitle => 'Day by day';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} energy-km';
@@ -2336,45 +2675,52 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String limitingLabel({required Object factor}) => 'Limiting factor: ${factor}';
 	@override String trainingReco({required Object weeks}) => 'Recommended training: ${weeks} weeks before departure';
 	@override String get adviceTitle => 'Tips for your plan';
-	@override String generateProgram({required Object days}) => 'Generate my plan (${days} days)';
-	@override String generateProgramDone({required Object days}) => 'Plan generated over ${days} days — tweak it as you like.';
+	@override String generateProgram({required Object days}) => 'Generate my plan (${days} walking days)';
+	@override String generateProgramDone({required Object days}) => 'Plan generated over ${days} walking days — tweak it as you like.';
 	@override String get noStages => 'No day to assess yet.';
 	@override late final _Translations$feasibility$formula$levels$en levels = _Translations$feasibility$formula$levels$en._(_root);
 	@override late final _Translations$feasibility$formula$verdicts$en verdicts = _Translations$feasibility$formula$verdicts$en._(_root);
 	@override late final _Translations$feasibility$formula$limitingFactors$en limitingFactors = _Translations$feasibility$formula$limitingFactors$en._(_root);
 	@override late final _Translations$feasibility$formula$advice$en advice = _Translations$feasibility$formula$advice$en._(_root);
-	@override String retainedPlan({required Object days}) => 'Retained split: ${days} walking days.';
-	@override String retainedPlanNone({required Object days}) => 'No split retained: the trail stays on its default ${days} days.';
-	@override String get energyUnitNotice => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.';
+	@override String retainedPlan({required Object days}) => 'Retained plan: ${days} days in total, walking and rest included.';
+	@override String retainedPlanNone({required Object days}) => 'No plan retained: the trail stays on its ${days} days in total, walking and rest included.';
+	@override String get energyUnitNotice => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill.';
 	@override String get circuitTitle => 'Circuit verdict';
-	@override String circuitScore({required Object value}) => 'Circuit score: ${value}';
-	@override String get circuitIsWorstStage => 'The circuit verdict is the verdict of your hardest day: nothing else makes it harsher.';
+	@override String circuitScore({required Object value, required Object green, required Object orange}) => 'Circuit score: ${value} — green up to ${green}, orange up to ${orange}, red beyond.';
+	@override String get circuitIsWorstStage => 'The circuit verdict is the verdict of your hardest day.';
 	@override String restWindowWhole({required Object days}) => 'Rest measured over the whole trek (${days} days).';
 	@override String restWindowSlice({required Object start, required Object end}) => 'Rest measured over the worst week: days ${start} to ${end}.';
-	@override String get restNotApplicable => 'Rest cannot be computed on a one-day trail: there is no chaining to measure. The constraint is declared not applicable, it is not replaced by a number.';
-	@override String get restExtrapolation => 'The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.';
-	@override String get restNotDecisive => 'This figure is shown and advises, it never decides: your verdict stays the one of your hardest day.';
+	@override String get restNotApplicable => 'A one-day trail has no chaining: rest is not computed.';
+	@override String get restExtrapolation => 'The rest threshold comes from a measurement made on athletes, carried over to hiking.';
+	@override String get restNotDecisive => 'This figure advises, it does not decide. The verdict follows your hardest day.';
 	@override String restAdvisedLine({required Object days}) => 'Advice: ${days} rest day(s) spread through your plan bring this figure back under its threshold.';
-	@override String get restTwoDays => 'On days of equal size, one rest day a week is not enough: it takes two.';
+	@override String get restTwoDays => 'Days of equal size need two rest days a week, not one.';
 	@override String habitGap({required Object value}) => 'Gap to your habit: ${value} (reference 0.8 to 1.3).';
-	@override String get habitGapNotDecisive => 'This gap is shown, never decisive: no study demonstrates that it causes anything.';
+	@override String get habitGapNotDecisive => 'This gap decides nothing: no study gives it an effect.';
 	@override String get conditionsTitle => 'What went into this verdict';
-	@override String floorActive({required Object value}) => 'Your best day already held (${value} energy-km) is above your level ceiling: it is what serves as the base. You will never be told you cannot do what you have already done.';
+	@override String floorActive({required Object value}) => 'Your best day already held (${value} energy-km) is above your level ceiling: it is what serves as the base.';
 	@override String altitudeApplied({required Object value, required Object pct}) => 'Altitude: ${value} m at the highest point, your daily capacity drops by ${pct} %.';
-	@override String altitudeBelowThreshold({required Object value}) => 'Altitude: ${value} m at the highest point, below the 1,500 m from which it counts. It changes nothing here.';
-	@override String get altitudeMissing => 'Altitude: this trail\'s track does not carry any. It changes nothing here for lack of data — not because it would have no effect.';
+	@override String altitudeBelowThreshold({required Object value}) => 'Altitude: ${value} m at the highest point. It only counts from 1,500 m.';
+	@override String get altitudeMissing => 'Altitude: this trail\'s track does not carry any. With no data, it changes nothing here.';
 	@override String get heatApplied => 'Summer departure: aerobic capacity drops by 7 %, that is measured.';
-	@override String get seasonNoSource => 'Spring or autumn departure: no published measurement allows an effect to be quantified. The season changes nothing here, for lack of a source.';
-	@override String get seasonMissing => 'No departure date is set: the season changes nothing here, for lack of data.';
-	@override String get massNotCounted => 'Neither your weight nor your pack\'s enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.';
-	@override String get winterInvalid => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.';
+	@override String get seasonNoSource => 'Spring or autumn departure: nothing is applied. Only summer carries a measurement, 7 % less aerobic capacity.';
+	@override String get seasonMissing => 'No departure date is set: this verdict holds for a departure outside summer. In summer it tightens by 7 %. The date is set in the Calendar.';
+	@override String get massNotCounted => 'Neither your weight nor your pack\'s enters this verdict: it measures what you have already held. At 65 or at 95 kg, the same verdict.';
+	@override String get ageCounted => 'Age, on the other hand, counts: it sets the reference distance of your walk test, and it lowers your level by one notch at 60, by two at 75. Aerobic capacity declines with age, that is measured.';
+	@override String get winterInvalid => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather and dry ground.';
 	@override String restDaysCounted({required Object count}) => 'Rest days counted in this verdict: ${count}.';
-	@override String get restDaysNone => 'No rest day is set in your plan: add some and this figure moves.';
+	@override String get restDaysNone => 'No rest day in your plan: add some and this figure moves.';
 	@override String averageLoad({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest is at ${worst}).';
-	@override String get averageLoadInfo => 'These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.';
-	@override String durationStatement({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} days.';
-	@override String get durationStatementInfo => 'This is shown, it does not decide: no published measurement says after how many chained days a hiker drops off. Judge for yourself.';
+	@override String get averageLoadInfo => 'Far apart: the trek has one hard day. Close together: it is hard every day. This does not decide.';
+	@override String durationStatement({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} walking days in a row.';
+	@override String get durationStatementInfo => 'This does not decide: no measurement says after how many chained days a hiker drops off. Judge for yourself.';
 	@override String stageDominantFactor({required Object factor}) => 'What weighs most on this day: ${factor}';
+	@override String get verdictHowTitle => 'How this verdict is computed';
+	@override String verdictHowStage({required Object stage, required Object distance, required Object elevation}) => 'Your hardest day is ${stage}: ${distance} km and ${elevation} m of ascent.';
+	@override String verdictHowEnergy({required Object distance, required Object elevation, required Object energy}) => 'In energy-km: ${distance} + ${elevation} ÷ 42 = ${energy}.';
+	@override String verdictHowCeiling({required Object capacity, required Object level}) => 'Your daily ceiling is ${capacity} energy-km (${level} level).';
+	@override String verdictHowRatio({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Up to ${green} it is green, up to ${orange} orange, beyond that red.';
+	@override String get verdictHowNoBlackBox => 'This ratio is the whole calculation. Three works feed it: Minetti 2002 for the energy, MOVE 2026 for altitude, Linsell 2020 for heat.';
 }
 
 // Path: feasibility.flow
@@ -2385,23 +2731,23 @@ class _Translations$feasibility$flow$en extends Translations$feasibility$flow$fr
 
 	// Translations
 	@override String get title => 'Are you ready for this trek?';
-	@override String get intro => 'Answer 3 quick steps: we work out your real level, then tell you if the trek is doable.';
+	@override String get intro => 'Three quick steps, and we tell you if this trek is doable.';
 	@override String progress({required Object done, required Object total}) => '${done}/${total} steps done';
 	@override String get stepProfile => 'Your info sheet';
 	@override String get stepProfileSub => 'Age, height, weight (stays on your phone).';
 	@override String get stepWalkTest => '6-minute walk test';
-	@override String get stepWalkTestSub => 'Measures your current fitness — changes your result.';
+	@override String get stepWalkTestSub => 'Measures your current fitness: it moves your result.';
 	@override String get stepPastHikes => 'Your last 5 hikes';
 	@override String get stepPastHikesSub => 'What you have already handled: pace, distance, elevation.';
 	@override String get optionalTag => '(optional)';
 	@override String get validate => 'Confirm and see my result';
-	@override String get partialNotice => 'Provisional result: the 6-minute walk test has not been done. Your level is estimated by default; take the test to refine the verdict.';
+	@override String get partialNotice => 'Provisional result: the walk test has not been done, your level is estimated. Take the test for a real verdict.';
 	@override String get missingTitle => 'Some information is still missing';
-	@override String get missingIntro => 'The verdict only appears once every required criterion is filled in. Still to complete:';
+	@override String get missingIntro => 'Still to complete:';
 	@override String get missingProfile => 'Your full info sheet: age, height and weight';
 	@override String get missingPastHikes => 'At least one of your 5 latest hikes';
-	@override String get missingWalkTestNote => 'The 6-minute test stays optional: without it, your result is shown as provisional.';
-	@override String get hintBlocked => 'Complete the criteria above: that is what decides your verdict.';
+	@override String get missingWalkTestNote => 'The 6-minute test stays optional: without it, your result is provisional.';
+	@override String get hintBlocked => 'Complete the criteria above.';
 	@override String get hintReady => 'All set: you can see your result.';
 }
 
@@ -2442,7 +2788,9 @@ class _Translations$catalog$a11y$en extends Translations$catalog$a11y$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String enterButton({required Object nom}) => 'Enter trail ${nom}';
+	@override String prepareButton({required Object nom}) => 'Prepare trail ${nom}';
+	@override String buyButton({required Object nom}) => 'Buy trail ${nom}';
+	@override String get freeTrailBadge => 'Free trail';
 }
 
 // Path: signalement.types
@@ -2618,89 +2966,52 @@ class _Translations$waypoints$contribution$en extends Translations$waypoints$con
 	@override String get savedPendingSync => 'It will be published when the network is back.';
 	@override String pendingCount({required Object n}) => '${n} pending synchronization';
 	@override String get close => 'Close';
-	@override String get emptyTitle => 'Please enter a title for the waypoint.';
-	@override String get emptyComment => 'Please enter your observation.';
+	@override String get emptyTitle => 'Enter a title for the waypoint.';
+	@override String get emptyComment => 'Enter your observation.';
 	@override String get noLocation => 'GPS position unavailable. Try again under open sky.';
 	@override String get error => 'Cannot save right now.';
 }
 
-// Path: packs.states
-class _Translations$packs$states$en extends Translations$packs$states$fr {
-	_Translations$packs$states$en._(TranslationsEn root) : this._root = root, super.internal(root);
+// Path: cartesHorsLigne.refus
+class _Translations$cartesHorsLigne$refus$en extends Translations$cartesHorsLigne$refus$fr {
+	_Translations$cartesHorsLigne$refus$en._(TranslationsEn root) : this._root = root, super.internal(root);
 
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get notDownloaded => 'Not downloaded';
-	@override String get downloaded => 'Downloaded';
-	@override String get updateAvailable => 'Update available';
+	@override String get niveauInsuffisant => 'The maps come down when you prepare the route to actually walk it.';
+	@override String get sentierInconnu => 'This route is not on your phone yet. Download it from the trail list.';
+	@override String get aucuneCartePubliee => 'No offline map has been published for this route yet. The track itself is still available.';
+	@override String get droitDeRealiserManquant => 'Offline maps are part of the route you buy.';
+	@override String get horsLigne => 'Without a network a map cannot be downloaded. Reconnect, then try again.';
+	@override String get stockageIndisponible => 'The phone did not answer. Try again; if it persists, restart it.';
 }
 
-// Path: packs.actions
-class _Translations$packs$actions$en extends Translations$packs$actions$fr {
-	_Translations$packs$actions$en._(TranslationsEn root) : this._root = root, super.internal(root);
+// Path: cartesHorsLigne.echec
+class _Translations$cartesHorsLigne$echec$en extends Translations$cartesHorsLigne$echec$fr {
+	_Translations$cartesHorsLigne$echec$en._(TranslationsEn root) : this._root = root, super.internal(root);
 
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get download => 'Download';
-	@override String get update => 'Update';
-	@override String get delete => 'Delete';
-	@override String get retry => 'Retry';
-	@override String get buy => 'Buy this pack';
-	@override String buyWithPrice({required Object price}) => 'Buy this pack — ${price}';
+	@override String get reseau => 'The connection dropped. What is already downloaded is kept: resume whenever you like.';
+	@override String get empreinteInvalide => 'The map received does not match the published one: it was discarded. Try again.';
+	@override String get tailleInattendue => 'The map received is incomplete: it was discarded. Try again.';
+	@override String get plusDePlace => 'There is no space left on the phone. Free up some space, then resume.';
+	@override String get ecritureImpossible => 'Writing to the phone failed. What is downloaded is kept: resume.';
+	@override String get stockageIndisponible => 'The phone did not give up its storage. Try again; if it persists, restart it.';
+	@override String get annulee => 'Download cancelled. What is already downloaded is kept.';
 }
 
-// Path: packs.progress
-class _Translations$packs$progress$en extends Translations$packs$progress$fr {
-	_Translations$packs$progress$en._(TranslationsEn root) : this._root = root, super.internal(root);
+// Path: cartesHorsLigne.a11y
+class _Translations$cartesHorsLigne$a11y$en extends Translations$cartesHorsLigne$a11y$fr {
+	_Translations$cartesHorsLigne$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
 
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String downloading({required Object done, required Object total}) => 'Downloading… ${done}/${total}';
-	@override String get verifying => 'Verifying integrity…';
-	@override String get completed => 'Pack ready offline';
-	@override String get error => 'Download failed';
-}
-
-// Path: packs.delete
-class _Translations$packs$delete$en extends Translations$packs$delete$fr {
-	_Translations$packs$delete$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get confirmTitle => 'Delete this pack?';
-	@override String get confirmBody => 'The pack will be removed from the device to free up space. You can download it again later.';
-	@override String get cancel => 'Cancel';
-	@override String get confirm => 'Delete';
-	@override String get freed => 'Space freed.';
-}
-
-// Path: packs.a11y
-class _Translations$packs$a11y$en extends Translations$packs$a11y$fr {
-	_Translations$packs$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String packCard({required Object nom, required Object state}) => 'Pack ${nom}, ${state}';
-	@override String downloadButton({required Object nom}) => 'Download pack ${nom}';
-	@override String deleteButton({required Object nom}) => 'Delete pack ${nom}';
-}
-
-// Path: packs.types
-class _Translations$packs$types$en extends Translations$packs$types$fr {
-	_Translations$packs$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override late final _Translations$packs$types$nord$en nord = _Translations$packs$types$nord$en._(_root);
-	@override late final _Translations$packs$types$sud$en sud = _Translations$packs$types$sud$en._(_root);
-	@override late final _Translations$packs$types$complet$en complet = _Translations$packs$types$complet$en._(_root);
-	@override late final _Translations$packs$types$mam$en mam = _Translations$packs$types$mam$en._(_root);
+	@override String get bouton => 'Download the maps for the whole route';
+	@override String progression({required Object pourcent}) => 'Downloading maps: ${pourcent} %';
 }
 
 // Path: guides.categories
@@ -2757,6 +3068,12 @@ class _Translations$health$field$en extends Translations$health$field$fr {
 	@override String get treatments => 'Current treatments';
 	@override String get doctor => 'Family doctor';
 	@override String get insurance => 'Insurance no. / health cover';
+	@override String get fullName => 'First and last name';
+	@override String get birthDate => 'Date of birth';
+	@override String get birthDateClear => 'Clear date of birth';
+	@override String get address => 'Address';
+	@override String get conditions => 'Medical conditions and history';
+	@override String get organDonor => 'Organ donation';
 }
 
 // Path: health.hint
@@ -2771,6 +3088,11 @@ class _Translations$health$hint$en extends Translations$health$hint$fr {
 	@override String get treatments => 'e.g. Levothyrox 50 mg/day';
 	@override String get doctor => 'e.g. Dr Smith +44 20 xxxx xxxx';
 	@override String get insurance => 'e.g. European health card';
+	@override String get fullName => 'e.g. Christophe Mosconi';
+	@override String get birthDate => 'Tap to choose';
+	@override String get address => 'e.g. 12 Lilac Street, 20000 Ajaccio';
+	@override String get conditions => 'e.g. type 1 diabetes, epilepsy, blood thinner';
+	@override String get organDonor => 'Make your choice';
 }
 
 // Path: health.error
@@ -2821,6 +3143,99 @@ class _Translations$health$consent$en extends Translations$health$consent$fr {
 	@override String get manage => 'Manage my health consent';
 }
 
+// Path: health.advice
+class _Translations$health$advice$en extends Translations$health$advice$fr {
+	_Translations$health$advice$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'How to use it on the trail';
+	@override String get whereToFind => 'Where to find it when you are down: your card lives under Prepare, the « Medical card » tile, and it opens with no network. Show it to your walking partners before you leave — the day you can no longer speak, they are the ones who will open your phone.';
+	@override String get showToRescue => 'How to show it to rescuers: open this screen and hand over the phone. Who you are, who to call, then allergies, treatments, medical history and blood group — in the order a rescuer reads. Nothing is sent over the internet: what you show is exactly what is written here.';
+	@override String get phoneCard => 'Copy it into your phone\'s own medical ID: it shows on the lock screen, without your passcode. A rescuer who finds your phone gets there in two taps, even without knowing this app.';
+	@override String get paper => 'Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.';
+	@override String get ackButton => 'I have read this advice';
+	@override String get ackDone => 'Advice read';
+}
+
+// Path: health.section
+class _Translations$health$section$en extends Translations$health$section$fr {
+	_Translations$health$section$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get identity => 'Who you are';
+	@override String get identityWhy => 'The first thing a rescuer reads: with no name, they treat a stranger and can call nobody.';
+	@override String get contacts => 'Who to call';
+	@override String get contactsWhy => 'What rescuers look for right after identifying you. Three people at most: beyond that, none gets called.';
+	@override String get vital => 'What treats you';
+	@override String get vitalWhy => 'In the order an emergency doctor asks: first what can kill you during treatment, then what the hospital needs.';
+	@override String get admin => 'Paperwork';
+	@override String get adminWhy => 'What gets copied at the hospital desk, not what is read in the rain.';
+}
+
+// Path: health.organDonor
+class _Translations$health$organDonor$en extends Translations$health$organDonor$fr {
+	_Translations$health$organDonor$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get yes => 'Donor';
+	@override String get no => 'Opted out';
+	@override String get unknown => 'I have not decided';
+}
+
+// Path: health.contacts
+class _Translations$health$contacts$en extends Translations$health$contacts$fr {
+	_Translations$health$contacts$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get add => 'Add someone to call';
+	@override String get name => 'Person\'s name';
+	@override String get nameHint => 'e.g. Marie, my sister';
+	@override String get phone => 'Phone';
+	@override String get phoneHint => 'e.g. +33 6 12 34 56 78';
+	@override String get remove => 'Remove this person';
+	@override String get errorName => 'Give a name, otherwise rescuers do not know who they are calling.';
+	@override String get errorPhone => 'Give a number, otherwise this name is useless.';
+}
+
+// Path: health.cards
+class _Translations$health$cards$en extends Translations$health$cards$fr {
+	_Translations$health$cards$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get vitale => 'Photo of the health insurance card';
+	@override String get mutuelle => 'Photo of the top-up insurance card';
+	@override String get take => 'Take a photo';
+	@override String get retake => 'Retake the photo';
+	@override String get pick => 'Pick an image';
+	@override String get remove => 'Remove the photo';
+	@override String get stored => 'Photo stored on this phone. It is sent nowhere and goes away with the card when you erase it.';
+	@override String get explain => 'The photo stays on this phone, in the same protected folder as the rest of the card.';
+	@override String get permissionRefused => 'Camera access refused. The card works perfectly well without it.';
+	@override String get failed => 'The photo could not be saved.';
+}
+
+// Path: health.phoneCard
+class _Translations$health$phoneCard$en extends Translations$health$phoneCard$fr {
+	_Translations$health$phoneCard$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Copy your card into the phone\'s own one';
+	@override String get why => 'It is the only screen a rescuer reaches without your passcode, on iPhone as on Android. Phone settings, Emergency or Health section: name, blood group, allergies, medication and people to call.';
+	@override String get done => 'Done, my card is in the phone too';
+}
+
 // Path: trailSelection.a11y
 class _Translations$trailSelection$a11y$en extends Translations$trailSelection$a11y$fr {
 	_Translations$trailSelection$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -2846,6 +3261,8 @@ class _Translations$consent$purposes$en extends Translations$consent$purposes$fr
 	@override String get socialSharingDesc => 'Appear in leaderboards and the community feed, under a pseudonym.';
 	@override String get publicReporting => 'Public reporting';
 	@override String get publicReportingDesc => 'Post reports (water, hazard, conditions) visible to other hikers.';
+	@override String get advertising => 'Personalised advertising';
+	@override String get advertisingDesc => 'Tailor ads to your interests. Without this permission the free app still shows ads, but they are not targeted and no targeting data leaves your device.';
 	@override String get healthData => 'Health data';
 	@override String get healthDataDesc => 'Read your heart rate (chest strap or health app) to enrich your effort tracking.';
 }
@@ -2921,11 +3338,10 @@ class _Translations$programme$duration$en extends Translations$programme$duratio
 
 	// Translations
 	@override String get label => 'Number of days';
-	@override String get days => '{count} d';
-	@override String get daysWithRest => '{total} d (incl. {rest} rest)';
-	@override String get splitNote => 'More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.';
-	@override String get splitExhausted => 'Every day is already cut as short as it goes: the slider will not ease the verdict any further.';
-	@override late final _Translations$programme$duration$difficulty$en difficulty = _Translations$programme$duration$difficulty$en._(_root);
+	@override String get daysWithRest => '{total} d in total (incl. {rest} rest)';
+	@override String get splitNote => 'More days = rest days. They make no day easier.';
+	@override String get splitExhausted => 'No way to spread it further: every stage already has its own day.';
+	@override String get daysTotal => '{count} d in total';
 }
 
 // Path: programme.stats
@@ -2963,7 +3379,7 @@ class _Translations$programme$actions$en extends Translations$programme$actions$
 
 	// Translations
 	@override String get merge => 'Merge';
-	@override String get split => 'Split';
+	@override String get split => 'Ungroup';
 	@override String get rest => 'Rest';
 	@override String get removeRest => 'Remove this rest day';
 }
@@ -3030,8 +3446,7 @@ class _Translations$programme$splitBlocked$en extends Translations$programme$spl
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'Cannot split: there is nothing to cut on this day.';
-	@override String get portion => 'Cannot split: this stage is already cut in two.';
+	@override String get single => 'Cannot ungroup: this day carries a single stage, there is nothing to ungroup.';
 	@override String get locked => 'Day already walked: it can no longer be changed';
 }
 
@@ -3471,6 +3886,18 @@ class _Translations$sos$medicalId$en extends Translations$sos$medicalId$fr {
 	@override String get unavailable => 'Open the medical ID in your phone\'s Health settings.';
 }
 
+// Path: lieu.a11y
+class _Translations$lieu$a11y$en extends Translations$lieu$a11y$fr {
+	_Translations$lieu$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String ouvrirDansLesCartes({required Object name}) => 'Open ${name} in the maps app';
+	@override String telephoner({required Object name}) => 'Call ${name}';
+	@override String siteOfficiel({required Object name}) => 'Open the official website of ${name}';
+}
+
 // Path: map.guide.poi
 class _Translations$map$guide$poi$en extends Translations$map$guide$poi$fr {
 	_Translations$map$guide$poi$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3478,14 +3905,14 @@ class _Translations$map$guide$poi$en extends Translations$map$guide$poi$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get water => 'A spring or fountain marked along the trail. A spring can run dry in summer: do not rely on it without checking.';
-	@override String get shelter => 'A refuge or shelter on the route. Tap the marker to see what is known: altitude, services, contact.';
-	@override String get accommodation => 'Lodging other than a refuge: guesthouse, room, hotel. Booking is made with the establishment itself.';
-	@override String get campsite => 'A campsite or bivouac spot. Bivouac rules depend on the land you cross: check before pitching a tent.';
-	@override String get shop => 'A shop where you can resupply. Opening hours are not guaranteed off season: keep a margin.';
+	@override String get water => 'A spring or fountain marked on the trail. A spring can run dry in summer: do not rely on it.';
+	@override String get shelter => 'A refuge or shelter. Tap the marker: altitude, services, contact.';
+	@override String get accommodation => 'Guesthouse, room or hotel. You book with the establishment.';
+	@override String get campsite => 'Campsite or bivouac spot. The rules change with the land you cross: check before pitching a tent.';
+	@override String get shop => 'A shop where you can resupply. Opening hours not guaranteed off season.';
 	@override String get restaurant => 'A restaurant or guest table on or very near the route.';
-	@override String get viewpoint => 'A notable viewpoint. A landmark for a break, not for navigation.';
-	@override String get danger => 'A passage flagged as tricky. Slow down and look at the ground before committing.';
+	@override String get viewpoint => 'A notable viewpoint. Good for a break.';
+	@override String get danger => 'Tricky passage. Slow down and look at the ground before committing.';
 	@override String get emergency => 'An emergency point: post, helipad or emergency call point.';
 	@override String get info => 'A trail information sign or point.';
 }
@@ -3553,7 +3980,7 @@ class _Translations$weather$alert$fire$en extends Translations$weather$alert$fir
 
 	// Translations
 	@override String get title => 'Fire risk';
-	@override String desc({required Object value}) => '${value}°C expected. High fire risk.';
+	@override String desc({required Object temperature}) => '${temperature} expected. High fire risk.';
 }
 
 // Path: feasibility.formula.levels
@@ -3576,9 +4003,9 @@ class _Translations$feasibility$formula$verdicts$en extends Translations$feasibi
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get green => 'Feasible split';
-	@override String get orange => 'Demanding split';
-	@override String get red => 'Split too tight';
+	@override String get green => 'Comfortable pace';
+	@override String get orange => 'Demanding pace';
+	@override String get red => 'Pace to ease off';
 }
 
 // Path: feasibility.formula.limitingFactors
@@ -3603,14 +4030,17 @@ class _Translations$feasibility$formula$advice$en extends Translations$feasibili
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get balancedOk => 'Your plan is balanced: keep a margin and listen to your body.';
-	@override String get balanced => 'Spread the stages out to smooth the effort across the days.';
-	@override String optimalDays({required Object days, required Object current}) => 'Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.';
-	@override String split({required Object stage}) => 'Split day ${stage} in two: it clearly exceeds your ceiling.';
-	@override String splitImpossible({required Object stage}) => 'Day ${stage} stays above your capacity even cut in two, and it cannot be cut shorter: this is no longer a matter of scheduling. Train, wait for milder conditions, or pick a less demanding trail.';
+	@override String get balancedOk => 'Your plan is balanced.';
+	@override String get balanced => 'Spread the stages out to smooth the effort.';
+	@override String optimalDays({required Object walk, required Object current, required Object rest}) => 'Aim for ${walk} walking days instead of ${current}. Plus ${rest} rest day(s) advised.';
 	@override String rest({required Object stages}) => 'Plan a rest day after day ${stages}.';
-	@override String training({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).';
-	@override String restAdvised({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.';
+	@override String training({required Object weeks}) => 'Train for ${weeks} weeks before departure.';
+	@override String restAdvised({required Object days, required Object stages}) => 'Add ${days} rest day(s) after days ${stages}: they look too much alike for the body to recover.';
+	@override String optimalDaysNoChoice({required Object walk, required Object rest}) => 'Aim for the trail\'s ${walk} walking days. Plus ${rest} rest day(s) advised.';
+	@override String hardStageAlert({required Object stage}) => 'Day ${stage} goes over your ceiling. It cannot be shortened: a stage ends where there is a roof. Train, your ceiling rises and this day drops back under it.';
+	@override String noViableDuration({required Object stage}) => 'Adding days will change nothing: even on the most spread-out plan, day ${stage} stays above your ceiling. Train, or leave outside summer. Otherwise, choose a less demanding trail.';
+	@override String restReference({required Object stages}) => 'You have not chosen your plan yet. On the trail\'s own, plan a rest day after day ${stages}.';
+	@override String restAdvisedReference({required Object days, required Object stages}) => 'You have not chosen your plan yet. On the trail\'s own, add ${days} rest day(s) after days ${stages}: they look too much alike for the body to recover.';
 }
 
 // Path: signalement.water.states
@@ -3692,63 +4122,6 @@ class _Translations$gamification$badge$challenger$en extends Translations$gamifi
 	@override String get description => 'You completed your first seasonal challenge.';
 }
 
-// Path: packs.types.nord
-class _Translations$packs$types$nord$en extends Translations$packs$types$nord$fr {
-	_Translations$packs$types$nord$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get nom => 'Mare a Mare North';
-	@override String get description => 'The northern half of the trail, offline.';
-}
-
-// Path: packs.types.sud
-class _Translations$packs$types$sud$en extends Translations$packs$types$sud$fr {
-	_Translations$packs$types$sud$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get nom => 'Mare a Mare South';
-	@override String get description => 'The southern half of the trail, offline.';
-}
-
-// Path: packs.types.complet
-class _Translations$packs$types$complet$en extends Translations$packs$types$complet$fr {
-	_Translations$packs$types$complet$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get nom => 'Mare a Mare Full';
-	@override String get description => 'The whole trail, offline.';
-}
-
-// Path: packs.types.mam
-class _Translations$packs$types$mam$en extends Translations$packs$types$mam$fr {
-	_Translations$packs$types$mam$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get nom => 'Mare a Mare';
-	@override String get description => 'The Mare a Mare trail, offline.';
-}
-
-// Path: programme.duration.difficulty
-class _Translations$programme$duration$difficulty$en extends Translations$programme$duration$difficulty$fr {
-	_Translations$programme$duration$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get comfortable => 'Comfortable';
-	@override String get standard => 'Standard';
-	@override String get sporty => 'Sporty';
-	@override String get demanding => 'Very demanding';
-}
-
 // Path: programme.info.days
 class _Translations$programme$info$days$en extends Translations$programme$info$days$fr {
 	_Translations$programme$info$days$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3789,8 +4162,8 @@ class _Translations$programme$info$mergeSplit$en extends Translations$programme$
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Merge / Split';
-	@override String get body => 'Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep.';
+	@override String get title => 'Merge / Ungroup';
+	@override String get body => 'Merge joins two days into one. Ungroup gives each stage its own day back. A stage stays whole: it ends where there is a roof.';
 }
 
 // Path: programme.info.colors
@@ -3848,7 +4221,7 @@ class _Translations$programme$inTrek$info$upcoming$en extends Translations$progr
 
 	// Translations
 	@override String get title => 'Upcoming days';
-	@override String get body => 'Merge, split or add a rest day on the rest of your route.';
+	@override String get body => 'Merge, ungroup or add a rest day on the rest of your route.';
 }
 
 // Path: programme.inTrek.info.order
@@ -3944,7 +4317,7 @@ extension on TranslationsEn {
 			'hub.greetingFallback' => 'Hiker',
 			'hub.infoTooltip' => 'About this trail',
 			'hub.profileTooltip' => 'My profile',
-			'hub.infoSheetBody' => 'This trail guides you every step of the way: plan your itinerary, pack your bag, then set off with GPS navigation. Every feature is reachable from this home screen.',
+			'hub.infoSheetBody' => 'Plan your itinerary, then your bag. Then set off with GPS navigation. It all starts from this screen.',
 			'hub.trekCard.activeTitle' => 'Trek in progress',
 			'hub.trekCard.distanceCovered' => 'Distance covered',
 			'hub.trekCard.elevationGain' => 'Today\'s ascent',
@@ -3952,15 +4325,14 @@ extension on TranslationsEn {
 			'hub.trekCard.progressLabel' => ({required Object percent}) => '${percent}% of the trail',
 			'hub.trekCard.resume' => 'Resume navigation',
 			'hub.trekCard.noTrekTitle' => 'Ready to go?',
-			'hub.trekCard.noTrekBody' => 'Plan your itinerary, then start your trek whenever you\'re ready.',
+			'hub.trekCard.noTrekBody' => 'Plan your itinerary, then start your trek.',
 			'hub.trekCard.plan' => 'Plan my trek',
 			'hub.trekCard.completedTitle' => 'Trek completed',
 			'hub.weather.title' => 'Today\'s weather',
 			'hub.weather.unavailable' => 'Weather unavailable right now.',
 			'hub.weather.alertStorm' => 'Storm alert',
-			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Start the trek',
-			'hub.startGateHint' => 'Complete Itinerary, Date and Programme first to start.',
+			'hub.startGateHint' => 'To start: Itinerary, Calendar, Programme, and Medical card with its advice read.',
 			'hub.prepareExpand' => 'Show preparation',
 			'hub.prepareCollapse' => 'Collapse',
 			'hub.sections.prepare' => 'Prepare',
@@ -3968,7 +4340,7 @@ extension on TranslationsEn {
 			'hub.sections.info' => 'Information',
 			'hub.sections.after' => 'After the trek',
 			'hub.cards.feasibility' => 'Feasibility',
-			'hub.cards.feasibilitySub' => 'Assess your level',
+			'hub.cards.feasibilitySub' => 'Within your reach?',
 			'hub.cards.itinerary' => 'Itinerary',
 			'hub.cards.itinerarySub' => 'Your stages, day by day',
 			'hub.cards.programme' => 'Programme',
@@ -3983,12 +4355,20 @@ extension on TranslationsEn {
 			'hub.cards.checklistSub' => 'Prepare your backpack',
 			'hub.cards.training' => 'Physical prep',
 			'hub.cards.trainingSub' => 'Your training programme',
+			'hub.cards.health' => 'Medical card',
+			'hub.cards.healthSub' => 'Fill it in before you leave',
+			'hub.cards.cartes' => 'Offline maps',
+			'hub.cards.cartesSub' => 'Download the maps for the route',
 			'hub.cards.offline' => 'Discover trails',
 			'hub.cards.offlineSub' => 'Browse the catalogue',
 			'hub.cards.group' => 'My group',
 			'hub.cards.groupSub' => 'Track your companions',
 			'hub.cards.navigation' => 'Navigation',
 			'hub.cards.navigationSub' => 'Map and GPS tracking',
+			'hub.cards.emergency' => 'Emergency',
+			'hub.cards.emergencySub' => '112, rescue and contacts',
+			'hub.cards.signalement' => 'Report',
+			'hub.cards.signalementSub' => 'Obstacle, water point, hazard',
 			'hub.cards.journal' => 'Journal',
 			'hub.cards.journalSub' => 'Your notes and memories',
 			'hub.cards.accommodations' => 'Accommodation',
@@ -4012,12 +4392,12 @@ extension on TranslationsEn {
 			'hub.cards.fire' => 'Fire',
 			'hub.cards.fireSub' => 'Risks & alerts',
 			'hub.cards.adjust' => 'Adjust the route',
-			'hub.cards.adjustSub' => 'Change my upcoming days',
+			'hub.cards.adjustSub' => 'Change your upcoming days',
 			'hub.fab.feedback' => 'Give feedback',
 			'hub.fab.sos' => 'SOS',
 			'hub.finishTrek.action' => 'Finish trek',
 			'hub.finishTrek.confirmTitle' => 'Finish trek?',
-			'hub.finishTrek.confirmBody' => 'The trek will be marked as finished. Stages you haven\'t walked won\'t be validated. You can still review your adventure.',
+			'hub.finishTrek.confirmBody' => 'The trek goes to finished. Stages you haven\'t walked won\'t be validated.',
 			'hub.finishTrek.confirm' => 'Finish',
 			'hub.finishTrek.cancel' => 'Cancel',
 			'map.title' => 'Trail map',
@@ -4029,25 +4409,34 @@ extension on TranslationsEn {
 			'map.layersSubtitle' => 'Choose what to show on the map',
 			'map.stageRemaining' => ({required Object km}) => '${km} km left',
 			'map.offTrackChip' => 'Off track',
+			'map.perimetreEtape' => 'Stage',
+			'map.perimetreSentier' => 'Trail',
+			'map.basculerVersSentier' => 'View whole trail',
+			'map.basculerVersEtape' => 'View stage',
+			'map.etapeFinie' => 'Well done, stage complete!',
 			'map.guide.buttonsTitle' => 'Buttons',
-			'map.guide.position' => 'Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.',
-			'map.guide.track' => 'The trail line, in its own colour. It is the reference the off-track alert uses.',
-			'map.guide.centerOnMe' => 'Brings the map back to your position after you have dragged it.',
-			'map.guide.photo' => 'Takes a photo and adds it to the day\'s journal, without leaving the map.',
+			'map.guide.position' => 'Your GPS position, updated as you walk. If the dot disappears, check the location permission.',
+			'map.guide.track' => 'The trail line. The off-track alert refers to it.',
+			'map.guide.centerOnMe' => 'Brings the map back to your position.',
+			'map.guide.photo' => 'Takes a photo for the day\'s journal.',
 			'map.guide.sos' => 'Opens the emergency call with your GPS coordinates. To be used only in a real emergency.',
-			'map.guide.currentStage' => 'What is left to walk on the current stage. A dash means the hike has not started yet.',
-			'map.guide.offTrack' => 'Lights up when you move away from the line. Come back to the trail to clear it.',
-			'map.guide.poi.water' => 'A spring or fountain marked along the trail. A spring can run dry in summer: do not rely on it without checking.',
-			'map.guide.poi.shelter' => 'A refuge or shelter on the route. Tap the marker to see what is known: altitude, services, contact.',
-			'map.guide.poi.accommodation' => 'Lodging other than a refuge: guesthouse, room, hotel. Booking is made with the establishment itself.',
-			'map.guide.poi.campsite' => 'A campsite or bivouac spot. Bivouac rules depend on the land you cross: check before pitching a tent.',
-			'map.guide.poi.shop' => 'A shop where you can resupply. Opening hours are not guaranteed off season: keep a margin.',
+			'map.guide.onlyInTrek' => 'Only visible once the hike has started.',
+			'map.guide.currentStage' => 'What is left to walk on the current stage. A dash: the hike has not started.',
+			'map.guide.offTrack' => 'Lights up when you move away from the line. Come back to it to clear it.',
+			'map.guide.poi.water' => 'A spring or fountain marked on the trail. A spring can run dry in summer: do not rely on it.',
+			'map.guide.poi.shelter' => 'A refuge or shelter. Tap the marker: altitude, services, contact.',
+			'map.guide.poi.accommodation' => 'Guesthouse, room or hotel. You book with the establishment.',
+			'map.guide.poi.campsite' => 'Campsite or bivouac spot. The rules change with the land you cross: check before pitching a tent.',
+			'map.guide.poi.shop' => 'A shop where you can resupply. Opening hours not guaranteed off season.',
 			'map.guide.poi.restaurant' => 'A restaurant or guest table on or very near the route.',
-			'map.guide.poi.viewpoint' => 'A notable viewpoint. A landmark for a break, not for navigation.',
-			'map.guide.poi.danger' => 'A passage flagged as tricky. Slow down and look at the ground before committing.',
+			'map.guide.poi.viewpoint' => 'A notable viewpoint. Good for a break.',
+			'map.guide.poi.danger' => 'Tricky passage. Slow down and look at the ground before committing.',
 			'map.guide.poi.emergency' => 'An emergency point: post, helipad or emergency call point.',
 			'map.guide.poi.info' => 'A trail information sign or point.',
 			'map.supplyDismiss' => 'Dismiss alert',
+			'map.pinMergedTitle' => 'Several markers at the same place',
+			'map.attribution.licence' => 'Map data under ODbL licence — view the licence',
+			'map.attribution.traces' => 'Trail tracks surveyed in OpenStreetMap',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Elevation',
 			'stage.elevationGain' => 'Elevation gain',
@@ -4109,6 +4498,7 @@ extension on TranslationsEn {
 			'gps.disabled' => 'Location service disabled',
 			'gps.offTrack' => 'Off track',
 			'gps.centerOnMe' => 'Center on my position',
+			'gps.centeredOnTrack' => 'Location unavailable — map recentred on the route',
 			'navAlert.offTrackBanner' => ({required Object meters}) => 'You are moving away from the trail — ${meters} m. Check your position.',
 			'navAlert.offTrackNotifTitle' => 'You are leaving the trail',
 			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'You are moving away from the trail (${meters} m). Check your position.',
@@ -4141,6 +4531,8 @@ extension on TranslationsEn {
 			'itinerary.viewStage' => 'View stage',
 			'itinerary.openMap' => 'View on map',
 			'itinerary.stageCount' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: '${n} stage', other: '${n} stages', ), 
+			'itinerary.daysTotal' => 'Days in total',
+			'itinerary.daysBreakdown' => ({required Object walk, required Object rest}) => '${walk} walking days + ${rest} rest days',
 			'tracking.start' => 'Start',
 			'tracking.pause' => 'Pause',
 			'tracking.resume' => 'Resume',
@@ -4160,12 +4552,27 @@ extension on TranslationsEn {
 			'tracking.avgSpeed' => 'Avg speed',
 			'tracking.altitude' => 'Altitude',
 			'tracking.total' => 'Total',
+			'tracking.remaining' => 'Remaining',
 			'tracking.covered' => 'Covered',
+			'tracking.stagesDone' => 'Stages',
 			'tracking.backgroundRationale.title' => 'Recording your track with the screen off',
 			'tracking.backgroundRationale.body' => 'While you hike, StepWays records your track continuously, even with the phone in your pocket. Android will ask you to allow location “All the time”: that is what it is for, and only during an ongoing hike.',
 			'tracking.backgroundRationale.ifRefused' => 'If you decline, the hike still starts: your track is recorded as long as the app stays on screen.',
 			'tracking.backgroundRationale.allow' => 'Show the request',
 			'tracking.backgroundRationale.later' => 'Later',
+			'tracking.stepCounting.title' => 'Counting your steps during the hike',
+			'tracking.stepCounting.body' => 'StepWays counts your steps to follow your progress without keeping the GPS on all the time: your battery lasts the day. The count stays on your phone, nothing leaves it. Your phone will ask you to allow physical activity.',
+			'tracking.stepCounting.ifRefused' => 'If you decline, the hike still starts.',
+			'tracking.stepCounting.allow' => 'Show the request',
+			'tracking.stepCounting.later' => 'Later',
+			'tracking.stepCounting.whyGps' => 'Without your step count, StepWays follows your progress with GPS alone: the battery drains faster. You can allow it at any time in the settings.',
+			'tracking.stepCounting.continuousGps' => 'You are not on the known trail: StepWays keeps the GPS on to follow you, and the battery drains faster.',
+			'tracking.stepCounting.settingsTitle' => 'Step count',
+			'tracking.stepCounting.stateGranted' => 'Allowed: your steps help follow your progress without draining the battery.',
+			'tracking.stepCounting.stateDenied' => 'Not allowed: StepWays follows your progress with GPS alone. Tap to allow it.',
+			'tracking.stepCounting.statePermanentlyDenied' => 'Denied in the phone settings: StepWays follows your progress with GPS alone. Tap to open the settings.',
+			'tracking.stepCounting.stateUnavailable' => 'Your phone does not count steps: StepWays follows your progress with GPS alone.',
+			'tracking.stepCounting.stateStreamError' => 'Step counting stopped: StepWays follows your progress with GPS alone.',
 			'checklist.title' => 'Gear & Pack',
 			'checklist.subtitle' => 'Pack your backpack',
 			'checklist.progress' => '{checked}/{total} packed',
@@ -4348,6 +4755,8 @@ extension on TranslationsEn {
 			'checklist.ui.infoCheckTitle' => 'Check items',
 			'checklist.ui.infoCheckBody' => 'Check what you take — the weight recalculates at the top.',
 			'checklist.ui.infoRequiredTitle' => 'Required',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.infoRequiredBody' => 'Items with a lock = regulation (whistle, lamp, emergency blanket).',
 			'checklist.ui.infoGaugeTitle' => 'Weight gauge',
 			'checklist.ui.infoGaugeBody' => 'Target: pack < 15% of your weight. Green = OK, Orange = careful, Red = too heavy.',
@@ -4382,13 +4791,12 @@ extension on TranslationsEn {
 			'checklist.ui.validationCancelledSnack' => 'Pack validation cancelled — you can edit your gear.',
 			'checklist.ui.missingTitle' => 'Missing gear',
 			'checklist.ui.missingBody' => '{checked}/{total} required items checked.',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.missingList' => 'Missing:',
 			'checklist.ui.understood' => 'Got it',
 			'checklist.ui.validateAnyway' => 'Validate anyway',
 			'checklist.ui.bagValidatedMissingSnack' => 'Pack validated (with missing items)!',
 			'checklist.ui.shareGroupHint' => 'Join a group to share your checklist.',
+			'checklist.ui.shareFailed' => 'Sharing could not open on this device.',
 			'checklist.seasonalBanner' => ({required Object season}) => 'Pack adapted to the season (${season}) and your trail.',
 			'checklist.seasons.winter' => 'winter',
 			'checklist.seasons.spring' => 'spring',
@@ -4397,6 +4805,10 @@ extension on TranslationsEn {
 			'checklist.seasonalAdd' => 'Add',
 			'checklist.seasonalAdded' => 'Added',
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
+			'checklist.demoBridledTitle' => 'Trial version',
+			'checklist.demoBridledBody' => 'The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.',
+			'checklist.demoLockedCategory' => 'Buy the hike for this category',
+			'checklist.demoUnlockCta' => 'Buy the hike',
 			'journal.title' => 'Trek journal',
 			'journal.empty' => 'Your journal is empty',
 			'journal.emptySubtitle' => 'Write down your trek impressions and memories',
@@ -4436,7 +4848,7 @@ extension on TranslationsEn {
 			'journal.shareError' => 'Sharing failed',
 			'journal.lockedTitle' => 'The journal is part of the pack',
 			'journal.lockedBody' => 'Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.',
-			'journal.lockedUnlock' => 'Unlock',
+			'journal.lockedUnlock' => 'Buy',
 			'weather.title' => 'Weather',
 			'weather.loading' => 'Loading weather...',
 			'weather.offline' => 'No connection. Weather data unavailable.',
@@ -4464,7 +4876,7 @@ extension on TranslationsEn {
 			'weather.stormAlertsToggleOff' => 'Storm alerts off',
 			'weather.lastUpdate' => ({required Object date}) => 'Updated ${date}',
 			'weather.guideTitle' => 'Understanding the weather',
-			'weather.guideBody' => 'Forecasts cover 7 days for each stage. Watch storm and wind alerts: in the mountains, weather changes fast. When offline, the last saved data is shown.',
+			'weather.guideBody' => 'Forecasts are given STAGE BY STAGE: for each day of your plan, the weather at that day\'s arrival point. They reach 10 days at most; the first 7 are reliable, the next ones are only a trend, and beyond that the app says so instead of making it up. Every bulletin shows when it was fetched: in the mountains, with no network, the last fetch is what stays on screen.',
 			'weather.source.api' => 'Live data',
 			'weather.source.cache' => 'Saved data',
 			'weather.source.offline' => 'Offline',
@@ -4483,7 +4895,29 @@ extension on TranslationsEn {
 			'weather.alert.uv.title' => 'Very high UV',
 			'weather.alert.uv.desc' => ({required Object value}) => 'UV index ${value}. Maximum sun protection recommended.',
 			'weather.alert.fire.title' => 'Fire risk',
-			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C expected. High fire risk.',
+			'weather.alert.fire.desc' => ({required Object temperature}) => '${temperature} expected. High fire risk.',
+			'weather.program.title' => 'Weather stage by stage',
+			'weather.program.subtitle' => 'The weather where you will be, on the day you will be there.',
+			'weather.program.dayLabel' => ({required Object day}) => 'Day ${day}',
+			'weather.program.restDay' => 'Rest',
+			'weather.program.place' => ({required Object place}) => 'at ${place}',
+			'weather.program.trendBadge' => 'Trend',
+			'weather.program.trendHint' => ({required Object reliable}) => 'Beyond ${reliable} days this is only a trend: a 10-day forecast is right about half the time.',
+			'weather.program.beyondHorizon' => ({required Object horizon}) => 'No forecast yet: forecasts only reach ${horizon} days ahead.',
+			'weather.program.noData' => 'No data for this place.',
+			'weather.program.unknownDeparture' => 'Pick your departure date: without it there is no way to tell which day you reach which stage.',
+			'weather.freshness.justNow' => 'Fetched just now',
+			'weather.freshness.at' => ({required Object date}) => 'Fetched on ${date}',
+			'weather.freshness.stale' => ({required Object duration}) => 'Fetched ${duration} ago, no update since',
+			'weather.freshness.never' => 'Never fetched',
+			'weather.duration.seconds' => 'a few seconds',
+			'weather.duration.minutes' => ({required Object n}) => '${n} min',
+			'weather.duration.hours' => ({required Object n}) => '${n} h',
+			'weather.duration.days' => ({required Object n}) => '${n} d',
+			'weather.refreshFailed' => ({required Object date}) => 'Update failed. The data shown was fetched on ${date}.',
+			'weather.refreshFailedNoData' => 'Update failed and no data is saved.',
+			'weather.refreshedAt' => ({required Object date}) => 'Data updated (${date})',
+			'weather.refreshPartial' => ({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).',
 			'share.title' => 'Share',
 			'share.generating' => 'Generating...',
 			'share.share' => 'Share',
@@ -4516,7 +4950,7 @@ extension on TranslationsEn {
 			'diploma.recapStages' => '{count} stages completed',
 			'diploma.recapDistance' => '{km} km covered',
 			'diploma.recapElevation' => '{meters} m elevation',
-			'diploma.recapDuration' => '{days} days of trekking',
+			'diploma.recapDuration' => '{days} days in total, walking and rest included',
 			'diploma.recapMapTrace' => 'Route trace',
 			'diploma.recapNoMap' => 'Trace not available',
 			'diploma.recapJournalEntries' => '{count} journal entries',
@@ -4538,6 +4972,9 @@ extension on TranslationsEn {
 			'notifications.schedulerCountdownBody' => 'Departure in 2 days. Check your checklist and the weather.',
 			'notifications.schedulerDailyTitle' => 'Have a great trek day!',
 			'notifications.schedulerDailyBody' => 'Check the weather and prepare today\'s stage.',
+			'notifications.permissionBlockedTitle' => 'Notifications blocked',
+			'notifications.permissionBlockedBody' => 'Your phone is blocking notifications from the app: no reminder and no alert will reach you.',
+			'notifications.permissionAsk' => 'Allow notifications',
 			'settings.title' => 'Settings',
 			'settings.language' => 'Language',
 			'settings.units' => 'Units',
@@ -4563,17 +5000,6 @@ extension on TranslationsEn {
 			'settings.versionLabel' => 'App version',
 			'settings.noDateChosen' => 'No date chosen',
 			'settings.departureDate' => 'Departure date',
-			'appearance.title' => 'Appearance',
-			'appearance.subtitle' => 'Choose the app’s look and feel',
-			'appearance.skinSentierVivant' => 'Living Trail',
-			'appearance.skinSentierVivantDesc' => 'Modern and colorful, the trail color takes the stage',
-			'appearance.skinTopographique' => 'Topographic',
-			'appearance.skinTopographiqueDesc' => 'Ordnance-map style, data first',
-			'appearance.skinGrandAir' => 'Great Outdoors',
-			'appearance.skinGrandAirDesc' => 'Full-screen photos, adventure-journal feel',
-			'appearance.unavailableOnTrail' => 'Unavailable on this trail',
-			'appearance.changeSkin' => 'Change skin',
-			'appearance.selected' => 'Selected',
 			'feedback.title' => 'Feedback',
 			'feedback.type' => 'Feedback type',
 			'feedback.bug' => 'Bug / Problem',
@@ -4588,6 +5014,11 @@ extension on TranslationsEn {
 			'feedback.sending' => 'Sending...',
 			'feedback.thanks' => 'Thank you for your feedback!',
 			'feedback.pending' => 'pending',
+			'feedback.emptyMessage' => 'Write your message before sending it.',
+			'feedback.sendFailed' => 'Your message could not be saved.',
+			'feedback.keptLocally' => 'Saved on this phone. Your feedback will be sent as soon as sending is possible.',
+			'feedback.keptLocallyNotice' => 'Feedback sending is not open yet: your messages are kept on this phone.',
+			'feedback.sentThanks' => 'Thank you, your feedback has been sent.',
 			'auth.profile' => 'Profile',
 			'auth.anonymous' => 'Hiker without account',
 			'auth.connectedVia' => 'Connected via',
@@ -4609,9 +5040,10 @@ extension on TranslationsEn {
 			'auth.chooseAvatar' => 'Choose an avatar',
 			'auth.errorLoading' => 'Loading error',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
+			'auth.errorTimeout' => 'Your account did not respond. Check your connection, then try again.',
 			'feasibility.restart' => 'Start over',
 			'feasibility.objectiveTitle' => 'Feasibility for this trek',
-			'feasibility.objectiveIntro' => 'Verdict based on your real profile crossed with the trek requirements.',
+			'feasibility.objectiveIntro' => 'This verdict crosses your real profile with the trek\'s demands.',
 			'feasibility.openProfile' => 'My details',
 			'feasibility.openWalkTest' => '6-minute test',
 			'feasibility.openPastHikes' => 'My last 5 hikes',
@@ -4626,7 +5058,14 @@ extension on TranslationsEn {
 			'feasibility.gaps.fitness' => 'Fitness insufficient on the 6-minute test',
 			'feasibility.gaps.effort' => 'Overall effort (IBP) above your experience',
 			'feasibility.formula.title' => 'Feasibility for this trek',
-			'feasibility.formula.intro' => 'We compare each walking day\'s effort to what your profile can handle. Green, orange or red light.',
+			'feasibility.formula.answerTitle' => 'Can you do it?',
+			'feasibility.formula.answerGreen' => ({required Object days}) => 'Yes. This trail is within your reach in ${days} days.',
+			'feasibility.formula.answerOrange' => ({required Object days}) => 'Yes, in ${days} days. But one day will be hard.',
+			'feasibility.formula.answerRed' => 'Not yet. One day of this trail asks more than you can hold today. Get fitter, or go outside summer.',
+			'feasibility.formula.answerDaysNote' => ({required Object walking, required Object rest}) => 'The trail walks in ${walking} days. ${rest} rest day(s) advised.',
+			'feasibility.formula.answerNoRest' => ({required Object walking}) => 'The trail walks in ${walking} days.',
+			'feasibility.formula.explainToggle' => 'How this result is worked out',
+			'feasibility.formula.intro' => 'We compare each day\'s effort to what you can hold. Green, orange or red.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})',
 			'feasibility.formula.stagesTitle' => 'Day by day',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} energy-km',
@@ -4637,80 +5076,90 @@ extension on TranslationsEn {
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Limiting factor: ${factor}',
 			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Recommended training: ${weeks} weeks before departure',
 			'feasibility.formula.adviceTitle' => 'Tips for your plan',
-			'feasibility.formula.generateProgram' => ({required Object days}) => 'Generate my plan (${days} days)',
-			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan generated over ${days} days — tweak it as you like.',
+			'feasibility.formula.generateProgram' => ({required Object days}) => 'Generate my plan (${days} walking days)',
+			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan generated over ${days} walking days — tweak it as you like.',
 			'feasibility.formula.noStages' => 'No day to assess yet.',
 			'feasibility.formula.levels.beginner' => 'beginner',
 			'feasibility.formula.levels.intermediate' => 'intermediate',
 			'feasibility.formula.levels.confirmed' => 'confirmed',
 			'feasibility.formula.levels.expert' => 'expert',
-			'feasibility.formula.verdicts.green' => 'Feasible split',
-			'feasibility.formula.verdicts.orange' => 'Demanding split',
-			'feasibility.formula.verdicts.red' => 'Split too tight',
+			'feasibility.formula.verdicts.green' => 'Comfortable pace',
+			'feasibility.formula.verdicts.orange' => 'Demanding pace',
+			'feasibility.formula.verdicts.red' => 'Pace to ease off',
 			'feasibility.formula.limitingFactors.distance' => 'the daily distance',
 			'feasibility.formula.limitingFactors.elevation' => 'the elevation gain',
 			'feasibility.formula.limitingFactors.chaining' => 'the day-to-day chaining',
 			'feasibility.formula.limitingFactors.none' => 'none',
 			'feasibility.formula.limitingFactors.altitude' => 'altitude',
 			'feasibility.formula.limitingFactors.heat' => 'the heat of the season',
-			'feasibility.formula.advice.balancedOk' => 'Your plan is balanced: keep a margin and listen to your body.',
-			'feasibility.formula.advice.balanced' => 'Spread the stages out to smooth the effort across the days.',
-			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.',
-			'feasibility.formula.advice.split' => ({required Object stage}) => 'Split day ${stage} in two: it clearly exceeds your ceiling.',
-			'feasibility.formula.advice.splitImpossible' => ({required Object stage}) => 'Day ${stage} stays above your capacity even cut in two, and it cannot be cut shorter: this is no longer a matter of scheduling. Train, wait for milder conditions, or pick a less demanding trail.',
+			'feasibility.formula.advice.balancedOk' => 'Your plan is balanced.',
+			'feasibility.formula.advice.balanced' => 'Spread the stages out to smooth the effort.',
+			'feasibility.formula.advice.optimalDays' => ({required Object walk, required Object current, required Object rest}) => 'Aim for ${walk} walking days instead of ${current}. Plus ${rest} rest day(s) advised.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plan a rest day after day ${stages}.',
-			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).',
-			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.',
-			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Retained split: ${days} walking days.',
-			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'No split retained: the trail stays on its default ${days} days.',
-			'feasibility.formula.energyUnitNotice' => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.',
+			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Train for ${weeks} weeks before departure.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s) after days ${stages}: they look too much alike for the body to recover.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object walk, required Object rest}) => 'Aim for the trail\'s ${walk} walking days. Plus ${rest} rest day(s) advised.',
+			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'Day ${stage} goes over your ceiling. It cannot be shortened: a stage ends where there is a roof. Train, your ceiling rises and this day drops back under it.',
+			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Adding days will change nothing: even on the most spread-out plan, day ${stage} stays above your ceiling. Train, or leave outside summer. Otherwise, choose a less demanding trail.',
+			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'You have not chosen your plan yet. On the trail\'s own, plan a rest day after day ${stages}.',
+			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'You have not chosen your plan yet. On the trail\'s own, add ${days} rest day(s) after days ${stages}: they look too much alike for the body to recover.',
+			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Retained plan: ${days} days in total, walking and rest included.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'No plan retained: the trail stays on its ${days} days in total, walking and rest included.',
+			'feasibility.formula.energyUnitNotice' => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill.',
 			'feasibility.formula.circuitTitle' => 'Circuit verdict',
-			'feasibility.formula.circuitScore' => ({required Object value}) => 'Circuit score: ${value}',
-			'feasibility.formula.circuitIsWorstStage' => 'The circuit verdict is the verdict of your hardest day: nothing else makes it harsher.',
+			'feasibility.formula.circuitScore' => ({required Object value, required Object green, required Object orange}) => 'Circuit score: ${value} — green up to ${green}, orange up to ${orange}, red beyond.',
+			'feasibility.formula.circuitIsWorstStage' => 'The circuit verdict is the verdict of your hardest day.',
 			'feasibility.formula.restWindowWhole' => ({required Object days}) => 'Rest measured over the whole trek (${days} days).',
 			'feasibility.formula.restWindowSlice' => ({required Object start, required Object end}) => 'Rest measured over the worst week: days ${start} to ${end}.',
-			'feasibility.formula.restNotApplicable' => 'Rest cannot be computed on a one-day trail: there is no chaining to measure. The constraint is declared not applicable, it is not replaced by a number.',
-			'feasibility.formula.restExtrapolation' => 'The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.',
-			'feasibility.formula.restNotDecisive' => 'This figure is shown and advises, it never decides: your verdict stays the one of your hardest day.',
+			'feasibility.formula.restNotApplicable' => 'A one-day trail has no chaining: rest is not computed.',
+			'feasibility.formula.restExtrapolation' => 'The rest threshold comes from a measurement made on athletes, carried over to hiking.',
+			'feasibility.formula.restNotDecisive' => 'This figure advises, it does not decide. The verdict follows your hardest day.',
 			'feasibility.formula.restAdvisedLine' => ({required Object days}) => 'Advice: ${days} rest day(s) spread through your plan bring this figure back under its threshold.',
-			'feasibility.formula.restTwoDays' => 'On days of equal size, one rest day a week is not enough: it takes two.',
+			'feasibility.formula.restTwoDays' => 'Days of equal size need two rest days a week, not one.',
 			'feasibility.formula.habitGap' => ({required Object value}) => 'Gap to your habit: ${value} (reference 0.8 to 1.3).',
-			'feasibility.formula.habitGapNotDecisive' => 'This gap is shown, never decisive: no study demonstrates that it causes anything.',
+			'feasibility.formula.habitGapNotDecisive' => 'This gap decides nothing: no study gives it an effect.',
 			'feasibility.formula.conditionsTitle' => 'What went into this verdict',
-			'feasibility.formula.floorActive' => ({required Object value}) => 'Your best day already held (${value} energy-km) is above your level ceiling: it is what serves as the base. You will never be told you cannot do what you have already done.',
+			'feasibility.formula.floorActive' => ({required Object value}) => 'Your best day already held (${value} energy-km) is above your level ceiling: it is what serves as the base.',
 			'feasibility.formula.altitudeApplied' => ({required Object value, required Object pct}) => 'Altitude: ${value} m at the highest point, your daily capacity drops by ${pct} %.',
-			'feasibility.formula.altitudeBelowThreshold' => ({required Object value}) => 'Altitude: ${value} m at the highest point, below the 1,500 m from which it counts. It changes nothing here.',
-			'feasibility.formula.altitudeMissing' => 'Altitude: this trail\'s track does not carry any. It changes nothing here for lack of data — not because it would have no effect.',
+			'feasibility.formula.altitudeBelowThreshold' => ({required Object value}) => 'Altitude: ${value} m at the highest point. It only counts from 1,500 m.',
+			'feasibility.formula.altitudeMissing' => 'Altitude: this trail\'s track does not carry any. With no data, it changes nothing here.',
 			'feasibility.formula.heatApplied' => 'Summer departure: aerobic capacity drops by 7 %, that is measured.',
-			'feasibility.formula.seasonNoSource' => 'Spring or autumn departure: no published measurement allows an effect to be quantified. The season changes nothing here, for lack of a source.',
-			'feasibility.formula.seasonMissing' => 'No departure date is set: the season changes nothing here, for lack of data.',
-			'feasibility.formula.massNotCounted' => 'Neither your weight nor your pack\'s enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.',
-			'feasibility.formula.winterInvalid' => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.',
+			'feasibility.formula.seasonNoSource' => 'Spring or autumn departure: nothing is applied. Only summer carries a measurement, 7 % less aerobic capacity.',
+			'feasibility.formula.seasonMissing' => 'No departure date is set: this verdict holds for a departure outside summer. In summer it tightens by 7 %. The date is set in the Calendar.',
+			'feasibility.formula.massNotCounted' => 'Neither your weight nor your pack\'s enters this verdict: it measures what you have already held. At 65 or at 95 kg, the same verdict.',
+			'feasibility.formula.ageCounted' => 'Age, on the other hand, counts: it sets the reference distance of your walk test, and it lowers your level by one notch at 60, by two at 75. Aerobic capacity declines with age, that is measured.',
+			'feasibility.formula.winterInvalid' => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather and dry ground.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Rest days counted in this verdict: ${count}.',
-			'feasibility.formula.restDaysNone' => 'No rest day is set in your plan: add some and this figure moves.',
+			'feasibility.formula.restDaysNone' => 'No rest day in your plan: add some and this figure moves.',
 			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest is at ${worst}).',
-			'feasibility.formula.averageLoadInfo' => 'These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.',
-			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} days.',
-			'feasibility.formula.durationStatementInfo' => 'This is shown, it does not decide: no published measurement says after how many chained days a hiker drops off. Judge for yourself.',
+			'feasibility.formula.averageLoadInfo' => 'Far apart: the trek has one hard day. Close together: it is hard every day. This does not decide.',
+			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} walking days in a row.',
+			'feasibility.formula.durationStatementInfo' => 'This does not decide: no measurement says after how many chained days a hiker drops off. Judge for yourself.',
 			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'What weighs most on this day: ${factor}',
+			'feasibility.formula.verdictHowTitle' => 'How this verdict is computed',
+			'feasibility.formula.verdictHowStage' => ({required Object stage, required Object distance, required Object elevation}) => 'Your hardest day is ${stage}: ${distance} km and ${elevation} m of ascent.',
+			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'In energy-km: ${distance} + ${elevation} ÷ 42 = ${energy}.',
+			'feasibility.formula.verdictHowCeiling' => ({required Object capacity, required Object level}) => 'Your daily ceiling is ${capacity} energy-km (${level} level).',
+			'feasibility.formula.verdictHowRatio' => ({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Up to ${green} it is green, up to ${orange} orange, beyond that red.',
+			'feasibility.formula.verdictHowNoBlackBox' => 'This ratio is the whole calculation. Three works feed it: Minetti 2002 for the energy, MOVE 2026 for altitude, Linsell 2020 for heat.',
 			'feasibility.flow.title' => 'Are you ready for this trek?',
-			'feasibility.flow.intro' => 'Answer 3 quick steps: we work out your real level, then tell you if the trek is doable.',
+			'feasibility.flow.intro' => 'Three quick steps, and we tell you if this trek is doable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} steps done',
 			'feasibility.flow.stepProfile' => 'Your info sheet',
 			'feasibility.flow.stepProfileSub' => 'Age, height, weight (stays on your phone).',
 			'feasibility.flow.stepWalkTest' => '6-minute walk test',
-			'feasibility.flow.stepWalkTestSub' => 'Measures your current fitness — changes your result.',
+			'feasibility.flow.stepWalkTestSub' => 'Measures your current fitness: it moves your result.',
 			'feasibility.flow.stepPastHikes' => 'Your last 5 hikes',
 			'feasibility.flow.stepPastHikesSub' => 'What you have already handled: pace, distance, elevation.',
 			'feasibility.flow.optionalTag' => '(optional)',
 			'feasibility.flow.validate' => 'Confirm and see my result',
-			'feasibility.flow.partialNotice' => 'Provisional result: the 6-minute walk test has not been done. Your level is estimated by default; take the test to refine the verdict.',
+			'feasibility.flow.partialNotice' => 'Provisional result: the walk test has not been done, your level is estimated. Take the test for a real verdict.',
 			'feasibility.flow.missingTitle' => 'Some information is still missing',
-			'feasibility.flow.missingIntro' => 'The verdict only appears once every required criterion is filled in. Still to complete:',
+			'feasibility.flow.missingIntro' => 'Still to complete:',
 			'feasibility.flow.missingProfile' => 'Your full info sheet: age, height and weight',
 			'feasibility.flow.missingPastHikes' => 'At least one of your 5 latest hikes',
-			'feasibility.flow.missingWalkTestNote' => 'The 6-minute test stays optional: without it, your result is shown as provisional.',
-			'feasibility.flow.hintBlocked' => 'Complete the criteria above: that is what decides your verdict.',
+			'feasibility.flow.missingWalkTestNote' => 'The 6-minute test stays optional: without it, your result is provisional.',
+			'feasibility.flow.hintBlocked' => 'Complete the criteria above.',
 			'feasibility.flow.hintReady' => 'All set: you can see your result.',
 			'tips.carouselTitle' => 'Trek tips',
 			'tips.allCategories' => 'All',
@@ -4736,7 +5185,7 @@ extension on TranslationsEn {
 			'tips.seasons.autumn' => 'Autumn',
 			'tips.altitude' => 'Min. altitude',
 			'tips.screenTitle' => 'Advice sheets',
-			'tips.screenIntro' => 'Everything to make your hike a success',
+			'tips.screenIntro' => 'Preparation, gear, safety, health.',
 			'tips.followUs' => 'Follow us:',
 			'tips.viewOnFacebook' => 'View on Facebook',
 			'tips.viewOnInstagram' => 'Instagram',
@@ -4756,11 +5205,61 @@ extension on TranslationsEn {
 			'noData.offlineHint' => 'Data will be available offline for your hike.',
 			'noData.browseCta' => 'Browse trails',
 			'catalog.title' => 'Trail catalog',
-			'catalog.enter' => 'Enter',
+			'catalog.prepare' => 'Prepare',
 			'catalog.mustDownload' => 'Download this trail to explore it.',
 			'catalog.emptyTitle' => 'No trail available',
 			'catalog.emptySubtitle' => 'No trail is offered in the catalog yet.',
-			'catalog.a11y.enterButton' => ({required Object nom}) => 'Enter trail ${nom}',
+			'catalog.a11y.prepareButton' => ({required Object nom}) => 'Prepare trail ${nom}',
+			'catalog.a11y.buyButton' => ({required Object nom}) => 'Buy trail ${nom}',
+			'catalog.a11y.freeTrailBadge' => 'Free trail',
+			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Free demo',
+			'catalog.freeBadge' => 'Free',
+			'catalog.freeTrailTagline' => ({required Object etapes}) => 'The first ${etapes} stages, on us. Everything works: planning, start, navigation, journal, finish.',
+			'catalog.loadFailedTitle' => 'Trail list unavailable',
+			'catalog.loadFailedSubtitle' => 'The trail list could not be retrieved right now. Trails you already downloaded remain available offline.',
+			'catalog.loadFailedRetry' => 'Try again',
+			'catalog.staleNoticeOffline' => 'Offline: these are the trails you already downloaded. The full list will refresh once you are back online.',
+			'demo.matiereFabriquee' => 'Made-up example for the demo: these figures and notes are not yours, and nothing is saved.',
+			'demo.carnetNoteDepart' => ({required Object nom}) => 'Day one: ${nom}. The pack feels heavy, but the trail is ours.',
+			'demo.carnetNoteMontee' => ({required Object nom}) => '${nom}. Long climb in the cool of the morning, a break halfway up.',
+			'demo.carnetNoteVillage' => ({required Object nom}) => '${nom}. Arrived in the early afternoon, a quiet evening at the stop.',
+			'demo.carnetNoteArrivee' => ({required Object nom}) => '${nom}. Last stage, and that is that. My legs will remember it.',
+			'demo.bandeau' => 'DEMO MODE',
+			'demo.quitter' => 'Exit',
+			'demo.boutonTitre' => 'Try the demo',
+			'demo.boutonSous' => 'The whole app. Nothing is saved.',
+			'demo.rienNeCompte' => 'You are in demo mode: nothing is saved. No stages, no diploma, no purchase.',
+			'demo.simulerEtape' => 'Simulate the next stage',
+			'demo.simulerFin' => 'Simulate the finish',
+			'demo.simulerRelancer' => 'Restart the demo',
+			'demo.marcheSimulee' => ({required Object facteur}) => 'Simulated walk — time sped up ×${facteur}',
+			'demo.arriveeTitre' => 'Well done, you made it!',
+			'demo.arriveeTexte' => 'You completed the trail in demo mode. Nothing was saved.',
+			'demo.arriveeChiffres' => 'Your demo',
+			'demo.arriveeFermer' => 'Close',
+			'demo.sortieTitre' => 'End of demo',
+			'demo.sortieEnTeteCatalogue' => 'The demo stays at the top of the trail list.',
+			'demo.sortieDansMonCompte' => 'The button leaves the catalogue. The demo stays in “My account”.',
+			'demo.cacherLabel' => 'Hide demo mode',
+			'demo.sortieConfirmer' => 'Leave the demo',
+			'demo.sortieAnnuler' => 'Continue the demo',
+			'demo.indisponible' => 'Not available in demo',
+			'demo.departSimule' => 'In demo, starting launches a simulated hike: nothing is saved.',
+			'demo.compteTitre' => 'Demo mode',
+			'demo.compteRelancer' => 'See the demo again',
+			'demo.compteRelancerSous' => 'The whole app. Nothing is saved.',
+			'demo.compteReafficher' => 'Show the demo button in the catalogue',
+			'demo.compteReafficherSous' => 'The button comes back to the top of the trail list',
+			'demo.collecteTitre' => 'What the calculation used',
+			'demo.collecteIntro' => 'The information used to work out feasibility.',
+			'demo.collecteProfil' => 'Your profile',
+			'demo.collecteForme' => 'Your fitness',
+			'demo.collecteExperience' => 'Your experience',
+			'demo.collecteSaison' => 'Departure season',
+			'demo.collecteSentier' => 'The trail',
+			'demo.collecteJours' => 'Number of days',
+			'demo.collecteAbsent' => 'Not provided',
+			'demo.sortieFaite' => 'You have left the demo.',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
@@ -4770,6 +5269,8 @@ extension on TranslationsEn {
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Invalid link',
 			'follow.invalidLinkHint' => 'This tracking link does not exist or has expired.',
+			_ => null,
+		} ?? switch (path) {
 			'cloud.localModeTitle' => 'Local mode',
 			'cloud.localModeBody' => 'This installation is not connected to a cloud service: live tracking, online backup and account are disabled. Your data stays on this device.',
 			'cloud.statusSection' => 'Cloud',
@@ -4790,20 +5291,71 @@ extension on TranslationsEn {
 			'onboarding.recoveryNudge' => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.',
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
-			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
+			'monetization.paywallBody' => 'Planning is free, with ads. Walking this trek is paid in steps, taken from your account. You fill your account one step at a time, with a pack, or with the subscription.',
 			'monetization.featureMap' => 'Offline map + GPS + live tracking',
 			'monetization.featureJournal' => 'Full trek journal',
 			'monetization.featureDiploma' => 'End-of-trek diploma',
 			'monetization.featureFollowers' => '2 free followers',
 			'monetization.featureNoAds' => 'Zero ads',
-			'monetization.buyCta' => 'Unlock this trek',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
-			'monetization.rewardedCta' => 'Watch an ad (24 h ad-free)',
+			'monetization.buyCta' => 'Buy',
+			'monetization.buyCtaWithSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'Buy — ${n} step', other: 'Buy — ${n} steps', ), 
+			'monetization.complementTitle' => 'You are short of steps',
+			'monetization.complementBody' => 'You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.',
+			'monetization.complementDoorExact' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'Buy the complement — ${n} step', other: 'Buy the complement — ${n} steps', ), 
+			'monetization.complementDoorPack' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'Get a pack — ${n} step', other: 'Get a pack — ${n} steps', ), 
+			'monetization.complementExactPending' => 'Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.',
+			'monetization.rewardedCta' => 'A day without ads — watch a video',
 			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
 			'monetization.rewardedUnavailable' => 'No video available right now.',
 			'monetization.walletTitle' => 'Step account',
 			'monetization.walletSubtitle' => 'Your steps unlock hikes',
 			'monetization.walletUnit' => 'steps',
+			'monetization.storeUnavailable' => 'Payment is not available right now.',
+			'monetization.restoreUnavailable' => 'Cannot restore: payment is not available right now.',
+			'monetization.restoreRequested' => 'Restore requested. Your purchases will reappear shortly.',
+			'monetization.restoreCta' => 'Restore my purchases',
+			'monetization.restoreWhatItCovers' => 'Restoring brings back your subscription and your top-ups. Hikes unlocked with your steps are stored on this device.',
+			'monetization.rechargeTitle' => 'Top up my step account',
+			'monetization.rechargeSubtitle' => 'Steps unlock hikes. They are yours for life.',
+			'monetization.rechargeBalance' => 'Current balance',
+			'monetization.packSteps' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: '${n} step', other: '${n} steps', ), 
+			'monetization.rechargeCta' => 'Top up',
+			'monetization.subscriptionTitle' => 'Ad-free subscription',
+			'monetization.subscriptionSubtitle' => 'No ads anywhere, as long as the subscription is active.',
+			'monetization.subscriptionIncludesNoAds' => 'No ads, across the whole app',
+			'monetization.subscriptionIncludesAllowance' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: '${n} step credited every month', other: '${n} steps credited every month', ), 
+			'monetization.subscriptionExcludes' => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.',
+			'monetization.subscriptionCta' => 'Subscribe',
+			'monetization.subscriptionActive' => 'Subscription active',
+			'monetization.subscriptionActiveUntil' => ({required Object date}) => 'Active until ${date}',
+			'monetization.subscriptionInactive' => 'No active subscription',
+			'monetization.subscriptionAllowancePending' => 'The allowance amount has not been set yet.',
+			'monetization.realizationLockedTitle' => 'This hike is not unlocked',
+			'monetization.realizationLockedBody' => 'Hiking a route requires unlocking it first. Preparing stays free.',
+			'monetization.buyOutcomeOwned' => 'Hike unlocked. Enjoy the trail!',
+			'monetization.buyOutcomeAlreadyOwned' => 'This hike is already unlocked.',
+			'monetization.buyOutcomeOffline' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n, one: 'You are ${n} step short and payment requires a connection. Nothing was charged.', other: 'You are ${n} steps short and payment requires a connection. Nothing was charged.', ), 
+			'monetization.buyOutcomeFailed' => 'The payment did not go through. Nothing was charged.',
+			'monetization.buyOutcomeUnknownPrice' => 'This trail is not on sale right now. Nothing was charged.',
+			'monetization.buyOutcomeDemo' => 'You are in demo mode: no purchase is possible, and nothing was charged.',
+			'monetization.subscriptionPrice' => ({required Object price}) => '${price} per month',
+			'monetization.subscriptionAllowanceForLife' => 'Credited steps are yours for life, even if you stop the subscription.',
+			'monetization.cancelCta' => 'Stop my subscription',
+			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited steps stay yours.',
+			'monetization.cancelStoreUnavailable' => 'The store could not be opened. Open it yourself, then go to Subscriptions.',
+			'monetization.adsBadgePub' => 'With ads',
+			'monetization.adsBadgeAbonne' => 'Subscriber — ad-free',
+			'monetization.adsBadgeAchete' => 'Purchased — ad-free',
+			'monetization.adsBadgeVideo' => ({required Object reste}) => 'Ad-free — ${reste}',
+			'monetization.adsA11yPub' => 'An ad will be shown when preparing',
+			'monetization.adsResteHeures' => ({required Object heures}) => '${heures} h left',
+			'monetization.adsResteMinutes' => ({required Object minutes}) => '${minutes} min left',
+			'monetization.removeAdsCta' => 'Remove ads',
+			'monetization.removeAdsTitle' => 'Remove advertising',
+			'monetization.removeAdsSubscribe' => 'Subscribe',
+			'monetization.removeAdsSubscribeBody' => 'Ad-free everywhere, as long as the subscription is active.',
+			'monetization.removeAdsWatch' => 'Watch a video',
+			'monetization.removeAdsWatchBody' => 'Ad-free for 24 h. Nothing else: no steps, no hike unlocked.',
 			'signalement.title' => 'Report',
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
@@ -4853,7 +5405,7 @@ extension on TranslationsEn {
 			'training.paywallTitle' => 'Personalised training plan',
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Included in the « ${trail} » pack.',
 			'training.paywallSubtitle' => 'Plan tailored to your profile and departure date.',
-			'training.unlock' => 'Unlock',
+			'training.unlock' => 'Buy',
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'A progressive ${weeks}-week plan to tackle the ${km} km and about ${elevation} m of elevation gain.',
 			'training.countdown' => ({required Object days}) => 'Departure in ${days} days',
 			'training.planOverWeeks' => ({required Object n}) => '${n}-week plan',
@@ -4862,7 +5414,16 @@ extension on TranslationsEn {
 			'training.inviteSetDate' => 'Set your departure date in the Calendar to enable the countdown.',
 			'training.inviteFillProfile' => 'Fill in your info sheet to tailor the plan to your profile.',
 			'training.cautionVerdictNotice' => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.',
-			'training.departureTooClose' => ({required Object days}) => '${days} days left: plan condensed to the available time.',
+			'training.freqPerWeek' => ({required Object n}) => '${n}× per week',
+			'training.freqOncePerPhase' => 'once during the phase',
+			'training.freqFinalWeek' => 'the final week only',
+			'training.freqSourceNotice' => 'The frequencies are not in-house numbers: 3 endurance sessions and 2 strength sessions a week, 2 rest days, after REI (Conditioning for Backpacking), Terres d\'Aventure and the 2020 WHO guidelines.',
+			'training.noDateWhy' => 'Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.',
+			'training.tooShortTitle' => 'No preparation offered',
+			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'There are ${days} days left before departure, less than ${weeks} weeks. No physical preparation is offered to you: below ${weeks} weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This ${weeks}-week floor is the one trek operators use — Terres d\'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload.',
+			'training.demoBridledTitle' => 'Trial version',
+			'training.demoBridledBody' => 'The first phase is playable for pretend: your ticks are not kept. The next phases open with the hike.',
+			'training.demoLockedPhase' => 'Unlock the hike to see the sessions',
 			'eta.title' => 'Estimated time',
 			'eta.toNextWaypoint' => 'Next point',
 			'eta.toStageEnd' => 'Stage end',
@@ -4896,8 +5457,6 @@ extension on TranslationsEn {
 			'social.activityDefi' => 'made progress on a challenge',
 			'gamification.galleryTitle' => 'My badges',
 			'gamification.obtained' => 'Earned',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.locked' => 'Locked',
 			'gamification.tierDebutant' => 'Beginner',
 			'gamification.tierExpert' => 'Expert',
@@ -4967,44 +5526,50 @@ extension on TranslationsEn {
 			'waypoints.contribution.savedPendingSync' => 'It will be published when the network is back.',
 			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} pending synchronization',
 			'waypoints.contribution.close' => 'Close',
-			'waypoints.contribution.emptyTitle' => 'Please enter a title for the waypoint.',
-			'waypoints.contribution.emptyComment' => 'Please enter your observation.',
+			'waypoints.contribution.emptyTitle' => 'Enter a title for the waypoint.',
+			'waypoints.contribution.emptyComment' => 'Enter your observation.',
 			'waypoints.contribution.noLocation' => 'GPS position unavailable. Try again under open sky.',
 			'waypoints.contribution.error' => 'Cannot save right now.',
-			'packs.title' => 'Trail packs',
-			'packs.subtitle' => 'Download a pack to hike 100% offline.',
-			'packs.alaCarteNote' => 'A la carte: buy only the pack you need, no subscription.',
-			'packs.size' => ({required Object mo}) => '${mo} MB',
-			'packs.states.notDownloaded' => 'Not downloaded',
-			'packs.states.downloaded' => 'Downloaded',
-			'packs.states.updateAvailable' => 'Update available',
-			'packs.actions.download' => 'Download',
-			'packs.actions.update' => 'Update',
-			'packs.actions.delete' => 'Delete',
-			'packs.actions.retry' => 'Retry',
-			'packs.actions.buy' => 'Buy this pack',
-			'packs.actions.buyWithPrice' => ({required Object price}) => 'Buy this pack — ${price}',
-			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Downloading… ${done}/${total}',
-			'packs.progress.verifying' => 'Verifying integrity…',
-			'packs.progress.completed' => 'Pack ready offline',
-			'packs.progress.error' => 'Download failed',
-			'packs.delete.confirmTitle' => 'Delete this pack?',
-			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
-			'packs.delete.cancel' => 'Cancel',
-			'packs.delete.confirm' => 'Delete',
-			'packs.delete.freed' => 'Space freed.',
-			'packs.empty' => 'No pack available for this trail.',
-			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
-			'packs.a11y.downloadButton' => ({required Object nom}) => 'Download pack ${nom}',
-			'packs.a11y.deleteButton' => ({required Object nom}) => 'Delete pack ${nom}',
-			'packs.types.nord.nom' => 'Mare a Mare North',
-			'packs.types.nord.description' => 'The northern half of the trail, offline.',
-			'packs.types.sud.nom' => 'Mare a Mare South',
-			'packs.types.sud.description' => 'The southern half of the trail, offline.',
-			'packs.types.complet.nom' => 'Mare a Mare Full',
-			'packs.types.complet.description' => 'The whole trail, offline.',
-			'packs.types.mam.nom' => 'Mare a Mare',
-			'packs.types.mam.description' => 'The Mare a Mare trail, offline.',
+			'cartesHorsLigne.title' => 'Offline maps',
+			'cartesHorsLigne.intro' => 'One single download: the maps for the whole route, so you can walk without a network.',
+			'cartesHorsLigne.unSeulGeste' => 'The whole route at once, no parts to choose from.',
+			'cartesHorsLigne.poids' => ({required Object mo}) => '${mo} MB to download',
+			'cartesHorsLigne.poidsTotal' => ({required Object mo}) => 'Total size for the route: ${mo} MB',
+			'cartesHorsLigne.reprise' => ({required Object mo}) => '${mo} MB are already on the phone: resuming will only download the rest.',
+			'cartesHorsLigne.telecharger' => 'DOWNLOAD THE MAPS FOR THE ROUTE',
+			'cartesHorsLigne.reprendre' => 'RESUME THE DOWNLOAD',
+			'cartesHorsLigne.reessayer' => 'TRY AGAIN',
+			'cartesHorsLigne.annuler' => 'CANCEL',
+			'cartesHorsLigne.supprimer' => 'DELETE THE MAPS',
+			'cartesHorsLigne.enCours' => ({required Object recus, required Object total}) => '${recus} MB of ${total} MB',
+			'cartesHorsLigne.verification' => 'Checking the map',
+			'cartesHorsLigne.pretes' => 'Maps ready offline',
+			'cartesHorsLigne.pretesPoids' => ({required Object mo}) => '${mo} MB on the phone',
+			'cartesHorsLigne.libere' => 'Maps deleted, space freed.',
+			'cartesHorsLigne.supprimerTitre' => 'Delete the maps?',
+			'cartesHorsLigne.supprimerCorps' => 'The maps will be removed from the phone to free up space. You can download them again.',
+			'cartesHorsLigne.supprimerAnnuler' => 'Cancel',
+			'cartesHorsLigne.supprimerConfirmer' => 'Delete',
+			'cartesHorsLigne.horsWifiTitre' => ({required Object mo}) => '${mo} MB on your mobile data?',
+			'cartesHorsLigne.horsWifiCorps' => 'You are not on Wi-Fi. A route\'s maps can weigh heavily on a mobile plan.',
+			'cartesHorsLigne.horsWifiAttendre' => 'Wait for Wi-Fi',
+			'cartesHorsLigne.horsWifiContinuer' => 'Download anyway',
+			'cartesHorsLigne.refus.niveauInsuffisant' => 'The maps come down when you prepare the route to actually walk it.',
+			'cartesHorsLigne.refus.sentierInconnu' => 'This route is not on your phone yet. Download it from the trail list.',
+			'cartesHorsLigne.refus.aucuneCartePubliee' => 'No offline map has been published for this route yet. The track itself is still available.',
+			'cartesHorsLigne.refus.droitDeRealiserManquant' => 'Offline maps are part of the route you buy.',
+			'cartesHorsLigne.refus.horsLigne' => 'Without a network a map cannot be downloaded. Reconnect, then try again.',
+			'cartesHorsLigne.refus.stockageIndisponible' => 'The phone did not answer. Try again; if it persists, restart it.',
+			'cartesHorsLigne.echec.reseau' => 'The connection dropped. What is already downloaded is kept: resume whenever you like.',
+			'cartesHorsLigne.echec.empreinteInvalide' => 'The map received does not match the published one: it was discarded. Try again.',
+			'cartesHorsLigne.echec.tailleInattendue' => 'The map received is incomplete: it was discarded. Try again.',
+			'cartesHorsLigne.echec.plusDePlace' => 'There is no space left on the phone. Free up some space, then resume.',
+			'cartesHorsLigne.echec.ecritureImpossible' => 'Writing to the phone failed. What is downloaded is kept: resume.',
+			'cartesHorsLigne.echec.stockageIndisponible' => 'The phone did not give up its storage. Try again; if it persists, restart it.',
+			'cartesHorsLigne.echec.annulee' => 'Download cancelled. What is already downloaded is kept.',
+			'cartesHorsLigne.demoIndisponible' => 'Downloading the maps is not available during the demo.',
+			'cartesHorsLigne.a11y.bouton' => 'Download the maps for the whole route',
+			'cartesHorsLigne.a11y.progression' => ({required Object pourcent}) => 'Downloading maps: ${pourcent} %',
 			'guides.title' => 'Town guides',
 			'guides.subtitle' => 'Practical info for towns and villages, available offline.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} practical sections',
@@ -5035,11 +5600,22 @@ extension on TranslationsEn {
 			'health.field.treatments' => 'Current treatments',
 			'health.field.doctor' => 'Family doctor',
 			'health.field.insurance' => 'Insurance no. / health cover',
+			'health.field.fullName' => 'First and last name',
+			'health.field.birthDate' => 'Date of birth',
+			'health.field.birthDateClear' => 'Clear date of birth',
+			'health.field.address' => 'Address',
+			'health.field.conditions' => 'Medical conditions and history',
+			'health.field.organDonor' => 'Organ donation',
 			'health.hint.bloodType' => 'e.g. A+, O-, AB+',
 			'health.hint.allergies' => 'e.g. penicillin, peanuts',
 			'health.hint.treatments' => 'e.g. Levothyrox 50 mg/day',
 			'health.hint.doctor' => 'e.g. Dr Smith +44 20 xxxx xxxx',
 			'health.hint.insurance' => 'e.g. European health card',
+			'health.hint.fullName' => 'e.g. Christophe Mosconi',
+			'health.hint.birthDate' => 'Tap to choose',
+			'health.hint.address' => 'e.g. 12 Lilac Street, 20000 Ajaccio',
+			'health.hint.conditions' => 'e.g. type 1 diabetes, epilepsy, blood thinner',
+			'health.hint.organDonor' => 'Make your choice',
 			'health.error.bloodType' => 'Invalid blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Save',
 			'health.saving' => 'Saving…',
@@ -5058,8 +5634,51 @@ extension on TranslationsEn {
 			'health.delete.done' => 'Health card deleted.',
 			'health.consent.purpose' => 'This info helps rescuers assist you. It stays on your phone, never sent over the internet.',
 			'health.consent.manage' => 'Manage my health consent',
+			'health.advice.title' => 'How to use it on the trail',
+			'health.advice.whereToFind' => 'Where to find it when you are down: your card lives under Prepare, the « Medical card » tile, and it opens with no network. Show it to your walking partners before you leave — the day you can no longer speak, they are the ones who will open your phone.',
+			'health.advice.showToRescue' => 'How to show it to rescuers: open this screen and hand over the phone. Who you are, who to call, then allergies, treatments, medical history and blood group — in the order a rescuer reads. Nothing is sent over the internet: what you show is exactly what is written here.',
+			'health.advice.phoneCard' => 'Copy it into your phone\'s own medical ID: it shows on the lock screen, without your passcode. A rescuer who finds your phone gets there in two taps, even without knowing this app.',
+			'health.advice.paper' => 'Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.',
+			'health.advice.ackButton' => 'I have read this advice',
+			'health.advice.ackDone' => 'Advice read',
+			'health.section.identity' => 'Who you are',
+			'health.section.identityWhy' => 'The first thing a rescuer reads: with no name, they treat a stranger and can call nobody.',
+			'health.section.contacts' => 'Who to call',
+			'health.section.contactsWhy' => 'What rescuers look for right after identifying you. Three people at most: beyond that, none gets called.',
+			'health.section.vital' => 'What treats you',
+			'health.section.vitalWhy' => 'In the order an emergency doctor asks: first what can kill you during treatment, then what the hospital needs.',
+			'health.section.admin' => 'Paperwork',
+			'health.section.adminWhy' => 'What gets copied at the hospital desk, not what is read in the rain.',
+			'health.bloodTypeUnknown' => 'I don\'t know',
+			'health.bloodTypeLegacy' => ({required Object valeur}) => 'Your previous entry « ${valeur} » is not a recognised blood group. Choose from the list.',
+			'health.organDonor.yes' => 'Donor',
+			'health.organDonor.no' => 'Opted out',
+			'health.organDonor.unknown' => 'I have not decided',
+			'health.contacts.add' => 'Add someone to call',
+			'health.contacts.name' => 'Person\'s name',
+			'health.contacts.nameHint' => 'e.g. Marie, my sister',
+			'health.contacts.phone' => 'Phone',
+			'health.contacts.phoneHint' => 'e.g. +33 6 12 34 56 78',
+			'health.contacts.remove' => 'Remove this person',
+			'health.contacts.errorName' => 'Give a name, otherwise rescuers do not know who they are calling.',
+			'health.contacts.errorPhone' => 'Give a number, otherwise this name is useless.',
+			'health.cards.vitale' => 'Photo of the health insurance card',
+			'health.cards.mutuelle' => 'Photo of the top-up insurance card',
+			'health.cards.take' => 'Take a photo',
+			'health.cards.retake' => 'Retake the photo',
+			'health.cards.pick' => 'Pick an image',
+			'health.cards.remove' => 'Remove the photo',
+			'health.cards.stored' => 'Photo stored on this phone. It is sent nowhere and goes away with the card when you erase it.',
+			'health.cards.explain' => 'The photo stays on this phone, in the same protected folder as the rest of the card.',
+			'health.cards.permissionRefused' => 'Camera access refused. The card works perfectly well without it.',
+			'health.cards.failed' => 'The photo could not be saved.',
+			'health.phoneCard.title' => 'Copy your card into the phone\'s own one',
+			'health.phoneCard.why' => 'It is the only screen a rescuer reaches without your passcode, on iPhone as on Android. Phone settings, Emergency or Health section: name, blood group, allergies, medication and people to call.',
+			'health.phoneCard.done' => 'Done, my card is in the phone too',
+			'health.localOnlyPriceTitle' => 'Switching phones means typing it in again',
+			'health.localOnlyPrice' => 'If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here.',
 			'trailSelection.title' => 'Switch trail',
-			'trailSelection.subtitle' => 'Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.',
+			'trailSelection.subtitle' => 'Pick the trail to explore. The whole app (map, stages, points of interest, offline maps, guides) follows your selection.',
 			'trailSelection.current' => 'Active trail',
 			'trailSelection.select' => 'Choose this trail',
 			'trailSelection.selected' => 'Selected trail',
@@ -5072,13 +5691,15 @@ extension on TranslationsEn {
 			'consent.settingsTitle' => 'Privacy and consent',
 			'consent.settingsIntro' => 'Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.',
 			'consent.settingsEntry' => 'Privacy and consent',
-			'consent.settingsEntryDesc' => 'Manage my permissions (location, sharing, health)',
+			'consent.settingsEntryDesc' => 'Manage my permissions (location, sharing, advertising, health)',
 			'consent.purposes.locationNavigation' => 'Personal navigation',
 			'consent.purposes.locationNavigationDesc' => 'Use your location for the map and to track your stage. Stays on your device.',
 			'consent.purposes.socialSharing' => 'Social sharing',
 			'consent.purposes.socialSharingDesc' => 'Appear in leaderboards and the community feed, under a pseudonym.',
 			'consent.purposes.publicReporting' => 'Public reporting',
 			'consent.purposes.publicReportingDesc' => 'Post reports (water, hazard, conditions) visible to other hikers.',
+			'consent.purposes.advertising' => 'Personalised advertising',
+			'consent.purposes.advertisingDesc' => 'Tailor ads to your interests. Without this permission the free app still shows ads, but they are not targeted and no targeting data leaves your device.',
 			'consent.purposes.healthData' => 'Health data',
 			'consent.purposes.healthDataDesc' => 'Read your heart rate (chest strap or health app) to enrich your effort tracking.',
 			'consent.healthBadge' => 'Sensitive data',
@@ -5091,14 +5712,17 @@ extension on TranslationsEn {
 			'consent.notDecided' => 'Awaiting your choice',
 			'consent.acceptSelected' => 'Confirm my choices',
 			'consent.declineAll' => 'Decline all',
+			'consent.declineAllNote' => 'Decline all withdraws your five permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.',
+			'consent.declineAllCancel' => 'Cancel',
 			'consent.continueLabel' => 'Continue',
 			'consent.privacyPolicyLink' => 'Read the privacy policy',
+			'consent.adsPrivacyOptions' => 'Advertising privacy options',
 			'consent.reviewNeeded' => 'Our policy has changed: please review your choices.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, currently ${state}',
 			'consent.a11y.healthSection' => 'Health data section, reinforced consent',
 			'consent.a11y.policyButton' => 'Open the privacy policy',
 			'consent.healthDataMorphoNote' => 'Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.',
-			'consent.healthBackupNote' => 'Without this permission, your medical information sheet is not backed up: you will not be able to retrieve it on another phone, nor show it to rescuers from a new device.',
+			'consent.healthBackupNote' => 'This permission does not cover your medical card: that one is never backed up, neither by us nor anywhere else, with or without permission. If you switch phones you will type it in again. That is the price of keeping it to yourself.',
 			'erasure.section' => 'My data',
 			'erasure.entry' => 'Erase my data',
 			'erasure.entryDesc' => 'Permanently delete what the app keeps about you',
@@ -5130,8 +5754,8 @@ extension on TranslationsEn {
 			'moderation.submit' => 'Send report',
 			'moderation.submitting' => 'Sending…',
 			'moderation.sent' => 'Report sent. Thank you, a moderator will review it.',
-			'moderation.errorRequired' => 'Please fill in the reason, your email and the good-faith declaration.',
-			'moderation.errorGeneric' => 'The report could not be sent. Please try again.',
+			'moderation.errorRequired' => 'Fill in the reason, your email and the good-faith declaration.',
+			'moderation.errorGeneric' => 'The report could not be sent. Try again.',
 			'moderation.cancel' => 'Cancel',
 			'moderation.reasonsTitle' => 'Why was this content restricted?',
 			'moderation.reasonsIntro' => 'In accordance with article 17, here is the reason for the moderation decision regarding your content.',
@@ -5147,7 +5771,7 @@ extension on TranslationsEn {
 			'moderation.complaintExposeHint' => 'Describe the reasons for your challenge.',
 			'moderation.complaintSubmit' => 'Send challenge',
 			'moderation.complaintSent' => 'Challenge recorded. It will be reviewed.',
-			'moderation.complaintEmpty' => 'Please explain your challenge.',
+			'moderation.complaintEmpty' => 'Explain your challenge.',
 			'moderation.a11y.reportForm' => 'Content reporting form',
 			'moderation.a11y.reasonSelector' => 'Report reason selector',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
@@ -5159,6 +5783,8 @@ extension on TranslationsEn {
 			'recap.lockedTitle' => 'Available at the end of the trek',
 			'recap.lockedMessage' => 'Finish or abandon your route to view your adventure recap.',
 			'recap.finisherTitle' => 'Congratulations!',
+			_ => null,
+		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'You completed your route',
 			'recap.partialTitle' => 'Your partial route',
 			'recap.partialSubtitle' => 'Your adventure is still saved',
@@ -5168,7 +5794,7 @@ extension on TranslationsEn {
 			'recap.stages' => '{done} / {total} stages walked',
 			'recap.distance' => '{km} km travelled',
 			'recap.elevation' => '{meters} m of elevation gain',
-			'recap.duration' => '{days} days',
+			'recap.duration' => '{days} days in total, walking and rest included',
 			'recap.dates' => 'From {start} to {end}',
 			'recap.viewDiploma' => 'View my diploma',
 			'recap.viewJournal' => 'View my journal',
@@ -5190,14 +5816,10 @@ extension on TranslationsEn {
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Help',
 			'programme.duration.label' => 'Number of days',
-			'programme.duration.days' => '{count} d',
-			'programme.duration.daysWithRest' => '{total} d (incl. {rest} rest)',
-			'programme.duration.splitNote' => 'More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.',
-			'programme.duration.splitExhausted' => 'Every day is already cut as short as it goes: the slider will not ease the verdict any further.',
-			'programme.duration.difficulty.comfortable' => 'Comfortable',
-			'programme.duration.difficulty.standard' => 'Standard',
-			'programme.duration.difficulty.sporty' => 'Sporty',
-			'programme.duration.difficulty.demanding' => 'Very demanding',
+			'programme.duration.daysWithRest' => '{total} d in total (incl. {rest} rest)',
+			'programme.duration.splitNote' => 'More days = rest days. They make no day easier.',
+			'programme.duration.splitExhausted' => 'No way to spread it further: every stage already has its own day.',
+			'programme.duration.daysTotal' => '{count} d in total',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'Ascent',
 			'programme.stats.days' => 'Days',
@@ -5210,7 +5832,7 @@ extension on TranslationsEn {
 			'programme.restDay' => 'Rest day',
 			'programme.restDayLabel' => 'R',
 			'programme.actions.merge' => 'Merge',
-			'programme.actions.split' => 'Split',
+			'programme.actions.split' => 'Ungroup',
 			'programme.actions.rest' => 'Rest',
 			'programme.actions.removeRest' => 'Remove this rest day',
 			'programme.mergeBlocked.noNext' => 'No next day',
@@ -5235,14 +5857,13 @@ extension on TranslationsEn {
 			'programme.info.reorder.body' => 'Drag the handle on the right to change the day order.',
 			'programme.info.rest.title' => 'Rest day',
 			'programme.info.rest.body' => 'Insert a recovery day between two stages.',
-			'programme.info.mergeSplit.title' => 'Merge / Split',
-			'programme.info.mergeSplit.body' => 'Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep.',
+			'programme.info.mergeSplit.title' => 'Merge / Ungroup',
+			'programme.info.mergeSplit.body' => 'Merge joins two days into one. Ungroup gives each stage its own day back. A stage stays whole: it ends where there is a roof.',
 			'programme.info.colors.title' => 'Colours',
 			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
 			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
 			'programme.info.close' => 'Got it!',
-			'programme.splitBlocked.single' => 'Cannot split: there is nothing to cut on this day.',
-			'programme.splitBlocked.portion' => 'Cannot split: this stage is already cut in two.',
+			'programme.splitBlocked.single' => 'Cannot ungroup: this day carries a single stage, there is nothing to ungroup.',
 			'programme.splitBlocked.locked' => 'Day already walked: it can no longer be changed',
 			'programme.reorderBlocked' => 'Trek started: the order of stages can no longer change',
 			'programme.inTrek.title' => 'Adjust the route',
@@ -5259,7 +5880,7 @@ extension on TranslationsEn {
 			'programme.inTrek.info.done.title' => 'Days already walked',
 			'programme.inTrek.info.done.body' => 'They are greyed out and locked: what is done is done.',
 			'programme.inTrek.info.upcoming.title' => 'Upcoming days',
-			'programme.inTrek.info.upcoming.body' => 'Merge, split or add a rest day on the rest of your route.',
+			'programme.inTrek.info.upcoming.body' => 'Merge, ungroup or add a rest day on the rest of your route.',
 			'programme.inTrek.info.order.title' => 'Stage order',
 			'programme.inTrek.info.order.body' => 'The order never changes once you are on the trail: stages already under way are not swapped.',
 			'programme.inTrek.info.close' => 'Got it!',
@@ -5278,7 +5899,7 @@ extension on TranslationsEn {
 			'calendar.adjustStages' => 'ADJUST STAGES',
 			'calendar.stageSingular' => 'Stage {n}',
 			'calendar.stagesPlural' => 'Stages {list}',
-			'calendar.splitStages' => 'Split the stages',
+			'calendar.splitStages' => 'Ungroup the day',
 			'calendar.mergeWithNext' => 'Merge with the next day',
 			'calendar.weekdays.mon' => 'Mon',
 			'calendar.weekdays.tue' => 'Tue',
@@ -5336,6 +5957,7 @@ extension on TranslationsEn {
 			'transport.website' => 'Website',
 			'transport.a11y.call' => ({required Object label}) => 'Call ${label}',
 			'transport.a11y.website' => 'Open website',
+			'transport.noneForTrail' => 'No transport information for this trail.',
 			'fireRisk.title' => 'Fire risk',
 			'fireRisk.refresh' => 'Refresh',
 			'fireRisk.refreshed' => 'Data updated',
@@ -5375,6 +5997,10 @@ extension on TranslationsEn {
 			'fireRisk.a11y.call' => ({required Object label, required Object number}) => 'Call ${label} at ${number}',
 			'fireRisk.a11y.decree' => 'Open prefectural orders',
 			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Risk level ${level} out of 5',
+			'fireRisk.refreshNothing' => 'Nothing to update right now.',
+			'fireRisk.refreshPartial' => ({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).',
+			'fireRisk.refreshedAt' => ({required Object date}) => 'Data updated (${date})',
+			'fireRisk.stagePlace' => ({required Object place}) => 'Arrival: ${place}',
 			'shop.title' => 'Supplies',
 			'shop.filterAll' => 'All',
 			'shop.typeEpicerie' => 'Grocery',
@@ -5397,6 +6023,7 @@ extension on TranslationsEn {
 			'shop.a11y.openDetail' => ({required Object name}) => 'View details for ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Call ${label}',
 			'shop.a11y.website' => 'Open website',
+			'shop.noneForTrail' => 'No shop is listed for this trail.',
 			'summary.title' => 'Plan summary',
 			'summary.configTitle' => ({required Object name}) => 'My ${name}',
 			'summary.direction' => 'Direction',
@@ -5410,8 +6037,6 @@ extension on TranslationsEn {
 			'summary.stats.elevationGain' => 'Total ascent',
 			'summary.stats.elevationLoss' => 'Total descent',
 			'summary.stats.duration' => 'Estimated time',
-			_ => null,
-		} ?? switch (path) {
 			'summary.stats.stages' => 'Stages',
 			'summary.stats.restDays' => 'Rest days',
 			'summary.dayByDay' => 'Day by day',
@@ -5487,6 +6112,8 @@ extension on TranslationsEn {
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Open trek ${nom}',
 			'myTreks.settingsSubtitle' => 'Language, units, theme',
+			'myTreks.emptyCatalogueOuDemo' => 'You do not have a trail yet. Open the catalogue to choose one, or try the demo at the top of the list.',
+			'myTreks.emptyCatalogueSeul' => 'You do not have a trail yet. Open the catalogue to choose one.',
 			'trekState.abandonDialog.title' => 'A trek is already in progress',
 			'trekState.abandonDialog.message' => 'You have an ongoing hike. Finish it or give it up before starting another one.',
 			'trekState.abandonDialog.finish' => 'Finish',
@@ -5501,6 +6128,7 @@ extension on TranslationsEn {
 			'hikerProfile.fieldAge' => 'Age',
 			'hikerProfile.hintAge' => 'In years',
 			'hikerProfile.errorAge' => 'Invalid age (18 to 120 years)',
+			'hikerProfile.ageUsage' => 'What your age is used for: it sets the reference distance of your walk test, and it lowers the retained level by one notch from 60, by two from 75. It is used for nothing else, and none of it leaves your phone.',
 			'hikerProfile.fieldHeight' => 'Height',
 			'hikerProfile.hintHeight' => 'In centimetres',
 			'hikerProfile.errorHeight' => 'Invalid height (60 to 255 cm)',
@@ -5509,6 +6137,7 @@ extension on TranslationsEn {
 			'hikerProfile.errorWeight' => 'Invalid weight (25 to 200 kg)',
 			'hikerProfile.errorCountry' => 'Invalid country code (e.g. FR)',
 			'hikerProfile.errorEmpty' => 'Empty profile: enter at least your age, height or weight.',
+			'hikerProfile.errorSaveFailed' => 'Your details could not be saved. Nothing was changed: try again.',
 			'hikerProfile.errorConsentRequired' => 'Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.',
 			'hikerProfile.fieldSex' => 'Sex (optional)',
 			'hikerProfile.sexFemale' => 'Female',
@@ -5516,6 +6145,9 @@ extension on TranslationsEn {
 			'hikerProfile.sexUnspecified' => 'Unspecified',
 			'hikerProfile.fieldCountry' => 'Country',
 			'hikerProfile.countryUnspecified' => 'Unspecified',
+			'hikerProfile.countryPickerTitle' => 'Choose a country',
+			'hikerProfile.countrySearchHint' => 'Search for a country',
+			'hikerProfile.countryNoResult' => 'No country matches',
 			'hikerProfile.hintCountry' => 'Code (e.g. FR)',
 			'hikerProfile.consentTitle' => 'Body metrics (GDPR article 9)',
 			'hikerProfile.consentBody' => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.',
@@ -5552,6 +6184,7 @@ extension on TranslationsEn {
 			'walkTest.levels.excellent' => 'Excellent',
 			'walkTest.absoluteScaleNotice' => 'Your level is read on the raw distance scale: the comparison to a reference was not established for your build, so we do not apply it. Your test itself remains perfectly valid.',
 			'walkTest.ageClampNotice' => 'Beyond 80 the test reference stops: it is computed as at 80, and we say so.',
+			'walkTest.gpsUnavailable' => 'Location is not available on this device: the test cannot measure distance.',
 			'pastHikes.title' => 'Your last 5 hikes',
 			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
 			'pastHikes.addHike' => 'Add a hike',
@@ -5570,11 +6203,9 @@ extension on TranslationsEn {
 			'pastHikes.editHike' => 'Edit hike',
 			'pastHikes.deleteHike' => 'Delete',
 			'pastHikes.save' => 'Save',
+			'pastHikes.backToFeasibility' => 'Back to feasibility',
 			'pastHikes.saved' => 'Hikes saved',
 			'pastHikes.maxReached' => 'Maximum of 5 hikes reached.',
-			'pastHikes.difficultiesTitle' => 'Difficulties encountered',
-			'pastHikes.difficultiesHint' => 'One text for all these hikes: blisters, knees on descents, breathlessness at altitude, heat stress...',
-			'pastHikes.difficultiesSaved' => 'Note saved',
 			'ffrando.cotationTitle' => 'FFRandonnee rating',
 			'ffrando.effort' => 'Effort',
 			'ffrando.technicite' => 'Technicality',
@@ -5594,6 +6225,12 @@ extension on TranslationsEn {
 			'sos.positionTitle' => 'Your current position',
 			'sos.positionUnavailable' => 'GPS position unavailable',
 			'sos.gpsAcquiring' => 'Acquiring GPS…',
+			'sos.ageNow' => 'Position just now',
+			'sos.ageMinutes' => ({required Object minutes}) => 'Position ${minutes} min ago',
+			'sos.ageHours' => ({required Object hours, required Object minutes}) => 'Position ${hours} h ${minutes} ago',
+			'sos.estimated' => 'Estimated on the trail from your steps',
+			'sos.freshFailed' => ({required Object seconds}) => 'No newer position within ${seconds} s: the last known one is still shown.',
+			'sos.unavailableHelp' => 'Call 112 anyway: give the last place you passed (hut, pass, trail marker) and stay where you are if you can.',
 			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Position: ${lat}, ${lng}  -  Alt. ${alt} m',
 			'sos.noContacts' => 'No contact configured',
 			'sos.callContact' => ({required Object name}) => 'Call ${name}',
@@ -5604,15 +6241,18 @@ extension on TranslationsEn {
 			'sos.medicalId.action' => 'Phone medical ID',
 			'sos.medicalId.hint' => 'Show your vital info to rescuers, even on the lock screen.',
 			'sos.medicalId.unavailable' => 'Open the medical ID in your phone\'s Health settings.',
+			'sos.cannotCall' => ({required Object number}) => 'This device cannot place the call. Dial ${number}.',
 			'recovery.section' => 'Account and recovery',
 			'recovery.sectionDesc' => 'View my recovery code',
 			'recovery.title' => 'My recovery code',
-			'recovery.intro' => 'This code unlocks your vault (profile, personal info and step balance) on another phone. Write it down and keep it safe: it works like a password.',
+			'recovery.intro' => 'This code unlocks your vault (nickname, avatar and step balance) on another phone. Write it down and keep it safe: it works like a password. Your medical card is NOT in it: it never leaves this phone.',
 			'recovery.codeLabel' => 'Your code',
 			'recovery.copy' => 'Copy code',
 			'recovery.copied' => 'Code copied',
 			'recovery.warning' => 'No one else can read your vault, not even us. If you lose this code, your data will be permanently unrecoverable.',
 			'recovery.error' => 'Unable to generate the code right now.',
+			'recovery.noVaultTitle' => 'No vault to unlock yet',
+			'recovery.noVaultBody' => 'Online backup is not enabled on this installation: your data stays on this phone. There is therefore no vault to unlock elsewhere, and no code to write down for now.',
 			'common.cannotLoadStages' => 'Unable to load stages',
 			'common.noStages' => 'No stages available',
 			'common.cannotLoadStage' => 'Unable to load this stage',
@@ -5624,6 +6264,34 @@ extension on TranslationsEn {
 			'common.viewOnMap' => 'View on map',
 			'common.error' => 'Error',
 			'common.pageNotFound' => ({required Object path}) => 'Page not found: ${path}',
+			'common.retry' => 'Try again',
+			'common.retrying' => 'Trying again…',
+			'common.retryFailed' => 'The new attempt did not work.',
+			'systemBackup.title' => 'Your phone\'s backup',
+			'systemBackup.refuseGoogle' => 'I refuse to have my data backed up to the Google cloud',
+			'systemBackup.refuseApple' => 'I refuse to have my data backed up to iCloud',
+			'systemBackup.explainGoogle' => 'Your phone backs itself up to Google. This box is ticked in advance and keeps on this phone everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.',
+			'systemBackup.explainApple' => 'Your phone backs itself up to iCloud. This box is ticked in advance and keeps on this phone everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.',
+			'systemBackup.cost' => 'If you leave it ticked and you change phone or reinstall the app, you start from scratch. Your progress, your journal, your completed treks and your photos will not come back. On this phone nothing is deleted: a completed trek keeps its track and its logbook for life. But nothing follows you elsewhere.',
+			'systemBackup.whatComesBack' => 'If you untick it, your progress, your journal, your completed treks and your medical card go into the backup, and come back on your next phone. Never your photos or your settings: copying the photos would double the space taken on your phone.',
+			'systemBackup.notOurServers' => 'None of this goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system.',
+			'systemBackup.confirm' => 'Got it',
+			'systemBackup.a11yCheckbox' => 'Refuse the backup of all my data by the system of the phone',
+			'lieu.ouvrirDansLesCartes' => 'Open in maps',
+			'lieu.cartesIndisponibles' => 'No maps app could be opened on this device.',
+			'lieu.adresse' => 'Address',
+			'lieu.telephoner' => 'Call',
+			'lieu.siteOfficiel' => 'Official website',
+			'lieu.aCompleter' => 'Information still to be confirmed',
+			'lieu.source' => 'Source',
+			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => 'Open ${name} in the maps app',
+			'lieu.a11y.telephoner' => ({required Object name}) => 'Call ${name}',
+			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Open the official website of ${name}',
+			'lieu.rafraichir' => 'Refresh from the database',
+			'lieu.rafraichirFait' => ({required Object n}) => '${n} item(s) updated from the database.',
+			'lieu.rafraichirDejaAJour' => 'Already up to date: the database holds nothing newer.',
+			'lieu.rafraichirHorsLigne' => 'No network: what you see is what is on the phone.',
+			'lieu.rafraichirEchec' => 'The update failed. The data on the phone is intact.',
 			_ => null,
 		};
 	}

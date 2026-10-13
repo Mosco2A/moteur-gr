@@ -1,4 +1,6 @@
-import 'dart:convert';
+/// Copie d'un sentier par revision : fichier rapatrie en entier AVANT la
+/// moindre ecriture, puis pose en une seule transaction SQLite.
+library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -13,23 +15,72 @@ import '../data/daos/trail_gpx_tracks_dao.dart';
 import '../data/daos/trail_gpx_points_dao.dart';
 import '../data/daos/trail_itineraries_dao.dart';
 import '../data/daos/trail_meta_dao.dart';
+import '../data/revision_de_donnee.dart';
 import '../models/delta_update.dart';
+import '../models/niveau_de_telechargement.dart';
 import '../models/trail_manifest.dart';
 import '../providers/database_provider.dart';
 import 'manifest_service.dart';
+import 'trail_record_source.dart';
+import 'firestore_trail_source.dart';
 import 'package:drift/drift.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
-/// Service de mise a jour delta des donnees sentier.
+/// COPIE ET MISE A JOUR DES DONNEES D UN SENTIER, PAR REVISION.
+///
+/// TROIS DECISIONS DE CHRISTOPHE VIVENT DANS CE FICHIER.
+///
+///  1. LA COPIE COMPLETE SUR LE TELEPHONE (20:11, « il faut la copie du sentier
+///     sur le tel »). Le fichier est INTEGRALEMENT rapatrie AVANT la moindre
+///     ecriture, puis pose en UNE SEULE TRANSACTION. Une coupure en cours de
+///     route ne laisse RIEN en base (retour arriere SQLite) et le sentier reste
+///     « a prendre » : jamais un demi-sentier presente comme disponible. Sur le
+///     GR20 il n y a pas de reseau — un sentier a moitie copie est un randonneur
+///     en difficulte.
+///
+///  2. UNE SEULE INFO DE VERSION, PORTEE PAR LA DONNEE (20:43). L application ne
+///     calcule RIEN : elle lit le numero de chaque enregistrement et prend tout
+///     ce qui depasse sa propre revision. Il n y a plus de liste de tables
+///     changees, plus de comparaison par famille, plus d inference.
+///
+///  3. LE REPERE DE REVISION EST REELLEMENT REECRIT. `trail_manifests.localVersion`
+///     — la revision jusqu ou le telephone est a jour — est ecrit dans la MEME
+///     transaction que les donnees. C etait LE defaut mesure : personne ne
+///     l ecrivait, alors que `TrailManifestsDao.needsUpdate` s en sert pour
+///     decider s il faut telecharger. Chaque ouverture retelechargeait tout.
+///
+/// CE QUI A ETE SUPPRIME. `_inferChangedTables(int from, int to)` retournait les
+/// sept tables EN DUR sans jamais lire ses deux parametres : le « delta » etait un
+/// rechargement integral deguise. Elle n a pas ete renommee ni rendue plus fine —
+/// elle a disparu, parce que la question qu elle pretendait resoudre ne se pose
+/// plus quand la donnee porte son propre numero.
+///
+/// UN SEUL CHEMIN DE CODE. Premiere copie et mise a jour ne sont pas deux cas : a
+/// la revision zero, tout est plus recent que la revision locale, donc tout
+/// descend. Si l on se retrouvait a ecrire deux chemins, c est que le modele
+/// serait mauvais.
 class DeltaUpdateService {
   DeltaUpdateService({
-    required this.manifestService, required this.trailManifestsDao,
-    required this.trailMetaDao, required this.trailItinerariesDao,
-    required this.trailStagesDao, required this.trailAccommodationsDao,
-    required this.trailPoisDao, required this.trailGpxTracksDao,
-    required this.trailGpxPointsDao, http.Client? httpClient,
-  }) : _httpClient = httpClient ?? http.Client();
+    required this.db,
+    required this.manifestService,
+    required this.trailManifestsDao,
+    required this.trailMetaDao,
+    required this.trailItinerariesDao,
+    required this.trailStagesDao,
+    required this.trailAccommodationsDao,
+    required this.trailPoisDao,
+    required this.trailGpxTracksDao,
+    required this.trailGpxPointsDao,
+    TrailRecordSource? source,
+    http.Client? httpClient,
+  }) : source = source ?? SourceFichierEntier(httpClient: httpClient);
+
+  /// La base, pour ouvrir la TRANSACTION qui rend la copie atomique.
+  ///
+  /// Les DAO ne suffisent pas : chacun ne voit que sa table, et la garantie
+  /// demandee par Christophe porte sur l ENSEMBLE des donnees d un sentier.
+  final AppDatabase db;
 
   final ManifestService manifestService;
   final TrailManifestsDao trailManifestsDao;
@@ -40,152 +91,669 @@ class DeltaUpdateService {
   final TrailPoisDao trailPoisDao;
   final TrailGpxTracksDao trailGpxTracksDao;
   final TrailGpxPointsDao trailGpxPointsDao;
-  final http.Client _httpClient;
 
-  Future<DeltaUpdate?> checkForUpdates(String trailId, {required TrailManifest remoteManifest}) async {
-    final remoteEntry = remoteManifest.trails.where((t) => t.trailId == trailId).firstOrNull;
-    if (remoteEntry == null) return null;
-    final localEntry = await trailManifestsDao.getByTrailId(trailId);
-    final localVersion = localEntry?.localVersion ?? 0;
-    if (localVersion >= remoteEntry.dataVersion) return null;
-    return DeltaUpdate(trailId: trailId, fromVersion: localVersion,
-      toVersion: remoteEntry.dataVersion,
-      changedTables: _inferChangedTables(localVersion, remoteEntry.dataVersion),
-      downloadSize: remoteEntry.fileSize);
+  /// D OU VIENT CE QUI DEPASSE MA REVISION.
+  ///
+  /// Par defaut [SourceFichierEntier] : un fichier publie dans l espace de
+  /// stockage, lu en HTTP REST, trie a l arrivee. Injecter [SourceInterrogeable]
+  /// fait partir la question au serveur — le transfert devient unitaire et la
+  /// suite du code ne bouge pas.
+  final TrailRecordSource source;
+
+  /// Y a-t-il quelque chose de plus recent que ma revision ?
+  ///
+  /// C est TOUTE la question. Elle ne dit pas ce qui a change — cela se lit dans
+  /// les donnees au moment de les poser, et se rend en [ResultatSynchronisation].
+  Future<DeltaUpdate?> checkForUpdates(
+    String trailId, {
+    required TrailManifest remoteManifest,
+  }) async {
+    final distant = remoteManifest.trails
+        .where((t) => t.trailId == trailId)
+        .firstOrNull;
+    if (distant == null) return null;
+
+    final locale = await revisionLocale(trailId);
+    if (locale >= distant.dataVersion) return null;
+
+    return DeltaUpdate(
+      trailId: trailId,
+      fromVersion: locale,
+      toVersion: distant.dataVersion,
+      downloadSize: distant.fileSize,
+    );
   }
 
-  Future<void> applyDelta(String trailId, Map<String, dynamic> deltaJson,
-      {List<String> changedTables = const []}) async {
-    final tables = changedTables.isNotEmpty ? changedTables : deltaJson.keys.toList();
-    for (final table in tables) {
-      final data = deltaJson[table];
-      if (data == null) continue;
-      try { await _applyTableDelta(table, data); }
-      catch (e) { _log.e('[DeltaUpdate] Erreur $table: $e'); rethrow; }
+  /// L INSTANT jusqu auquel le telephone est a jour pour [trailId].
+  /// [HorodatageServeur.origine] si rien n est copie.
+  ///
+  /// CETTE VALEUR VIENT DE LA BASE, DONC DU SERVEUR : c est la date qu il avait
+  /// annoncee lors de la derniere copie complete. L horloge de l appareil
+  /// n intervient a aucun moment, et le type l interdit.
+  Future<HorodatageServeur> revisionLocale(String trailId) async {
+    final ligne = await trailManifestsDao.getByTrailId(trailId);
+    return ligne?.localVersion ?? RevisionDeDonnee.revisionInitiale;
+  }
+
+  /// Applique des donnees deja telechargees, EN UNE SEULE TRANSACTION.
+  ///
+  /// [donnees] est le fichier de donnees du sentier : un objet dont les clefs
+  /// sont les sept familles ([TrailChunks]) et les valeurs les
+  /// enregistrements, chacun portant sa revision.
+  ///
+  /// SEULS LES ENREGISTREMENTS PLUS RECENTS QUE [revisionLocale] SONT POSES, et
+  /// ceux qui portent un marqueur de suppression sont RETIRES. C est la seule
+  /// regle, et elle s applique identiquement a la premiere copie (revision locale
+  /// a zero : tout passe) et a une correction d altitude (une etape passe).
+  ///
+  /// [revisionCible] est la revision courante du sentier : elle sert de revision
+  /// par defaut aux enregistrements qui n en declarent pas (donnees deposees
+  /// avant ce modele), et c est elle qui est inscrite comme nouveau repere une
+  /// fois tout pose.
+  ///
+  /// L ORDRE EST IMPOSE, PAS SUBI : les familles sont appliquees dans l ordre des
+  /// cles etrangeres ([TrailChunks.tous]) et non dans l ordre des clefs du
+  /// JSON. L ancien code iterait sur `deltaJson.keys` et dependait donc de
+  /// l ordre d ecriture du fichier — un hebergement avant son etape echouait.
+  ///
+  /// [repartirDeZero] efface d abord TOUTES les donnees locales du sentier, DANS
+  /// la transaction. Ce n est pas une optimisation inverse : c est la seule
+  /// reponse correcte quand le telephone est trop en retard pour que les
+  /// marqueurs de suppression aient ete conserves cote serveur
+  /// ([RevisionDeDonnee.exigeUneCopieComplete]). Sans l effacement, une
+  /// suppression purgee du fichier publie resterait sur le telephone pour
+  /// toujours.
+  ///
+  /// [niveau] BORNE LA POSE, ET C EST LA MEME BORNE QUE CELLE DU TRANSPORT (tache
+  /// 616). Il remplace l ancien parametre `famillesLimitees`, qui exprimait la meme
+  /// idee sans la NOMMER : une liste de familles libre laissait ecrire n importe
+  /// quelle combinaison, y compris des points de trace sans leur trace. Le niveau,
+  /// lui, n a que trois valeurs et elles sont emboitees. Deux mecanismes pour
+  /// limiter la meme chose, c est la faute que la tache 605 a du defaire sur
+  /// l ordre d insertion : il n en reste qu un.
+  ///
+  /// LA DEUXIEME BARRIERE EST VOULUE. La source a deja ecarte le hors-niveau ; on
+  /// re-filtre ici parce que `appliquerRevisions` est PUBLIQUE et posable depuis un
+  /// fichier deja en main (c est ce que font les tests et le semeur). Un niveau qui
+  /// ne serait applique qu au transport se contournerait en appelant la pose
+  /// directement — exactement le second chemin que la tache 606 a supprime.
+  Future<ResultatSynchronisation> appliquerRevisions(
+    String trailId,
+    Map<String, dynamic> donnees, {
+    required HorodatageServeur revisionLocale,
+    required HorodatageServeur revisionCible,
+    required NiveauDeTelechargement niveau,
+    bool repartirDeZero = false,
+    MorceauxAPrendre? mesure,
+  }) async {
+    final inconnues = donnees.keys
+        .where((k) => !TrailChunks.estConnu(k))
+        .toList();
+    if (inconnues.isNotEmpty) {
+      _log.w(
+        '[Revision] $trailId : familles inconnues ignorees '
+        '(${inconnues.join(", ")}) — aucune table de ce nom dans cette version '
+        'de l application.',
+      );
+    }
+
+    final familles = TrailChunks.tous
+        .where((f) => donnees[f] != null && niveau.carries(f))
+        .toList();
+
+    final horsNiveau = TrailChunks.tous
+        .where((f) => donnees[f] != null && !niveau.carries(f))
+        .toList();
+    if (horsNiveau.isNotEmpty) {
+      _log.d(
+        '[Revision] $trailId : ${horsNiveau.join(", ")} presente(s) dans les '
+        'donnees mais HORS du niveau « ${niveau.code} » — rien n est ecrit pour '
+        'ces familles.',
+      );
+    }
+
+    final touchees = <String>[];
+    var ecrits = 0;
+    var supprimes = 0;
+
+    // LA TRANSACTION, C EST LE POINT 1 DE CHRISTOPHE. Tout passe ou rien ne
+    // passe : une exception sur la sixieme famille annule les cinq premieres, et
+    // le repere de revision n est pas ecrit — le sentier reste « a prendre » au
+    // lieu d etre a moitie copie.
+    await db.transaction(() async {
+      // L EFFACEMENT FAIT PARTIE DE LA MEME TRANSACTION QUE LA REPOSE. Un
+      // effacement qui survivrait a l echec de la copie laisserait le randonneur
+      // SANS sentier, la ou il en avait un vieux : c est le pire des deux mondes,
+      // et c est exactement ce que la garantie #C1 interdit.
+      if (repartirDeZero) await _eraseTrail(trailId);
+
+      for (final famille in familles) {
+        final bilan = await _appliquerFamille(
+          famille,
+          donnees[famille],
+          revisionLocale: revisionLocale,
+          revisionCible: revisionCible,
+        );
+        if (bilan.ecrits > 0 || bilan.supprimes > 0) touchees.add(famille);
+        ecrits += bilan.ecrits;
+        supprimes += bilan.supprimes;
+      }
+
+      // LE REPERE, ECRIT AVEC LES DONNEES QU IL CERTIFIE. Un repere qui
+      // survivrait a un retour arriere des donnees serait pire que pas de repere :
+      // le telephone se croirait a jour sur des donnees absentes.
+      //
+      // LE NIVEAU EST INSCRIT AVEC LE REPERE, DANS CETTE MEME TRANSACTION (tache
+      // 616) : « copie jusqu a l instant T, au niveau N » est UN seul fait. Les
+      // separer autoriserait l etat « a jour jusqu a T, niveau inconnu », dont on
+      // ne peut rien deduire.
+      if (revisionCible > revisionLocale) {
+        await trailManifestsDao.inscrireRevision(
+          trailId,
+          revisionCible,
+          niveau: niveau,
+        );
+      }
+    });
+
+    _log.d(
+      '[Revision] $trailId : $revisionLocale -> $revisionCible, niveau '
+      '« ${niveau.code} », $ecrits enregistrement(s) ecrit(s), $supprimes '
+      'retire(s), familles touchees : '
+      '${touchees.isEmpty ? "aucune" : touchees.join(", ")}',
+    );
+
+    return ResultatSynchronisation(
+      famillesTouchees: touchees,
+      ecrits: ecrits,
+      supprimes: supprimes,
+      revisionAtteinte: revisionCible > revisionLocale
+          ? revisionCible
+          : revisionLocale,
+      niveauAtteint: niveau,
+      transferes: mesure?.transferes ?? 0,
+      retenus: mesure?.retenus ?? 0,
+      ecartesHorsNiveau: mesure?.ecartesHorsNiveau ?? 0,
+      octetsRecus: mesure?.octetsRecus ?? 0,
+    );
+  }
+
+  /// DEMANDE CE QUI DEPASSE MA REVISION, PUIS LE POSE. CHEMIN UNIQUE.
+  ///
+  /// C est le seul chemin de descente des donnees d un sentier : premiere copie,
+  /// correction d altitude, suppression d un point d eau passent tous ici. Le
+  /// geste « telecharger » du catalogue y passe aussi depuis la tache 606 — il
+  /// empruntait jusque-la un SECOND chemin (`TrailDownloadService`) qui ignorait
+  /// les revisions, ignorait les marqueurs de suppression et posait famille par
+  /// famille hors transaction.
+  ///
+  /// LE TRANSFERT EST DELEGUE A [source], ET C EST LA TOUT LE LOT 606-X2. « Donne
+  /// moi tout ce qui a une revision superieure a la mienne » est une question,
+  /// pas un telechargement : sur un fichier entier elle se tranche a l arrivee,
+  /// sur une source interrogeable elle part au serveur. La POSE, elle, ne change
+  /// pas d une ligne — c est le signe que le modele de revision est le bon.
+  ///
+  /// LE TRANSFERT EST HORS TRANSACTION, deliberement. Le reseau ne doit jamais
+  /// tenir un verrou d ecriture SQLite : sur une liaison de montagne, une
+  /// transaction ouverte pendant un transfert bloquerait la base pendant des
+  /// minutes.
+  /// L INTEGRITE SE VERIFIE AVANT LA POSE, ET [empreinteAttendue] N EST PAS
+  /// FACULTATIVE. C est l empreinte que la liste publiee annonce pour ce fichier
+  /// (`TrailManifestEntry.hash`, #M3) : la source de fichier la compare aux
+  /// octets recus et leve AVANT de rendre quoi que ce soit, donc avant que la
+  /// transaction ne s ouvre. Un fichier tronque mais syntaxiquement valide — du
+  /// JSON parfaitement lisible coupe au milieu d une liste de points de trace —
+  /// passait la copie jusqu a la tache 607, et le randonneur partait avec une
+  /// trace incomplete que rien ne signalait.
+  ///
+  /// LE TELEPHONE TROP EN RETARD REPART DE ZERO, ET CE N EST PAS UN CONFORT. Le
+  /// serveur ne garde les marqueurs de suppression que sur une fenetre de
+  /// [RevisionDeDonnee.fenetreDeRetention] revisions (#X5). Au-dela, des
+  /// suppressions ont ete purgees sans avoir ete transmises : appliquer les
+  /// morceaux laisserait DEFINITIVEMENT un point d eau tari ou un refuge ferme
+  /// sur le telephone. On reprend donc tout depuis la revision zero, en effacant
+  /// d abord — dans la meme transaction.
+  /// LE NIVEAU EST OBLIGATOIRE, ET LE PIEGE QU IL OUVRE EST FERME ICI (tache 616).
+  ///
+  /// [niveau] dit JUSQU OU descendre. Il n a PAS de valeur par defaut, pour la
+  /// meme raison que `empreinteAttendue` n en a pas depuis la tache 607 : un
+  /// appelant qui oublie l argument ne doit pas obtenir silencieusement la trace
+  /// entiere. Le niveau est une decision, elle se prend explicitement.
+  ///
+  /// LE PIEGE, ET IL EST SILENCIEUX ET DEFINITIF SI ON NE LE FERME PAS. Le repere
+  /// [HorodatageServeur] est UN SEUL instant pour tout le sentier, et la regle de
+  /// pose est « je prends ce qui est plus recent que mon repere ». Un telephone
+  /// copie au niveau « preparer » jusqu a l instant T, qui demanderait ensuite
+  /// « realiser », verrait ses points de trace REFUSES : ils portent une date
+  /// anterieure a T, donc la regle les declare deja a jour. Le randonneur partirait
+  /// sans trace en croyant avoir tout telecharge, et AUCUNE mise a jour ulterieure
+  /// n irait jamais la chercher.
+  ///
+  /// LA REPONSE EST DE REPARTIR DE L ORIGINE QUAND LE NIVEAU MONTE, et elle ne
+  /// coute rien de plus que ce que le moteur fait deja : `repartirDeZero` est un
+  /// chemin eprouve (le retard au-dela de la fenetre de retention l emprunte), et
+  /// sur le transport actuel le fichier descend en entier de toute facon — la
+  /// montee de niveau n ajoute donc AUCUN octet, seulement des ecritures. Ce qu on
+  /// refuse, c est un plancher de revision par famille : deux planchers, c est deux
+  /// verites sur « jusqu ou je suis a jour », et la tache 605 a montre ou menent
+  /// deux copies d une meme information.
+  ///
+  /// UN NIVEAU QUI BAISSE NE RETIRE RIEN. Le niveau effectif est le PLUS HAUT des
+  /// deux : ce qui est deja sur le telephone y reste, et la cadence continue de
+  /// l entretenir. Liberer de la place est un AUTRE geste, a un autre moment (§6 du
+  /// modele economique : les tuiles d un trek TERMINE), et il ne se deguise pas en
+  /// synchronisation.
+  Future<ResultatSynchronisation> synchroniser(
+    String trailId,
+    String urlDonnees, {
+    required HorodatageServeur revisionCible,
+    required String? empreinteAttendue,
+    required NiveauDeTelechargement niveau,
+    HorodatageServeur? revisionLocaleConnue,
+  }) async {
+    final locale = revisionLocaleConnue ?? await revisionLocale(trailId);
+    final dejaDescendu = await trailManifestsDao.niveauDe(trailId);
+
+    // Le niveau effectif ne baisse jamais : on entretient ce qui est la.
+    final effectif = dejaDescendu != null && dejaDescendu.couvre(niveau)
+        ? dejaDescendu
+        : niveau;
+
+    final niveauMonte = dejaDescendu != null && !dejaDescendu.couvre(effectif);
+    if (niveauMonte) {
+      _log.w(
+        '[Revision] $trailId : le niveau monte de ${dejaDescendu.code} a '
+        '${effectif.code}. Les familles qui s ouvrent n ont JAMAIS ete posees ici '
+        'et leurs dates sont anterieures au repere local : la regle de revision '
+        'les refuserait une a une, en silence. COPIE COMPLETE depuis l origine, au '
+        'nouveau niveau.',
+      );
+    }
+
+    final retardTropGrand = RevisionDeDonnee.exigeUneCopieComplete(
+      revisionLocale: locale,
+      revisionCible: revisionCible,
+    );
+    if (retardTropGrand) {
+      final retard = Duration(
+        milliseconds:
+            revisionCible.millisecondesEpoch - locale.millisecondesEpoch,
+      );
+      _log.w(
+        '[Revision] $trailId : retard de ${retard.inDays} jour(s), au-dela de '
+        'la fenetre de retention '
+        '(${RevisionDeDonnee.fenetreDeRetention.inDays} jours). Les marqueurs de '
+        'suppression de cette periode ne sont plus publies : COPIE COMPLETE '
+        'depuis l origine, donnees locales du sentier effacees d abord.',
+      );
+    }
+
+    final copieComplete = niveauMonte || retardTropGrand;
+    final depuis = copieComplete ? RevisionDeDonnee.revisionInitiale : locale;
+
+    final aPrendre = await source.depuisLaRevision(
+      trailId,
+      adresse: urlDonnees,
+      revisionLocale: depuis,
+      revisionCible: revisionCible,
+      famillesDemandees: effectif.familles,
+      empreinteAttendue: empreinteAttendue,
+    );
+
+    // NIVEAU « REGARDER » : ON NE TOUCHE NI AUX DONNEES NI AU REPERE. Poser un
+    // repere alors que rien n est descendu ferait croire le sentier telecharge —
+    // il entrerait dans le perimetre de la cadence (`getTelecharges`) et l ecran
+    // le dirait « telecharge » alors qu il est vide.
+    if (effectif == NiveauDeTelechargement.regarder) {
+      return ResultatSynchronisation(
+        famillesTouchees: const [],
+        ecrits: 0,
+        supprimes: 0,
+        revisionAtteinte: locale,
+        niveauAtteint: dejaDescendu,
+        transferes: aPrendre.transferes,
+        retenus: aPrendre.retenus,
+        ecartesHorsNiveau: aPrendre.ecartesHorsNiveau,
+        octetsRecus: aPrendre.octetsRecus,
+      );
+    }
+
+    return appliquerRevisions(
+      trailId,
+      aPrendre.parFamille,
+      revisionLocale: depuis,
+      revisionCible: revisionCible,
+      niveau: effectif,
+      repartirDeZero: copieComplete,
+      mesure: aPrendre,
+    );
+  }
+
+  /// EFFACE TOUTES LES DONNEES LOCALES DU SENTIER, DANS L ORDRE INVERSE DES
+  /// CLEFS ETRANGERES.
+  ///
+  /// Le schema ne declare AUCUNE contrainte de clef etrangere au niveau de la
+  /// base (mesure : aucune table de sentier n appelle `references()`), donc aucune
+  /// cascade ne viendra faire ce travail. L ordre des familles est une convention
+  /// de l application, et l effacement doit la respecter a l envers : les points
+  /// de trace avant leur trace, les etapes apres ce qui s y rattache.
+  ///
+  /// LA PORTEE EST LE SENTIER, PAS LA BASE. Les identifiants sont resolus par
+  /// requete a chaque niveau : un `DELETE` non borne effacerait les autres
+  /// sentiers deja copies sur le telephone.
+  Future<void> _eraseTrail(String trailId) async {
+    final itineraires = (await trailItinerariesDao.getByTrailId(
+      trailId,
+    )).map((i) => i.id).toList();
+
+    final stages = <String>[];
+    for (final itineraire in itineraires) {
+      stages.addAll(
+        (await trailStagesDao.getByItineraryId(itineraire)).map((e) => e.id),
+      );
+    }
+
+    final traces = itineraires.isEmpty
+        ? const <String>[]
+        : (await (db.select(
+                db.trailGpxTracks,
+              )..where((t) => t.itineraryId.isIn(itineraires))).get())
+              .map((t) => t.id)
+              .toList();
+
+    if (traces.isNotEmpty) {
+      await (db.delete(
+        db.trailGpxPoints,
+      )..where((t) => t.trackId.isIn(traces))).go();
+      await (db.delete(
+        db.trailGpxTracks,
+      )..where((t) => t.id.isIn(traces))).go();
+    }
+    if (stages.isNotEmpty) {
+      await (db.delete(
+        db.trailPois,
+      )..where((t) => t.stageId.isIn(stages))).go();
+      await (db.delete(
+        db.trailAccommodations,
+      )..where((t) => t.stageId.isIn(stages))).go();
+      await (db.delete(db.trailStages)..where((t) => t.id.isIn(stages))).go();
+    }
+    if (itineraires.isNotEmpty) {
+      await (db.delete(
+        db.trailItineraries,
+      )..where((t) => t.id.isIn(itineraires))).go();
+    }
+    await (db.delete(db.trailMeta)..where((t) => t.id.equals(trailId))).go();
+  }
+
+  /// Applique une famille : ecrit ce qui est plus recent, retire les tombes.
+  Future<_Bilan> _appliquerFamille(
+    String famille,
+    dynamic brut, {
+    required HorodatageServeur revisionLocale,
+    required HorodatageServeur revisionCible,
+  }) async {
+    // `trail_meta` est un objet unique, les six autres des listes.
+    final enregistrements = <Map<String, dynamic>>[
+      if (brut is Map<String, dynamic>) brut,
+      if (brut is List) ...brut.map((e) => Map<String, dynamic>.from(e as Map)),
+    ];
+
+    var ecrits = 0;
+    var supprimes = 0;
+
+    for (final donnee in enregistrements) {
+      if (!RevisionDeDonnee.aPrendre(
+        donnee,
+        revisionLocale: revisionLocale,
+        trailRevision: revisionCible,
+      )) {
+        continue; // Deja a jour sur le telephone : on n y touche pas.
+      }
+
+      final rev = RevisionDeDonnee.revisionDe(donnee, defaut: revisionCible);
+
+      if (RevisionDeDonnee.estSupprimee(donnee)) {
+        // LE MARQUEUR DE SUPPRESSION, SANS LEQUEL LA CORRECTION NE MARCHE QUE
+        // DANS UN SENS. Un numero qui ne fait que monter ne peut pas transmettre
+        // une ABSENCE : un point d eau tari, un refuge ferme, un point d interet
+        // retire resteraient a vie sur le telephone du randonneur. La donnee
+        // redescend donc avec sa revision ET la marque « retire-la ».
+        supprimes += await _delete(famille, donnee);
+        continue;
+      }
+
+      await _ecrire(famille, donnee, rev);
+      ecrits++;
+    }
+
+    return _Bilan(ecrits: ecrits, supprimes: supprimes);
+  }
+
+  Future<void> _ecrire(
+    String famille,
+    Map<String, dynamic> d,
+    HorodatageServeur rev,
+  ) async {
+    switch (famille) {
+      case TrailChunks.fiche:
+        await trailMetaDao.insertOrReplace(
+          TrailMetaCompanion(
+            id: Value(d['id'] as String),
+            code: Value(d['code'] as String),
+            dataVersion: Value(
+              HorodatageServeur.annonceParLeServeur(d['data_version']) ?? rev,
+            ),
+            lastSync: Value(DateTime.now().toIso8601String()),
+            status: Value(d['status'] as String? ?? 'active'),
+            rev: Value(rev),
+          ),
+        );
+      case TrailChunks.itineraires:
+        await trailItinerariesDao.insertOrReplace(
+          TrailItinerariesCompanion(
+            id: Value(d['id'] as String),
+            trailId: Value(d['trail_id'] as String),
+            code: Value(d['code'] as String),
+            nameFr: Value(d['name_fr'] as String),
+            nameEn: Value(d['name_en'] as String),
+            nameDe: Value(d['name_de'] as String),
+            nameIt: Value(d['name_it'] as String),
+            nameEs: Value(d['name_es'] as String),
+            distanceKm: Value((d['distance_km'] as num).toDouble()),
+            elevationGain: Value(d['elevation_gain'] as int),
+            stageCount: Value(d['stage_count'] as int),
+            rev: Value(rev),
+          ),
+        );
+      case TrailChunks.stages:
+        await trailStagesDao.insertOrReplace(
+          TrailStagesCompanion(
+            id: Value(d['id'] as String),
+            itineraryId: Value(d['itinerary_id'] as String),
+            stageNumber: Value(d['stage_number'] as int),
+            nameFr: Value(d['name_fr'] as String),
+            nameEn: Value(d['name_en'] as String),
+            nameDe: Value(d['name_de'] as String),
+            nameIt: Value(d['name_it'] as String),
+            nameEs: Value(d['name_es'] as String),
+            startLat: Value((d['start_lat'] as num).toDouble()),
+            startLng: Value((d['start_lng'] as num).toDouble()),
+            endLat: Value((d['end_lat'] as num).toDouble()),
+            endLng: Value((d['end_lng'] as num).toDouble()),
+            distanceKm: Value((d['distance_km'] as num).toDouble()),
+            elevationGain: Value(d['elevation_gain'] as int),
+            elevationLoss: Value(d['elevation_loss'] as int),
+            durationMinutes: Value(d['duration_minutes'] as int),
+            difficulty: Value(d['difficulty'] as String),
+            rev: Value(rev),
+          ),
+        );
+      case TrailChunks.hebergements:
+        await trailAccommodationsDao.insertOrReplace(
+          TrailAccommodationsCompanion(
+            id: Value(d['id'] as String),
+            stageId: Value(d['stage_id'] as String),
+            nameFr: Value(d['name_fr'] as String),
+            nameEn: Value(d['name_en'] as String),
+            nameDe: Value(d['name_de'] as String),
+            nameIt: Value(d['name_it'] as String),
+            nameEs: Value(d['name_es'] as String),
+            type: Value(d['type'] as String),
+            lat: Value((d['lat'] as num).toDouble()),
+            lng: Value((d['lng'] as num).toDouble()),
+            phone: Value(d['phone'] as String?),
+            email: Value(d['email'] as String?),
+            website: Value(d['website'] as String?),
+            capacity: Value(d['capacity'] as int?),
+            priceRange: Value(d['price_range'] as String?),
+            bookingUrl: Value(d['booking_url'] as String?),
+            // L ADRESSE POSTALE (tache 641, bug 15). Absente du schema jusqu ici :
+            // un hebergement n avait que des coordonnees, donc rien a donner a un
+            // taxi ni a ecrire dans un courriel de reservation.
+            address: Value(d['address'] as String?),
+            rev: Value(rev),
+          ),
+        );
+      case TrailChunks.pointsDInteret:
+        await trailPoisDao.insertOrReplace(
+          TrailPoisCompanion(
+            id: Value(d['id'] as String),
+            stageId: Value(d['stage_id'] as String),
+            nameFr: Value(d['name_fr'] as String),
+            nameEn: Value(d['name_en'] as String),
+            nameDe: Value(d['name_de'] as String),
+            nameIt: Value(d['name_it'] as String),
+            nameEs: Value(d['name_es'] as String),
+            descriptionFr: Value(d['description_fr'] as String?),
+            descriptionEn: Value(d['description_en'] as String?),
+            descriptionDe: Value(d['description_de'] as String?),
+            descriptionIt: Value(d['description_it'] as String?),
+            descriptionEs: Value(d['description_es'] as String?),
+            type: Value(d['type'] as String),
+            lat: Value((d['lat'] as num).toDouble()),
+            lng: Value((d['lng'] as num).toDouble()),
+            elevation: Value((d['elevation'] as num?)?.toDouble()),
+            // ADRESSE, TELEPHONE, SITE (tache 641). Ce sont eux qui permettent au
+            // TRANSPORT et au RAVITAILLEMENT de vivre en base au lieu de deux
+            // constantes Dart : un arret d autocar sans exploitant a appeler et
+            // sans site ou lire les horaires ne sert a rien.
+            address: Value(d['address'] as String?),
+            phone: Value(d['phone'] as String?),
+            website: Value(d['website'] as String?),
+            rev: Value(rev),
+          ),
+        );
+      case TrailChunks.traces:
+        await trailGpxTracksDao.insertOrReplace(
+          TrailGpxTracksCompanion(
+            id: Value(d['id'] as String),
+            itineraryId: Value(d['itinerary_id'] as String),
+            name: Value(d['name'] as String),
+            sourceUrl: Value(d['source_url'] as String?),
+            rev: Value(rev),
+          ),
+        );
+      case TrailChunks.pointsDeTrace:
+        await trailGpxPointsDao.insertOrReplace(
+          TrailGpxPointsCompanion(
+            trackId: Value(d['track_id'] as String),
+            lat: Value((d['lat'] as num).toDouble()),
+            lng: Value((d['lng'] as num).toDouble()),
+            elevation: Value((d['elevation'] as num).toDouble()),
+            sequenceIndex: Value(d['sequence_index'] as int),
+            rev: Value(rev),
+          ),
+        );
     }
   }
 
-  Future<void> downloadAndApplyDelta(String trailId, String deltaUrl,
-      {List<String> changedTables = const []}) async {
-    final response = await _httpClient.get(Uri.parse(deltaUrl));
-    if (response.statusCode != 200) throw Exception('HTTP ${response.statusCode}');
-    await applyDelta(trailId, jsonDecode(response.body) as Map<String, dynamic>, changedTables: changedTables);
-  }
+  /// Retire du telephone l enregistrement designe par un marqueur de suppression.
+  ///
+  /// UN MARQUEUR N A BESOIN QUE DE SON IDENTITE. Le serveur publie l identifiant,
+  /// la revision et la marque — pas la donnee entiere, qui n existe plus.
+  ///
+  /// Les points de trace font exception et c est une contrainte du schema, pas un
+  /// choix : `trail_gpx_points` n a pas d identifiant propre (cle technique
+  /// auto-incrementee), son identite reelle est le couple trace + rang. Un
+  /// marqueur de suppression de point de trace doit donc porter `track_id` et
+  /// `sequence_index`.
+  Future<int> _delete(String famille, Map<String, dynamic> d) async {
+    final id = d['id'] as String?;
 
-  Future<void> _applyTableDelta(String table, dynamic data) async {
-    switch (table) {
-      case 'trail_meta': await _applyMeta(data as Map<String, dynamic>);
-      case 'itineraries': await _applyItin(data as List<dynamic>);
-      case 'stages': await _applyStages(data as List<dynamic>);
-      case 'accommodations': await _applyAccom(data as List<dynamic>);
-      case 'pois': await _applyPois(data as List<dynamic>);
-      case 'gpx_tracks': await _applyTracks(data as List<dynamic>);
-      case 'gpx_points': await _applyPoints(data as List<dynamic>);
+    switch (famille) {
+      case TrailChunks.fiche:
+        if (id == null) break;
+        return (db.delete(db.trailMeta)..where((t) => t.id.equals(id))).go();
+      case TrailChunks.itineraires:
+        if (id == null) break;
+        return (db.delete(
+          db.trailItineraries,
+        )..where((t) => t.id.equals(id))).go();
+      case TrailChunks.stages:
+        if (id == null) break;
+        return (db.delete(db.trailStages)..where((t) => t.id.equals(id))).go();
+      case TrailChunks.hebergements:
+        if (id == null) break;
+        return (db.delete(
+          db.trailAccommodations,
+        )..where((t) => t.id.equals(id))).go();
+      case TrailChunks.pointsDInteret:
+        if (id == null) break;
+        return (db.delete(db.trailPois)..where((t) => t.id.equals(id))).go();
+      case TrailChunks.traces:
+        if (id == null) break;
+        return (db.delete(
+          db.trailGpxTracks,
+        )..where((t) => t.id.equals(id))).go();
+      case TrailChunks.pointsDeTrace:
+        final trackId = d['track_id'] as String?;
+        final rang = d['sequence_index'] as int?;
+        if (trackId == null) break;
+        return (db.delete(db.trailGpxPoints)..where(
+              (t) => rang == null
+                  ? t.trackId.equals(trackId)
+                  : t.trackId.equals(trackId) & t.sequenceIndex.equals(rang),
+            ))
+            .go();
     }
-  }
 
-  Future<void> _applyMeta(Map<String, dynamic> m) async {
-    await trailMetaDao.insertOrReplace(TrailMetaCompanion(
-      id: Value(m['id'] as String), code: Value(m['code'] as String),
-      dataVersion: Value(m['data_version'] as int),
-      lastSync: Value(DateTime.now().toIso8601String()),
-      status: Value(m['status'] as String? ?? 'active')));
-  }
-
-  Future<void> _applyItin(List<dynamic> items) async {
-    for (final i in items) { final m = i as Map<String, dynamic>;
-      await trailItinerariesDao.insertOrReplace(TrailItinerariesCompanion(
-        id: Value(m['id'] as String), trailId: Value(m['trail_id'] as String),
-        code: Value(m['code'] as String), nameFr: Value(m['name_fr'] as String),
-        nameEn: Value(m['name_en'] as String), nameDe: Value(m['name_de'] as String),
-        nameIt: Value(m['name_it'] as String), nameEs: Value(m['name_es'] as String),
-        distanceKm: Value((m['distance_km'] as num).toDouble()),
-        elevationGain: Value(m['elevation_gain'] as int),
-        stageCount: Value(m['stage_count'] as int)));
-    }
-  }
-
-  Future<void> _applyStages(List<dynamic> items) async {
-    for (final i in items) { final s = i as Map<String, dynamic>;
-      await trailStagesDao.insertOrReplace(TrailStagesCompanion(
-        id: Value(s['id'] as String), itineraryId: Value(s['itinerary_id'] as String),
-        stageNumber: Value(s['stage_number'] as int),
-        nameFr: Value(s['name_fr'] as String), nameEn: Value(s['name_en'] as String),
-        nameDe: Value(s['name_de'] as String), nameIt: Value(s['name_it'] as String),
-        nameEs: Value(s['name_es'] as String),
-        startLat: Value((s['start_lat'] as num).toDouble()),
-        startLng: Value((s['start_lng'] as num).toDouble()),
-        endLat: Value((s['end_lat'] as num).toDouble()),
-        endLng: Value((s['end_lng'] as num).toDouble()),
-        distanceKm: Value((s['distance_km'] as num).toDouble()),
-        elevationGain: Value(s['elevation_gain'] as int),
-        elevationLoss: Value(s['elevation_loss'] as int),
-        durationMinutes: Value(s['duration_minutes'] as int),
-        difficulty: Value(s['difficulty'] as String)));
-    }
-  }
-
-  Future<void> _applyAccom(List<dynamic> items) async {
-    for (final i in items) { final a = i as Map<String, dynamic>;
-      await trailAccommodationsDao.insertOrReplace(TrailAccommodationsCompanion(
-        id: Value(a['id'] as String), stageId: Value(a['stage_id'] as String),
-        nameFr: Value(a['name_fr'] as String), nameEn: Value(a['name_en'] as String),
-        nameDe: Value(a['name_de'] as String), nameIt: Value(a['name_it'] as String),
-        nameEs: Value(a['name_es'] as String), type: Value(a['type'] as String),
-        lat: Value((a['lat'] as num).toDouble()), lng: Value((a['lng'] as num).toDouble()),
-        phone: Value(a['phone'] as String?), email: Value(a['email'] as String?),
-        website: Value(a['website'] as String?), capacity: Value(a['capacity'] as int?),
-        priceRange: Value(a['price_range'] as String?), bookingUrl: Value(a['booking_url'] as String?)));
-    }
-  }
-
-  Future<void> _applyPois(List<dynamic> items) async {
-    for (final i in items) { final p = i as Map<String, dynamic>;
-      await trailPoisDao.insertOrReplace(TrailPoisCompanion(
-        id: Value(p['id'] as String), stageId: Value(p['stage_id'] as String),
-        nameFr: Value(p['name_fr'] as String), nameEn: Value(p['name_en'] as String),
-        nameDe: Value(p['name_de'] as String), nameIt: Value(p['name_it'] as String),
-        nameEs: Value(p['name_es'] as String),
-        descriptionFr: Value(p['description_fr'] as String?),
-        descriptionEn: Value(p['description_en'] as String?),
-        descriptionDe: Value(p['description_de'] as String?),
-        descriptionIt: Value(p['description_it'] as String?),
-        descriptionEs: Value(p['description_es'] as String?),
-        type: Value(p['type'] as String),
-        lat: Value((p['lat'] as num).toDouble()), lng: Value((p['lng'] as num).toDouble()),
-        elevation: Value((p['elevation'] as num?)?.toDouble())));
-    }
-  }
-
-  Future<void> _applyTracks(List<dynamic> items) async {
-    for (final i in items) { final t = i as Map<String, dynamic>;
-      await trailGpxTracksDao.insertOrReplace(TrailGpxTracksCompanion(
-        id: Value(t['id'] as String), itineraryId: Value(t['itinerary_id'] as String),
-        name: Value(t['name'] as String), sourceUrl: Value(t['source_url'] as String?)));
-    }
-  }
-
-  Future<void> _applyPoints(List<dynamic> items) async {
-    for (final i in items) { final p = i as Map<String, dynamic>;
-      await trailGpxPointsDao.insertOrReplace(TrailGpxPointsCompanion(
-        trackId: Value(p['track_id'] as String),
-        lat: Value((p['lat'] as num).toDouble()), lng: Value((p['lng'] as num).toDouble()),
-        elevation: Value((p['elevation'] as num).toDouble()),
-        sequenceIndex: Value(p['sequence_index'] as int)));
-    }
-  }
-
-  List<String> _inferChangedTables(int from, int to) {
-    return ['trail_meta','itineraries','stages','accommodations','pois','gpx_tracks','gpx_points'];
+    _log.w(
+      '[Revision] Marqueur de suppression inexploitable pour « $famille » : '
+      'identite manquante. Un marqueur doit porter l identifiant de la donnee '
+      'a retirer (ou track_id + sequence_index pour un point de trace).',
+    );
+    return 0;
   }
 }
 
-/// Provider Riverpod pour le service de MAJ delta.
+class _Bilan {
+  const _Bilan({required this.ecrits, required this.supprimes});
+  final int ecrits;
+  final int supprimes;
+}
+
+/// Provider Riverpod pour le service de synchronisation des donnees sentier.
+///
+/// LA SOURCE EST DESORMAIS PASSEE, ET C EST LE CORRECTIF DU LOT 641. Ce provider
+/// omettait l argument `source` : il retombait donc sur `SourceFichierEntier`,
+/// c est-a-dire sur un fichier de Firebase Storage que la mesure du 30/09 trouve
+/// en 403 et que personne n avait jamais deposé. `SourceInterrogeable` — tout le
+/// modele par revision du lot 605 — n etait instancie que dans des tests. La
+/// question part maintenant a Firestore, ou le sentier est reellement publie.
 final deltaUpdateServiceProvider = Provider<DeltaUpdateService>((ref) {
   final db = ref.watch(databaseProvider);
-  return DeltaUpdateService(manifestService: ref.watch(manifestServiceProvider),
-    trailManifestsDao: TrailManifestsDao(db), trailMetaDao: TrailMetaDao(db),
-    trailItinerariesDao: TrailItinerariesDao(db), trailStagesDao: TrailStagesDao(db),
-    trailAccommodationsDao: TrailAccommodationsDao(db), trailPoisDao: TrailPoisDao(db),
-    trailGpxTracksDao: TrailGpxTracksDao(db), trailGpxPointsDao: TrailGpxPointsDao(db));
+  return DeltaUpdateService(
+    db: db,
+    source: ref.watch(trailRecordSourceProvider),
+    manifestService: ref.watch(manifestServiceProvider),
+    trailManifestsDao: TrailManifestsDao(db),
+    trailMetaDao: TrailMetaDao(db),
+    trailItinerariesDao: TrailItinerariesDao(db),
+    trailStagesDao: TrailStagesDao(db),
+    trailAccommodationsDao: TrailAccommodationsDao(db),
+    trailPoisDao: TrailPoisDao(db),
+    trailGpxTracksDao: TrailGpxTracksDao(db),
+    trailGpxPointsDao: TrailGpxPointsDao(db),
+  );
 });

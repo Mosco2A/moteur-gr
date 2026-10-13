@@ -1,22 +1,34 @@
-import 'package:country_picker/country_picker.dart';
+/// Saisie de la morphologie, donnee SENSIBLE et jamais pre-remplie : de vraies
+/// valeurs sont une question de securite, pas de confort.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/selecteur_de_pays.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/hiker_profile_repository.dart';
 import '../domain/hiker_input_bounds.dart';
 import '../domain/hiker_profile.dart';
 import '../providers/hiker_profile_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 export '../domain/hiker_input_bounds.dart'
-    show kAgeMin, kAgeMax, kHeightMinCm, kHeightMaxCm, kWeightMinKg, kWeightMaxKg;
+    show
+        kAgeMin,
+        kAgeMax,
+        kHeightMinCm,
+        kHeightMaxCm,
+        kWeightMinKg,
+        kWeightMaxKg;
 
 /// Ecran « Fiche d'info » — 1ere page de la faisabilite (StepWays LOT 4, Ph1).
 ///
@@ -53,8 +65,7 @@ class HikerProfileScreen extends ConsumerStatefulWidget {
   const HikerProfileScreen({super.key});
 
   @override
-  ConsumerState<HikerProfileScreen> createState() =>
-      _HikerProfileScreenState();
+  ConsumerState<HikerProfileScreen> createState() => _HikerProfileScreenState();
 }
 
 // Bornes metier des champs morpho (LOT 1, retour Chris #4) : elles vivent
@@ -115,6 +126,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
   @override
   void initState() {
     super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.hikerProfile);
     _load();
   }
 
@@ -137,8 +149,9 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
       // s'agissait d'un pays, le champ repart a « non precise » et se rechoisit
       // en deux taps. Le vide reste le vide (champ optionnel).
       final storedCountry = profile.countryIso.trim().toUpperCase();
-      _countryController.text =
-          isValidIsoCountryCode(storedCountry) ? storedCountry : '';
+      _countryController.text = isValidIsoCountryCode(storedCountry)
+          ? storedCountry
+          : '';
       _sex = profile.sex;
       _morphoConsent = consent.hasConsent(ConsentPurpose.healthData);
       _loading = false;
@@ -155,8 +168,8 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
     final profile = HikerProfile(
       age: int.tryParse(_ageController.text.trim()) ?? 0,
       heightCm: int.tryParse(_heightController.text.trim()) ?? 0,
-      weightKg: double.tryParse(
-              _weightController.text.trim().replaceAll(',', '.')) ??
+      weightKg:
+          double.tryParse(_weightController.text.trim().replaceAll(',', '.')) ??
           0,
       sex: _sex,
       countryIso: _countryController.text.trim().toUpperCase(),
@@ -191,9 +204,25 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
     final consent = ref.read(consentServiceProvider);
     await consent.initialize();
 
+    // LA MORPHOLOGIE VA CHANGER, DONC LA REVISION DES DONNEES MONTE D UN CRAN
+    // (DEM du 30/09 12:33). Decision de Christophe : « en cas de modification
+    // des donnees, on redemande le consentement ».
+    //
+    // ICI IL N Y A RIEN A REDEMANDER, ET C EST LA BONNE NOUVELLE : cet ecran
+    // POSE DEJA la question dans le meme geste que l ecriture (la bascule juste
+    // au-dessus du bouton). Noter la modification AVANT la decision suffit donc :
+    // la decision qui suit capture la NOUVELLE revision, `needsPrompt` retombe a
+    // faux, et on ne repose pas une question a laquelle le randonneur vient de
+    // repondre. L ordre compte — inverse, l application aurait redemande son
+    // accord a l ouverture suivante, pour une morphologie qu il venait d accorder.
+    await consent.noterUneModificationDesDonnees(ConsentPurpose.healthData);
+
     if (!_morphoConsent) {
       // 1. Le refus est trace et horodate (retractable a tout moment, D4A-01).
-      await consent.revoke(ConsentPurpose.healthData);
+      await consent.revoke(
+        ConsentPurpose.healthData,
+        declencheur: ConsentTrigger.modificationDesDonnees,
+      );
       // 2. Le refus EFFACE : une revocation fait disparaitre ce qui a deja ete
       //    enregistre, elle ne se contente pas de cesser d'ecrire. Sans ce
       //    temps-la, les 72 ans / 172 cm / 88 kg de la campagne resteraient sur
@@ -212,11 +241,46 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
 
     // Accord explicite : le consentement est accorde AVANT l'ecriture, jamais
     // apres — l'ordre importe si l'ecriture echoue.
-    await consent.grant(ConsentPurpose.healthData);
+    await consent.grant(
+      ConsentPurpose.healthData,
+      declencheur: ConsentTrigger.modificationDesDonnees,
+    );
     await ref.read(hikerProfileProvider.notifier).save(profile);
 
     if (!mounted) return;
     setState(() => _saving = false);
+
+    // L'ECHEC D'ECRITURE NE PEUT PLUS PASSER POUR UN SUCCES (tache 623).
+    //
+    // POURQUOI CE CONTROLE APPARAIT AVEC CE LOT, ET PAS AVANT. La fiche etait
+    // ecrite dans `SharedPreferences`, une ecriture qui n'echoue pratiquement
+    // jamais. Elle va maintenant dans un FICHIER du stockage protege
+    // (`HikerProfileFile`, le dossier de la fiche medicale), parce que les
+    // preferences ne peuvent PAS etre exclues de la sauvegarde iCloud sur iPhone.
+    // Une ecriture de fichier, elle, peut echouer : disque plein, droits refuses,
+    // dossier illisible.
+    //
+    // OR `HikerProfileNotifier.save` enferme l'ecriture dans `AsyncValue.guard` :
+    // l'exception ne remonte pas jusqu'ici, elle devient un ETAT D'ERREUR que
+    // personne ne regardait. Sans ce controle, l'ecran affichait « Fiche
+    // enregistree » et se fermait sur une ecriture qui n'avait pas eu lieu — un
+    // FAUX SUCCES, la meme famille de defaut que le lien de suivi mort en silence
+    // du meme lot, et sur une donnee que le randonneur remplit « pour sa
+    // securite ».
+    //
+    // ON NE DEPILE PAS L'ECRAN : sa saisie est encore la, il peut reessayer sans
+    // rien retaper. Meme discipline que le refus de consentement ci-dessus.
+    if (ref.read(hikerProfileProvider).hasError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.hikerProfile.errorSaveFailed),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      return;
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(t.hikerProfile.saved),
@@ -261,13 +325,38 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       controller: _ageController,
                       label: tp.fieldAge,
                       hint: tp.hintAge,
-                      icon: Icons.cake_outlined,
+                      icon: StepwaysIcons.age,
                       maxLength: 3,
                       limitMessage: tp.errorAge,
                       onChanged: (_) => _clearEmptyError(),
                       validator: (v) =>
                           _validateRange(v, kAgeMin, kAgeMax, tp.errorAge),
                     ),
+                    // L'AGE DIT A QUOI IL SERT (tache 570, S1).
+                    //
+                    // LA DEMANDE ETAIT DE LE RETIRER, SA PREMISSE ETAIT FAUSSE.
+                    // Chris : « si l'age ne sert a rien pas besoin de le
+                    // demander ». L'age sert, et a deux endroits verifies :
+                    // `FeasibilityFormula.deriveLevel` retire UN cran de niveau
+                    // a partir de 60 ans et DEUX a partir de 75 (VO2max -10 %
+                    // par decennie au-dela de 40 ans), et
+                    // `WalkTestNorms.predictedFor` le fait entrer dans la
+                    // prediction d'Enright qui fixe la distance de REFERENCE du
+                    // test de marche 6 min. La campagne qui avait conclu
+                    // l'inverse comparait 38 a 68 ans sur un profil DEJA au
+                    // plancher, la ou `math.max(0, rank - 1)` ne peut rien
+                    // retirer : elle a mesure une borne, pas une absence
+                    // d'effet.
+                    //
+                    // LE VRAI DEFAUT ETAIT CELUI-CI : l'ecran ne le DISAIT pas.
+                    // Une donnee de sante dont on n'explique pas l'usage est
+                    // une donnee arrachee, et la minimisation (RGPD art. 5.1.c)
+                    // demande de dire la finalite LA OU ON COLLECTE — pas dans
+                    // une politique que personne n'ouvre. La ligne est donc
+                    // collee au champ, et elle est chiffree : 60 ans, 75 ans,
+                    // le test de marche, et rien d'autre.
+                    const SizedBox(height: AppTheme.spacingXs),
+                    _FieldUsageNote(text: tp.ageUsage),
                     const SizedBox(height: AppTheme.spacingBase),
                     // Taille — borne [kHeightMinCm..kHeightMaxCm] cm, max 3
                     // chiffres (empeche physiquement 8000 / 600000 signales
@@ -276,12 +365,16 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       controller: _heightController,
                       label: tp.fieldHeight,
                       hint: tp.hintHeight,
-                      icon: Icons.height,
+                      icon: StepwaysIcons.taille,
                       maxLength: 3,
                       limitMessage: tp.errorHeight,
                       onChanged: (_) => _clearEmptyError(),
                       validator: (v) => _validateRange(
-                          v, kHeightMinCm, kHeightMaxCm, tp.errorHeight),
+                        v,
+                        kHeightMinCm,
+                        kHeightMaxCm,
+                        tp.errorHeight,
+                      ),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
                     // Poids — borne [kWeightMinKg..kWeightMaxKg] kg, max 5
@@ -291,13 +384,17 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       controller: _weightController,
                       label: tp.fieldWeight,
                       hint: tp.hintWeight,
-                      icon: Icons.monitor_weight_outlined,
+                      icon: StepwaysIcons.weight,
                       allowDecimal: true,
                       maxLength: 5,
                       limitMessage: tp.errorWeight,
                       onChanged: (_) => _clearEmptyError(),
                       validator: (v) => _validateRange(
-                          v, kWeightMinKg, kWeightMaxKg, tp.errorWeight),
+                        v,
+                        kWeightMinKg,
+                        kWeightMaxKg,
+                        tp.errorWeight,
+                      ),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
                     // PAS DE CARTE IMC ICI, ET PLUS NULLE PART (tache 560, N2).
@@ -329,8 +426,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                         ),
                       ],
                       selected: {_sex},
-                      onSelectionChanged: (s) =>
-                          setState(() => _sex = s.first),
+                      onSelectionChanged: (s) => setState(() => _sex = s.first),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
                     // Pays ISO
@@ -364,15 +460,16 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                     if (_consentError case final message?) ...[
                       _FormError(
                         message: message,
-                        widgetKey:
-                            const ValueKey('hiker-profile-consent-error'),
+                        widgetKey: const ValueKey(
+                          'hiker-profile-consent-error',
+                        ),
                       ),
                       const SizedBox(height: AppTheme.spacingSm),
                     ],
                     AppButton(
                       isLoading: _saving,
                       minHeight: 52,
-                      icon: Icons.save,
+                      icon: StepwaysIcons.save,
                       label: tp.save,
                       onPressed: _saving ? null : _save,
                     ),
@@ -424,12 +521,55 @@ class _PrivacyBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.lock, color: colors.primary, size: 20),
+          StepIcon(StepwaysIcons.cadenas, color: colors.primary, size: 20),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
               text,
               style: theme.textTheme.bodySmall?.copyWith(color: colors.primary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// NOTE D'USAGE D'UN CHAMP (tache 570, S1) — « a quoi sert cette donnee ».
+///
+/// Registre volontairement DISCRET (pas un bandeau, pas une alerte) : c'est une
+/// explication, pas un avertissement. Elle se lit sous le champ qu'elle
+/// explique, jamais ailleurs — une finalite affichee loin de la saisie
+/// n'informe personne.
+class _FieldUsageNote extends StatelessWidget {
+  const _FieldUsageNote({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(left: AppTheme.spacingMd),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: StepIcon(
+              StepwaysIcons.info,
+              size: 14,
+              color: theme.colorScheme.onSurface.withAlpha(140),
+            ),
+          ),
+          const SizedBox(width: AppTheme.spacingXs),
+          Expanded(
+            child: Text(
+              text,
+              key: const ValueKey('hiker-profile-age-usage'),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withAlpha(170),
+              ),
             ),
           ),
         ],
@@ -459,15 +599,14 @@ class _FormError extends StatelessWidget {
       key: widgetKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.error_outline, color: colors.error, size: 20),
+        StepIcon(StepwaysIcons.danger, color: colors.error, size: 20),
         const SizedBox(width: AppTheme.spacingSm),
         Expanded(
           child: Text(
             message,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: colors.error),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: colors.error),
           ),
         ),
       ],
@@ -504,14 +643,18 @@ class _MorphoConsentTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.health_and_safety_outlined,
-                  color: colors.tertiary, size: 20),
+              StepIcon(
+                StepwaysIcons.ficheMedicale,
+                color: colors.tertiary,
+                size: 20,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
                   tp.consentTitle,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -557,7 +700,7 @@ class _NumberField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final String hint;
-  final IconData icon;
+  final String icon;
 
   /// Nombre MAX de caracteres saisissables (barriere physique a la saisie).
   final int maxLength;
@@ -585,8 +728,9 @@ class _NumberFieldState extends State<_NumberField> {
     final colors = Theme.of(context).colorScheme;
     return TextFormField(
       controller: widget.controller,
-      keyboardType:
-          TextInputType.numberWithOptions(decimal: widget.allowDecimal),
+      keyboardType: TextInputType.numberWithOptions(
+        decimal: widget.allowDecimal,
+      ),
       maxLength: widget.maxLength,
       inputFormatters: [
         widget.allowDecimal
@@ -619,7 +763,7 @@ class _NumberFieldState extends State<_NumberField> {
         counterText: '',
         errorText: _limitError,
         errorMaxLines: 2,
-        prefixIcon: Icon(widget.icon, color: colors.primary),
+        prefixIcon: StepIcon(widget.icon, color: colors.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),
         ),
@@ -639,13 +783,8 @@ class _NumberFieldState extends State<_NumberField> {
 ///     selecteur ne propose pas (`AQ`, `BV`, `PN`, `TF`, `UM`) : une fiche
 ///     enregistree du temps de la saisie libre peut en porter un, et il vaut
 ///     mieux afficher « AQ » que rien.
-String localizedCountryName(BuildContext context, String code) {
-  final localized = CountryLocalizations.of(context)?.countryName(
-    countryCode: code,
-  );
-  if (localized != null && localized.isNotEmpty) return localized;
-  return Country.tryParse(code)?.name ?? code;
-}
+String localizedCountryName(BuildContext context, String code) =>
+    nomPaysLocalise(context, code);
 
 /// Champ pays — UN VRAI SELECTEUR, PLUS UN CODE A TAPER (retour Chris #2,
 /// tache 553).
@@ -682,10 +821,7 @@ String localizedCountryName(BuildContext context, String code) {
 ///
 /// Le champ reste OPTIONNEL : on peut ne rien choisir, et effacer son choix.
 class _CountryField extends StatelessWidget {
-  const _CountryField({
-    required this.controller,
-    required this.label,
-  });
+  const _CountryField({required this.controller, required this.label});
 
   /// Porte le CODE ISO (« FR »), pas le nom : c'est le code qui est enregistre,
   /// et le reste de l'application (base, miroir cloud, restauration) ne connait
@@ -709,28 +845,14 @@ class _CountryField extends StatelessWidget {
         return InkWell(
           key: const ValueKey('hiker-profile-country-field'),
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-          onTap: () => showCountryPicker(
-            context: context,
-            // On choisit un PAYS, pas un numero de telephone.
-            showPhoneCode: false,
-            // La recherche par nom est l'interet meme du selecteur : 246 pays,
-            // personne ne defile jusqu'a « Nouvelle-Zelande ».
-            showSearch: true,
+          // LE SELECTEUR EST LE NOTRE DEPUIS LA TACHE 634 (DEM-260929-1124).
+          // Celui du paquet rangeait les pays dans l'ordre alphabetique
+          // ANGLAIS tout en affichant des noms traduits, et aucun de ses
+          // parametres ne permettait de le reordonner. Le notre trie sur le
+          // libelle AFFICHE, dans la langue courante.
+          onTap: () => ouvrirSelecteurDePays(
+            context,
             onSelect: (country) => controller.text = country.countryCode,
-            countryListTheme: CountryListThemeData(
-              backgroundColor: colors.surface,
-              textStyle: theme.textTheme.bodyLarge,
-              searchTextStyle: theme.textTheme.bodyLarge,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(AppTheme.radiusCard),
-              ),
-              inputDecoration: InputDecoration(
-                prefixIcon: Icon(Icons.search, color: colors.primary),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-                ),
-              ),
-            ),
           ),
           child: InputDecorator(
             // Le libelle flotte toujours : la ligne n'est jamais vide, elle dit
@@ -738,17 +860,17 @@ class _CountryField extends StatelessWidget {
             isEmpty: false,
             decoration: InputDecoration(
               labelText: label,
-              prefixIcon: Icon(Icons.public, color: colors.primary),
+              prefixIcon: StepIcon(StepwaysIcons.langue, color: colors.primary),
               // Croix d'effacement quand un pays est choisi (le champ est
               // optionnel : on doit pouvoir revenir en arriere), chevron sinon
               // — de quoi voir qu'on peut ouvrir quelque chose.
               suffixIcon: chosen
                   ? IconButton(
                       key: const ValueKey('hiker-profile-country-clear'),
-                      icon: const Icon(Icons.clear),
+                      icon: const StepIcon(StepwaysIcons.croix),
                       onPressed: () => controller.clear(),
                     )
-                  : const Icon(Icons.arrow_drop_down),
+                  : const StepIcon(StepwaysIcons.flecheBas),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppTheme.radiusInput),
               ),

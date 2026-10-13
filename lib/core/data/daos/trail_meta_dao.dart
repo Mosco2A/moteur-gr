@@ -1,3 +1,7 @@
+/// Metadonnees d'un sentier : ce que le catalogue sait en afficher avant tout
+/// telechargement.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -20,8 +24,7 @@ class TrailMetaDao extends DatabaseAccessor<AppDatabase>
 
   /// Recupere un sentier par son id
   Future<TrailMetaData?> getById(String id) {
-    return (select(trailMeta)..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    return (select(trailMeta)..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   /// Insere ou remplace un sentier

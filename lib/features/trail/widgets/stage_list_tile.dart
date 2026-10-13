@@ -1,11 +1,16 @@
+/// Une etape en ligne de liste, avec sa duree ESTIMEE (calculee, non stockee)
+/// et sa pastille de difficulte.
+library;
+
 import 'package:flutter/material.dart';
 
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/stage_number_badge.dart';
 import 'difficulty_badge.dart';
 import 'elevation_indicator.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Carte d'étape pour la liste scrollable.
 ///
@@ -13,11 +18,7 @@ import 'elevation_indicator.dart';
 /// durée estimée (calculée), badge de difficulté coloré.
 /// Un tap déclenche [onTap] pour naviguer vers le détail.
 class StageListTile extends StatelessWidget {
-  const StageListTile({
-    super.key,
-    required this.stage,
-    this.onTap,
-  });
+  const StageListTile({super.key, required this.stage, this.onTap});
 
   /// Modèle de l'étape à afficher
   final StageModel stage;
@@ -69,8 +70,6 @@ class StageListTile extends StatelessWidget {
                       child: Text(
                         stage.name,
                         style: theme.textTheme.titleMedium,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(width: AppTheme.spacingSm),
@@ -81,8 +80,8 @@ class StageListTile extends StatelessWidget {
                 // Distance + durée
                 Row(
                   children: [
-                    Icon(
-                      Icons.straighten,
+                    StepIcon(
+                      StepwaysIcons.distance,
                       size: 14,
                       color: theme.colorScheme.onSurface.withAlpha(180),
                     ),
@@ -92,8 +91,8 @@ class StageListTile extends StatelessWidget {
                       style: theme.textTheme.bodySmall,
                     ),
                     const SizedBox(width: AppTheme.spacingMd),
-                    Icon(
-                      Icons.schedule,
+                    StepIcon(
+                      StepwaysIcons.clock,
                       size: 14,
                       color: theme.colorScheme.onSurface.withAlpha(180),
                     ),
@@ -114,8 +113,8 @@ class StageListTile extends StatelessWidget {
             ),
           ),
           // Chevron de navigation
-          Icon(
-            Icons.chevron_right,
+          StepIcon(
+            StepwaysIcons.chevronDroite,
             color: theme.colorScheme.onSurface.withAlpha(120),
           ),
         ],
@@ -123,4 +122,3 @@ class StageListTile extends StatelessWidget {
     );
   }
 }
-

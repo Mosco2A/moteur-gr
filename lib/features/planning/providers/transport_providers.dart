@@ -1,11 +1,16 @@
+/// Les points de depart et d'arrivee viennent des DONNEES des etapes et
+/// changent avec le sens de marche : rien n'est ecrit en dur.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/models/stage.dart';
-import '../../trail/providers/stages_provider.dart';
-import '../../trek/providers/gps_providers.dart';
+import '../../../core/models/stage_row.dart';
+import '../../trail/trail_facade.dart' show stagesProvider;
+import '../../trek/trek_facade.dart' show selectedDirectionProvider;
 import '../domain/transport_catalog.dart';
 import '../domain/transport_info.dart';
+import 'lieux_en_base_provider.dart';
 
 /// Endpoints (depart / arrivee) resolus du sentier, DIRECTION-AWARE (parite GR20
 /// `_resolveEndpoints`).
@@ -40,10 +45,9 @@ class TransportEndpoints {
 
 /// Repli sur le nom d'etape quand `departureName`/`arrivalName` manque (sentier
 /// pauvre) : garantit un libelle d'onglet non vide, sans inventer de lieu.
-String _departureOf(StageModel s) =>
-    s.departureName?.trim().isNotEmpty == true
-        ? s.departureName!.trim()
-        : s.name.trim();
+String _departureOf(StageModel s) => s.departureName?.trim().isNotEmpty == true
+    ? s.departureName!.trim()
+    : s.name.trim();
 
 String _arrivalOf(StageModel s) => s.arrivalName?.trim().isNotEmpty == true
     ? s.arrivalName!.trim()
@@ -54,8 +58,10 @@ String _arrivalOf(StageModel s) => s.arrivalName?.trim().isNotEmpty == true
 /// Retourne `null` tant que les etapes ne sont pas chargees (l'ecran affiche un
 /// etat de chargement / fallback). Parametre par `trailId` (family) pour rester
 /// coherent avec [stagesProvider] et le scope multi-sentiers.
-final transportEndpointsProvider =
-    Provider.family<TransportEndpoints?, String>((ref, trailId) {
+final transportEndpointsProvider = Provider.family<TransportEndpoints?, String>((
+  ref,
+  trailId,
+) {
   // Etapes du sentier (socle : departureName / arrivalName). AsyncValue -> on
   // n'a besoin que de la valeur chargee.
   final stages = ref.watch(stagesProvider(trailId)).value;
@@ -71,8 +77,7 @@ final transportEndpointsProvider =
   // Sens de marche : 1er sens declare par le sentier = ordre croissant de
   // reference ; toute autre direction choisie parcourt le sentier a rebours.
   final config = ref.watch(trailConfigProvider);
-  final forward =
-      config.directions.isNotEmpty ? config.directions.first : 'NS';
+  final forward = config.directions.isNotEmpty ? config.directions.first : 'NS';
   final selected = ref.watch(selectedDirectionProvider) ?? forward;
   final isForward = selected == forward;
 
@@ -87,18 +92,53 @@ final transportEndpointsProvider =
   final departure = isForward
       ? _departureOf(officialFirst)
       : _arrivalOf(officialLast);
-  final arrival =
-      isForward ? _arrivalOf(officialLast) : _departureOf(officialFirst);
+  final arrival = isForward
+      ? _arrivalOf(officialLast)
+      : _departureOf(officialFirst);
 
   return TransportEndpoints(departure: departure, arrival: arrival);
 });
 
-/// Donnees TRANSPORT du sentier [trailId] (catalogue embarque, offline).
+/// Donnees TRANSPORT du sentier [trailId] — LA BASE D'ABORD (tache 641).
 ///
-/// Simple lecture du [TransportCatalog] (data-driven, genericite #84627).
-/// Retourne `null` si le sentier ne fournit pas de donnees transport -> l'ecran
-/// affiche un fallback informatif propre (pas de crash). Family par `trailId`.
-final trailTransportProvider =
-    Provider.family<TrailTransport?, String>((ref, trailId) {
+/// CE QUI ETAIT CASSE, ET C'EST LE BUG 12 PUIS LE BUG 17. Ce provider ne lisait
+/// que [TransportCatalog], une constante Dart de 280 lignes derriere un
+/// `switch (trailId)`. Consequences mesurees le 30/09 :
+///
+///  * tout sentier autre que `mare-a-mare-centre` — dont le sentier de
+///    demonstration, qui porte un identifiant DIFFERENT — obtenait `null`, donc
+///    l'ecran annoncait « Aucune information de transport pour ce sentier » ;
+///  * le contenu lui-meme etait truffe de « a completer » : pas un exploitant
+///    nomme, pas un horaire, pas un tarif. Et deux informations y etaient
+///    FAUSSES — le telephone de l'aeroport d'Ajaccio, et un « autocar
+///    Ajaccio-Ghisonaccia via Vizzavona » qu'aucune source ne confirme ;
+///  * corriger un horaire demandait de republier l'application.
+///
+/// LA BASE GAGNE MAINTENANT. Les lieux de transport sont publies dans
+/// `trails/{id}/pois` avec un type prefixe `transport_`, ils portent leur
+/// exploitant, leur telephone, leur site officiel, leur adresse et leur point
+/// GPS, et chaque enregistrement cite sa source. Le catalogue compile reste en
+/// dernier recours pour les sentiers pas encore publies.
+///
+/// LES NOMS D'ENDPOINT VIENNENT DES ETAPES, comme avant : le modele
+/// `TrailTransport` indexe par NOM de lieu, et c'est
+/// [transportEndpointsProvider] qui les resout, direction-aware. Tant qu'ils ne
+/// sont pas connus (etapes non chargees), on ne peut pas construire la version
+/// en base — on rend alors le compile, et le provider se recalculera.
+final trailTransportProvider = Provider.family<TrailTransport?, String>((
+  ref,
+  trailId,
+) {
+  final endpoints = ref.watch(transportEndpointsProvider(trailId));
+  if (endpoints != null && endpoints.hasNames) {
+    final enBase = ref.watch(
+      transportEnBaseProvider((
+        trailId: trailId,
+        depart: endpoints.departure,
+        arrivee: endpoints.arrival,
+      )),
+    );
+    if (enBase != null) return enBase;
+  }
   return TransportCatalog.forTrail(trailId);
 });

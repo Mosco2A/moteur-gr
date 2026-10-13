@@ -1,0 +1,149 @@
+{
+  "_pourquoi": "SENTIER INVENTE DE ZERO POUR EPROUVER L OUTIL DE PUBLICATION (tache 607). Aucun rapport avec un itineraire reel : toutes les valeurs sont fictives. Il vit sous test/fixtures/, jamais sous publication/sources/, pour qu une donnee inventee ne puisse pas etre deposee par megarde sur le serveur. Sa raison d etre : prouver que l outil fabrique un sentier que le depot ne connait pas — absent de TrailCatalog, absent des assets — et que ce sentier traverse toute la chaine jusqu a l affichage de sa trace sur la carte.",
+  "status": "active",
+  "trail_meta": {
+    "id": "gr-monts-dore",
+    "code": "MONTSDORE"
+  },
+  "fiche": {
+    "name": "GR Monts Dore",
+    "displayName": "Tour des Monts Dore",
+    "tagline": "Les cretes, les burons, le vent d ouest",
+    "region": "Auvergne",
+    "country": "France",
+    "totalStages": 2,
+    "totalDistanceKm": 23.5,
+    "totalElevationGain": 1450,
+    "primaryColorValue": 4283215696,
+    "secondaryColorValue": 4285953654,
+    "priceStages": 2,
+    "directions": ["NS", "SN"],
+    "availableDurations": [2, 3],
+    "defaultDuration": 2,
+    "emergencyNumbers": [
+      {
+        "name": "Secours montagne Sancy",
+        "phone": "+33473000000"
+      }
+    ],
+    "privacyPolicyUrl": "https://exemple.invalid/monts-dore/privacy"
+  },
+  "itineraries": [
+    {
+      "id": "montsdore-i1",
+      "trail_id": "gr-monts-dore",
+      "code": "MONTSDORE-NS",
+      "name_fr": "Monts Dore nord-sud",
+      "name_en": "Monts Dore north-south",
+      "name_de": "Monts Dore Nord-Sued",
+      "name_it": "Monts Dore nord-sud",
+      "name_es": "Monts Dore norte-sur",
+      "distance_km": 23.5,
+      "elevation_gain": 1450,
+      "stage_count": 2
+    }
+  ],
+  "stages": [
+    {
+      "id": "montsdore-s1",
+      "itinerary_id": "montsdore-i1",
+      "stage_number": 1,
+      "name_fr": "Le Falgoux - Col de la Croix",
+      "name_en": "Le Falgoux - Croix pass",
+      "name_de": "Le Falgoux - Croix-Pass",
+      "name_it": "Le Falgoux - Colle della Croix",
+      "name_es": "Le Falgoux - Collado de la Croix",
+      "start_lat": 45.53,
+      "start_lng": 2.8,
+      "end_lat": 45.5505,
+      "end_lng": 2.8295,
+      "distance_km": 12.0,
+      "elevation_gain": 820,
+      "elevation_loss": 190,
+      "duration_minutes": 300,
+      "difficulty": "difficile"
+    },
+    {
+      "id": "montsdore-s2",
+      "itinerary_id": "montsdore-i1",
+      "stage_number": 2,
+      "name_fr": "Col de la Croix - Le Claux",
+      "name_en": "Croix pass - Le Claux",
+      "name_de": "Croix-Pass - Le Claux",
+      "name_it": "Colle della Croix - Le Claux",
+      "name_es": "Collado de la Croix - Le Claux",
+      "start_lat": 45.5505,
+      "start_lng": 2.8295,
+      "end_lat": 45.571,
+      "end_lng": 2.8575,
+      "distance_km": 11.5,
+      "elevation_gain": 630,
+      "elevation_loss": 720,
+      "duration_minutes": 270,
+      "difficulty": "moyen"
+    }
+  ],
+  "accommodations": [
+    {
+      "id": "montsdore-a1",
+      "stage_id": "montsdore-s1",
+      "name_fr": "Refuge du Col",
+      "name_en": "Col refuge",
+      "name_de": "Huette am Pass",
+      "name_it": "Rifugio del Colle",
+      "name_es": "Refugio del Collado",
+      "type": "refuge",
+      "lat": 45.5505,
+      "lng": 2.8295,
+      "capacity": 24,
+      "phone": "+33473000001"
+    },
+    {
+      "id": "montsdore-a2",
+      "stage_id": "montsdore-s2",
+      "name_fr": "Gite du Claux",
+      "name_en": "Claux lodge",
+      "name_de": "Herberge Le Claux",
+      "name_it": "Alloggio Le Claux",
+      "name_es": "Albergue Le Claux",
+      "type": "gite",
+      "lat": 45.571,
+      "lng": 2.8575,
+      "capacity": 16
+    }
+  ],
+  "pois": [
+    {
+      "id": "montsdore-p1",
+      "stage_id": "montsdore-s1",
+      "name_fr": "Source des Cretes",
+      "name_en": "Ridge spring",
+      "name_de": "Kammquelle",
+      "name_it": "Sorgente delle Creste",
+      "name_es": "Fuente de las Crestas",
+      "type": "water",
+      "lat": 45.542,
+      "lng": 2.819,
+      "elevation": 1520.0
+    },
+    {
+      "id": "montsdore-p2",
+      "stage_id": "montsdore-s1",
+      "name_fr": "Sommet du Griou (fictif)",
+      "name_en": "Griou summit (fictional)",
+      "name_de": "Griou-Gipfel (fiktiv)",
+      "name_it": "Cima del Griou (fittizia)",
+      "name_es": "Cumbre del Griou (ficticia)",
+      "type": "summit",
+      "lat": 45.5505,
+      "lng": 2.8295,
+      "elevation": 1820.0
+    }
+  ],
+  "trace_depuis_gpx": {
+    "fichier": "trace.gpx",
+    "id": "montsdore-t1",
+    "itinerary_id": "montsdore-i1",
+    "name": "Tour des Monts Dore (fictif)"
+  }
+}

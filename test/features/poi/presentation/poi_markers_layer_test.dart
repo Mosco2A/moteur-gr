@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/models/poi.dart';
-import 'package:moteur_gr/features/poi/domain/poi_type_config.dart';
+import 'package:moteur_gr/shared/poi/poi_type_config.dart';
 import 'package:moteur_gr/features/poi/presentation/poi_markers_layer.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E2.5b — PoiMarkersLayer markers filtres par type String + fallback.
 void main() {
@@ -68,9 +69,7 @@ void main() {
       expect(layer.visibleTypes.length, 2);
 
       // Verifier que seuls 2 markers (water + refuge) sont generes
-      final markerLayer = tester.widget<MarkerLayer>(
-        find.byType(MarkerLayer),
-      );
+      final markerLayer = tester.widget<MarkerLayer>(find.byType(MarkerLayer));
       expect(markerLayer.markers.length, 2);
     });
 
@@ -89,10 +88,7 @@ void main() {
             body: FlutterMap(
               options: const MapOptions(),
               children: [
-                PoiMarkersLayer(
-                  pois: pois,
-                  visibleTypes: visibleTypes,
-                ),
+                PoiMarkersLayer(pois: pois, visibleTypes: visibleTypes),
               ],
             ),
           ),
@@ -100,14 +96,12 @@ void main() {
       );
 
       // Le MarkerLayer doit contenir 1 marker (parking_lot seul visible)
-      final markerLayer = tester.widget<MarkerLayer>(
-        find.byType(MarkerLayer),
-      );
+      final markerLayer = tester.widget<MarkerLayer>(find.byType(MarkerLayer));
       expect(markerLayer.markers.length, 1);
 
       // Verifier que PoiTypeConfig retourne le fallback pour un type inconnu
       final fallbackStyle = PoiTypeConfig.getStyle('parking_lot');
-      expect(fallbackStyle.icon, Icons.location_on);
+      expect(fallbackStyle.icon, StepwaysIcons.repere);
       expect(fallbackStyle.color, const Color(0xFF616161));
       expect(fallbackStyle.labelKey, 'parking_lot');
 

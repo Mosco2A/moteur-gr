@@ -1,0 +1,39 @@
+/// FACADE PUBLIQUE DE LA FEATURE `treks` — LA SEULE PORTE D ENTREE.
+///
+/// ARB-645-05-b, DECISION B DE CHRISTOPHE (03/10/2026). Une feature ne lit une
+/// autre feature QUE par sa facade. Ce fichier est cette porte pour `treks` :
+/// tout ce qu il re-exporte est public, et tout le reste de `treks` —
+/// `providers/`, `data/`, `domain/`, `presentation/` — est prive, meme si rien
+/// dans le langage ne l empeche techniquement. La garde
+/// `test/structurel/couches_respectees_645_test.dart` est ce qui l empeche.
+///
+/// CE FICHIER NE CONTIENT QUE DES `export`, ET C EST LA TOUT SON INTERET. Une
+/// facade est une REDIRECTION D IMPORT : aucun symbole n est declare ici, aucun
+/// n est renomme, aucun code n a bouge. Le `show` de chaque ligne porte la
+/// liste EXACTE des symboles qu une autre feature utilise reellement — releves
+/// un par un, pas un `export` aveugle. Ajouter un nom a un `show`, c est donc
+/// une decision : on elargit le contrat de `treks`.
+///
+/// CE QUE CETTE PORTE COUTE SI ON LA CONTOURNE. Un import direct vers
+/// `features/treks/providers/...` soude les deux features : on ne touche plus a
+/// l une sans ouvrir l autre, et le detail d implementation de `treks` devient
+/// l interface sur laquelle les autres reposent. La facade rend ce cout
+/// visible — elle ne l interdit pas, elle le NOMME.
+///
+/// LUE PAR 8 FICHIERS DE 4 FEATURES AU 05/10/2026 : `hub`, `settings`, `trail`,
+/// `trek`.
+library;
+
+export 'domain/trek_lifecycle_state.dart' show TrekLifecycleState;
+// LE NOM DU STATUT « TERMINE », ET NON SA CHAINE RECOPIEE (tache 809). La phase
+// du cockpit doit reconnaitre une randonnee finie sur la session VIVANTE, pas
+// seulement sur la ligne en base — en demonstration, cette ligne n'existe
+// jamais. Elle lit donc la MEME constante que `deriveState`, au lieu d'ecrire
+// `'completed'` une troisieme fois dans le depot : deux verdicts de fin qui ne
+// partagent pas leur vocabulaire finissent par diverger d'une lettre.
+export 'domain/trek_state_deriver.dart' show kSessionStatusCompleted;
+export 'presentation/widgets/active_trek_conflict_dialog.dart'
+    show showActiveTrekConflictDialog;
+export 'providers/entitlements_provider.dart' show ownedTrailIdsProvider;
+export 'providers/my_treks_provider.dart'
+    show activeTrekIdProvider, currentTrailSummaryProvider, myTreksProvider;

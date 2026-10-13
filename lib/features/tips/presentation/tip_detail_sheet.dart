@@ -1,12 +1,17 @@
+/// Le detail d'une fiche, qui affiche enfin le NOM lisible du sentier couvert
+/// au lieu de la valeur brute du champ.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/config/trail_catalog.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/tip_category_config.dart';
-import '../domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 import 'tip_carousel.dart';
 import 'tip_points_list.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Nom LISIBLE du sentier couvert par une fiche conseil (tâche 557).
 ///
@@ -110,7 +115,7 @@ class TipDetailSheet extends StatelessWidget {
                 // En-tete categorie
                 Row(
                   children: [
-                    Icon(resolveIcon(meta.icon), color: color, size: 24),
+                    StepIcon(resolveIcon(meta.icon), color: color, size: 24),
                     const SizedBox(width: AppTheme.spacingSm),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -119,7 +124,9 @@ class TipDetailSheet extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: color.withAlpha(30),
-                        borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.radiusChip,
+                        ),
                       ),
                       child: Text(
                         card.category,
@@ -137,22 +144,24 @@ class TipDetailSheet extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.rougeUrgence.withAlpha(20),
-                          borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                          color: AppTheme.emergencyRed.withAlpha(20),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusChip,
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                              Icons.priority_high,
-                              color: AppTheme.rougeUrgence,
+                            const StepIcon(
+                              StepwaysIcons.danger,
+                              color: AppTheme.emergencyRed,
                               size: 14,
                             ),
                             const SizedBox(width: 2),
                             Text(
                               "Priorite haute",
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: AppTheme.rougeUrgence,
+                                color: AppTheme.emergencyRed,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12,
                               ),
@@ -182,7 +191,9 @@ class TipDetailSheet extends StatelessWidget {
                       return Chip(
                         label: Text(
                           tag,
-                          style: theme.textTheme.bodySmall?.copyWith(fontSize: 12),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontSize: 12,
+                          ),
                         ),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         padding: EdgeInsets.zero,
@@ -201,18 +212,18 @@ class TipDetailSheet extends StatelessWidget {
                 // cles existent (`t.tips.scope`, `t.tips.season`,
                 // `t.tips.altitude`) et sont branchees ici (tache 557).
                 _MetadataRow(
-                  icon: Icons.hiking,
+                  icon: StepwaysIcons.chaussure,
                   label: t.tips.scope,
                   value: tipScopeLabel(card.scope),
                 ),
                 _MetadataRow(
-                  icon: Icons.calendar_today,
+                  icon: StepwaysIcons.calendrier,
                   label: t.tips.season,
                   value: tipSeasonLabel(card.season),
                 ),
                 if (card.minAltitudeM != null)
                   _MetadataRow(
-                    icon: Icons.terrain,
+                    icon: StepwaysIcons.sommet,
                     label: t.tips.altitude,
                     value: "${card.minAltitudeM} m",
                   ),
@@ -234,7 +245,7 @@ class _MetadataRow extends StatelessWidget {
     required this.value,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -246,7 +257,11 @@ class _MetadataRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: theme.colorScheme.onSurface.withAlpha(150)),
+          StepIcon(
+            icon,
+            size: 16,
+            color: theme.colorScheme.onSurface.withAlpha(150),
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Text(
             label,

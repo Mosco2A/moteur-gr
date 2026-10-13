@@ -1,11 +1,15 @@
+/// Les hebergements d'une etape, parametres par sentier ET par numero d'etape
+/// pour rester generiques.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/nuitee_selections_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../trail/providers/trail_providers.dart';
-import '../../trek/domain/models/stage_accommodation.dart';
+import '../../trail/trail_facade.dart' show trailDataProvider;
+import '../../../domain/stage_accommodation.dart';
 import '../domain/models/nuitee_type.dart';
 
 /// Hebergements d'une etape pour un sentier donne (reutilise le module booking :
@@ -14,17 +18,18 @@ import '../domain/models/nuitee_type.dart';
 /// Parametre par (trailId, stageNumber) pour rester generique multi-sentiers,
 /// sans dependre d'un provider d'etat courant. Retourne une liste vide si le
 /// sentier n'a pas de donnees d'hebergement (fallback gracieux).
-final nuiteeStageAccommodationsProvider = FutureProvider.family<
-    List<StageAccommodation>, ({String trailId, int stageNumber})>(
-  (ref, key) async {
-    if (key.trailId.isEmpty) return const [];
-    final dataProvider = ref.watch(trailDataProvider);
-    return dataProvider.getAccommodations(
-      key.trailId,
-      stageNumber: key.stageNumber,
-    );
-  },
-);
+final nuiteeStageAccommodationsProvider =
+    FutureProvider.family<
+      List<StageAccommodation>,
+      ({String trailId, int stageNumber})
+    >((ref, key) async {
+      if (key.trailId.isEmpty) return const [];
+      final dataProvider = ref.watch(trailDataProvider);
+      return dataProvider.getAccommodations(
+        key.trailId,
+        stageNumber: key.stageNumber,
+      );
+    });
 
 /// Etat des nuitees du PROGRAMME (PARITE GR20 `BookingData`).
 ///
@@ -72,8 +77,8 @@ class NuiteeSelectionsState {
 /// via [NuiteeSelectionsDao] (offline-first, meme strategie que la checklist).
 final nuiteeSelectionsProvider =
     NotifierProvider<NuiteeSelectionsNotifier, NuiteeSelectionsState>(
-  NuiteeSelectionsNotifier.new,
-);
+      NuiteeSelectionsNotifier.new,
+    );
 
 /// Notifier de l'etat des nuitees (charge/sauvegarde en Drift, par sentier).
 class NuiteeSelectionsNotifier extends Notifier<NuiteeSelectionsState> {
@@ -105,9 +110,7 @@ class NuiteeSelectionsNotifier extends Notifier<NuiteeSelectionsState> {
   /// Bascule l'etat reserve d'une nuit et persiste (parite GR20 `toggleBooking`).
   Future<void> toggleBooking(int dayNumber) async {
     final next = !state.isBooked(dayNumber);
-    state = state.copyWith(
-      bookings: {...state.bookings, dayNumber: next},
-    );
+    state = state.copyWith(bookings: {...state.bookings, dayNumber: next});
     await _dao.setBooked(_trailId, dayNumber, next);
   }
 

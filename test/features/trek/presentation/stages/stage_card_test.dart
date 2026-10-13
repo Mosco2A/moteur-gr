@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/domain/stage.dart';
 import 'package:moteur_gr/features/trek/presentation/stages/stage_card.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests du widget StageCard (Phase 2 E2.4b).
 ///
@@ -29,10 +30,7 @@ void main() {
   );
 
   /// Helper pour wrapper un widget avec MaterialApp + locale.
-  Widget buildApp({
-    required Widget child,
-    Locale locale = const Locale('en'),
-  }) {
+  Widget buildApp({required Widget child, Locale locale = const Locale('en')}) {
     return MaterialApp(
       locale: locale,
       supportedLocales: [locale],
@@ -50,10 +48,7 @@ void main() {
 
       await tester.pumpWidget(
         buildApp(
-          child: StageCard(
-            stage: testStage,
-            onTap: () => tapped = true,
-          ),
+          child: StageCard(stage: testStage, onTap: () => tapped = true),
         ),
       );
 
@@ -67,15 +62,21 @@ void main() {
       expect(find.text('14.5 km  D+ 850 m  5h30'), findsOneWidget);
 
       // Chevron de navigation
-      expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is StepIcon && w.asset == StepwaysIcons.chevronDroite,
+        ),
+        findsOneWidget,
+      );
 
       // Tap fonctionne — cibler le StageCard directement
       await tester.tap(find.byType(StageCard));
       expect(tapped, isTrue);
     });
 
-    testWidgets('affiche le nom francais quand locale fr et fallback',
-        (tester) async {
+    testWidgets('affiche le nom francais quand locale fr et fallback', (
+      tester,
+    ) async {
       // Stage sans traduction anglaise — fallback nameFr
       const stageFrOnly = Stage(
         id: 'stage-fr',
@@ -92,10 +93,7 @@ void main() {
 
       await tester.pumpWidget(
         buildApp(
-          child: StageCard(
-            stage: stageFrOnly,
-            onTap: () {},
-          ),
+          child: StageCard(stage: stageFrOnly, onTap: () {}),
         ),
       );
 
@@ -121,10 +119,7 @@ void main() {
       await tester.pumpWidget(
         buildApp(
           locale: const Locale('en'),
-          child: StageCard(
-            stage: stageNoEn,
-            onTap: () {},
-          ),
+          child: StageCard(stage: stageNoEn, onTap: () {}),
         ),
       );
 
@@ -132,8 +127,9 @@ void main() {
       expect(find.text('Refuge de Manganu'), findsOneWidget);
     });
 
-    testWidgets('sous-titre sans duree quand estimatedDurationSeconds = 0',
-        (tester) async {
+    testWidgets('sous-titre sans duree quand estimatedDurationSeconds = 0', (
+      tester,
+    ) async {
       const stageNoDuration = Stage(
         id: 'stage-3',
         nameFr: 'Etape courte',
@@ -150,10 +146,7 @@ void main() {
 
       await tester.pumpWidget(
         buildApp(
-          child: StageCard(
-            stage: stageNoDuration,
-            onTap: () {},
-          ),
+          child: StageCard(stage: stageNoDuration, onTap: () {}),
         ),
       );
 

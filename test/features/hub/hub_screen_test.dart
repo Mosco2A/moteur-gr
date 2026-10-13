@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moteur_gr/features/ads/presentation/banner_ad_slot.dart';
+import 'package:moteur_gr/features/safety/presentation/sos_button.dart';
 import 'package:moteur_gr/features/auth/domain/auth_service.dart';
 import 'package:moteur_gr/features/auth/providers/auth_provider.dart';
 import 'package:moteur_gr/features/hub/presentation/hub_screen.dart';
@@ -16,8 +18,11 @@ import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/app_button.dart';
 import 'package:moteur_gr/shared/widgets/contextual_action_bar.dart';
 import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
+
+import '../../structurel/regie_pub_absente.dart';
 
 /// Tests du HUB d'accueil E07 (LOT-A, socle structurel).
 ///
@@ -33,6 +38,14 @@ import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
 /// stageWeatherProvider), plus un stub. Ces tests verifient l'ABSENCE des
 /// elements masques autant que la presence du socle.
 void main() {
+  // AUCUNE REGIE PUBLICITAIRE dans ces tests de structure (tache 595). Le
+  // cockpit porte desormais un emplacement de banniere : sans cette
+  // declaration, chaque test toucherait le SDK Google Mobile Ads, dont les
+  // canaux muets font pendre l'amorce du consentement six secondes de temps
+  // reel. Ce que ces tests mesurent, c'est la structure du cockpit — la
+  // banniere a son propre test (`test/comportement/pub_v1_595_test.dart`).
+  setUp(brancherAucuneRegiePub);
+
   /// Enveloppe un [child] avec un ProviderScope override + Translations + un
   /// GoRouter minimal (les cartes du HUB utilisent context.go/push).
   Widget wrap({required Widget child, List<Override> overrides = const []}) {
@@ -265,19 +278,20 @@ void main() {
       // Cycle de vie du trek (tache 558) : indispensable pour atteindre la
       // phase APRES, ou le Journal doit se trouver.
       TrekLifecycleState? lifecycle,
-    }) =>
-        wrap(
-          child: const HubScreen(),
-          overrides: [
-            userWith('Alex'),
-            trekWith(TrackingSessionState(status: status)),
-            if (lifecycle != null)
-              currentTrailSummaryProvider.overrideWith((ref) async =>
-                  TrekSummary(
-                      config: ref.watch(trailConfigProvider),
-                      state: lifecycle)),
-          ],
-        );
+    }) => wrap(
+      child: const HubScreen(),
+      overrides: [
+        userWith('Alex'),
+        trekWith(TrackingSessionState(status: status)),
+        if (lifecycle != null)
+          currentTrailSummaryProvider.overrideWith(
+            (ref) async => TrekSummary(
+              config: ref.watch(trailConfigProvider),
+              state: lifecycle,
+            ),
+          ),
+      ],
+    );
 
     /// Rend le HUB sur une surface TRES haute pour que le [ListView] construise
     /// toutes ses sections d'un coup (sinon les cartes sous la ligne de flottaison
@@ -368,14 +382,16 @@ void main() {
         tester.view.devicePixelRatio = 1.0;
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
-        await tester.pumpWidget(wrap(
-          child: const HubScreen(),
-          overrides: [
-            userWith('Alex'),
-            trekWith(TrackingSessionState(status: status)),
-            if (lifecycle != null) summaryWith(lifecycle),
-          ],
-        ));
+        await tester.pumpWidget(
+          wrap(
+            child: const HubScreen(),
+            overrides: [
+              userWith('Alex'),
+              trekWith(TrackingSessionState(status: status)),
+              if (lifecycle != null) summaryWith(lifecycle),
+            ],
+          ),
+        );
         await tester.pumpAndSettle();
       }
 
@@ -406,8 +422,9 @@ void main() {
         expect(find.text(t.hub.cards.journal), findsOneWidget);
       });
 
-      testWidgets('EN RANDO : Journal a sa place GR20, sans DOUBLON',
-          (tester) async {
+      testWidgets('EN RANDO : Journal a sa place GR20, sans DOUBLON', (
+        tester,
+      ) async {
         await pumpPhase(tester, status: TrackingSessionStatus.recording);
 
         expect(find.text(t.hub.sections.hike), findsOneWidget);
@@ -417,8 +434,9 @@ void main() {
         expect(find.text(t.hub.cards.journal), findsOneWidget);
       });
 
-      testWidgets('EN RANDO : la carte Journal OUVRE l\'ecran journal',
-          (tester) async {
+      testWidgets('EN RANDO : la carte Journal OUVRE l\'ecran journal', (
+        tester,
+      ) async {
         await pumpPhase(tester, status: TrackingSessionStatus.recording);
 
         await tester.tap(find.text(t.hub.cards.journal));
@@ -430,8 +448,9 @@ void main() {
         expect(find.text(t.hub.sections.info), findsNothing);
       });
 
-      testWidgets('APRES LE TREK : la carte Journal OUVRE l\'ecran journal',
-          (tester) async {
+      testWidgets('APRES LE TREK : la carte Journal OUVRE l\'ecran journal', (
+        tester,
+      ) async {
         await pumpPhase(tester, lifecycle: TrekLifecycleState.completed);
 
         await tester.tap(find.text(t.hub.cards.journal));
@@ -442,29 +461,28 @@ void main() {
       });
     });
 
-    testWidgets(
-      'R2e : AUCUNE meteo en PREPARATION, sans salutation redondante',
-      (tester) async {
-        await pumpTallHub(tester);
+    testWidgets('R2e : AUCUNE meteo en PREPARATION, sans salutation redondante', (
+      tester,
+    ) async {
+      await pumpTallHub(tester);
 
-        // R2e (retour Chris, LOT L8) : la tuile meteo du jour qui ouvrait le
-        // cockpit a ete RETIREE. En preparation, la meteo n'a aucun sens (on
-        // prepare un trek des mois a l'avance) — parite GR20, dont le HUB n'a
-        // aucune meteo dans « Preparer ». On verrouille son ABSENCE TOTALE :
-        // ni la tuile, ni le bandeau rando, ni la carte « Meteo ».
-        expect(find.text(t.hub.weather.title), findsNothing);
-        // La cle `hub.weather.stub` (« La meteo de votre etape arrive
-        // bientot. ») a ete SUPPRIMEE des cinq langues par la tache 552 : plus
-        // rien ne l'affichait depuis le retrait de la tuile, et c'etait une
-        // promesse creuse. Il n'y a donc plus de texte a chercher ici.
-        expect(find.text(t.navPilote.weatherBannerTitle), findsNothing);
-        expect(find.text(t.hub.cards.weather), findsNothing);
-        // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour, ... » a ete
-        // RETIRE du HUB (doublon avec le titre du sentier dans l'AppBar). On
-        // verrouille donc son ABSENCE (le widget HubHeader reste teste a part).
-        expect(find.text(t.hub.greeting(name: 'Alex')), findsNothing);
-      },
-    );
+      // R2e (retour Chris, LOT L8) : la tuile meteo du jour qui ouvrait le
+      // cockpit a ete RETIREE. En preparation, la meteo n'a aucun sens (on
+      // prepare un trek des mois a l'avance) — parite GR20, dont le HUB n'a
+      // aucune meteo dans « Preparer ». On verrouille son ABSENCE TOTALE :
+      // ni la tuile, ni le bandeau rando, ni la carte « Meteo ».
+      expect(find.text(t.hub.weather.title), findsNothing);
+      // La cle `hub.weather.stub` (« La meteo de votre etape arrive
+      // bientot. ») a ete SUPPRIMEE des cinq langues par la tache 552 : plus
+      // rien ne l'affichait depuis le retrait de la tuile, et c'etait une
+      // promesse creuse. Il n'y a donc plus de texte a chercher ici.
+      expect(find.text(t.navPilote.weatherBannerTitle), findsNothing);
+      expect(find.text(t.hub.cards.weather), findsNothing);
+      // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour, ... » a ete
+      // RETIRE du HUB (doublon avec le titre du sentier dans l'AppBar). On
+      // verrouille donc son ABSENCE (le widget HubHeader reste teste a part).
+      expect(find.text(t.hub.greeting(name: 'Alex')), findsNothing);
+    });
 
     testWidgets(
       'R11 : la meteo du JOUR est affichee PENDANT la rando (section Randonner)',
@@ -492,12 +510,69 @@ void main() {
 
       // Refonte nav (hub-and-push pur) : le dernier residu du « cockpit par
       // phases » (la barre contextuelle de defilement Préparer/Randonner/Après)
-      // est RETIRE du cockpit. Le Scaffold n'a plus de bottomNavigationBar.
+      // est RETIRE du cockpit. AUCUNE BARRE DE NAVIGATION en bas : on POUSSE
+      // les ecrans depuis les cartes, on revient par la pile.
       expect(find.byType(ContextualBottomBar), findsNothing);
       expect(find.byType(ContextualActionBar), findsNothing);
       expect(find.byType(BottomAppBar), findsNothing);
+      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byType(BottomNavigationBar), findsNothing);
+
+      // CE QUE CETTE INVARIANTE DIT VRAIMENT, ET CE QU'ELLE DISAIT DE TROP
+      // (tache 595). Elle exigeait `scaffold.bottomNavigationBar == null` —
+      // une mesure de l'EMPLACEMENT, alors que la decision D1 porte sur la
+      // NAVIGATION : « le cockpit n'a plus de barre du bas contextuelle, la
+      // navigation est hub-and-push ». L'emplacement du bas accueille
+      // desormais la banniere publicitaire (V1 PUB), qui n'est pas une
+      // navigation : elle n'ouvre aucun ecran de l'application, elle ne
+      // deplace personne, et elle mesure ZERO quand il n'y a pas de publicite
+      // a montrer. On verifie donc ce que la decision protege — aucun moyen de
+      // navigation en bas — et on nomme explicitement le seul occupant
+      // autorise, pour qu'un futur raccourci de navigation glisse ici ne passe
+      // pas inapercu.
       final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(scaffold.bottomNavigationBar, isNull);
+      final basDeLEcran = scaffold.bottomNavigationBar;
+      expect(
+        basDeLEcran,
+        isA<BannerAdSlot>(),
+        reason:
+            'le SEUL occupant autorise du bas du cockpit est '
+            "l'emplacement publicitaire ; tout le reste serait une barre de "
+            'navigation deguisee, et la decision D1 les a retirees',
+      );
+      // En preparation (phase de ce test), l'emplacement est monte mais il ne
+      // prend aucune place : sur cet appareil de test, aucune regie ne repond,
+      // donc rien n'est affiche et rien n'est reserve.
+      expect(tester.getSize(find.byType(BannerAdSlot)).height, 0);
+    });
+
+    testWidgets('EN PHASE RANDO, le bas du cockpit appartient au SOS : aucun '
+        'emplacement publicitaire n y est monte', (tester) async {
+      // CE TEST NE PARLE PAS DE LA REGLE DE PUBLICITE, ET IL NE LE FAISAIT DEJA
+      // PAS — mais son commentaire renvoyait a une regle « EN MODE TREK JAMAIS »
+      // et a un groupe de tests (B6) qui n'existent plus ni l'un ni l'autre.
+      // Chris a retire cette garde le 27/09 14:41 : « TOUT PORTER LA PUB sauf si
+      // tu es abonne ou sur le trek que tu as achete .. Pas la peine de mettre
+      // plus de regles ». Un randonneur qui marche un sentier GRATUIT voit donc
+      // de la publicite — sauf sur CET ecran, et pour la raison ci-dessous, qui
+      // n'a rien a voir avec la monetisation.
+      //
+      // CE QUE CE TEST-CI TIENT, ET C EST LA GEOMETRIE. En
+      // rando, le bas de l ecran appartient a la pastille SOS. On n y pose pas
+      // un emplacement publicitaire, meme un emplacement qui ne demanderait
+      // rien : un doigt qui vise le secours ne doit jamais rencontrer une regie.
+      await pumpTallHub(tester, status: TrackingSessionStatus.recording);
+
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+      expect(
+        scaffold.bottomNavigationBar,
+        isNull,
+        reason: 'en rando, rien du tout sous la pastille SOS',
+      );
+      expect(find.byType(BannerAdSlot), findsNothing);
+      // Et la pastille SOS, elle, est bien la : c est ce qui donne son sens a
+      // l assertion ci-dessus.
+      expect(find.byType(SosButton), findsOneWidget);
     });
 
     testWidgets('accordéon Préparer (D3) : DÉPLIÉ en préparation (cartes '
@@ -515,24 +590,35 @@ void main() {
       expect(find.text(t.hub.prepareExpand), findsNothing);
     });
 
-    testWidgets('accordéon Préparer (D3, R13) : REPLIÉ en rando, dépliable au '
-        'tap', (tester) async {
-      // Phase rando active -> accordeon Préparer REPLIÉ par defaut (cartes de
-      // prépa masquees, en-tete propose « Voir la préparation »). R13 : jamais
-      // masqué -> un tap le déplie et révèle les cartes.
+    testWidgets('« Préparer » DISPARAIT en rando — plus repliée, ABSENTE '
+        '(tâche 809)', (tester) async {
+      // CE TEST DISAIT L'INVERSE JUSQU'AU 11/10, ET C'EST CHRISTOPHE QUI A
+      // TRANCHÉ. Il verrouillait l'arbitrage R13 — « jamais masqué, juste
+      // replié : un tap le déplie et révèle les cartes » — et il avait raison
+      // de le verrouiller tant que c'était la décision. Christophe a vu le
+      // résultat sur le téléphone le 10/10 et a dit, verbatim : « meme en mode
+      // demo preparer devrait disparaitre quand tu es en cours de trek ».
+      //
+      // « Disparaître », pas « replier » : en pleine marche, les douze cartes
+      // de la préparation n'ont plus rien à préparer, et leur en-tête mange le
+      // haut du cockpit au moment où tout ce qui compte est la trace. La
+      // section entière — en-tête comprise — quitte donc le scroll.
+      //
+      // ELLE REVIENT APRÈS L'ARRIVÉE : voir
+      // `test/features/hub/portes_sans_entree_568_test.dart`, qui vérifie que
+      // la fiche médicale reste atteignable en phase « après ».
       await pumpTallHub(tester, status: TrackingSessionStatus.recording);
 
-      // Replié : le titre reste (en-tete), mais les cartes de prépa sont absentes.
-      expect(find.text(t.hub.sections.prepare), findsOneWidget);
-      expect(find.text(t.hub.cards.feasibility), findsNothing);
-      expect(find.text(t.hub.prepareExpand), findsOneWidget);
+      // L'en-tête lui-meme n'est plus là : ni titre, ni action de pliage.
+      expect(find.text(t.hub.sections.prepare), findsNothing);
+      expect(find.text(t.hub.prepareExpand), findsNothing);
       expect(find.text(t.hub.prepareCollapse), findsNothing);
+      // Et donc aucune carte de préparation, evidemment.
+      expect(find.text(t.hub.cards.feasibility), findsNothing);
+      expect(find.text(t.hub.cards.programme), findsNothing);
 
-      // R13 : tap sur l'en-tete -> deplie -> les cartes de prépa apparaissent.
-      await tester.tap(find.text(t.hub.prepareExpand));
-      await tester.pumpAndSettle();
-      expect(find.text(t.hub.cards.feasibility), findsOneWidget);
-      expect(find.text(t.hub.prepareCollapse), findsOneWidget);
+      // CE QUI PREND SA PLACE EST CE QUI SERT : la section « Randonner ».
+      expect(find.text(t.hub.sections.hike), findsOneWidget);
     });
 
     testWidgets('rend un echantillon de cartes cablees (S8)', (tester) async {
@@ -559,8 +645,9 @@ void main() {
     // elle se lit maintenant juste apres « Calendrier », parce que
     // l'entrainement se decide avec les dates.
     // -----------------------------------------------------------------------
-    testWidgets('#6 : « Preparation physique » est JUSTE APRES « Calendrier »',
-        (tester) async {
+    testWidgets('#6 : « Preparation physique » est JUSTE APRES « Calendrier »', (
+      tester,
+    ) async {
       await pumpTallHub(tester);
 
       final calendar = tester.getTopLeft(find.text(t.hub.cards.calendar));
@@ -572,12 +659,21 @@ void main() {
       // comme « dans la meme foulee que le calendrier », pas comme « sur la
       // ligne du dessous ». Ce qui compte et se verifie : l'entrainement n'est
       // plus APRES les nuitees ni APRES la checklist — il est avant les deux.
-      expect(training.dy, greaterThanOrEqualTo(calendar.dy),
-          reason: 'l entrainement ne remonte pas au-dessus du calendrier');
-      expect(training.dy, lessThanOrEqualTo(nuitees.dy),
-          reason: 'l entrainement passe AVANT les nuitees');
-      expect(training.dy, lessThan(checklist.dy),
-          reason: 'l entrainement n est plus la derniere carte de la prepa');
+      expect(
+        training.dy,
+        greaterThanOrEqualTo(calendar.dy),
+        reason: 'l entrainement ne remonte pas au-dessus du calendrier',
+      );
+      expect(
+        training.dy,
+        lessThanOrEqualTo(nuitees.dy),
+        reason: 'l entrainement passe AVANT les nuitees',
+      );
+      expect(
+        training.dy,
+        lessThan(checklist.dy),
+        reason: 'l entrainement n est plus la derniere carte de la prepa',
+      );
     });
 
     // -----------------------------------------------------------------------
@@ -611,14 +707,17 @@ void main() {
 
       final journal = tester.getTopLeft(find.text(t.hub.cards.journal));
       final hike = tester.getTopLeft(find.text(t.hub.sections.hike));
-      final prepare = tester.getTopLeft(find.text(t.hub.sections.prepare));
       final info = tester.getTopLeft(find.text(t.hub.sections.info));
 
       // Place de la reference : dans la section terrain, donc APRES son titre.
       expect(journal.dy, greaterThan(hike.dy));
-      // Et plus jamais au-dessus de la preparation (retour Chris : « pourquoi
-      // journe est en haut de preparer ??????? »).
-      expect(journal.dy, greaterThan(prepare.dy));
+      // ET PLUS JAMAIS AU-DESSUS DE LA PREPARATION — autrement dit, en rando,
+      // plus de preparation du tout (tache 809, « preparer devrait disparaitre
+      // quand tu es en cours de trek »). Le retour de Christophe qui a
+      // fonde cette assertion — « pourquoi journe est en haut de
+      // preparer ??????? » — est donc tenu par une ABSENCE, qui est plus
+      // forte qu'un ordre : il n'y a plus rien a depasser.
+      expect(find.text(t.hub.sections.prepare), findsNothing);
       // Toujours au-dessus d'« Informations » : ce n'est pas une rubrique de
       // lecture, c'est un carnet qu'on ecrit.
       expect(journal.dy, lessThan(info.dy));
@@ -651,10 +750,13 @@ void main() {
       // Etat de test : aucune etape coeur faite (prefs vides) + pas de date ->
       // gate `prepareCoreDoneProvider` fermee -> bouton DESACTIVE (onPressed null)
       // et message d'aide affiche.
-      final button = tester.widget<FilledButton>(
+      // Tache 645-03 : le CTA passe par le composant unique (`AppButton`,
+      // variante `filledTone`). On interroge donc `AppButton` et plus le
+      // `FilledButton` d'avant — le type a change, l'etat grise/actif non.
+      final button = tester.widget<AppButton>(
         find.ancestor(
           of: find.text(t.hub.startCta),
-          matching: find.byType(FilledButton),
+          matching: find.byType(AppButton),
         ),
       );
       expect(button.onPressed, isNull);

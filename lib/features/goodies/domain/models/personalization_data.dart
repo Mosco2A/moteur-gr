@@ -1,3 +1,7 @@
+/// Ce que le marcheur fait graver. Tous les champs sont optionnels, parce que
+/// la personnalisation varie d'un produit a l'autre.
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'personalization_data.freezed.dart';

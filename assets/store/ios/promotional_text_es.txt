@@ -1,0 +1,1 @@
+Prueba la demo gratuita, sin cuenta. Etapas, traza GPS, aviso de salida del sendero, el tiempo de cada etapa y botón SOS: todo para tu trek.

@@ -38,9 +38,17 @@ void main() {
         generatedAt: base,
         points: [
           point(at: base, lat: 42.00, dayIndex: 1),
-          point(at: base.add(const Duration(hours: 2)), lat: 42.01, dayIndex: 1),
+          point(
+            at: base.add(const Duration(hours: 2)),
+            lat: 42.01,
+            dayIndex: 1,
+          ),
           point(at: base.add(const Duration(days: 1)), lat: 43.00, dayIndex: 2),
-          point(at: base.add(const Duration(days: 1, hours: 2)), lat: 43.01, dayIndex: 2),
+          point(
+            at: base.add(const Duration(days: 1, hours: 2)),
+            lat: 43.01,
+            dayIndex: 2,
+          ),
         ],
       );
 
@@ -96,7 +104,14 @@ void main() {
         ],
       );
 
-      final first = GpxReader().fromString(xml).trks.single.trksegs.single.trkpts.first;
+      final first = GpxReader()
+          .fromString(xml)
+          .trks
+          .single
+          .trksegs
+          .single
+          .trkpts
+          .first;
       expect(first.ele, 1550);
       expect(first.time?.toUtc(), at);
       expect(GpxReader().fromString(xml).metadata?.name, 'Fra li Monti');

@@ -1,3 +1,7 @@
+/// La progression d'un sentier, nulle tant qu'elle n'existe pas, et le numero
+/// d'etape courant LU EN BASE plutot que deduit de la memoire.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/progress_dao.dart';
@@ -7,8 +11,10 @@ import '../../../core/providers/database_provider.dart';
 /// Provider de la progression utilisateur sur un sentier.
 ///
 /// Retourne null si aucune progression n'existe encore.
-final progressProvider =
-    FutureProvider.family<UserProgressModel?, String>((ref, trailId) async {
+final progressProvider = FutureProvider.family<UserProgressModel?, String>((
+  ref,
+  trailId,
+) async {
   final db = ref.watch(databaseProvider);
   final dao = ProgressDao(db);
   final row = await dao.getByTrailId(trailId);
@@ -33,8 +39,10 @@ final progressProvider =
 /// donnee pas encore chargee, ou trek DEJA TERMINE — un trek fini n'a plus
 /// d'etape « en cours », et l'appelant retombe alors sur la premiere etape.
 /// On ne devine jamais un numero : sans donnee, on ne dit rien.
-final currentStageNumberProvider =
-    Provider.family<int?, String>((ref, trailId) {
+final currentStageNumberProvider = Provider.family<int?, String>((
+  ref,
+  trailId,
+) {
   final progress = ref.watch(progressProvider(trailId)).value;
   if (progress == null || progress.isCompleted) return null;
   final stageNumber = progress.currentStage;

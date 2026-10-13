@@ -1,7 +1,12 @@
-import 'package:flutter/material.dart';
+/// Traduit un type d'alerte semantique en libelle localise : le modele d'alerte
+/// reste une donnee pure, sans i18n.
+library;
 
+import '../../../domain/temperature_unit.dart'
+    show TemperatureUnit, formatTemperature;
 import '../../../i18n/translations.g.dart';
 import '../models/weather_alert.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Résolution i18n des alertes météo (LOT-B, D-5 / RF-15).
 ///
@@ -29,7 +34,16 @@ extension WeatherAlertL10n on WeatherAlert {
   }
 
   /// Description localisée de l'alerte (paramétrée par [amount]/[conditionLabel]).
-  String localizedDescription(Translations t) {
+  ///
+  /// P2 (#101255 point 2) — [unit] EST OBLIGATOIRE, ET C'EST VOULU. L'alerte
+  /// incendie annonce une température ; son libellé portait « °C » EN DUR dans
+  /// les cinq fichiers de traduction, donc une alerte en Fahrenheit aurait
+  /// affiché la valeur convertie avec le mauvais symbole — ou, pire, la valeur
+  /// Celsius avec le symbole Fahrenheit. Un paramètre nommé optionnel aurait
+  /// laissé l'oubli passer sans bruit : ici l'appelant doit dire dans quelle
+  /// unité il écrit. Les autres natures d'alerte (mm, km/h, indice UV) n'ont
+  /// pas d'unité réglable et l'ignorent.
+  String localizedDescription(Translations t, {required TemperatureUnit unit}) {
     final int value = (amount ?? 0).round();
     final String condition = conditionLabel ?? '';
     switch (kind) {
@@ -44,25 +58,28 @@ extension WeatherAlertL10n on WeatherAlert {
       case WeatherAlertKind.uv:
         return t.weather.alert.uv.desc(value: value);
       case WeatherAlertKind.fire:
-        return t.weather.alert.fire.desc(value: value);
+        // `amount` est la temperature maximale prevue, en degres Celsius.
+        return t.weather.alert.fire.desc(
+          temperature: formatTemperature(amount ?? 0, unit),
+        );
     }
   }
 
   /// Icône associée à la nature de l'alerte.
-  IconData get icon {
+  String get icon {
     switch (kind) {
       case WeatherAlertKind.storm:
-        return Icons.thunderstorm;
+        return StepwaysIcons.orage;
       case WeatherAlertKind.wind:
-        return Icons.air;
+        return StepwaysIcons.vent;
       case WeatherAlertKind.rain:
-        return Icons.water_drop;
+        return StepwaysIcons.pluie;
       case WeatherAlertKind.snow:
-        return Icons.ac_unit;
+        return StepwaysIcons.neige;
       case WeatherAlertKind.uv:
-        return Icons.wb_sunny;
+        return StepwaysIcons.soleil;
       case WeatherAlertKind.fire:
-        return Icons.local_fire_department;
+        return StepwaysIcons.incendie;
     }
   }
 }

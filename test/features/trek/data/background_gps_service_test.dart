@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/data/daos/session_track_points_dao.dart';
 import 'package:moteur_gr/features/trek/data/background_gps_service.dart';
 
 /// Tests unitaires de la capture GPS de fond FIABILISEE (re-portage socle).
@@ -137,6 +138,7 @@ void main() {
         accuracy: 4.2,
         speed: 1.3,
         timestamp: ts,
+        source: TrackPointSource.gps,
       );
       expect(map['id'], 'p1');
       expect(map['sessionId'], 's1');
@@ -147,6 +149,8 @@ void main() {
       expect(map['accuracy'], 4.2);
       expect(map['speed'], 1.3);
       expect(map['timestamp'], ts.toIso8601String());
+      expect(map['source'], 'gps');
+      expect(map.containsKey('trackDistanceM'), isFalse);
     });
 
     test('BgTrackPoint round-trip toJson/fromJson', () {

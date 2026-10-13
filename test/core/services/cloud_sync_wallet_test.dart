@@ -1,169 +1,108 @@
-import "package:drift/drift.dart" hide isNull, isNotNull;
-import "package:drift/native.dart";
+import "dart:io";
+
 import "package:flutter_test/flutter_test.dart";
-import "package:moteur_gr/core/data/database.dart";
-import "package:moteur_gr/core/data/daos/checklist_dao.dart";
-import "package:moteur_gr/core/data/daos/journal_dao.dart";
-import "package:moteur_gr/core/data/daos/progress_dao.dart";
-import "package:moteur_gr/core/data/daos/sync_queue_dao.dart";
-import "package:moteur_gr/core/data/daos/trek_entitlements_dao.dart";
-import "package:moteur_gr/core/data/daos/wallet_dao.dart";
-import "package:moteur_gr/core/firebase/firebase_service.dart";
-import "package:moteur_gr/core/network/connectivity_monitor.dart";
-import "package:moteur_gr/core/services/cloud_sync_service.dart";
 
-/// Fake ConnectivityMonitor pilotable (online par defaut).
-class _FakeConnectivityMonitor extends ConnectivityMonitor {
-  ConnectivityStatus status = ConnectivityStatusValues.online;
-  @override
-  Future<ConnectivityStatus> checkStatus() async => status;
-}
-
-/// Tests ST8 — miroir cloud wallet NON NOMINATIF (A5 / spec §5).
+/// LE COMPTE NE PEUT PLUS MONTER — GARDE STRUCTURELLE (tache 635).
 ///
-/// Firestore reel n'est pas mockable ici (pas de fake_cloud_firestore en
-/// stack) : on verifie donc (1) le CONTENU non nominatif des payloads pousses
-/// (entiers + timestamps + trailId only ; zero nominatif, zero euro, zero
-/// receipt) via les builders purs, a partir de vraies donnees DAO, et (2) le
-/// GRACEFUL NO-OP quand Firebase est indispo / DAOs absents.
+/// CE QUE CE FICHIER PROUVAIT AVANT, ET POURQUOI IL A CHANGE DE SUJET. Il
+/// verifiait que `syncWallet` poussait un miroir NON NOMINATIF du compte-etapes
+/// (`users/{uid}/wallet/current`) et des droits de sentier
+/// (`users/{uid}/entitlements/{trailId}`). Ces deux ecritures n existent plus,
+/// et ce n est pas un abandon : c est la decision d architecture de Christophe
+/// du 29/09 13:43, gravee dans les regles par la tache 631 — le COMPTE fait foi
+/// AU SERVEUR, le telephone n en a qu une copie, et `firestore.rules` repond
+/// `allow write: if false` sur wallet, entitlements et subscription.
+///
+/// `syncWallet` ne pouvait donc plus produire QUE des refus, et elle n avait
+/// aucun appelant. Elle a ete retiree plutot que laissee dormir : du code mort
+/// qui ment est pire que pas de code — le premier qui la rebrancherait croirait
+/// monter un solde et ne recolterait que des permissions refusees, en silence.
+///
+/// CE QUE CE FICHIER PROUVE MAINTENANT : qu aucun chemin de montee du compte
+/// n a ete rouvert, ni dans le service, ni dans les regles. Un test et pas un
+/// commentaire — une methode se remet en place en trois lignes, et c est le
+/// modele economique qui se paie.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late AppDatabase db;
-  late WalletDao walletDao;
-  late TrekEntitlementsDao entitlementsDao;
-  late _FakeConnectivityMonitor connectivity;
+  final service = File("lib/core/services/cloud_sync_service.dart");
 
-  setUp(() {
-    db = AppDatabase(NativeDatabase.memory());
-    walletDao = WalletDao(db);
-    entitlementsDao = TrekEntitlementsDao(db);
-    connectivity = _FakeConnectivityMonitor();
-  });
-  tearDown(() async {
-    await db.close();
-  });
+  group("635 — le service de montee ne sait plus ecrire le compte", () {
+    test("le fichier du service existe (sinon la garde ne garde rien)", () {
+      expect(service.existsSync(), isTrue);
+    });
 
-  /// Fabrique un service avec DAOs wallet injectes (Firebase indispo par
-  /// defaut pour le no-op ; les builders purs n'ont pas besoin de reseau).
-  CloudSyncService makeService({bool firebaseAvailable = false}) {
-    return CloudSyncService(
-      progressDao: ProgressDao(db),
-      journalDao: JournalDao(db),
-      checklistDao: ChecklistDao(db),
-      syncQueueDao: SyncQueueDao(db),
-      connectivityMonitor: connectivity,
-      firebaseService:
-          FirebaseService.testOnly(isAvailable: firebaseAvailable),
-      walletDao: walletDao,
-      entitlementsDao: entitlementsDao,
-    );
-  }
+    /// Les DECLARATIONS de tout ce qui savait ecrire le compte. On cherche la
+    /// signature, pas le mot : les commentaires de ce service expliquent
+    /// longuement pourquoi le compte ne monte plus, et ils doivent pouvoir le
+    /// dire sans faire echouer la garde.
+    const declarations = [
+      "Future<CloudSyncResult> syncWallet(",
+      "Map<String, dynamic> buildWalletPayload(",
+      "Map<String, dynamic> buildEntitlementPayload(",
+    ];
 
-  group("payload wallet non nominatif", () {
-    test("balance -> entiers + updated_at, rien d'autre", () async {
-      final svc = makeService();
-      final now = DateTime(2026, 9, 8, 12);
-      await walletDao.upsert(WalletBalanceCompanion.insert(
-        userId: "hash-anon",
-        balanceSteps: const Value(42),
-        lifetimeEarnedSteps: const Value(100),
-        lifetimeSpentSteps: const Value(58),
-        updatedAt: now,
-      ));
-      final wallet = await walletDao.getByUserId("hash-anon");
-
-      final payload = svc.buildWalletPayload(wallet!);
-
-      // Contenu attendu : uniquement entiers + timestamp.
-      expect(payload["balance_steps"], 42);
-      expect(payload["lifetime_earned"], 100);
-      expect(payload["lifetime_spent"], 58);
-      expect(payload["updated_at"], now.toIso8601String());
-
-      // Cle de non nominativite : aucun champ interdit.
-      expect(payload.keys.toSet(), {
-        "balance_steps",
-        "lifetime_earned",
-        "lifetime_spent",
-        "updated_at",
+    for (final signature in declarations) {
+      test("« $signature » n est plus declaree", () {
+        expect(
+          service.readAsStringSync(),
+          isNot(contains(signature)),
+          reason:
+              "cette methode ecrivait le compte, que les regles refusent "
+              "desormais au telephone (tache 631). La rouvrir, c est offrir a "
+              "n importe quel telephone de se poser owned:true sur un sentier "
+              "payant.",
+        );
       });
-      expect(payload.containsKey("user_id"), isFalse);
-      expect(payload.containsKey("uid"), isFalse);
-      expect(payload.containsKey("email"), isFalse);
-      expect(payload.containsKey("price"), isFalse);
-      expect(payload.containsKey("receipt"), isFalse);
-      // Toutes les valeurs sont des entiers ou une String (timestamp).
-      for (final v in payload.values) {
-        expect(v is int || v is String, isTrue);
+    }
+
+    test("aucun chemin Firestore du compte n est emprunte par le service", () {
+      final source = service.readAsStringSync();
+      for (final chemin in const [
+        'collection("wallet")',
+        'collection("entitlements")',
+        'collection("subscription")',
+      ]) {
+        expect(
+          source,
+          isNot(contains(chemin)),
+          reason:
+              "$chemin est un chemin d ECRITURE vers le compte : le "
+              "telephone ne doit jamais l emprunter.",
+        );
       }
     });
-
-    test("entitlement -> owned/entiers/updated_at, pas d'euro ni receipt",
-        () async {
-      final svc = makeService();
-      final now = DateTime(2026, 9, 8, 13);
-      await entitlementsDao.upsert(TrekEntitlementsCompanion.insert(
-        trailId: "gr20",
-        owned: const Value(true),
-        acquiredStages: const Value(16),
-        totalStages: const Value(16),
-        consumedComplementSteps: const Value(5),
-        purchaseSource: const Value("wallet"),
-        purchasedAt: Value(now),
-        updatedAt: now,
-      ));
-      final e = await entitlementsDao.getByTrailId("gr20");
-
-      final payload = svc.buildEntitlementPayload(e!);
-
-      expect(payload["owned"], true);
-      expect(payload["acquired_steps"], 16);
-      expect(payload["consumed_complement_steps"], 5);
-      expect(payload["updated_at"], now.toIso8601String());
-
-      // Non nominatif : pas de purchaseSource/purchasedAt/euro/receipt pousses.
-      expect(payload.keys.toSet(), {
-        "owned",
-        "acquired_steps",
-        "consumed_complement_steps",
-        "updated_at",
-      });
-      expect(payload.containsKey("purchase_source"), isFalse);
-      expect(payload.containsKey("purchased_at"), isFalse);
-      expect(payload.containsKey("price_eur"), isFalse);
-      expect(payload.containsKey("receipt"), isFalse);
-    });
   });
 
-  group("graceful no-op", () {
-    test("Firebase indisponible -> idle, rien pousse", () async {
-      final svc = makeService(firebaseAvailable: false);
-      final result = await svc.syncWallet("hash-anon");
-      expect(result.status, CloudSyncStatusValues.idle);
-      expect(result.itemsSynced, 0);
-    });
+  group(
+    "635 — les regles Firestore refusent toujours l ecriture du compte",
+    () {
+      // Meme garde structurelle que celle de la tache 631, gardee ici parce que
+      // c est le fichier du compte : si quelqu un retirait
+      // `allow write: if false`, la suppression de `syncWallet` ne protegerait
+      // plus rien a elle seule.
+      final fichier = File("firestore.rules");
 
-    test("hors ligne -> idle", () async {
-      final svc = makeService(firebaseAvailable: true);
-      connectivity.status = ConnectivityStatusValues.offline;
-      final result = await svc.syncWallet("hash-anon");
-      expect(result.status, CloudSyncStatusValues.idle);
-    });
+      String bloc(String chemin) {
+        final source = fichier.readAsStringSync();
+        final debut = source.indexOf("match $chemin");
+        if (debut < 0) return "";
+        final suivant = source.indexOf("match ", debut + 6);
+        return suivant < 0
+            ? source.substring(debut)
+            : source.substring(debut, suivant);
+      }
 
-    test("DAOs wallet non injectes -> idle (retro-compat)", () async {
-      final svc = CloudSyncService(
-        progressDao: ProgressDao(db),
-        journalDao: JournalDao(db),
-        checklistDao: ChecklistDao(db),
-        syncQueueDao: SyncQueueDao(db),
-        connectivityMonitor: connectivity,
-        firebaseService: FirebaseService.testOnly(isAvailable: true),
-        // walletDao / entitlementsDao omis volontairement.
-      );
-      final result = await svc.syncWallet("hash-anon");
-      expect(result.status, CloudSyncStatusValues.idle);
-      expect(result.itemsSynced, 0);
-    });
-  });
+      for (final chemin in const [
+        "/wallet/{docId}",
+        "/entitlements/{trailId}",
+        "/subscription/{docId}",
+      ]) {
+        test("$chemin : ecriture refusee a tout client", () {
+          expect(fichier.existsSync(), isTrue);
+          expect(bloc(chemin), contains("allow write: if false;"));
+        });
+      }
+    },
+  );
 }

@@ -1,23 +1,35 @@
+/// L'ecran « Materiel & Sac » : rubriques, articles, libelles et disposition
+/// clones a l'identique de la reference.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/services/session_demo.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../../feasibility/domain/hiker_profile.dart';
-import '../../feasibility/providers/hiker_profile_provider.dart';
+import '../../../shared/widgets/grise_en_demo.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show HikerProfile, hikerProfileProvider;
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import '../widgets/checklist_bottom_actions.dart';
 import '../widgets/checklist_category_section.dart';
+import '../widgets/checklist_demo_lock.dart';
 import '../widgets/checklist_descent_alert.dart';
 import '../widgets/checklist_preparation_section.dart';
 import '../widgets/checklist_recommendation_banner.dart';
 import '../widgets/checklist_seasonal_section.dart';
 import '../widgets/checklist_shopping_modal.dart';
 import '../widgets/checklist_weight_banner.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran « Materiel & Sac » — CLONE INTEGRAL de l'ecran GR20 du meme nom
 /// (parite #99433, PAREIL = PAREIL).
@@ -38,6 +50,12 @@ class ChecklistScreen extends ConsumerStatefulWidget {
 
 class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.checklist);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final checklistT = t.checklist;
     final isLoading = ref.watch(checklistProvider.select((s) => s.isLoading));
@@ -50,14 +68,14 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     // + un post-frame : on ne mute pas le provider Sac pendant la construction.
     final profileWeight =
         ref.watch(hikerProfileProvider).value?.weightKg ??
-            HikerProfile.empty.weightKg;
+        HikerProfile.empty.weightKg;
     // La TAILLE suit la meme porte depuis le 22/09 : le plafond du sac n'est
     // plus un pourcentage du poids reel mais de la base de charge
     // `min(poids ; 25 × taille²)` (#4-b). Sans taille, la base retombe sur le
     // poids reel et le bandeau le DIT (#5-h).
     final profileHeight =
         ref.watch(hikerProfileProvider).value?.heightCm ??
-            HikerProfile.empty.heightCm;
+        HikerProfile.empty.heightCm;
     if (profileWeight > 0 || profileHeight > 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -82,6 +100,23 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     final state = ref.watch(checklistProvider);
     final shoppingCount = state.shoppingListCount;
 
+    // LE SAC EST BRIDE EN DEMO (tache 594, A2c). Il ne l'etait PAS DU TOUT :
+    // recherche `isDemo|PurchaseGate|paywall|demo` dans `lib/features/checklist/`
+    // = zero occurrence de monetisation (inventaire 593 §M7c). Le sac s'ouvrait
+    // entier, gratuit et complet, alors que le modele eco en fait un outil du
+    // trek ACHETE, jouable « pour de faux » en version bridee tant qu'on n'a
+    // pas achete.
+    //
+    // TANT QUE LE DROIT N'EST PAS CONNU, ON NE BRIDE PAS (`?? false`) : meme
+    // convention que le bandeau de demo existant — pas de clignotement du
+    // verrou pendant l'hydratation des droits. Le bridage est un affichage ;
+    // le verrou qui porte l'argent est celui de la REALISATION, et il vit dans
+    // le domaine, pas ici.
+    final trailId = ref.watch(trailIdProvider);
+    // Le nombre d'etapes n'est plus lu ici : le prix du deblocage est resolu par
+    // le service qui debite ([MonetizationService.stagesOfTrail], avenant 614).
+    final isDemo = ref.watch(isDemoModeProvider(trailId)).value ?? false;
+
     return Scaffold(
       // Ph5 (L6b) : AppHeader universel + actions conservees (i / liste de
       // courses avec badge / reinitialiser) — parite ecran, aucune action perdue.
@@ -89,47 +124,56 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         title: checklistT.title,
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const StepIcon(StepwaysIcons.info),
             tooltip: checklistT.ui.help,
             onPressed: () => _showInfoSheet(context),
           ),
           // Badge compteur sur icone chariot (liste de courses).
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                tooltip: checklistT.ui.shoppingListTitle,
-                onPressed: () => _showShoppingListModal(state),
-              ),
-              if (shoppingCount > 0)
-                Positioned(
-                  right: 4,
-                  top: 4,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: AppTheme.rougeUrgence,
-                      shape: BoxShape.circle,
-                    ),
-                    constraints:
-                        const BoxConstraints(minWidth: 18, minHeight: 18),
-                    child: Text(
-                      '$shoppingCount',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
+          // GRISE EN DEMO (tache 638, bug 14) : la liste de courses se construit
+          // en base, article par article — rien a en faire dans une demo.
+          GriseEnDemo(
+            child: Stack(
+              children: [
+                IconButton(
+                  icon: const StepIcon(StepwaysIcons.panier),
+                  tooltip: checklistT.ui.shoppingListTitle,
+                  onPressed: () => _showShoppingListModal(state),
+                ),
+                if (shoppingCount > 0)
+                  Positioned(
+                    right: 4,
+                    top: 4,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: AppTheme.emergencyRed,
+                        shape: BoxShape.circle,
                       ),
-                      textAlign: TextAlign.center,
+                      constraints: const BoxConstraints(
+                        minWidth: 18,
+                        minHeight: 18,
+                      ),
+                      child: Text(
+                        '$shoppingCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: checklistT.reset,
-            onPressed: () => _showResetDialog(context, checklistT),
+          // GRISE EN DEMO : reinitialiser le sac est une suppression en base.
+          GriseEnDemo(
+            child: IconButton(
+              icon: const StepIcon(StepwaysIcons.rafraichir),
+              tooltip: checklistT.reset,
+              onPressed: () => _showResetDialog(context, checklistT),
+            ),
           ),
         ],
       ),
@@ -137,10 +181,15 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
+            // --- BANDEAU D'ESSAI (tache 594, A2c) : le sac est BRIDE en demo.
+            if (isDemo) const ChecklistDemoBanner(),
             // --- Section SAC ADAPTATIF (LOT 5, B) : suggestions saison + trek,
             // ajoutables au sac (comptees dans la jauge). ADDITIVE : n'altere pas
             // la liste de base (parite GR20 intacte). Masquee si rien a adapter.
-            const ChecklistSeasonalSection(),
+            //
+            // MASQUEE EN DEMO : « liste materiel adaptee trek + saison » est
+            // precisement ce que le modele eco (§7) reserve au trek ACHETE.
+            if (!isDemo) const ChecklistSeasonalSection(),
             // --- Bandeau poids total + indicateur (pleine largeur, GR20) ---
             ChecklistWeightBanner(
               checkedWeightGrams: state.checkedWeightGrams,
@@ -154,11 +203,16 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               bodyHeightCm: state.bodyHeightCm,
             ),
             // --- Poids corporel + ratio ---
-            ChecklistBodyWeightRow(
-              bodyWeightKg: state.bodyWeightKg,
-              backpackRatio: state.backpackRatio,
-              onBodyWeightChanged: (kg) =>
-                  ref.read(checklistProvider.notifier).setBodyWeight(kg),
+            // GRISE EN DEMO (tache 638, bug 14) : le poids corporel est une
+            // donnee de personne, et le modifier ici retombe sur la fiche du
+            // randonneur. On ne touche pas au corps de quelqu'un dans une demo.
+            GriseEnDemo(
+              child: ChecklistBodyWeightRow(
+                bodyWeightKg: state.bodyWeightKg,
+                backpackRatio: state.backpackRatio,
+                onBodyWeightChanged: (kg) =>
+                    ref.read(checklistProvider.notifier).setBodyWeight(kg),
+              ),
             ),
             // --- Jauge poids relatif (base de charge, pas poids reel) ---
             ChecklistWeightGauge(
@@ -177,30 +231,41 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  for (final category in checklistCategories)
-                    ChecklistCategorySection(
-                      categoryKey: category,
-                      categoryName: _resolveCategoryName(category),
-                      items: state.items
-                          .where((i) => i.template.category == category)
-                          .toList(),
-                      onToggle: _handleToggle,
-                      onEditItem: _showEditItemDialog,
-                      onDeleteItem: _showDeleteItemDialog,
-                      onAddItem: () => _showAddItemDialog(category),
-                      onQuantityChanged: (itemId, newQty) => ref
-                          .read(checklistProvider.notifier)
-                          .setItemQuantity(itemId, newQty),
-                      onToggleShoppingList: (itemId) => ref
-                          .read(checklistProvider.notifier)
-                          .toggleShoppingList(itemId),
-                    ),
+                  for (final (index, category) in checklistCategories.indexed)
+                    if (!isDemo || index < kDemoChecklistCategoriesPlayable)
+                      ChecklistCategorySection(
+                        key: ValueKey('checklist-category-$category'),
+                        categoryKey: category,
+                        categoryName: _resolveCategoryName(category),
+                        items: state.items
+                            .where((i) => i.template.category == category)
+                            .toList(),
+                        onToggle: _handleToggle,
+                        onEditItem: _showEditItemDialog,
+                        onDeleteItem: _showDeleteItemDialog,
+                        onAddItem: () => _showAddItemDialog(category),
+                        onQuantityChanged: (itemId, newQty) => ref
+                            .read(checklistProvider.notifier)
+                            .setItemQuantity(itemId, newQty),
+                        onToggleShoppingList: (itemId) => ref
+                            .read(checklistProvider.notifier)
+                            .toggleShoppingList(itemId),
+                      )
+                    else
+                      ChecklistLockedCategory(
+                        categoryKey: category,
+                        categoryName: _resolveCategoryName(category),
+                        trailId: trailId,
+                      ),
                   // --- Preparation du sac ---
                   ChecklistPreparationSection(items: state.items),
                   // --- Checklist avant depart ---
                   const ChecklistPreDepartureSection(),
                   // --- Boutons du bas ---
-                  const ChecklistBottomActions(),
+                  // GRISEES EN DEMO (tache 638, bug 14) : valider le sac,
+                  // construire la liste de courses et exporter ecrivent ou
+                  // sortent des donnees. Rien de tout cela dans une demo.
+                  const GriseEnDemo(child: ChecklistBottomActions()),
                 ],
               ),
             ),
@@ -218,8 +283,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   // ------------------------------------------------------------------ toggle
 
   void _handleToggle(String itemId) {
-    final item =
-        ref.read(checklistProvider).items.firstWhere((i) => i.template.id == itemId);
+    final item = ref
+        .read(checklistProvider)
+        .items
+        .firstWhere((i) => i.template.id == itemId);
     if (item.template.requirement == ChecklistRequirement.required &&
         item.isChecked) {
       _showRequiredWarning(itemId);
@@ -236,17 +303,17 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         title: Text(ui.requiredWarnTitle),
         content: Text(ui.requiredWarnBody),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: ui.keep,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(ui.keep),
           ),
-          ElevatedButton(
+          AppButton(
+            variant: AppButtonVariant.filledTone,
+            tone: AppTheme.emergencyRed,
+            label: ui.removeAnyway,
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.rougeUrgence,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(ui.removeAnyway),
           ),
         ],
       ),
@@ -277,6 +344,13 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   }
 
   Future<void> _showAddItemDialog(String category) async {
+    // GRISE ET QUI DIT POURQUOI (tache 638, bug 14). Cette porte ouvre un
+    // dialogue dont l'enregistrement est barre en demo : l'ouvrir serait promettre
+    // une ecriture qui n'aura pas lieu. On dit donc non, et on dit pourquoi.
+    if (ref.read(enDemoProvider)) {
+      direIndisponibleEnDemo(context);
+      return;
+    }
     final ui = t.checklist.ui;
     final nameCtrl = TextEditingController();
     final weightCtrl = TextEditingController(text: '100');
@@ -343,14 +417,18 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             ],
           ),
           actions: [
-            TextButton(
+            AppButton(
+              variant: AppButtonVariant.text,
+              label: t.checklist.weight.cancel,
+              isFullWidth: false,
               onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(t.checklist.weight.cancel),
             ),
-            ElevatedButton(
+            AppButton(
+              label: ui.add,
               onPressed: () {
-                final nextName =
-                    nameCtrl.text.trim().isEmpty ? ui.errorNameRequired : null;
+                final nextName = nameCtrl.text.trim().isEmpty
+                    ? ui.errorNameRequired
+                    : null;
                 final nextWeight = _validateItemWeight(weightCtrl.text);
                 if (nextName != null || nextWeight != null) {
                   // Le dialogue RESTE ouvert : rien n'est invente dans le dos
@@ -363,7 +441,6 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                 }
                 Navigator.of(ctx).pop(true);
               },
-              child: Text(ui.add),
             ),
           ],
         ),
@@ -371,7 +448,9 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     );
 
     if (result == true) {
-      await ref.read(checklistProvider.notifier).addCustomItem(
+      await ref
+          .read(checklistProvider.notifier)
+          .addCustomItem(
             category,
             nameCtrl.text.trim(),
             int.parse(weightCtrl.text.trim()),
@@ -383,10 +462,19 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   /// - article du template : poids modifiable, nom en lecture seule ;
   /// - article custom : nom ET poids modifiables.
   Future<void> _showEditItemDialog(String itemId) async {
+    // GRISE ET QUI DIT POURQUOI (tache 638, bug 14). Cette porte ouvre un
+    // dialogue dont l'enregistrement est barre en demo : l'ouvrir serait promettre
+    // une ecriture qui n'aura pas lieu. On dit donc non, et on dit pourquoi.
+    if (ref.read(enDemoProvider)) {
+      direIndisponibleEnDemo(context);
+      return;
+    }
     final ui = t.checklist.ui;
     final weightT = t.checklist.weight;
-    final item =
-        ref.read(checklistProvider).items.firstWhere((i) => i.template.id == itemId);
+    final item = ref
+        .read(checklistProvider)
+        .items
+        .firstWhere((i) => i.template.id == itemId);
     final name = checklistItemDisplayName(item);
     final nameCtrl = TextEditingController(text: name);
     final weightCtrl = TextEditingController(text: item.weightGrams.toString());
@@ -409,7 +497,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                   errorText: nameError,
                   suffixIcon: item.isCustom
                       ? null
-                      : const Icon(Icons.lock_outline, size: 16),
+                      : const StepIcon(StepwaysIcons.cadenas, size: 16),
                 ),
                 enabled: item.isCustom,
                 style: item.isCustom
@@ -455,11 +543,14 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             ],
           ),
           actions: [
-            TextButton(
+            AppButton(
+              variant: AppButtonVariant.text,
+              label: weightT.cancel,
+              isFullWidth: false,
               onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(weightT.cancel),
             ),
-            ElevatedButton(
+            AppButton(
+              label: weightT.save,
               onPressed: () {
                 final nextName = item.isCustom && nameCtrl.text.trim().isEmpty
                     ? ui.errorNameRequired
@@ -474,7 +565,6 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
                 }
                 Navigator.of(ctx).pop(true);
               },
-              child: Text(weightT.save),
             ),
           ],
         ),
@@ -504,9 +594,18 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   }
 
   Future<void> _showDeleteItemDialog(String itemId) async {
+    // GRISE ET QUI DIT POURQUOI (tache 638, bug 14). Cette porte ouvre un
+    // dialogue dont l'enregistrement est barre en demo : l'ouvrir serait promettre
+    // une ecriture qui n'aura pas lieu. On dit donc non, et on dit pourquoi.
+    if (ref.read(enDemoProvider)) {
+      direIndisponibleEnDemo(context);
+      return;
+    }
     final ui = t.checklist.ui;
-    final item =
-        ref.read(checklistProvider).items.firstWhere((i) => i.template.id == itemId);
+    final item = ref
+        .read(checklistProvider)
+        .items
+        .firstWhere((i) => i.template.id == itemId);
     if (!item.isCustom) return;
     final name = checklistItemDisplayName(item);
 
@@ -516,17 +615,17 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         title: Text(ui.deleteItemTitle),
         content: Text(ui.deleteItemBody.replaceAll('{name}', name)),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.checklist.weight.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.checklist.weight.cancel),
           ),
-          ElevatedButton(
+          AppButton(
+            variant: AppButtonVariant.filledTone,
+            tone: AppTheme.emergencyRed,
+            label: ui.delete,
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.rougeUrgence,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(ui.delete),
           ),
         ],
       ),
@@ -545,9 +644,9 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
       byCategory.putIfAbsent(catName, () => []).add(item);
     }
     if (byCategory.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.checklist.ui.shoppingListEmpty)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.checklist.ui.shoppingListEmpty)));
       return;
     }
     showModalBottomSheet<void>(
@@ -556,8 +655,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (ctx) =>
-          ChecklistShoppingModal(uncheckedByCategory: byCategory),
+      builder: (ctx) => ChecklistShoppingModal(uncheckedByCategory: byCategory),
     );
   }
 
@@ -591,7 +689,11 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                Icon(Icons.luggage, color: theme.colorScheme.primary, size: 24),
+                StepIcon(
+                  StepwaysIcons.sacADos,
+                  color: theme.colorScheme.primary,
+                  size: 24,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   ui.infoTitle,
@@ -603,17 +705,37 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            _richInfoItem(theme, Icons.check_box, ui.infoCheckTitle,
-                ui.infoCheckBody, theme.colorScheme.primary),
+            _richInfoItem(
+              theme,
+              StepwaysIcons.cocheCercle,
+              ui.infoCheckTitle,
+              ui.infoCheckBody,
+              theme.colorScheme.primary,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.lock, ui.infoRequiredTitle,
-                ui.infoRequiredBody, AppTheme.rougeUrgence),
+            _richInfoItem(
+              theme,
+              StepwaysIcons.cadenas,
+              ui.infoRequiredTitle,
+              ui.infoRequiredBody,
+              AppTheme.emergencyRed,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.monitor_weight, ui.infoGaugeTitle,
-                ui.infoGaugeBody, AppTheme.vertFacile),
+            _richInfoItem(
+              theme,
+              StepwaysIcons.weight,
+              ui.infoGaugeTitle,
+              ui.infoGaugeBody,
+              AppTheme.vertFacile,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.add_circle_outline, ui.infoAddTitle,
-                ui.infoAddBody, AppTheme.orangeDifficile),
+            _richInfoItem(
+              theme,
+              StepwaysIcons.plus,
+              ui.infoAddTitle,
+              ui.infoAddBody,
+              AppTheme.orangeDifficile,
+            ),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
@@ -625,8 +747,11 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check_circle,
-                      size: 18, color: AppTheme.vertFacile),
+                  const StepIcon(
+                    StepwaysIcons.cochePleine,
+                    size: 18,
+                    color: AppTheme.vertFacile,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -642,10 +767,12 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             ),
             const SizedBox(height: 16),
             Center(
-              child: TextButton(
+              child: AppButton(
+                variant: AppButtonVariant.text,
+                label: ui.infoUnderstood,
+                labelFontSize: 16,
+                isFullWidth: false,
                 onPressed: () => Navigator.of(sheetCtx).pop(),
-                child: Text(ui.infoUnderstood,
-                    style: const TextStyle(fontSize: 16)),
               ),
             ),
           ],
@@ -654,8 +781,14 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     );
   }
 
-  static Widget _richInfoItem(ThemeData theme, IconData icon, String title,
-      String description, Color accentColor) {
+  /// [icon] est un chemin d'icone Stepways ([StepwaysIcons]), tache 632.
+  static Widget _richInfoItem(
+    ThemeData theme,
+    String icon,
+    String title,
+    String description,
+    Color accentColor,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -665,7 +798,7 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
             color: accentColor.withAlpha(25),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 22, color: accentColor),
+          child: StepIcon(icon, size: 22, color: accentColor),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -683,8 +816,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               const SizedBox(height: 2),
               Text(
                 description,
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(fontSize: 14, height: 1.4),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 14,
+                  height: 1.4,
+                ),
               ),
             ],
           ),
@@ -705,16 +840,18 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         title: Text(checklistT.resetConfirm),
         content: Text(checklistT.resetDescription),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: checklistT.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(checklistT.cancel),
           ),
-          ElevatedButton(
+          AppButton(
+            label: checklistT.confirm,
             onPressed: () {
               ref.read(checklistProvider.notifier).resetAll();
               Navigator.of(ctx).pop();
             },
-            child: Text(checklistT.confirm),
           ),
         ],
       ),

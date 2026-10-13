@@ -1,3 +1,7 @@
+/// L'acces aux donnees du sentier actif, adosse a la base, et surchargeable en
+/// test par un double.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';

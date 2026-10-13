@@ -1,10 +1,16 @@
+/// Le classement d'un segment, LU du cache local du document calcule par le
+/// serveur : l'ecran ne classe rien lui-meme.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/segment_ranking.dart';
 import '../providers/leaderboard_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran leaderboard "Roi de l etape" PAR TRANCHE (F7A-04, Phase 7).
 ///
@@ -31,18 +37,19 @@ class LeaderboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.leaderboard);
     final t = Translations.of(context);
     final rankingAsync = ref.watch(segmentRankingProvider(segmentId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(segmentName ?? t.leaderboard.title),
-      ),
+      appBar: AppBar(title: Text(segmentName ?? t.leaderboard.title)),
       body: SafeArea(
         child: rankingAsync.when(
           data: (ranking) => _RankingBody(ranking: ranking),
-          loading: () =>
-              const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: CircularProgressIndicator()),
           error: (_, __) => _EmptyState(message: t.leaderboard.unavailable),
         ),
       ),
@@ -106,7 +113,7 @@ class _TrancheSection extends StatelessWidget {
           Semantics(
             label: t.leaderboard.notEnoughParticipants,
             child: _InfoCard(
-              icon: Icons.groups_outlined,
+              icon: StepwaysIcons.suiveurs,
               message: t.leaderboard.notEnoughParticipants,
             ),
           )
@@ -157,11 +164,7 @@ class _EntryRow extends StatelessWidget {
             ),
             const SizedBox(width: AppTheme.spacingSm),
             Expanded(
-              child: Text(
-                entry.pseudonym,
-                style: theme.textTheme.bodyLarge,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: Text(entry.pseudonym, style: theme.textTheme.bodyLarge),
             ),
             Text(time, style: theme.textTheme.bodyMedium),
           ],
@@ -188,8 +191,8 @@ class _PseudonymBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.shield_outlined,
+          StepIcon(
+            StepwaysIcons.bouclier,
             size: 20,
             color: theme.colorScheme.onSecondaryContainer,
           ),
@@ -212,7 +215,7 @@ class _PseudonymBanner extends StatelessWidget {
 class _InfoCard extends StatelessWidget {
   const _InfoCard({required this.icon, required this.message});
 
-  final IconData icon;
+  final String icon;
   final String message;
 
   @override
@@ -226,11 +229,9 @@ class _InfoCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: theme.colorScheme.onSurfaceVariant),
+          StepIcon(icon, size: 20, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(message, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(message, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
@@ -252,8 +253,8 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.emoji_events_outlined,
+            StepIcon(
+              StepwaysIcons.diploma,
               size: 64,
               color: theme.colorScheme.outline,
             ),

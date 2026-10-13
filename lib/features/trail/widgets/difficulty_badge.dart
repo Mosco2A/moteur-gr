@@ -1,6 +1,11 @@
+/// La pastille de difficulte, et la table unique qui associe un niveau a sa
+/// couleur : aucun ecran ne refait ce choix.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 
 /// Badge coloré indiquant la difficulté d'une étape.
 ///
@@ -23,7 +28,7 @@ class DifficultyBadge extends StatelessWidget {
       'easy' => AppTheme.vertFacile,
       'moderate' => AppTheme.orangeDifficile,
       'hard' => AppTheme.rougeExtreme,
-      'expert' => const Color(0xFF7B1FA2),
+      'expert' => CouleursSemantiques.violetDifficulteExpert,
       _ => AppTheme.grisGranite,
     };
   }

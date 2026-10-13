@@ -10,6 +10,7 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/checklist_dao.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/features/checklist/data/checklist_template.dart';
 import 'package:moteur_gr/features/checklist/presentation/checklist_screen.dart';
 import 'package:moteur_gr/features/checklist/providers/checklist_provider.dart';
@@ -46,10 +47,12 @@ void main() {
 
     setUp(() {
       db = AppDatabase(NativeDatabase.memory());
-      container = ProviderContainer(overrides: [
-        databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(testTrail),
-      ]);
+      container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trailConfigProvider.overrideWithValue(testTrail),
+        ],
+      );
     });
 
     tearDown(() async {
@@ -62,15 +65,19 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 200));
 
       // Le sac a dos a un poids de reference non nul (parite GR20).
-      final backpackTpl = defaultChecklistTemplate
-          .firstWhere((i) => i.id == 'backpack');
+      final backpackTpl = defaultChecklistTemplate.firstWhere(
+        (i) => i.id == 'backpack',
+      );
       expect(backpackTpl.weightGrams, greaterThan(0));
 
       final dao = ChecklistDao(db);
       final rows = await dao.getByTrailId('test_trail');
       final backpackRow = rows.firstWhere((r) => r.itemId == 'backpack');
-      expect(backpackRow.weightGrams, backpackTpl.weightGrams,
-          reason: 'Le poids de reference doit etre persiste a l init');
+      expect(
+        backpackRow.weightGrams,
+        backpackTpl.weightGrams,
+        reason: 'Le poids de reference doit etre persiste a l init',
+      );
     });
 
     test('le poids total = somme des articles COCHES', () async {
@@ -85,37 +92,43 @@ void main() {
       final backpackWeight = defaultChecklistTemplate
           .firstWhere((i) => i.id == 'backpack')
           .weightGrams;
-      expect(container.read(checklistProvider).checkedWeightGrams,
-          backpackWeight);
+      expect(
+        container.read(checklistProvider).checkedWeightGrams,
+        backpackWeight,
+      );
 
       // Cocher la lampe frontale -> total cumule.
       await container.read(checklistProvider.notifier).toggle('headlamp');
       final headlampWeight = defaultChecklistTemplate
           .firstWhere((i) => i.id == 'headlamp')
           .weightGrams;
-      expect(container.read(checklistProvider).checkedWeightGrams,
-          backpackWeight + headlampWeight);
+      expect(
+        container.read(checklistProvider).checkedWeightGrams,
+        backpackWeight + headlampWeight,
+      );
     });
 
-    test('editer le poids d un article persiste et recalcule le total',
-        () async {
-      container.read(checklistProvider);
-      await Future<void>.delayed(const Duration(milliseconds: 200));
-      await container.read(checklistProvider.notifier).toggle('backpack');
+    test(
+      'editer le poids d un article persiste et recalcule le total',
+      () async {
+        container.read(checklistProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+        await container.read(checklistProvider.notifier).toggle('backpack');
 
-      await container
-          .read(checklistProvider.notifier)
-          .setItemWeight('backpack', 1234);
+        await container
+            .read(checklistProvider.notifier)
+            .setItemWeight('backpack', 1234);
 
-      // Etat recalcule.
-      expect(container.read(checklistProvider).checkedWeightGrams, 1234);
+        // Etat recalcule.
+        expect(container.read(checklistProvider).checkedWeightGrams, 1234);
 
-      // Persistence DB.
-      final dao = ChecklistDao(db);
-      final rows = await dao.getByTrailId('test_trail');
-      final backpackRow = rows.firstWhere((r) => r.itemId == 'backpack');
-      expect(backpackRow.weightGrams, 1234);
-    });
+        // Persistence DB.
+        final dao = ChecklistDao(db);
+        final rows = await dao.getByTrailId('test_trail');
+        final backpackRow = rows.firstWhere((r) => r.itemId == 'backpack');
+        expect(backpackRow.weightGrams, 1234);
+      },
+    );
 
     test('le ratio sac/corps suit le poids corporel', () async {
       container.read(checklistProvider);
@@ -130,8 +143,9 @@ void main() {
   });
 
   group('PARITE GR20 — poids du sac (UI ChecklistScreen)', () {
-    testWidgets('le volet poids et un chip poids par article sont affiches',
-        (tester) async {
+    testWidgets('le volet poids et un chip poids par article sont affiches', (
+      tester,
+    ) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(() async => db.close());
 
@@ -140,6 +154,12 @@ void main() {
           overrides: [
             databaseProvider.overrideWithValue(db),
             trailConfigProvider.overrideWithValue(testTrail),
+            // LE SAC EST BRIDE EN DEMO (tache 594, A2c) : l ecran observe le droit
+            // d achat, qui arrive par un stream Drift. On le resout d office ici —
+            // ce fichier teste le sac, pas le verrou d achat — sinon l annulation
+            // de la souscription laisse un minuteur vivant a la destruction de
+            // l arbre. Le bridage a ses propres tests.
+            isDemoModeProvider.overrideWith((ref, trailId) async => false),
           ],
           // AppHeader (Ph5/L6b) utilise GoRouter -> GoRouter minimal (+ /my-treks).
           child: TranslationProvider(
@@ -152,7 +172,9 @@ void main() {
                     builder: (_, __) => const ChecklistScreen(),
                   ),
                   GoRoute(
-                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                    path: '/my-treks',
+                    builder: (_, __) => const SizedBox(),
+                  ),
                 ],
               ),
             ),
@@ -166,8 +188,7 @@ void main() {
       // Libelle « poids corporel » present (saisie du poids corporel).
       expect(find.text(t.checklist.weight.bodyWeight), findsOneWidget);
       // Au moins un chip poids par article (ex : "1.4 kg" pour le sac a dos).
-      expect(find.textContaining(t.checklist.weight.kilograms),
-          findsWidgets);
+      expect(find.textContaining(t.checklist.weight.kilograms), findsWidgets);
     });
   });
 
@@ -196,10 +217,7 @@ void main() {
         TranslationProvider(
           child: MaterialApp(
             home: Scaffold(
-              body: ChecklistWeightGauge(
-                backpackRatio: ratio,
-                loadBaseKg: 70,
-              ),
+              body: ChecklistWeightGauge(backpackRatio: ratio, loadBaseKg: 70),
             ),
           ),
         ),
@@ -218,10 +236,16 @@ void main() {
       // 1. PLUS DE PLAFOND D'UNE LIGNE, PLUS D'ELLIPSE : structurellement, ce
       //    texte ne peut plus etre ampute.
       final widget = tester.widget<Text>(conseil);
-      expect(widget.maxLines, isNull,
-          reason: 'un conseil ne se limite pas a une ligne');
-      expect(widget.overflow, anyOf(isNull, TextOverflow.visible, TextOverflow.clip),
-          reason: 'plus aucune ellipse sur le conseil');
+      expect(
+        widget.maxLines,
+        isNull,
+        reason: 'un conseil ne se limite pas a une ligne',
+      );
+      expect(
+        widget.overflow,
+        anyOf(isNull, TextOverflow.visible, TextOverflow.clip),
+        reason: 'plus aucune ellipse sur le conseil',
+      );
 
       // 2. ET DANS LES FAITS, A 360 px, RIEN N'EST TRONQUE.
       final paragraphe = tester.renderObject<RenderParagraph>(conseil);
@@ -230,16 +254,21 @@ void main() {
       // 3. IL N'EST PLUS COINCE A DROITE DU POURCENTAGE : il commence au meme
       //    bord gauche que lui (donc pleine largeur), et il est EN DESSOUS.
       final pct = find.textContaining('%').first;
-      expect(tester.getTopLeft(conseil).dx,
-          tester.getTopLeft(find.byType(Text).first).dx,
-          reason: 'le conseil part du bord gauche, comme le pourcentage');
-      expect(tester.getTopLeft(conseil).dy,
-          greaterThan(tester.getTopLeft(pct).dy),
-          reason: 'le conseil est passe SOUS la jauge, plus a cote du chiffre');
+      expect(
+        tester.getTopLeft(conseil).dx,
+        tester.getTopLeft(find.byType(Text).first).dx,
+        reason: 'le conseil part du bord gauche, comme le pourcentage',
+      );
+      expect(
+        tester.getTopLeft(conseil).dy,
+        greaterThan(tester.getTopLeft(pct).dy),
+        reason: 'le conseil est passe SOUS la jauge, plus a cote du chiffre',
+      );
     });
 
-    testWidgets('les reperes 15/20/25 % de la jauge ne sont plus rognes',
-        (tester) async {
+    testWidgets('les reperes 15/20/25 % de la jauge ne sont plus rognes', (
+      tester,
+    ) async {
       await pumpGauge(tester, 0.22);
 
       // Les reperes sont poses en `Positioned(top: 14)` sous une barre de 12 px :
@@ -249,15 +278,17 @@ void main() {
         final f = find.text(repere);
         expect(f, findsOneWidget);
         final bas = tester.getBottomLeft(f).dy;
-        final basDuStack =
-            tester.getBottomLeft(find.byType(Stack).first).dy;
-        expect(bas, lessThanOrEqualTo(basDuStack),
-            reason: '$repere doit tenir dans la hauteur reservee a la jauge');
+        final basDuStack = tester.getBottomLeft(find.byType(Stack).first).dy;
+        expect(
+          bas,
+          lessThanOrEqualTo(basDuStack),
+          reason: '$repere doit tenir dans la hauteur reservee a la jauge',
+        );
       }
     });
 
-    testWidgets('le libelle « poids du corps » peut passer sur deux lignes',
-        (tester) async {
+    testWidgets('le libelle « poids du corps » s ecrit en entier, sans '
+        'plafond de lignes', (tester) async {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(() async => db.close());
 
@@ -284,7 +315,9 @@ void main() {
                     builder: (_, __) => const ChecklistScreen(),
                   ),
                   GoRoute(
-                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                    path: '/my-treks',
+                    builder: (_, __) => const SizedBox(),
+                  ),
                 ],
               ),
             ),
@@ -293,14 +326,35 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Il partage sa ligne avec un champ de 120 px et la pastille de ratio :
-      // sur 360 px il n'a pas toujours de quoi s'ecrire sur une ligne. Deux
-      // lignes lui sont desormais accordees, l'ellipse ne reste qu'en dernier
-      // recours.
+      // TACHE 749 — CE CAS ATTENDAIT UN PLAFOND, IL ATTEND MAINTENANT QU'IL
+      // N'Y EN AIT PLUS.
+      //
+      // Il exigeait `maxLines == 2`, avec en commentaire « l'ellipse ne reste
+      // qu'en dernier recours ». C'etait le bon progres a l'epoque — le
+      // libelle etait alors coupe a UNE ligne — mais deux lignes restent un
+      // plafond, donc un dernier recours qui COUPE. Or le libelle partage sa
+      // ligne avec un champ de 120 px et la pastille de ratio : sur 360 px, et
+      // plus encore chez un randonneur qui a grossi les textes de son
+      // telephone, deux lignes peuvent ne pas suffire.
+      //
+      // La regle du lot 749 est qu'aucun texte n'est coupe. Ce libelle vit
+      // dans une `Row` a hauteur libre : il peut prendre autant de lignes
+      // qu'il en demande. L'intitule de ce groupe — « les textes du Sac se
+      // lisent en entier » — est mieux tenu sans plafond qu'avec un plafond de
+      // deux.
       final libelle = tester.widget<Text>(
         find.text(t.checklist.weight.bodyWeight),
       );
-      expect(libelle.maxLines, 2);
+      expect(
+        libelle.maxLines,
+        isNull,
+        reason: 'aucun plafond de lignes : le libelle s ecrit en entier',
+      );
+      expect(
+        libelle.overflow,
+        isNot(TextOverflow.ellipsis),
+        reason: 'plus de points de suspension sur ce libelle',
+      );
     });
   });
 }

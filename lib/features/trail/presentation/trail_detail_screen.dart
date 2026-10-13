@@ -1,8 +1,12 @@
+/// La fiche d'un sentier et ses etapes, avec ses quatre etats traites :
+/// chargement, erreur, donnee et vide.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/config/trail_selection.dart';
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -11,6 +15,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../providers/stages_provider.dart';
 import '../widgets/stage_list_tile.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran détail d'un sentier.
 ///
@@ -26,6 +31,10 @@ class TrailDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.trailDetail, trail: trailId);
     final config = ref.watch(trailConfigProvider);
     final stagesAsync = ref.watch(stagesProvider(trailId));
     final theme = Theme.of(context);
@@ -41,21 +50,24 @@ class TrailDetailScreen extends ConsumerWidget {
           // Titre de section
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
-            child: SectionHeader(title: 'Étapes', icon: Icons.hiking),
+            child: SectionHeader(
+              title: 'Étapes',
+              icon: StepwaysIcons.chaussure,
+            ),
           ),
           // Liste des étapes (AsyncValue)
           Expanded(
             child: stagesAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => EmptyState(
-                icon: Icons.error_outline,
+                icon: StepwaysIcons.danger,
                 title: t.common.cannotLoadStages,
                 subtitle: error.toString(),
               ),
               data: (stages) {
                 if (stages.isEmpty) {
                   return EmptyState(
-                    icon: Icons.hiking,
+                    icon: StepwaysIcons.chaussure,
                     title: t.common.noStages,
                   );
                 }
@@ -88,21 +100,23 @@ class TrailDetailScreen extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Action primaire : ENTRER dans le sentier (cablage nav #88246).
-              // Active ce sentier (selectedTrailIdProvider) puis ouvre le shell
-              // sur /map -> entree du coeur de l'app depuis le lien profond.
+              // Action primaire : PREPARER le sentier (cablage nav #88246 ;
+              // libelle revu par la tache 639, bug 2). Active ce sentier
+              // (selectedTrailIdProvider) puis ouvre le cockpit de preparation.
+              // Le verbe est le MEME que sur la carte du catalogue : deux mots
+              // pour le meme geste, c'etait deux gestes pour le randonneur.
               SizedBox(
                 width: double.infinity,
                 child: Semantics(
                   button: true,
-                  label: t.catalog.a11y.enterButton(nom: config.displayName),
+                  label: t.catalog.a11y.prepareButton(nom: config.displayName),
                   // SW-SKIN-L3e : FilledButton.icon -> AppButton primary
                   // (arbitrage #A5), pleine largeur (SizedBox width infinity
                   // conserve). key/Semantics(button+label) preserves.
                   child: AppButton(
                     key: const ValueKey('trail-detail-enter'),
-                    icon: Icons.arrow_forward,
-                    label: t.catalog.enter,
+                    icon: StepwaysIcons.programme,
+                    label: t.catalog.prepare,
                     onPressed: () => _enterTrail(context, ref),
                   ),
                 ),
@@ -118,7 +132,7 @@ class TrailDetailScreen extends ConsumerWidget {
                   Expanded(
                     child: AppButton(
                       variant: AppButtonVariant.outline,
-                      icon: Icons.calendar_month,
+                      icon: StepwaysIcons.calendrier,
                       label: 'Planifier',
                       onPressed: () => context.push('/trail/$trailId/planning'),
                     ),
@@ -127,7 +141,7 @@ class TrailDetailScreen extends ConsumerWidget {
                   Expanded(
                     child: AppButton(
                       variant: AppButtonVariant.outline,
-                      icon: Icons.terrain,
+                      icon: StepwaysIcons.sommet,
                       label: 'Voir la carte',
                       onPressed: () => context.push('/trail/$trailId/map'),
                     ),
@@ -152,7 +166,8 @@ class TrailDetailScreen extends ConsumerWidget {
   /// et la planification restent accessibles ici via les actions SECONDAIRES
   /// « Voir la carte » / « Planifier ».
   void _enterTrail(BuildContext context, WidgetRef ref) {
-    ref.read(selectedTrailIdProvider.notifier).state = trailId;
+    // Bascule resolue AVANT la navigation (cf. [chooseTrail]).
+    chooseTrail(ref, trailId);
     context.go('/home');
   }
 }
@@ -195,14 +210,18 @@ class _TrailHeader extends StatelessWidget {
             spacing: AppTheme.spacingBase,
             runSpacing: AppTheme.spacingXs,
             children: [
-              _InfoChip(icon: Icons.place, label: config.region, theme: theme),
               _InfoChip(
-                icon: Icons.straighten,
+                icon: StepwaysIcons.repere,
+                label: config.region,
+                theme: theme,
+              ),
+              _InfoChip(
+                icon: StepwaysIcons.distance,
                 label: '${config.totalDistanceKm} km',
                 theme: theme,
               ),
               _InfoChip(
-                icon: Icons.trending_up,
+                icon: StepwaysIcons.denivelePlus,
                 label: '${config.totalElevationGain} m D+',
                 theme: theme,
               ),
@@ -222,7 +241,7 @@ class _InfoChip extends StatelessWidget {
     required this.theme,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final ThemeData theme;
 
@@ -232,7 +251,7 @@ class _InfoChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ExcludeSemantics(
-          child: Icon(icon, size: 16, color: theme.colorScheme.primary),
+          child: StepIcon(icon, size: 16, color: theme.colorScheme.primary),
         ),
         const SizedBox(width: 4),
         Text(

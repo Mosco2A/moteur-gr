@@ -30,8 +30,9 @@ void main() {
     );
   }
 
-  testWidgets('affiche titre, message et les deux actions localises',
-      (tester) async {
+  testWidgets('affiche titre, message et les deux actions localises', (
+    tester,
+  ) async {
     await tester.pumpWidget(harness((_) {}));
     await tester.tap(find.text('OPEN'));
     await tester.pumpAndSettle();
@@ -75,14 +76,17 @@ void main() {
     expect(result, ResumeOrphanChoice.abandon);
   });
 
-  testWidgets('non dismissible : un tap sur la barriere ne ferme pas',
-      (tester) async {
+  testWidgets('non dismissible : un tap sur la barriere ne ferme pas', (
+    tester,
+  ) async {
     ResumeOrphanChoice? result;
     var resolved = false;
-    await tester.pumpWidget(harness((c) {
-      result = c;
-      resolved = true;
-    }));
+    await tester.pumpWidget(
+      harness((c) {
+        result = c;
+        resolved = true;
+      }),
+    );
     await tester.tap(find.text('OPEN'));
     await tester.pumpAndSettle();
 

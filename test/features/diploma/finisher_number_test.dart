@@ -17,8 +17,11 @@ void main() {
       );
 
       expect(number, startsWith('SW-20260616-'));
-      expect(RegExp(r'^SW-\d{8}-[0-9A-F]{4}$').hasMatch(number), isTrue,
-          reason: 'Forme SW-AAAAMMJJ-XXXX, lisible et recopiable a la main');
+      expect(
+        RegExp(r'^SW-\d{8}-[0-9A-F]{4}$').hasMatch(number),
+        isTrue,
+        reason: 'Forme SW-AAAAMMJJ-XXXX, lisible et recopiable a la main',
+      );
     });
 
     test('STABLE : la meme session rend toujours le meme numero', () {

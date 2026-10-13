@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/config/mare_a_mare_centre_trail_config.dart';
 import 'package:moteur_gr/core/config/pyrenees_trail_config.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
@@ -16,8 +19,11 @@ void main() {
     test('contient au moins 2 sentiers de regions differentes', () {
       expect(TrailCatalog.all.length, greaterThanOrEqualTo(2));
       final regions = TrailCatalog.all.map((c) => c.region).toSet();
-      expect(regions.length, greaterThanOrEqualTo(2),
-          reason: 'les sentiers doivent couvrir des regions distinctes');
+      expect(
+        regions.length,
+        greaterThanOrEqualTo(2),
+        reason: 'les sentiers doivent couvrir des regions distinctes',
+      );
     });
 
     test('ids uniques et non vides', () {
@@ -32,7 +38,31 @@ void main() {
       final pyr = TrailCatalog.byId(pyreneesTrailConfig.id)!;
       expect(pyr.region, equals('Pyrenees'));
       expect(pyr.totalStages, greaterThan(0));
-      expect(pyr.gpxAssetPath, endsWith('.gpx'));
+    });
+
+    test('UNE TRACE DECLAREE EXISTE VRAIMENT — cette garde remplace celle qui '
+        'a laisse passer le defaut (tache 607)', () {
+      // CE QUE CE TEST VERIFIAIT AVANT, ET POURQUOI CA NE SUFFISAIT PAS.
+      // L assertion etait `expect(pyr.gpxAssetPath, endsWith('.gpx'))` : elle
+      // controlait la FORME d un chemin, jamais son existence. Or `gr-pyrenees`
+      // declarait `assets/gpx/gr_pyrenees.gpx`, fichier ABSENT du depot (mesure
+      // du 27/09 22:25 : `assets/gpx/` ne contient que `.gitkeep` et
+      // `test_trail.gpx`). Ce sentier etait donc au catalogue AVEC AUCUNE
+      // TRACE, et la carte affichait « impossible de charger la trace ». Un
+      // test vert sur un produit casse est pire qu un test absent.
+      for (final trail in TrailCatalog.all) {
+        if (trail.gpxAssetPath.isEmpty) continue;
+        expect(
+          File(trail.gpxAssetPath).existsSync(),
+          isTrue,
+          reason:
+              '${trail.id} declare « ${trail.gpxAssetPath} », absent du '
+              'depot. Un asset DECLARE qui ne se lit pas est une ERREUR a '
+              'l affichage de la carte, volontairement : mieux vaut un chemin '
+              'VIDE — une absence NOMMEE, que la carte sait traiter — qu un '
+              'chemin qui ment.',
+        );
+      }
     });
 
     test('les sentiers AUTRES que la demo restent neutres (genericite #84627)', () {
@@ -43,9 +73,26 @@ void main() {
       // du catalogue restent neutres (aucune localite Corse cablee), et surtout
       // le MOTEUR ne hardcode rien (cf. test dedie plus bas). On borne donc
       // l'interdiction aux sentiers != demo par defaut.
-      const interdits = ['corse', 'corsica', 'mare a mare', 'mare-a-mare', 'mam'];
-      final autres = TrailCatalog.all
-          .where((c) => c.id != TrailCatalog.defaultTrail.id);
+      //
+      // TACHE 601 : le catalogue porte maintenant DEUX entrees Mare a Mare — le
+      // sentier payant et le sentier de demonstration GRATUIT, dont les donnees
+      // sont celles du premier. Le sentier gratuit a le meme droit que celui
+      // qu'il fait decouvrir a nommer sa vraie localite : c'est une DONNEE, et
+      // la genericite du moteur se prouve ailleurs (test dedie plus bas).
+      const interdits = [
+        'corse',
+        'corsica',
+        'mare a mare',
+        'mare-a-mare',
+        'mam',
+      ];
+      final sentiersMareAMare = <String>{
+        TrailCatalog.defaultTrail.id,
+        ...TrailCatalog.freeIds,
+      };
+      final autres = TrailCatalog.all.where(
+        (c) => !sentiersMareAMare.contains(c.id),
+      );
       for (final c in autres) {
         final blob = [
           c.id,
@@ -56,25 +103,42 @@ void main() {
           c.country,
         ].join(' ').toLowerCase();
         for (final mot in interdits) {
-          expect(blob.contains(mot), isFalse,
-              reason: 'config ${c.id} contient "$mot" (hardcode Corse interdit '
-                  'hors sentier de demo)');
+          expect(
+            blob.contains(mot),
+            isFalse,
+            reason:
+                'config ${c.id} contient "$mot" (hardcode Corse interdit '
+                'hors sentier de demo)',
+          );
         }
       }
     });
 
     test('byId retrouve une config connue, null sinon', () {
-      expect(TrailCatalog.byId(testTrailConfig.id), isNotNull);
+      expect(TrailCatalog.byId(mareAMareCentreTrailConfig.id), isNotNull);
       expect(TrailCatalog.byId('sentier-inexistant'), isNull);
+      // TACHE 793 — CETTE LIGNE INTERROGEAIT `testTrailConfig` ET ATTENDAIT
+      // isNotNull, PARCE QUE LE SENTIER FICTIF ETAIT ALORS AU CATALOGUE. Il
+      // n y est plus : un sentier qui se declare invente est ecarte par
+      // `TrailCatalog.all`, donc introuvable par identifiant — exactement comme
+      // un sentier qui n existe pas. L assertion n est pas retiree, elle est
+      // RETOURNEE, et c est le changement qu il fallait prouver ici.
+      expect(TrailCatalog.byId(testTrailConfig.id), isNull);
     });
 
     test('resolveOrDefault retombe sur le defaut si id invalide/null', () {
-      expect(TrailCatalog.resolveOrDefault(null).id,
-          TrailCatalog.defaultTrail.id);
-      expect(TrailCatalog.resolveOrDefault('zzz').id,
-          TrailCatalog.defaultTrail.id);
-      expect(TrailCatalog.resolveOrDefault(pyreneesTrailConfig.id).id,
-          pyreneesTrailConfig.id);
+      expect(
+        TrailCatalog.resolveOrDefault(null).id,
+        TrailCatalog.defaultTrail.id,
+      );
+      expect(
+        TrailCatalog.resolveOrDefault('zzz').id,
+        TrailCatalog.defaultTrail.id,
+      );
+      expect(
+        TrailCatalog.resolveOrDefault(pyreneesTrailConfig.id).id,
+        pyreneesTrailConfig.id,
+      );
     });
 
     test('defaultTrail est le premier du catalogue', () {
@@ -115,8 +179,10 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      expect(container.read(trailConfigProvider).id,
-          TrailCatalog.defaultTrail.id);
+      expect(
+        container.read(trailConfigProvider).id,
+        TrailCatalog.defaultTrail.id,
+      );
     });
 
     test('changer la selection bascule la config active (F8D-02)', () {
@@ -132,8 +198,10 @@ void main() {
       expect(active.region, 'Pyrenees');
       // trailIdProvider / trailNameProvider suivent la bascule.
       expect(container.read(trailIdProvider), pyreneesTrailConfig.id);
-      expect(container.read(trailNameProvider),
-          pyreneesTrailConfig.displayName);
+      expect(
+        container.read(trailNameProvider),
+        pyreneesTrailConfig.displayName,
+      );
     });
 
     test('une selection invalide retombe sur le defaut (robustesse)', () {
@@ -141,21 +209,28 @@ void main() {
       addTearDown(container.dispose);
 
       container.read(selectedTrailIdProvider.notifier).state = 'obsolete';
-      expect(container.read(trailConfigProvider).id,
-          TrailCatalog.defaultTrail.id);
+      expect(
+        container.read(trailConfigProvider).id,
+        TrailCatalog.defaultTrail.id,
+      );
     });
 
     test('override de trailConfigProvider prime sur la selection', () {
       final container = ProviderContainer(
-        overrides: [
-          trailConfigProvider.overrideWithValue(pyreneesTrailConfig),
-        ],
+        overrides: [trailConfigProvider.overrideWithValue(pyreneesTrailConfig)],
       );
       addTearDown(container.dispose);
 
       // Meme si la selection pointe ailleurs, l'override gagne (mono-sentier).
+      //
+      // TACHE 793 — LA SELECTION VISAIT LE SENTIER FICTIF, ET CE TEST AURAIT
+      // SURVECU EN NE PROUVANT PLUS RIEN. Depuis son retrait du catalogue,
+      // `test-trail` est un identifiant INVALIDE : la selection serait retombee
+      // sur le defaut, et l assertion aurait passe sans jamais opposer
+      // l override a une selection vivante. On vise donc le sentier par defaut,
+      // qui est bien au catalogue et bien different de l override.
       container.read(selectedTrailIdProvider.notifier).state =
-          testTrailConfig.id;
+          mareAMareCentreTrailConfig.id;
       expect(container.read(trailConfigProvider).id, pyreneesTrailConfig.id);
     });
 

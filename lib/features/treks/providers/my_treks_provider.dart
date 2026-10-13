@@ -1,9 +1,14 @@
+/// La liste de l'accueil : les treks achetes reunis a ceux de la vitrine,
+/// chacun avec son etat.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../trek/domain/models/trek_session.dart';
+import '../../../domain/trek_session.dart';
+import '../../../domain/trek_session_mapping.dart';
 import '../domain/trek_lifecycle_state.dart';
 import '../domain/trek_state_deriver.dart';
 import '../domain/trek_summary.dart';
@@ -31,9 +36,7 @@ final myTreksProvider = FutureProvider<List<TrekSummary>>((ref) async {
 
   // Catalogue via le provider (overridable en test + futur catalogue distant),
   // coherent avec `ownedTrailIdsProvider` (jamais le catalogue statique en dur).
-  final catalog = {
-    for (final c in ref.watch(availableTrailsProvider)) c.id: c,
-  };
+  final catalog = {for (final c in ref.watch(availableTrailsProvider)) c.id: c};
 
   final summaries = <TrekSummary>[];
   for (final trailId in ownedIds) {
@@ -49,12 +52,14 @@ final myTreksProvider = FutureProvider<List<TrekSummary>>((ref) async {
       hasPlanningOrProgress: hasPlanningOrProgress,
     );
 
-    summaries.add(TrekSummary(
-      config: config,
-      state: state,
-      latestSession: latestSession,
-      progress: progress,
-    ));
+    summaries.add(
+      TrekSummary(
+        config: config,
+        state: state,
+        latestSession: latestSession,
+        progress: progress,
+      ),
+    );
   }
 
   _sortForHome(summaries);

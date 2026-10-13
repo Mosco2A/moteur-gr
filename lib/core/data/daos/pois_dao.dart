@@ -1,3 +1,7 @@
+/// Points d'interet descendus avec le sentier, relus par sentier ou par etape ;
+/// l'ecriture se fait en lot, a la pose du sentier.
+library;
+
 import 'package:drift/drift.dart';
 
 import '../database.dart';
@@ -20,12 +24,9 @@ class PoisDao extends DatabaseAccessor<AppDatabase> with _$PoisDaoMixin {
 
   /// Recupere les POI d'une etape specifique
   Future<List<Poi>> getByStage(String trailId, int stageNumber) {
-    return (select(pois)
-          ..where(
-            (t) =>
-                t.trailId.equals(trailId) &
-                t.stageNumber.equals(stageNumber),
-          ))
+    return (select(pois)..where(
+          (t) => t.trailId.equals(trailId) & t.stageNumber.equals(stageNumber),
+        ))
         .get();
   }
 

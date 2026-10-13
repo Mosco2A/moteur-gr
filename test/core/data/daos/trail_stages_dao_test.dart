@@ -70,7 +70,12 @@ void main() {
 
     test('getByItineraryId retourne les etapes triees par numero', () async {
       await dao.insertOrReplace(
-        makeStage(id: 's3', itineraryId: 'it1', stageNumber: 3, nameFr: 'Trois'),
+        makeStage(
+          id: 's3',
+          itineraryId: 'it1',
+          stageNumber: 3,
+          nameFr: 'Trois',
+        ),
       );
       await dao.insertOrReplace(
         makeStage(id: 's1', itineraryId: 'it1', stageNumber: 1, nameFr: 'Un'),
@@ -125,16 +130,18 @@ void main() {
     });
 
     test('les champs i18n sont corrects apres insertion', () async {
-      await dao.insertOrReplace(makeStage(
-        id: 's1',
-        itineraryId: 'it1',
-        stageNumber: 1,
-        nameFr: 'Calenzana - Ortu di u Piobbu',
-        nameEn: 'Calenzana to Ortu di u Piobbu',
-        nameDe: 'Calenzana nach Ortu di u Piobbu',
-        nameIt: 'Calenzana - Ortu di u Piobbu',
-        nameEs: 'Calenzana a Ortu di u Piobbu',
-      ));
+      await dao.insertOrReplace(
+        makeStage(
+          id: 's1',
+          itineraryId: 'it1',
+          stageNumber: 1,
+          nameFr: 'Calenzana - Ortu di u Piobbu',
+          nameEn: 'Calenzana to Ortu di u Piobbu',
+          nameDe: 'Calenzana nach Ortu di u Piobbu',
+          nameIt: 'Calenzana - Ortu di u Piobbu',
+          nameEs: 'Calenzana a Ortu di u Piobbu',
+        ),
+      );
 
       final result = await dao.getById('s1');
       expect(result!.nameFr, 'Calenzana - Ortu di u Piobbu');
@@ -145,16 +152,18 @@ void main() {
     });
 
     test('les champs numeriques sont corrects apres insertion', () async {
-      await dao.insertOrReplace(makeStage(
-        id: 's1',
-        itineraryId: 'it1',
-        stageNumber: 1,
-        distanceKm: 15.5,
-        elevationGain: 1200,
-        elevationLoss: 800,
-        durationMinutes: 480,
-        difficulty: 'hard',
-      ));
+      await dao.insertOrReplace(
+        makeStage(
+          id: 's1',
+          itineraryId: 'it1',
+          stageNumber: 1,
+          distanceKm: 15.5,
+          elevationGain: 1200,
+          elevationLoss: 800,
+          durationMinutes: 480,
+          difficulty: 'hard',
+        ),
+      );
 
       final result = await dao.getById('s1');
       expect(result!.distanceKm, 15.5);

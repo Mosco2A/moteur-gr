@@ -1,3 +1,7 @@
+/// Un contact d'urgence, qu'il soit saisi par le marcheur ou fourni par la
+/// region — les deux cas ont la meme forme.
+library;
+
 // E5.14a — Modele contact d'urgence.
 //
 // Represente un contact d'urgence avec nom, telephone, priorite

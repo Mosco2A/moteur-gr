@@ -1,3 +1,7 @@
+/// Recopie la progression dans les prefs partagees pour que la vignette native
+/// de l'ecran d'accueil puisse la lire.
+library;
+
 // E5.19a — Service donnees widget Home Screen progression trek.
 //
 // Met a jour SharedPreferences avec les donnees de progression

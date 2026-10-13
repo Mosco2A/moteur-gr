@@ -18,12 +18,12 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// valeur reste bien la recommandation (independante du contenu du sac).
 void main() {
   Widget wrap(double bodyWeightKg) => TranslationProvider(
-        child: MaterialApp(
-          home: Scaffold(
-            body: ChecklistRecommendationBanner(bodyWeightKg: bodyWeightKg),
-          ),
-        ),
-      );
+    child: MaterialApp(
+      home: Scaffold(
+        body: ChecklistRecommendationBanner(bodyWeightKg: bodyWeightKg),
+      ),
+    ),
+  );
 
   /// Texte reellement rendu par le bandeau.
   String texteDuBandeau(WidgetTester tester) {
@@ -44,22 +44,25 @@ void main() {
     expect(
       texte.contains(t.checklist.weight.title),
       isFalse,
-      reason: 'ce bandeau montre une recommandation, pas le poids du sac : '
+      reason:
+          'ce bandeau montre une recommandation, pas le poids du sac : '
           'reutiliser le libelle du sac fait dire au bandeau le contraire de '
           'ce qu il affiche (finding M3bis). Texte rendu : "$texte"',
     );
   });
 
-  testWidgets('le bandeau porte le libelle dedie « poids recommande »',
-      (tester) async {
+  testWidgets('le bandeau porte le libelle dedie « poids recommande »', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap(89));
     await tester.pumpAndSettle();
 
     expect(texteDuBandeau(tester), startsWith(t.checklist.weight.recommended));
   });
 
-  testWidgets('la valeur reste la recommandation (15 % du corps)',
-      (tester) async {
+  testWidgets('la valeur reste la recommandation (15 % du corps)', (
+    tester,
+  ) async {
     // 100 kg -> 15 kg, au-dessus du plancher refuge de 8 kg.
     await tester.pumpWidget(wrap(100));
     await tester.pumpAndSettle();

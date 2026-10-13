@@ -1,3 +1,7 @@
+/// L'etat de l'enregistrement expose a l'ecran, immuable, pour qu'aucun ecran
+/// n'en invente un intermediaire.
+library;
+
 import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
@@ -10,6 +14,8 @@ import '../../../core/data/database.dart';
 import '../../../core/providers/database_provider.dart';
 import '../domain/tracking_engine.dart';
 import '../models/tracking_status.dart';
+import '../../../core/services/session_demo.dart';
+import '../../trek/trek_facade.dart' show positionControllerProvider;
 
 /// Etat immutable du tracking expose a l UI.
 class TrackingState {
@@ -89,12 +95,10 @@ class TrackingNotifier extends Notifier<TrackingState> {
       durationSec: 0,
       speedKmh: 0.0,
     );
-    _locationSub = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((position) {
+    // Lot 671-00 : le suivi s'abonne au robinet unique GPS (profil carte).
+    _locationSub = ref.read(positionControllerProvider).positions.listen((
+      position,
+    ) {
       if (_engine.isPaused) {
         return;
       }
@@ -107,17 +111,21 @@ class TrackingNotifier extends Notifier<TrackingState> {
       // (lu par le recap diplome) — robuste a un arret brutal.
       // L3-1 : chaque point porte sa session et son jour de marche.
       final now = DateTime.now();
-      unawaited(traceDao.insertPoint(
-        trailId: trailId,
-        lat: position.latitude,
-        lng: position.longitude,
-        altitude: position.altitude,
-        recordedAt: now,
-        sessionId: _sessionId,
-        dayIndex: _startedAt == null
-            ? null
-            : SessionTrackPointsDao.dayIndexFor(_startedAt!, now),
-      ));
+      unawaited(
+        traceDao.insertPoint(
+          trailId: trailId,
+          lat: position.latitude,
+          lng: position.longitude,
+          altitude: position.altitude,
+          // Un releve du robinet GPS : origine reelle (lot 671-03).
+          source: TrackPointSource.gps,
+          recordedAt: now,
+          sessionId: _sessionId,
+          dayIndex: _startedAt == null
+              ? null
+              : SessionTrackPointsDao.dayIndexFor(_startedAt!, now),
+        ),
+      );
       _updateState();
     });
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -163,6 +171,8 @@ class TrackingNotifier extends Notifier<TrackingState> {
 
   /// Sauvegarde la progression dans la DB Drift.
   Future<void> _saveProgress() async {
+    // DEMO : aucune progression ecrite (tache 634, DEM-260929-1123).
+    if (ref.read(enDemoProvider)) return;
     if (_trailId.isEmpty) {
       return;
     }
@@ -172,16 +182,21 @@ class TrackingNotifier extends Notifier<TrackingState> {
     final prevDistKm = existing?.totalDistanceWalkedKm ?? 0.0;
     final prevElevM = existing?.totalElevationGainedM ?? 0;
     final prevTimeMin = existing?.totalTimeMinutes ?? 0;
-    await dao.upsert(UserProgressEntriesCompanion(
-      trailId: Value(_trailId),
-      totalDistanceWalkedKm:
-          Value(prevDistKm + _engine.distanceMeters / 1000),
-      totalElevationGainedM:
-          Value(prevElevM + _engine.elevationGainM.round()),
-      totalTimeMinutes:
-          Value(prevTimeMin + (_engine.durationSeconds / 60).round()),
-      startedAt: Value(existing?.startedAt ?? DateTime.now()),
-    ));
+    await dao.upsert(
+      UserProgressEntriesCompanion(
+        trailId: Value(_trailId),
+        totalDistanceWalkedKm: Value(
+          prevDistKm + _engine.distanceMeters / 1000,
+        ),
+        totalElevationGainedM: Value(
+          prevElevM + _engine.elevationGainM.round(),
+        ),
+        totalTimeMinutes: Value(
+          prevTimeMin + (_engine.durationSeconds / 60).round(),
+        ),
+        startedAt: Value(existing?.startedAt ?? DateTime.now()),
+      ),
+    );
   }
 
   void _updateState() {
@@ -195,5 +210,6 @@ class TrackingNotifier extends Notifier<TrackingState> {
 }
 
 /// Provider du tracking GPS.
-final trackingProvider =
-    NotifierProvider<TrackingNotifier, TrackingState>(TrackingNotifier.new);
+final trackingProvider = NotifierProvider<TrackingNotifier, TrackingState>(
+  TrackingNotifier.new,
+);

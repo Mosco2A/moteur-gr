@@ -1,9 +1,14 @@
+/// Le risque incendie en sept sections, entierement pilote par les donnees du
+/// sentier.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/network/connectivity_monitor.dart';
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -12,6 +17,8 @@ import '../domain/fire_risk.dart';
 import '../providers/current_stage_provider.dart';
 import '../providers/fire_risk_providers.dart';
 import '../providers/weather_providers.dart';
+import 'weather_freshness.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran RISQUE INCENDIE (parite GR20 `FireRiskScreen`, data-driven — regle
 /// « donnees en externe » de Christophe #99460).
@@ -19,25 +26,26 @@ import '../providers/weather_providers.dart';
 /// Clone strict de l'ecran GR20 (7 sections) :
 ///   1. AppBar « Risque incendie » + bouton refresh ;
 ///   2. bandeau MAJ (source + fraicheur des donnees, horodatage, rafraichir) ;
-///   3. bandeau source FWI (indice Fire Weather Index, Open-Meteo / Meteo-France) ;
-///   4. section Reglementation (fond orange) — DATA-DRIVEN par sentier
-///      ([trailFireRegulationProvider]) : periode, region, message, URL viennent
-///      de la config du sentier ; masquee proprement si absente ;
-///   5. legende des 5 niveaux (Faible -> Extreme, couleurs semantiques AppTheme) ;
-///   6. risque par etape : etapes a risque (niveau >= 1) triees decroissant,
-///      badge « E{n} », nom, badge « Niv. X », detail par jour ;
-///   7. numeros utiles tappables (tel:) — DATA-DRIVEN : 18/112 universels +
-///      secours regionaux de [TrailConfig.emergencyNumbers].
+///   3. bandeau source FWI (indice Fire Weather Index, Open-Meteo /
+/// Meteo-France) ;   4. section Reglementation (fond orange) — DATA-DRIVEN par
+/// sentier      ([trailFireRegulationProvider]) : periode, region, message, URL
+/// viennent      de la config du sentier ; masquee proprement si absente ;   5.
+/// legende des 5 niveaux (Faible -> Extreme, couleurs semantiques AppTheme) ;
+/// 6. risque par etape : etapes a risque (niveau >= 1) triees decroissant,
+/// badge « E{n} », nom, badge « Niv. X », detail par jour ;   7. numeros utiles
+/// tappables (tel:) — DATA-DRIVEN : 18/112 universels +      secours regionaux
+/// de [TrailConfig.emergencyNumbers].
 ///
 /// Le NIVEAU de risque est DERIVE de la meteo (parite GR20) : le socle meteo
-/// StepWays ([stageWeatherProvider], coords dynamiques + cache/API) est reutilise
-/// et le niveau 0-5 calcule par [calculateFireRiskLevel] (algorithme GR20), agrege
-/// par etape via [trailFireRiskProvider]. Le moteur reste GENERIQUE multi-sentiers
-/// (#84627), zero hardcode de localite ni de « GR20/Corse ». Fallback gracieux :
-/// pas de donnees meteo -> ecran informatif propre (pas de crash) ; reglementation
-/// absente -> section masquee. Hors peau : couleurs semantiques d'AppTheme. Tout
-/// libelle d'INTERFACE passe par Slang (`t.fireRisk.*`, 5 langues) ; a11y
-/// (`Semantics`) sur numeros tappables et lien prefecture.
+/// StepWays ([stageWeatherProvider], coords dynamiques + cache/API) est
+/// reutilise et le niveau 0-5 calcule par [calculateFireRiskLevel] (algorithme
+/// GR20), agrege par etape via [trailFireRiskProvider]. Le moteur reste
+/// GENERIQUE multi-sentiers (#84627), zero hardcode de localite ni de «
+/// GR20/Corse ». Fallback gracieux : pas de donnees meteo -> ecran informatif
+/// propre (pas de crash) ; reglementation absente -> section masquee. Hors peau
+/// : couleurs semantiques d'AppTheme. Tout libelle d'INTERFACE passe par Slang
+/// (`t.fireRisk.*`, 5 langues) ; a11y (`Semantics`) sur numeros tappables et
+/// lien prefecture.
 class FireRiskScreen extends ConsumerWidget {
   const FireRiskScreen({super.key, required this.trailId});
 
@@ -47,18 +55,23 @@ class FireRiskScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.fireRisk, trail: trailId);
     final t = Translations.of(context);
     final theme = Theme.of(context);
     final state = ref.watch(trailFireRiskProvider(trailId));
 
     return Scaffold(
-      // Ph5 (L6c) : AppHeader universel (back centralise pop/accueil + Android).
-      // Le leading custom (Navigator.pop) est retire ; action refresh conservee.
+      // Ph5 (L6c) : AppHeader universel (back centralise pop/accueil +
+      // Android). Le leading custom (Navigator.pop) est retire ; action refresh
+      // conservee.
       appBar: AppHeader(
         title: t.fireRisk.title,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const StepIcon(StepwaysIcons.rafraichir),
             tooltip: t.fireRisk.refresh,
             onPressed: () => _refreshAll(context, ref),
           ),
@@ -85,8 +98,9 @@ class FireRiskScreen extends ConsumerWidget {
 
     // Fallback gracieux : aucune prevision meteo exploitable (offline + pas de
     // cache) -> ecran informatif propre (parite « ecran informatif », pas de
-    // crash). La section reglementation/numeros n'a pas de sens sans le contexte
-    // risque ; on montre un etat vide scrollable (pull-to-refresh reste actif).
+    // crash). La section reglementation/numeros n'a pas de sens sans le
+    // contexte risque ; on montre un etat vide scrollable (pull-to-refresh
+    // reste actif).
     if (!state.hasAnyForecast && !state.isLoading) {
       return _FireRiskEmptyState(trailId: trailId);
     }
@@ -99,8 +113,12 @@ class FireRiskScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 2. Bandeau MAJ (source + fraicheur).
-          _UpdateBanner(trailId: trailId),
+          // 2. Bandeau MAJ (source + fraicheur). Son bouton fait EXACTEMENT ce
+          // que fait celui de la barre de titre (tache 572, U3).
+          _UpdateBanner(
+            trailId: trailId,
+            onRefresh: () => _refreshAll(context, ref),
+          ),
           const SizedBox(height: AppTheme.spacingLg),
 
           // 3. Bandeau source FWI (transparence).
@@ -113,8 +131,8 @@ class FireRiskScreen extends ConsumerWidget {
           // 5. Legende des niveaux.
           SectionHeader(
             title: t.fireRisk.levelsTitle,
-            icon: Icons.local_fire_department,
-            iconColor: AppTheme.rougeUrgence,
+            icon: StepwaysIcons.incendie,
+            iconColor: AppTheme.emergencyRed,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           _Legend(theme: theme, t: t),
@@ -123,23 +141,25 @@ class FireRiskScreen extends ConsumerWidget {
           // 6. Risque par etape.
           SectionHeader(
             title: t.fireRisk.stagesTitle,
-            icon: Icons.map_outlined,
+            icon: StepwaysIcons.map,
             iconColor: AppTheme.orangeDifficile,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           if (stagesAtRisk.isEmpty)
             _NoRiskCard(theme: theme, t: t)
           else
-            ...stagesAtRisk.map((s) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-                  child: _StageFireCard(stage: s, theme: theme, t: t),
-                )),
+            ...stagesAtRisk.map(
+              (s) => Padding(
+                padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+                child: _StageFireCard(stage: s, theme: theme, t: t),
+              ),
+            ),
           const SizedBox(height: AppTheme.spacingLg),
 
           // 7. Numeros utiles (data-driven).
           SectionHeader(
             title: t.fireRisk.numbersTitle,
-            icon: Icons.phone,
+            icon: StepwaysIcons.telephone,
             iconColor: theme.colorScheme.secondary,
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -151,36 +171,87 @@ class FireRiskScreen extends ConsumerWidget {
   }
 
   /// Rafraichit la meteo de TOUTES les etapes du sentier (parite GR20
-  /// `forceRefresh`). Le socle StepWays est par etape : on relance le refresh de
-  /// chaque etape resolue. [silent] : pas de SnackBar (pull-to-refresh).
+  /// `forceRefresh`). Le socle StepWays est par etape : on relance le refresh
+  /// de chaque etape resolue. [silent] : pas de SnackBar (pull-to-refresh).
+  ///
+  /// TACHE 572 (U3) — « indendie MAJ ne produit rien ». Le mecanisme partait
+  /// bien : chaque etape appelait Open-Meteo et reecrivait son cache. Deux
+  /// choses le rendaient invisible, et les deux sont corrigees ici.
+  ///
+  /// 1. LE MESSAGE MENTAIT. Quand `trailFireRiskProvider.stages` etait vide —
+  ///    etapes pas encore chargees, ou sentier hors ligne sans cache — la
+  /// boucle    devenait `Future.wait([])` : ZERO appel, et l'ecran affichait
+  /// quand meme    « Donnees mises a jour ». Un succes annonce pour un travail
+  /// non fait est    exactement ce que Chris a lu comme « ne produit rien ». On
+  /// compte    desormais ce qui a REELLEMENT abouti et on l'annonce : rien a
+  /// faire,    partiel, ou reussi avec l'heure du releve. 2. LE `try/catch`
+  /// ETAIT AVEUGLE. `refresh()` ne levait jamais : un echec    reseau
+  /// retournait `null` en interne et repartait en silence. Le `catch`    ne
+  /// pouvait donc pas se declencher, et le SnackBar d'erreur etait du code
+  /// mort. `refresh()` rend maintenant un booleen, et c'est lui qu'on lit.
   Future<void> _refreshAll(
     BuildContext context,
     WidgetRef ref, {
     bool silent = false,
   }) async {
     final t = Translations.of(context);
+    final messenger = silent ? null : ScaffoldMessenger.of(context);
     final stages = ref.read(trailFireRiskProvider(trailId)).stages;
-    try {
-      await Future.wait([
-        for (final s in stages)
-          ref
-              .read(stageWeatherProvider(WeatherStageParams(
+
+    if (stages.isEmpty) {
+      messenger?.showSnackBar(
+        SnackBar(content: Text(t.fireRisk.refreshNothing)),
+      );
+      return;
+    }
+
+    final results = await Future.wait([
+      for (final s in stages)
+        ref
+            .read(
+              stageWeatherProvider(
+                WeatherStageParams(
+                  trailId: trailId,
+                  stageNumber: s.stageNumber,
+                ),
+              ).notifier,
+            )
+            .refresh(),
+    ]);
+
+    if (messenger == null || !context.mounted) return;
+    final ok = results.where((r) => r).length;
+    if (ok == 0) {
+      messenger.showSnackBar(SnackBar(content: Text(t.fireRisk.refreshError)));
+    } else if (ok < results.length) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            t.fireRisk.refreshPartial(done: ok, total: results.length),
+          ),
+        ),
+      );
+    } else {
+      final at = ref
+          .read(
+            stageWeatherProvider(
+              WeatherStageParams(
                 trailId: trailId,
-                stageNumber: s.stageNumber,
-              )).notifier)
-              .refresh(),
-      ]);
-      if (!silent && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.fireRisk.refreshed)),
-        );
-      }
-    } catch (_) {
-      if (!silent && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.fireRisk.refreshError)),
-        );
-      }
+                stageNumber: stages.first.stageNumber,
+              ),
+            ),
+          )
+          .forecast
+          ?.fetchedAt;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            t.fireRisk.refreshedAt(
+              date: at == null ? '-' : formatFetchedAt(at),
+            ),
+          ),
+        ),
+      );
     }
   }
 }
@@ -189,72 +260,69 @@ class FireRiskScreen extends ConsumerWidget {
 // 2. Bandeau MAJ — fraicheur/source des donnees (parite GR20 « Derniere MAJ »).
 // ---------------------------------------------------------------------------
 
-/// Bandeau de fraicheur des donnees (parite GR20 : 4 cas — live / cache recent /
-/// cache ancien / jamais). StepWays derive la fraicheur de la date de la
-/// prevision de l'etape de reference + de l'etat cache/connectivite du socle.
+/// Bandeau de fraicheur des donnees (parite GR20 : live / recent / ancien /
+/// jamais).
+///
+/// TACHE 572 (U3) — ICI ETAIT LA CAUSE, ET ELLE TIENT EN UNE LIGNE. Ce bandeau
+/// calculait TOUT son texte sur `forecast.days.first.date`, c'est-a-dire le
+/// JOUR DU BULLETIN (aujourd'hui a 00:00), pas l'instant du releve. Il
+/// affichait donc « Derniere MAJ : 26/09/2026 00:00 » a neuf heures du matin
+/// comme a six heures du soir, avant comme apres un rafraichissement REUSSI :
+/// le texte etait identique au caractere pres. L'appel partait, le cache etait
+/// reecrit, le provider etait mis a jour — et la seule chose a l'ecran capable
+/// de le montrer racontait autre chose. C'est ca, « MAJ ne produit rien ».
+///
+/// Le bandeau lit desormais [WeatherForecast.fetchedAt], l'instant du releve,
+/// via la source unique [weatherFreshness]. Et son bouton rafraichit TOUT le
+/// sentier (comme celui de la barre de titre) et non plus la seule etape de
+/// reference : deux boutons cote a cote qui ne font pas la meme chose, c'est
+/// une autre facon de ne rien produire.
 class _UpdateBanner extends ConsumerWidget {
-  const _UpdateBanner({required this.trailId});
+  const _UpdateBanner({required this.trailId, required this.onRefresh});
 
   final String trailId;
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Translations.of(context);
     final theme = Theme.of(context);
 
-    // Etape de reference (1 par defaut) : porte la date de prevision servant
-    // d'horodatage global (parite GR20 : MAJ globale du lot meteo).
+    // Etape de reference : porte l'horodatage global du lot meteo (parite
+    // GR20).
     final refStage = ref.watch(referenceStageNumberProvider);
     final params = WeatherStageParams(trailId: trailId, stageNumber: refStage);
     final weather = ref.watch(stageWeatherProvider(params));
-    final online = ref.watch(connectivityProvider).value ==
-        ConnectivityStatusValues.online;
 
-    final firstDay = weather.forecast?.days.isNotEmpty == true
-        ? weather.forecast!.days.first
-        : null;
-
-    final String label;
-    final Color color;
-    if (firstDay == null) {
-      // Aucune donnee horodatee -> jamais mis a jour (cas fallback GR20).
-      color = AppTheme.rougeUrgence;
-      label = t.fireRisk.update.never;
-    } else if (!weather.isFromCache && online) {
-      // Donnees live (API).
-      color = AppTheme.vertFacile;
-      label = t.fireRisk.update.liveAt(date: _formatDate(firstDay.date));
-    } else {
-      // Cache : recent (< 3h) ou ancien (parite GR20 : seuil 3h).
-      final diff = DateTime.now().difference(firstDay.date);
-      if (diff.inHours < 3) {
-        color = AppTheme.jauneModere;
-        label = t.fireRisk.update
-            .cacheRecent(duration: _formatDuration(diff, t));
-      } else {
-        color = AppTheme.orangeDifficile;
-        label = t.fireRisk.update.cacheOld(date: _formatDate(firstDay.date));
-      }
-    }
+    final freshness = weatherFreshness(
+      fetchedAt: weather.forecast?.fetchedAt,
+      t: t,
+    );
+    final color = switch (freshness.level) {
+      FreshnessLevel.fresh => AppTheme.vertFacile,
+      FreshnessLevel.recent => AppTheme.jauneModere,
+      FreshnessLevel.stale => AppTheme.orangeDifficile,
+      FreshnessLevel.unknown => AppTheme.emergencyRed,
+    };
 
     return AppCard(
       child: Row(
         children: [
-          Icon(Icons.update, size: 16, color: color),
+          StepIcon(StepwaysIcons.miseAJour, size: 16, color: color),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
-              label,
+              freshness.label,
               style: theme.textTheme.bodySmall?.copyWith(color: color),
             ),
           ),
           TextButton.icon(
-            onPressed: () => ref
-                .read(stageWeatherProvider(params).notifier)
-                .refresh(),
-            icon: const Icon(Icons.refresh, size: 14),
-            label: Text(t.fireRisk.refresh,
-                style: const TextStyle(fontSize: 12)),
+            onPressed: onRefresh,
+            icon: const StepIcon(StepwaysIcons.rafraichir, size: 14),
+            label: Text(
+              t.fireRisk.refresh,
+              style: const TextStyle(fontSize: 12),
+            ),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               minimumSize: Size.zero,
@@ -290,7 +358,7 @@ class _FwiSourceBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.info_outline, size: 18, color: accent),
+          StepIcon(StepwaysIcons.info, size: 18, color: accent),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -341,8 +409,11 @@ class _RegulationSection extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.gavel,
-                      size: 18, color: AppTheme.orangeDifficile),
+                  const StepIcon(
+                    StepwaysIcons.loi,
+                    size: 18,
+                    color: AppTheme.orangeDifficile,
+                  ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Text(
                     t.fireRisk.regulation.title,
@@ -370,8 +441,11 @@ class _RegulationSection extends ConsumerWidget {
                     onTap: () => _openUrl(regulation.decreeUrl!),
                     child: Row(
                       children: [
-                        Icon(Icons.open_in_new,
-                            size: 14, color: theme.colorScheme.secondary),
+                        StepIcon(
+                          StepwaysIcons.lien,
+                          size: 14,
+                          color: theme.colorScheme.secondary,
+                        ),
                         const SizedBox(width: AppTheme.spacingXs),
                         Flexible(
                           child: Text(
@@ -440,16 +514,23 @@ class _Legend extends StatelessWidget {
               child: Text(
                 '$level',
                 style: TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w700, color: color),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                ),
               ),
             ),
           ),
           const SizedBox(width: AppTheme.spacingMd),
-          Icon(Icons.local_fire_department, size: 16, color: color),
+          StepIcon(StepwaysIcons.incendie, size: 16, color: color),
           const SizedBox(width: AppTheme.spacingSm),
-          Text(label,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: color, fontWeight: FontWeight.w600)),
+          Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
@@ -473,14 +554,18 @@ class _NoRiskCard extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Icon(Icons.check_circle,
-                size: 40, color: AppTheme.vertFacile.withAlpha(180)),
+            StepIcon(
+              StepwaysIcons.cochePleine,
+              size: 40,
+              color: AppTheme.vertFacile.withAlpha(180),
+            ),
             const SizedBox(height: AppTheme.spacingSm),
             Text(
               t.fireRisk.noRisk,
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.vertFacile),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.vertFacile,
+              ),
             ),
           ],
         ),
@@ -517,32 +602,54 @@ class _StageFireCard extends StatelessWidget {
               // Badge « E{n} ».
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm,
-                    vertical: AppTheme.spacingXs),
+                  horizontal: AppTheme.spacingSm,
+                  vertical: AppTheme.spacingXs,
+                ),
                 decoration: BoxDecoration(
                   color: AppTheme.vertFacile.withAlpha(40),
                   borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                 ),
                 child: Text(
                   t.fireRisk.stageBadge(number: stage.stageNumber),
-                  style: theme.textTheme.labelLarge
-                      ?.copyWith(color: AppTheme.vertFacile, fontSize: 12),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: AppTheme.vertFacile,
+                    fontSize: 12,
+                  ),
                 ),
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
-                child: Text(
-                  stage.stageName,
-                  style: theme.textTheme.titleLarge?.copyWith(fontSize: 14),
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      stage.stageName,
+                      style: theme.textTheme.titleLarge?.copyWith(fontSize: 14),
+                    ),
+                    // TACHE 572 : le LIEU ou le risque est evalue, nomme. Le
+                    // socle meteo interroge le point d'ARRIVEE de l'etape ;
+                    // dire « niveau 4 » sans dire OU ne permet pas de se mefier
+                    // au bon endroit. Masque si le sentier ne fournit pas le
+                    // nom.
+                    if (stage.arrivalName != null &&
+                        stage.arrivalName!.trim().isNotEmpty)
+                      Text(
+                        t.fireRisk.stagePlace(place: stage.arrivalName!),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withAlpha(160),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               // Badge « Niv. X » (niveau max).
               Semantics(
                 label: t.fireRisk.a11y.levelBadge(level: maxLevel),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: color.withAlpha(30),
                     borderRadius: BorderRadius.circular(AppTheme.radiusChip),
@@ -551,14 +658,15 @@ class _StageFireCard extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.local_fire_department, size: 14, color: color),
+                      StepIcon(StepwaysIcons.incendie, size: 14, color: color),
                       const SizedBox(width: 4),
                       Text(
                         t.fireRisk.levelBadge(level: maxLevel),
                         style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: color),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: color,
+                        ),
                       ),
                     ],
                   ),
@@ -574,15 +682,20 @@ class _StageFireCard extends StatelessWidget {
               return Expanded(
                 child: Column(
                   children: [
-                    Text(_dayLabel(d.dayIndex, t),
-                        style: theme.textTheme.bodySmall
-                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    Text(
+                      _dayLabel(d.dayIndex, t),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Icon(Icons.local_fire_department, size: 20, color: dColor),
+                    StepIcon(StepwaysIcons.incendie, size: 20, color: dColor),
                     Text(
                       t.fireRisk.dayLevel(level: d.level),
-                      style: theme.textTheme.labelSmall
-                          ?.copyWith(color: dColor, fontWeight: FontWeight.w700),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: dColor,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ],
                 ),
@@ -627,13 +740,16 @@ class _EmergencyNumbers extends ConsumerWidget {
   }
 
   Widget _row(BuildContext context, FireEmergencyNumber n) {
-    // Libelle : cle i18n pour les numeros universels (18/112), donnee du sentier
-    // pour les secours regionaux (langue de la donnee).
-    final label = n.isUniversal ? _universalLabel(n.labelKey!, t) : n.labelData!;
+    // Libelle : cle i18n pour les numeros universels (18/112), donnee du
+    // sentier pour les secours regionaux (langue de la donnee).
+    final label = n.isUniversal
+        ? _universalLabel(n.labelKey!, t)
+        : n.labelData!;
     // Couleur : rouge urgence pour les universels, orange pour les regionaux
     // (parite esprit GR20 : hierarchie visuelle 18/112 vs local).
-    final color =
-        n.isUniversal ? AppTheme.rougeUrgence : AppTheme.orangeDifficile;
+    final color = n.isUniversal
+        ? AppTheme.emergencyRed
+        : AppTheme.orangeDifficile;
 
     return Semantics(
       button: true,
@@ -644,22 +760,26 @@ class _EmergencyNumbers extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
           child: Row(
             children: [
-              Icon(Icons.phone, size: 18, color: color),
+              StepIcon(StepwaysIcons.telephone, size: 18, color: color),
               const SizedBox(width: AppTheme.spacingMd),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(label,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w600)),
-                    Text(n.phone,
-                        style:
-                            theme.textTheme.bodySmall?.copyWith(color: color)),
+                    Text(
+                      label,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      n.phone,
+                      style: theme.textTheme.bodySmall?.copyWith(color: color),
+                    ),
                   ],
                 ),
               ),
-              Icon(Icons.call, size: 20, color: color),
+              StepIcon(StepwaysIcons.telephone, size: 20, color: color),
             ],
           ),
         ),
@@ -696,19 +816,25 @@ class _FireRiskEmptyState extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.spacingXl),
       children: [
         const SizedBox(height: 80),
-        Icon(Icons.local_fire_department,
-            size: 72, color: AppTheme.grisGranite.withAlpha(80)),
+        StepIcon(
+          StepwaysIcons.incendie,
+          size: 72,
+          color: AppTheme.grisGranite.withAlpha(80),
+        ),
         const SizedBox(height: AppTheme.spacingLg),
         Text(
           t.fireRisk.empty.title,
-          style: theme.textTheme.titleLarge?.copyWith(color: AppTheme.grisGranite),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: AppTheme.grisGranite,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppTheme.spacingSm),
         Text(
           t.fireRisk.empty.message,
-          style: theme.textTheme.bodyMedium
-              ?.copyWith(color: AppTheme.grisGranite.withAlpha(180)),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: AppTheme.grisGranite.withAlpha(180),
+          ),
           textAlign: TextAlign.center,
         ),
       ],
@@ -733,22 +859,24 @@ Color fireRiskColor(int level) {
     case 3:
       return AppTheme.orangeDifficile;
     case 4:
-      return AppTheme.rougeUrgence;
+      return AppTheme.emergencyRed;
     case >= 5:
-      return const Color(0xFF8B0000);
+      return CouleursSemantiques.rougeSombreRisqueFeuExtreme;
     default:
       return AppTheme.grisGranite;
   }
 }
 
-/// Libelle d'un jour (parite GR20 : Aujourd'hui / Demain / J+n), resolu via Slang.
+/// Libelle d'un jour (parite GR20 : Aujourd'hui / Demain / J+n), resolu via
+/// Slang.
 String _dayLabel(int index, Translations t) {
   if (index == 0) return t.fireRisk.day.today;
   if (index == 1) return t.fireRisk.day.tomorrow;
   return t.fireRisk.day.plus(n: index);
 }
 
-/// Libelle d'un numero universel (18/112) resolu via Slang depuis sa cle stable.
+/// Libelle d'un numero universel (18/112) resolu via Slang depuis sa cle
+/// stable.
 String _universalLabel(String key, Translations t) {
   switch (key) {
     case FireEmergencyLabelKeys.firefighters:
@@ -760,22 +888,11 @@ String _universalLabel(String key, Translations t) {
   }
 }
 
-/// Formate une date en JJ/MM/AAAA HH:MM (parite GR20 `_formatDate`).
-String _formatDate(DateTime dt) {
-  return '${dt.day.toString().padLeft(2, '0')}/'
-      '${dt.month.toString().padLeft(2, '0')}/'
-      '${dt.year} '
-      '${dt.hour.toString().padLeft(2, '0')}:'
-      '${dt.minute.toString().padLeft(2, '0')}';
-}
-
-/// Formate une duree en texte lisible via Slang (parite GR20 `_formatDuration`).
-String _formatDuration(Duration diff, Translations t) {
-  if (diff.inMinutes < 1) return t.fireRisk.duration.seconds;
-  if (diff.inMinutes < 60) return t.fireRisk.duration.minutes(n: diff.inMinutes);
-  if (diff.inHours < 24) return t.fireRisk.duration.hours(n: diff.inHours);
-  return t.fireRisk.duration.days(n: diff.inDays);
-}
+// TACHE 572 — `_formatDate` et `_formatDuration` ont ete RETIREES d'ici : elles
+// dupliquaient, pour cet ecran seul, un formatage de fraicheur que l'ecran
+// meteo refaisait de son cote. Les deux copies faisaient la meme erreur
+// (horodater sur le jour du bulletin). Il n'y a plus qu'une source :
+// `weather_freshness.dart`.
 
 /// Ouvre une URL en application externe (parite GR20 : lien prefecture).
 Future<void> _openUrl(String urlStr) async {

@@ -36,20 +36,24 @@ void main() {
       );
 
       // Lecture DIRECTE des prefs : les valeurs ecrites sont la
-      expect(prefs.getString(WidgetDataService.keyTrailName),
-          equals('Sentier des Volcans'));
-      expect(prefs.getString(WidgetDataService.keyStageName),
-          equals('Etape 3 - Crete des Puys'));
-      expect(prefs.getDouble(WidgetDataService.keyStageProgress),
-          equals(0.45));
-      expect(prefs.getDouble(WidgetDataService.keyDistanceRemaining),
-          equals(5200.0));
+      expect(
+        prefs.getString(WidgetDataService.keyTrailName),
+        equals('Sentier des Volcans'),
+      );
+      expect(
+        prefs.getString(WidgetDataService.keyStageName),
+        equals('Etape 3 - Crete des Puys'),
+      );
+      expect(prefs.getDouble(WidgetDataService.keyStageProgress), equals(0.45));
+      expect(
+        prefs.getDouble(WidgetDataService.keyDistanceRemaining),
+        equals(5200.0),
+      );
       expect(prefs.getInt(WidgetDataService.keyEtaMinutes), equals(120));
       expect(prefs.getDouble(WidgetDataService.keyAltitude), equals(1465.0));
       expect(prefs.getInt(WidgetDataService.keyStageIndex), equals(3));
       expect(prefs.getInt(WidgetDataService.keyTotalStages), equals(5));
-      expect(prefs.getInt(WidgetDataService.keyThemeColor),
-          equals(0xFF8B4513));
+      expect(prefs.getInt(WidgetDataService.keyThemeColor), equals(0xFF8B4513));
       expect(prefs.getString(WidgetDataService.keyLastUpdate), isNotEmpty);
 
       // Round-trip via l'API du service
@@ -70,12 +74,10 @@ void main() {
         stageIndex: 3,
         totalStages: 5,
       );
-      expect(prefs.getDouble(WidgetDataService.keyStageProgress),
-          equals(1.0));
+      expect(prefs.getDouble(WidgetDataService.keyStageProgress), equals(1.0));
     });
 
-    test('MAJ apres flush -- donnees rafraichies a chaque ecriture',
-        () async {
+    test('MAJ apres flush -- donnees rafraichies a chaque ecriture', () async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
       final service = WidgetDataService(prefs: prefs);
@@ -91,8 +93,7 @@ void main() {
         stageIndex: 2,
         totalStages: 5,
       );
-      final firstUpdate =
-          prefs.getString(WidgetDataService.keyLastUpdate);
+      final firstUpdate = prefs.getString(WidgetDataService.keyLastUpdate);
       expect(service.getWidgetData()['stageProgress'], equals(0.20));
 
       // Deuxieme flush : la position a avance
@@ -113,8 +114,7 @@ void main() {
       expect(data['distanceRemaining'], equals(5400.0));
       expect(data['etaMinutes'], equals(130));
       expect(data['altitude'], equals(1320.0));
-      expect(prefs.getString(WidgetDataService.keyLastUpdate),
-          isNotNull);
+      expect(prefs.getString(WidgetDataService.keyLastUpdate), isNotNull);
       expect(firstUpdate, isNotNull);
 
       // clearWidgetData efface tout (fin de trek)

@@ -38,5 +38,5 @@ class StagePoiChecksNotifier extends Notifier<Set<int>> {
 
 final stagePoiChecksProvider =
     NotifierProvider<StagePoiChecksNotifier, Set<int>>(
-  StagePoiChecksNotifier.new,
-);
+      StagePoiChecksNotifier.new,
+    );

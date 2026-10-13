@@ -1,3 +1,7 @@
+/// Le souvenir que l'accueil a deja ete vu : une cle de preference, pour ne pas
+/// le rejouer a chaque lancement.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

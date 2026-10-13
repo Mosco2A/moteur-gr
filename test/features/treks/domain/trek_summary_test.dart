@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart' show UserProgressEntry;
-import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
+import 'package:moteur_gr/domain/trek_session.dart';
 import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
 
@@ -28,32 +28,30 @@ void main() {
     List<String> completed = const [],
     DateTime? startedAt,
     DateTime? finishedAt,
-  }) =>
-      TrekSession(
-        id: 'sess-1',
-        trailId: 'gr20',
-        startedAt: startedAt ?? DateTime.utc(2026, 6, 15, 8),
-        finishedAt: finishedAt,
-        status: status,
-        completedStages: completed,
-      );
+  }) => TrekSession(
+    id: 'sess-1',
+    trailId: 'gr20',
+    startedAt: startedAt ?? DateTime.utc(2026, 6, 15, 8),
+    finishedAt: finishedAt,
+    status: status,
+    completedStages: completed,
+  );
 
   UserProgressEntry progress({
     int currentStage = 1,
     DateTime? startedAt,
     DateTime? completedAt,
-  }) =>
-      UserProgressEntry(
-        id: 1,
-        trailId: 'gr20',
-        currentStage: currentStage,
-        totalDistanceWalkedKm: 0,
-        totalElevationGainedM: 0,
-        totalTimeMinutes: 0,
-        isCompleted: completedAt != null,
-        startedAt: startedAt,
-        completedAt: completedAt,
-      );
+  }) => UserProgressEntry(
+    id: 1,
+    trailId: 'gr20',
+    currentStage: currentStage,
+    totalDistanceWalkedKm: 0,
+    totalElevationGainedM: 0,
+    totalTimeMinutes: 0,
+    isCompleted: completedAt != null,
+    startedAt: startedAt,
+    completedAt: completedAt,
+  );
 
   group('progressFraction', () {
     test('completed -> 1.0 quelles que soient les etapes', () {
@@ -103,9 +101,7 @@ void main() {
       final summary = TrekSummary(
         config: config,
         state: TrekLifecycleState.inProgress,
-        latestSession: session(
-          completed: List.generate(20, (i) => 's$i'),
-        ),
+        latestSession: session(completed: List.generate(20, (i) => 's$i')),
       );
       expect(summary.progressFraction, 1.0);
     });

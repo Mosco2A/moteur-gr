@@ -1,6 +1,12 @@
+/// Le registre des types de repere communautaire : une icone, une couleur et
+/// une cle de libelle par type, plus un repli generique.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../data/waypoint_service.dart';
+import '../../../core/branding/stepways_icons.dart';
+import '../../../core/theme/couleurs_semantiques.dart';
 
 /// Style visuel associe a un type de waypoint communautaire (F8A-04).
 ///
@@ -14,7 +20,7 @@ class WaypointTypeStyle {
   });
 
   /// Icone Material pour ce type.
-  final IconData icon;
+  final String icon;
 
   /// Couleur associee a ce type.
   final Color color;
@@ -32,41 +38,43 @@ class WaypointTypeConfig {
   WaypointTypeConfig._();
 
   static const Map<String, WaypointTypeStyle> _styles = {
+    // MEME CORRECTION QUE LE REGISTRE DES POINTS D'INTERET (tache 772) : un
+    // repere d'eau se dessine en GOUTTE. Il portait le nuage de la meteo.
     WaypointType.eau: WaypointTypeStyle(
-      icon: Icons.water_drop,
-      color: Color(0xFF1565C0),
+      icon: StepwaysIcons.pointEau,
+      color: CouleursSemantiques.pointEau,
       labelKey: 'eau',
     ),
     WaypointType.ravitaillement: WaypointTypeStyle(
-      icon: Icons.shopping_basket,
-      color: Color(0xFF2E7D32),
+      icon: StepwaysIcons.panier,
+      color: CouleursSemantiques.pointRavitaillement,
       labelKey: 'ravitaillement',
     ),
     WaypointType.danger: WaypointTypeStyle(
-      icon: Icons.warning_amber_rounded,
-      color: Color(0xFFC62828),
+      icon: StepwaysIcons.danger,
+      color: CouleursSemantiques.pointDanger,
       labelKey: 'danger',
     ),
     WaypointType.camp: WaypointTypeStyle(
-      icon: Icons.holiday_village,
-      color: Color(0xFF558B2F),
+      icon: StepwaysIcons.hebergement,
+      color: CouleursSemantiques.bivouacPoint,
       labelKey: 'camp',
     ),
     WaypointType.connectivite: WaypointTypeStyle(
-      icon: Icons.signal_cellular_alt,
-      color: Color(0xFF6A1B9A),
+      icon: StepwaysIcons.sansReseau,
+      color: CouleursSemantiques.pointConnectivite,
       labelKey: 'connectivite',
     ),
     WaypointType.jonction: WaypointTypeStyle(
-      icon: Icons.alt_route,
-      color: Color(0xFFE65100),
+      icon: StepwaysIcons.itineraire,
+      color: CouleursSemantiques.pointJonction,
       labelKey: 'jonction',
     ),
   };
 
   static const _fallback = WaypointTypeStyle(
-    icon: Icons.place,
-    color: Color(0xFF616161),
+    icon: StepwaysIcons.repere,
+    color: CouleursSemantiques.pointInconnu,
     labelKey: 'autre',
   );
 

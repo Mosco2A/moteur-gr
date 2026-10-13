@@ -1,3 +1,7 @@
+/// Reglages fins d'itineraire, conserves pour l'ecran avance : le NOMBRE de
+/// jours ne vient plus d'ici mais de la source unique de duree.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
@@ -5,8 +9,8 @@ import '../../../core/engine/trail_engine.dart';
 import '../domain/models/feasibility_profile.dart';
 import '../domain/models/itinerary_config.dart';
 import '../domain/models/itinerary_day.dart';
-import '../../planning/models/planned_day.dart';
-import '../../planning/providers/planned_days_provider.dart';
+import '../../../domain/planned_day.dart';
+import '../../planning/planning_facade.dart' show plannedDaysProvider;
 
 /// Configuration d'itineraire (LEGACY — conservee pour l'ecran de configuration
 /// avance `ItineraryConfigScreen`).
@@ -69,9 +73,9 @@ final itineraryProvider = FutureProvider<List<ItineraryDay>>((ref) async {
 /// par [PlannedDay] (source unique [stageDurationMinutes] pour la duree). Un jour
 /// de repos devient un [ItineraryDay] sans etape (l'ecran affiche « repos »).
 ItineraryDay _toItineraryDay(PlannedDay day) => ItineraryDay(
-      dayNumber: day.dayNumber,
-      stages: List.unmodifiable(day.stages),
-      totalDistance: day.totalDistanceKm,
-      totalElevation: day.totalElevationGainM,
-      estimatedHours: day.estimatedHours,
-    );
+  dayNumber: day.dayNumber,
+  stages: List.unmodifiable(day.stages),
+  totalDistance: day.totalDistanceKm,
+  totalElevation: day.totalElevationGainM,
+  estimatedHours: day.estimatedHours,
+);

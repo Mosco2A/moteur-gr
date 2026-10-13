@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:moteur_gr/features/trek/presentation/map/marker_cluster.dart';
+import 'package:moteur_gr/core/branding/stepways_icons.dart';
 
 /// Tests E5.2a — clustering de marqueurs + epsilon Douglas-Peucker dynamique.
 ///
@@ -45,7 +46,8 @@ void main() {
       expect(
         sw.elapsedMicroseconds,
         lessThan(16000),
-        reason: 'Le clustering de 100 marqueurs doit tenir dans un budget '
+        reason:
+            'Le clustering de 100 marqueurs doit tenir dans un budget '
             'de frame (<16 ms). Mesure = ${sw.elapsedMicroseconds} us.',
       );
       // A ce zoom, l'agregation doit avoir reduit le nombre de marqueurs.
@@ -94,19 +96,31 @@ void main() {
 
       final lats = agg.points.map((p) => p.position.latitude);
       final lngs = agg.points.map((p) => p.position.longitude);
-      expect(agg.position.latitude,
-          inInclusiveRange(lats.reduce((a, b) => a < b ? a : b),
-              lats.reduce((a, b) => a > b ? a : b)));
-      expect(agg.position.longitude,
-          inInclusiveRange(lngs.reduce((a, b) => a < b ? a : b),
-              lngs.reduce((a, b) => a > b ? a : b)));
+      expect(
+        agg.position.latitude,
+        inInclusiveRange(
+          lats.reduce((a, b) => a < b ? a : b),
+          lats.reduce((a, b) => a > b ? a : b),
+        ),
+      );
+      expect(
+        agg.position.longitude,
+        inInclusiveRange(
+          lngs.reduce((a, b) => a < b ? a : b),
+          lngs.reduce((a, b) => a > b ? a : b),
+        ),
+      );
     });
 
     test('cellSizeForZoom decroit avec le zoom', () {
-      expect(MarkerClusterer.cellSizeForZoom(8),
-          greaterThan(MarkerClusterer.cellSizeForZoom(12)));
-      expect(MarkerClusterer.cellSizeForZoom(12),
-          greaterThan(MarkerClusterer.cellSizeForZoom(16)));
+      expect(
+        MarkerClusterer.cellSizeForZoom(8),
+        greaterThan(MarkerClusterer.cellSizeForZoom(12)),
+      );
+      expect(
+        MarkerClusterer.cellSizeForZoom(12),
+        greaterThan(MarkerClusterer.cellSizeForZoom(16)),
+      );
     });
   });
 
@@ -116,23 +130,31 @@ void main() {
       expect(dynamicEpsilonForZoom(18), equals(0.0));
     });
 
-    test('epsilon strictement decroissant dans la zone non plafonnee (z>=9)',
-        () {
-      var previous = double.infinity;
-      for (var z = 9; z <= 14; z++) {
-        final eps = dynamicEpsilonForZoom(z);
-        expect(eps, lessThan(previous),
-            reason: 'epsilon doit decroitre quand le zoom augmente (z=$z)');
-        previous = eps;
-      }
-    });
+    test(
+      'epsilon strictement decroissant dans la zone non plafonnee (z>=9)',
+      () {
+        var previous = double.infinity;
+        for (var z = 9; z <= 14; z++) {
+          final eps = dynamicEpsilonForZoom(z);
+          expect(
+            eps,
+            lessThan(previous),
+            reason: 'epsilon doit decroitre quand le zoom augmente (z=$z)',
+          );
+          previous = eps;
+        }
+      },
+    );
 
     test('epsilon monotone non croissant sur toute la plage', () {
       var previous = double.infinity;
       for (var z = 1; z <= 15; z++) {
         final eps = dynamicEpsilonForZoom(z);
-        expect(eps, lessThanOrEqualTo(previous),
-            reason: 'epsilon ne doit jamais augmenter avec le zoom (z=$z)');
+        expect(
+          eps,
+          lessThanOrEqualTo(previous),
+          reason: 'epsilon ne doit jamais augmenter avec le zoom (z=$z)',
+        );
         previous = eps;
       }
     });
@@ -150,8 +172,9 @@ void main() {
   });
 
   group('ClusteredMarkerLayer — integration flutter_map', () {
-    testWidgets('100 marqueurs : la couche se construit sans erreur',
-        (tester) async {
+    testWidgets('100 marqueurs : la couche se construit sans erreur', (
+      tester,
+    ) async {
       final points = List.generate(
         100,
         (i) => ClusterPoint<int>(
@@ -179,7 +202,7 @@ void main() {
                       point: point.position,
                       width: 20,
                       height: 20,
-                      child: const Icon(Icons.place),
+                      child: const StepIcon(StepwaysIcons.repere),
                     ),
                   ),
                 ],

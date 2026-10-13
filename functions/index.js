@@ -16,9 +16,16 @@
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { onDocumentWritten } from 'firebase-functions/v2/firestore';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { logger } from 'firebase-functions';
 
 import { buildSegmentRanking, buildDefiRanking } from './ranking.js';
 import { planModeration } from './moderation.js';
+import { lireConfiguration, ConfigurationRefusee } from './collecteur/config.js';
+import { Depot } from './collecteur/depot_firestore.js';
+import { collecterLaMeteo, collecterLeRisqueIncendie, surveiller } from './collecteur/collecte.js';
+import { sectionDeBattement, resumeDeFamille, ISSUE } from './collecteur/battement.js';
+import { ouvrirPassage } from './collecteur/horodatage.js';
 
 initializeApp();
 const db = getFirestore();
@@ -137,4 +144,118 @@ export const moderationWorkflow = onDocumentWritten(
     // 2. Expose des motifs (art 17) destine a l'auteur du contenu restreint.
     await db.collection('moderation_decisions').add(plan.statement);
   },
+);
+
+// ============================================================================
+// LE COLLECTEUR SERVEUR (tache 624, conception 611)
+// ============================================================================
+//
+// DECISION DE CHRISTOPHE DU 28/09, verbatim : « il y a un gros chantier qui est
+// mise a jour des donnees sentiers, meteo, incendie. Je ne veux pas que se soit
+// l appli qui fasse ca mais notre serveur qui mette a jour les donnees. »
+//
+// Ces trois planifications sont les PREMIERES `onSchedule` du depot. Elles
+// occupent exactement l'allocation gratuite de Cloud Scheduler : trois taches par
+// mois et par COMPTE DE FACTURATION (#S13) — pas par projet. Si un autre projet de
+// Christophe en consomme deja, celles-ci sont facturees 0,10 $ par tache et par
+// 31 jours : ce n'est pas un probleme, mais c'est une surprise, donc c'est dit.
+//
+// LE COLLECTEUR N'EST PAS DEPLOYE PAR CE LOT. Voir functions/collecteur/README
+// pour la marche a suivre le jour ou Christophe le decide.
+//
+// Region europe-west1 : meme region que Firestore et le stockage. Une fonction
+// dans une autre region paierait un aller-retour transatlantique a chaque
+// ecriture, et les donnees d'un service europeen n'ont rien a faire ailleurs.
+const REGION = 'europe-west1';
+
+/// Ce que fait TOUT passage, meme quand sa configuration est refusee.
+///
+/// #H2 : le battement est ecrit a CHAQUE execution, succes ou echec. Un refus de
+/// configuration qui ne battrait pas serait indiscernable d'un collecteur mort —
+/// et c'est justement la panne que le battement existe pour rendre visible.
+async function executerUnPassage(tache, action) {
+  const depotSansConfig = new Depot(db);
+  let configuration;
+  try {
+    configuration = lireConfiguration(process.env);
+  } catch (e) {
+    if (!(e instanceof ConfigurationRefusee)) throw e;
+    logger.error(`collecteur/${tache}: configuration refusee`, { message: e.message, variable: e.variable });
+    await depotSansConfig.battre(tache, sectionDeBattement({
+      tache,
+      passage: ouvrirPassage({ nom: tache }),
+      familles: {
+        configuration: resumeDeFamille({ issue: ISSUE.echec, detail: e.message }),
+      },
+      erreur: e.message,
+    }));
+    return;
+  }
+
+  const depot = new Depot(db, { aBlanc: configuration.aBlanc });
+  try {
+    const bilan = await action({ depot, configuration });
+    logger.info(`collecteur/${tache}: passage termine`, {
+      instant: bilan.passage?.instant,
+      compte: bilan.compte ?? null,
+      alertes: bilan.alertes?.length ?? null,
+      ecrituresFaites: depot.ecrituresFaites,
+      octetsEcrits: depot.octetsEcrits,
+      aBlanc: configuration.aBlanc,
+    });
+  } catch (e) {
+    // Un echec inattendu N'EFFACE RIEN et NE BOUCLE PAS : il bat, il journalise,
+    // et le passage suivant reprendra. La donnee de la veille reste en place.
+    logger.error(`collecteur/${tache}: echec du passage`, { message: e?.message ?? String(e) });
+    await depot.battre(tache, sectionDeBattement({
+      tache,
+      passage: ouvrirPassage({ nom: tache }),
+      familles: { passage: resumeDeFamille({ issue: ISSUE.echec, detail: e?.message ?? String(e) }) },
+      erreur: e?.message ?? String(e),
+    }));
+  }
+}
+
+/// METEO — toutes les quatre heures (#W5).
+///
+/// Quatre heures, et la raison est double : c'est la cadence que Christophe a
+/// fixee au telephone (« ensuite toutes les 4 heures par exemple »), donc
+/// collecter plus souvent ne servirait personne ; et MET Norway annonce lui-meme
+/// sa peremption (`Expires` mesure a +31 min), donc quatre heures reste tres
+/// au-dessus de ce qu'il tolere. HORS SAISON, LA CADENCE EST LA MEME : le cout est
+/// nul et une meteo absente coute plus cher qu'une collecte inutile.
+export const collecteMeteo = onSchedule(
+  { schedule: '0 */4 * * *', timeZone: 'Etc/UTC', region: REGION, timeoutSeconds: 300, memory: '256MiB' },
+  async () => { await executerUnPassage('meteo', collecterLaMeteo); },
+);
+
+/// RISQUE INCENDIE — trois passages par jour (#I13, #I14).
+///
+/// 16:00 UTC : la Meteo des forets est posee a 14:50 UTC avec une regularite
+///             d'horloge (mesure : 124 jours sur 124), la carte corse vers 15:45.
+///             Un passage a 16:00 les prend toutes les deux le jour meme.
+/// 19:00 UTC : le rattrapage d'un retard de publication — le mode de panne le plus
+///             probable d'une source qui ne rate jamais un jour.
+/// 06:00 UTC : celui-ci ne sert qu'a une chose, et c'est une correction que
+///             j'apporte a #I14. La conception voulait qu'il RETIRE un bulletin
+///             perime ; il n'a rien a retirer, parce que l'etat (connu / perime /
+///             hors saison / inconnu) est DERIVE par le lecteur et non stocke
+///             (voir documents.js, `etatDerive`). Son role reel est donc double :
+///             prendre le bulletin du jour si le fichier de la veille l'annonce,
+///             et permettre au surveillant d'alerter a 08:00 s'il manque (#H7).
+export const collecteRisqueIncendie = onSchedule(
+  { schedule: '0 6,16,19 * * *', timeZone: 'Etc/UTC', region: REGION, timeoutSeconds: 300, memory: '256MiB' },
+  async () => { await executerUnPassage('incendie', collecterLeRisqueIncendie); },
+);
+
+/// LE SURVEILLANT — et il DOIT etre une autre tache (#H5).
+///
+/// Un collecteur mort ne peut pas signaler sa propre mort. C'est toute la raison
+/// d'etre de cette troisieme planification : elle lit le battement des deux autres
+/// et crie quand l'un d'eux s'est tu. Sans elle, l'arret du collecteur serait
+/// silencieux — la donnee cesserait simplement de bouger, et rien ne distinguerait
+/// « le monde n'a pas change » de « nous avons arrete de regarder » (#H1).
+export const surveillantDuCollecteur = onSchedule(
+  { schedule: '20 */3 * * *', timeZone: 'Etc/UTC', region: REGION, timeoutSeconds: 120, memory: '256MiB' },
+  async () => { await executerUnPassage('surveillant', surveiller); },
 );

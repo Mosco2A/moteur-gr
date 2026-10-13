@@ -1,6 +1,10 @@
+/// Allege une trace par Douglas-Peucker, en distance haversine et en version
+/// iterative pour ne pas deborder la pile sur un long trace.
+library;
+
 import 'dart:math';
 
-import '../domain/models/track_point.dart';
+import '../../../domain/track_point.dart';
 
 /// Algorithme de simplification de trace Douglas-Peucker.
 ///
@@ -140,7 +144,8 @@ class DouglasPeucker {
     final dLat = _toRadians(lat2 - lat1);
     final dLng = _toRadians(lng2 - lng1);
 
-    final a = sin(dLat / 2) * sin(dLat / 2) +
+    final a =
+        sin(dLat / 2) * sin(dLat / 2) +
         cos(_toRadians(lat1)) *
             cos(_toRadians(lat2)) *
             sin(dLng / 2) *

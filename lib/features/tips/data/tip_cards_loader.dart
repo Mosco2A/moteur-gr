@@ -1,8 +1,12 @@
+/// Le socle commun des fiches PLUS celles du sentier : deux sources, un seul
+/// chargement, et les chemins viennent de la config.
+library;
+
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 
-import '../domain/models/tip_card.dart';
+import '../../../domain/tip_card.dart';
 
 /// Charge les fiches conseil ([TipCard]) depuis les assets JSON (LOT 5, C).
 ///

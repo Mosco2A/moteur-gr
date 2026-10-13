@@ -1,7 +1,12 @@
+/// Une bascule par finalite, JAMAIS pre-cochee : son etat vient du consentement
+/// reel, pas d'une valeur par defaut commode.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/services/consent_service.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Bascule de consentement pour UNE finalite (D4A-02), accessible.
 ///
@@ -33,22 +38,22 @@ class ConsentPurposeTile extends StatelessWidget {
 
   /// Libelle localise de la finalite.
   String _label(Translations tr) => switch (purpose) {
-        ConsentPurpose.locationNavigation =>
-          tr.consent.purposes.locationNavigation,
-        ConsentPurpose.socialSharing => tr.consent.purposes.socialSharing,
-        ConsentPurpose.publicReporting => tr.consent.purposes.publicReporting,
-        ConsentPurpose.healthData => tr.consent.purposes.healthData,
-      };
+    ConsentPurpose.locationNavigation => tr.consent.purposes.locationNavigation,
+    ConsentPurpose.socialSharing => tr.consent.purposes.socialSharing,
+    ConsentPurpose.publicReporting => tr.consent.purposes.publicReporting,
+    ConsentPurpose.advertising => tr.consent.purposes.advertising,
+    ConsentPurpose.healthData => tr.consent.purposes.healthData,
+  };
 
   /// Description localisee de la finalite.
   String _description(Translations tr) => switch (purpose) {
-        ConsentPurpose.locationNavigation =>
-          tr.consent.purposes.locationNavigationDesc,
-        ConsentPurpose.socialSharing => tr.consent.purposes.socialSharingDesc,
-        ConsentPurpose.publicReporting =>
-          tr.consent.purposes.publicReportingDesc,
-        ConsentPurpose.healthData => tr.consent.purposes.healthDataDesc,
-      };
+    ConsentPurpose.locationNavigation =>
+      tr.consent.purposes.locationNavigationDesc,
+    ConsentPurpose.socialSharing => tr.consent.purposes.socialSharingDesc,
+    ConsentPurpose.publicReporting => tr.consent.purposes.publicReportingDesc,
+    ConsentPurpose.advertising => tr.consent.purposes.advertisingDesc,
+    ConsentPurpose.healthData => tr.consent.purposes.healthDataDesc,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +72,8 @@ class ConsentPurposeTile extends StatelessWidget {
         subtitle: hideDescription ? null : Text(_description(tr)),
         contentPadding: EdgeInsets.zero,
         secondary: granted
-            ? const Icon(Icons.check_circle_outline)
-            : const Icon(Icons.radio_button_unchecked),
+            ? const StepIcon(StepwaysIcons.cocheCercle)
+            : const StepIcon(StepwaysIcons.radio),
       ),
     );
   }

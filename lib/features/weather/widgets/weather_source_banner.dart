@@ -1,8 +1,13 @@
+/// D'ou vient le chiffre affiche — reseau, cache, hors-ligne ou demonstration —
+/// et depuis quand : un badge « cache » ne disait pas assez.
+library;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../presentation/weather_date_format.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Origine des données météo affichées (RF-3).
 enum WeatherSource { api, cache, offline, demo }
@@ -13,11 +18,7 @@ enum WeatherSource { api, cache, offline, demo }
 /// réseau, du cache local, du mode hors-ligne ou d'un jeu de démonstration,
 /// avec la date de dernière mise à jour. Tous les libellés sont i18n.
 class WeatherSourceBanner extends StatelessWidget {
-  const WeatherSourceBanner({
-    super.key,
-    required this.source,
-    this.updatedAt,
-  });
+  const WeatherSourceBanner({super.key, required this.source, this.updatedAt});
 
   final WeatherSource source;
 
@@ -30,24 +31,30 @@ class WeatherSourceBanner extends StatelessWidget {
     final t = Translations.of(context);
     final muted = theme.colorScheme.onSurface.withAlpha(140);
 
-    final (IconData icon, String label) = switch (source) {
-      WeatherSource.api => (Icons.cloud_done_outlined, t.weather.source.api),
-      WeatherSource.cache => (Icons.cached, t.weather.source.cache),
-      WeatherSource.offline => (Icons.cloud_off, t.weather.source.offline),
-      WeatherSource.demo => (Icons.science_outlined, t.weather.source.demo),
+    final (String icon, String label) = switch (source) {
+      WeatherSource.api => (StepwaysIcons.synchronise, t.weather.source.api),
+      WeatherSource.cache => (StepwaysIcons.rafraichir, t.weather.source.cache),
+      WeatherSource.offline => (
+        StepwaysIcons.horsLigne,
+        t.weather.source.offline,
+      ),
+      WeatherSource.demo => (StepwaysIcons.eprouvette, t.weather.source.demo),
     };
 
     final parts = <String>[label];
     if (updatedAt != null) {
       final languageCode = Localizations.localeOf(context).languageCode;
-      final formatted =
-          formatWeatherDate(updatedAt!, 'd MMM HH:mm', languageCode);
+      final formatted = formatWeatherDate(
+        updatedAt!,
+        'd MMM HH:mm',
+        languageCode,
+      );
       parts.add(t.weather.lastUpdate(date: formatted));
     }
 
     return Row(
       children: [
-        Icon(icon, size: 14, color: muted),
+        StepIcon(icon, size: 14, color: muted),
         const SizedBox(width: AppTheme.spacingXs),
         Expanded(
           child: Text(

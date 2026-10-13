@@ -1,13 +1,20 @@
+/// Les quatre chiffres de la rando et ses trois commandes, poses par-dessus la
+/// carte pendant l'enregistrement.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../core/services/session_demo.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../i18n/translations.g.dart';
 import '../../../../../shared/widgets/app_button.dart';
 import '../../../../../shared/widgets/app_data_stat.dart';
 import '../../../../../shared/widgets/background_tracking_rationale_dialog.dart';
-import '../../../../map/providers/track_position_provider.dart';
+import '../../../../map/map_facade.dart' show stageDistanceCoveredProvider;
 import '../../../providers/tracking_providers.dart';
+import '../../podometre_autorisation.dart';
+import '../../../../../core/branding/stepways_icons.dart';
 
 /// Overlay de tracking temps reel affiche sur la carte.
 ///
@@ -90,7 +97,7 @@ class _StatsRow extends StatelessWidget {
                   // iso-semantique). Le Consumer/select autour reste intact ->
                   // rebuild toujours au champ pres (distance projetee ici).
                   return AppDataStat(
-                    icon: Icons.straighten,
+                    icon: StepwaysIcons.distance,
                     value: _formatDistance(coveredM / 1000),
                     label: t.tracking.distance,
                   );
@@ -103,7 +110,7 @@ class _StatsRow extends StatelessWidget {
                     trekSessionManagerProvider.select((s) => s.elapsedDuration),
                   );
                   return AppDataStat(
-                    icon: Icons.timer_outlined,
+                    icon: StepwaysIcons.clock,
                     value: _formatDuration(duration),
                     label: t.tracking.time,
                   );
@@ -116,7 +123,7 @@ class _StatsRow extends StatelessWidget {
                     trekSessionManagerProvider.select((s) => s.elevationGainM),
                   );
                   return AppDataStat(
-                    icon: Icons.trending_up,
+                    icon: StepwaysIcons.denivelePlus,
                     value: '${elevGain.round()} m',
                     label: t.tracking.dPlus,
                   );
@@ -129,7 +136,7 @@ class _StatsRow extends StatelessWidget {
                     trekSessionManagerProvider.select((s) => s.currentSpeedKmh),
                   );
                   return AppDataStat(
-                    icon: Icons.speed,
+                    icon: StepwaysIcons.vitesse,
                     value: '${speed.toStringAsFixed(1)} km/h',
                     label: t.tracking.speed,
                   );
@@ -178,14 +185,33 @@ class _ButtonsRow extends StatelessWidget {
           case TrackingSessionStatus.stopped:
             return _ActionButton(
               label: t.tracking.start,
-              icon: Icons.play_arrow,
+              icon: StepwaysIcons.save,
               color: AppTheme.actionStart,
               semanticLabel: t.a11y.startTracking,
               // Meme pre-vol explique que le bouton du cockpit : une demande
               // systeme ne doit JAMAIS surgir sur la carte sans avoir ete
               // annoncee (campagne personas 21/09, MAJEUR-1).
               onPressed: () async {
-                await ensureBackgroundTrackingExplained(context, ref);
+                // EN DEMO, AUCUN PRE-VOL D'AUTORISATION (tache 744).
+                //
+                // Le bouton du cockpit le fait DEJA depuis la tache 638 : son
+                // `_explainPermissions` est enferme dans
+                // `if (!ref.read(enDemoProvider))`. Celui de la carte, non —
+                // et c'est le MEME geste, atteignable en pleine demo des que
+                // la session n'est pas en cours. En demo les positions
+                // viennent du marcheur simule : aucun recepteur a allumer,
+                // donc rien a autoriser. Et une fenetre systeme met
+                // l'application en arriere-plan, donc elle MET LA MARCHE EN
+                // PAUSE au milieu de la demonstration.
+                if (!ref.read(enDemoProvider)) {
+                  await ensureBackgroundTrackingExplained(context, ref);
+                  // L'activite physique (lot 671-02), expliquee puis
+                  // demandee une seule fois ; un refus ne bloque jamais le
+                  // depart.
+                  if (context.mounted) {
+                    await ensureStepCountingExplained(context, ref);
+                  }
+                }
                 await notifier.start(trailId);
               },
             );
@@ -195,7 +221,7 @@ class _ButtonsRow extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     label: t.tracking.pause,
-                    icon: Icons.pause,
+                    icon: StepwaysIcons.pause,
                     color: AppTheme.actionPause,
                     semanticLabel: t.a11y.pauseTracking,
                     onPressed: notifier.pause,
@@ -205,8 +231,8 @@ class _ButtonsRow extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     label: t.tracking.stopButton,
-                    icon: Icons.stop,
-                    color: AppTheme.rougeUrgence,
+                    icon: StepwaysIcons.stop,
+                    color: AppTheme.emergencyRed,
                     semanticLabel: t.a11y.stopTracking,
                     onPressed: () => _confirmStop(context, notifier),
                   ),
@@ -219,7 +245,7 @@ class _ButtonsRow extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     label: t.tracking.resume,
-                    icon: Icons.play_arrow,
+                    icon: StepwaysIcons.save,
                     color: AppTheme.actionStart,
                     semanticLabel: t.a11y.resumeTracking,
                     onPressed: notifier.resume,
@@ -229,8 +255,8 @@ class _ButtonsRow extends StatelessWidget {
                 Expanded(
                   child: _ActionButton(
                     label: t.tracking.stopButton,
-                    icon: Icons.stop,
-                    color: AppTheme.rougeUrgence,
+                    icon: StepwaysIcons.stop,
+                    color: AppTheme.emergencyRed,
                     semanticLabel: t.a11y.stopTracking,
                     onPressed: () => _confirmStop(context, notifier),
                   ),
@@ -249,16 +275,20 @@ class _ButtonsRow extends StatelessWidget {
         title: Text(t.tracking.confirmStop),
         content: Text(t.tracking.stopSaveProgress),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.tracking.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.tracking.cancel),
           ),
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.tracking.stop,
+            isFullWidth: false,
             onPressed: () {
               Navigator.of(ctx).pop(true);
               notifier.stop();
             },
-            child: Text(t.tracking.stop),
           ),
         ],
       ),
@@ -277,7 +307,7 @@ class _ActionButton extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
+  final String icon;
   final Color color;
   final VoidCallback onPressed;
 

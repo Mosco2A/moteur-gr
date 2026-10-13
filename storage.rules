@@ -1,0 +1,41 @@
+rules_version = '2';
+
+// REGLES DE L ESPACE DE STOCKAGE DE StepWays (tache 648).
+//
+// CE QUI ETAIT EN PLACE AVANT, ET CE QUE CA COUTAIT. Le jeu de regles pose a la
+// creation du projet le 28/09 refusait TOUT, a tout le monde :
+// `allow read, write: if false`. Consequence mesuree le 30/09 : la liste des
+// sentiers (`data/manifest.json`) et les cartes hors ligne repondaient HTTP 403
+// a l application, qui affichait honnetement « aucune carte publiee ». Le jeu de
+// regles n etait pas versionne non plus — il ne vivait que dans la console.
+//
+// LE MODELE EST CELUI DE LA PUBLICATION, PAS DU PARTAGE. Sous `data/` vivent les
+// donnees PUBLIEES des sentiers : la liste, les fichiers de sentier, et les
+// cartes hors ligne (`.mbtiles`). Elles sont faites pour etre lues par n importe
+// quel telephone AVANT qu il ait un compte — le catalogue s affiche des la
+// premiere ouverture. Elles ne sont ecrites que depuis la machine de Christophe,
+// par `tool/cartes_hors_ligne/publier.py` et `tool/publier_en_base.py`, avec un
+// compte Google : jamais depuis l application.
+//
+// POURQUOI LA LECTURE PUBLIQUE N EST PAS UNE FUITE. Ce qui est sous `data/` est
+// exactement ce que l application distribue a ses utilisateurs : un fond de
+// carte OpenStreetMap et la description d un sentier. Aucune donnee personnelle
+// n y passe — celles-la vivent dans Firestore, sous les regles de `firestore.rules`
+// (lot 631), et n ont rien a faire ici.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // LES DONNEES PUBLIEES : lecture par tous, ecriture par personne.
+    match /data/{chemin=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // TOUT LE RESTE RESTE FERME. Une regle par defaut ouverte est la porte par
+    // laquelle un chemin ajoute demain deviendrait public sans que personne
+    // l ait decide.
+    match /{chemin=**} {
+      allow read, write: if false;
+    }
+  }
+}

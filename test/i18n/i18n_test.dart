@@ -16,9 +16,9 @@ Set<String> _cles(Object? noeud, [String chemin = '']) {
   return {chemin};
 }
 
-Map<String, dynamic> _charge(String langue) => jsonDecode(
-      File('assets/i18n/$langue.i18n.json').readAsStringSync(),
-    ) as Map<String, dynamic>;
+Map<String, dynamic> _charge(String langue) =>
+    jsonDecode(File('assets/i18n/$langue.i18n.json').readAsStringSync())
+        as Map<String, dynamic>;
 
 void main() {
   group('Slang i18n', () {
@@ -42,11 +42,12 @@ void main() {
 
       // Chaque locale de la config doit exister dans le code genere
       for (final code in supportedLocales) {
-        final found = AppLocale.values.any(
-          (l) => l.languageTag == code,
+        final found = AppLocale.values.any((l) => l.languageTag == code);
+        expect(
+          found,
+          isTrue,
+          reason: 'Locale $code doit exister dans AppLocale',
         );
-        expect(found, isTrue,
-            reason: 'Locale $code doit exister dans AppLocale');
       }
     });
 
@@ -67,12 +68,16 @@ void main() {
         final manquantes = base.difference(autres).toList()..sort();
         final enTrop = autres.difference(base).toList()..sort();
         if (manquantes.isNotEmpty) {
-          ecarts.add('$langue : ${manquantes.length} cle(s) manquante(s) -> '
-              '${manquantes.take(10).join(', ')}');
+          ecarts.add(
+            '$langue : ${manquantes.length} cle(s) manquante(s) -> '
+            '${manquantes.take(10).join(', ')}',
+          );
         }
         if (enTrop.isNotEmpty) {
-          ecarts.add('$langue : ${enTrop.length} cle(s) en trop -> '
-              '${enTrop.take(10).join(', ')}');
+          ecarts.add(
+            '$langue : ${enTrop.length} cle(s) en trop -> '
+            '${enTrop.take(10).join(', ')}',
+          );
         }
       }
       expect(ecarts, isEmpty, reason: ecarts.join('\n'));
@@ -82,8 +87,11 @@ void main() {
       // Verifier que strings.g.dart (base_locale en) a ete supprime
       // et que seul translations.g.dart (base_locale fr) est utilise
       final baseLocale = AppLocale.values.first;
-      expect(baseLocale.languageTag, equals('fr'),
-          reason: 'La base locale doit etre FR, pas EN');
+      expect(
+        baseLocale.languageTag,
+        equals('fr'),
+        reason: 'La base locale doit etre FR, pas EN',
+      );
     });
   });
 }

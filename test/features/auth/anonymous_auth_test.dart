@@ -86,8 +86,11 @@ void main() {
       // email/photoUrl n'existent PLUS dans le modele (F7) : le
       // contrat zero PII est garanti a la compilation, plus fort
       // qu'une assertion runtime.
-      expect(user.displayName, isNull,
-          reason: 'Nom Firebase ne doit JAMAIS etre stocke');
+      expect(
+        user.displayName,
+        isNull,
+        reason: 'Nom Firebase ne doit JAMAIS etre stocke',
+      );
 
       // Le UID est anonymise, pas l'original
       expect(user.uid, isNot(equals(firebaseUid)));
@@ -124,8 +127,7 @@ void main() {
       await pumpEventQueue();
     });
 
-    test('un dispose PENDANT l initialisation ne leve plus rien (J3)',
-        () async {
+    test('un dispose PENDANT l initialisation ne leve plus rien (J3)', () async {
       final container = ProviderContainer(
         overrides: [
           firebaseServiceProvider.overrideWithValue(

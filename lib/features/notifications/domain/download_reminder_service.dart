@@ -1,3 +1,7 @@
+/// Le rappel de telechargement a J-2, qui ne part QUE si les donnees du sentier
+/// manquent encore.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
@@ -74,8 +78,9 @@ class DownloadReminderService {
 }
 
 /// Provider du service de rappel de telechargement.
-final downloadReminderServiceProvider =
-    Provider<DownloadReminderService>((ref) {
+final downloadReminderServiceProvider = Provider<DownloadReminderService>((
+  ref,
+) {
   final notificationService = NotificationService();
   final db = ref.watch(databaseProvider);
   final manifestsDao = TrailManifestsDao(db);

@@ -1,3 +1,7 @@
+/// L'envoi d'un kudo, IDEMPOTENT par son identifiant distant : un double envoi
+/// n'en cree pas deux.
+library;
+
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
@@ -50,8 +54,8 @@ class KudosService {
   KudosService({
     required AppDatabase database,
     required KudoRemoteSink remoteSink,
-  })  : _dao = KudosFeedDao(database),
-        _remoteSink = remoteSink;
+  }) : _dao = KudosFeedDao(database),
+       _remoteSink = remoteSink;
 
   final KudosFeedDao _dao;
   final KudoRemoteSink _remoteSink;

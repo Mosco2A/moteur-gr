@@ -147,10 +147,7 @@ void main() {
     });
 
     test('champs optionnels null par defaut', () {
-      const data = PersonalizationData(
-        id: 'perso-002',
-        orderId: 'order-002',
-      );
+      const data = PersonalizationData(id: 'perso-002', orderId: 'order-002');
 
       expect(data.customName, isNull);
       expect(data.trekDate, isNull);

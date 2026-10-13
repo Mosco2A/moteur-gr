@@ -1,6 +1,11 @@
+/// Transforme le verdict de faisabilite en PROGRAMME suivi, cale sur la date de
+/// depart.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/services/monetization_service.dart';
@@ -13,6 +18,7 @@ import '../../../shared/widgets/paywall_sheet.dart';
 import '../models/localized_text.dart';
 import '../models/training_plan.dart';
 import '../providers/training_plan_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// ECRAN ENTRAINEMENT — coeur du LOT 5 (sous-ensemble A), PAYANT.
 ///
@@ -41,6 +47,10 @@ class TrainingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(ref, ScreenBreadcrumb.training);
     final trail = ref.watch(trailConfigProvider);
     // Acces REACTIF, derive des droits Drift LOCAUX (offline-safe) : demo =
     // verrouille (teaser), sinon debloque. Tant qu'indetermine -> chargement.
@@ -52,9 +62,10 @@ class TrainingScreen extends ConsumerWidget {
       body: SafeArea(
         child: isDemoAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (_, __) => _LockedView(trail: trail, planAsync: planAsync),
+          error: (_, __) =>
+              _DemoBridledView(trail: trail, planAsync: planAsync),
           data: (isDemo) => isDemo
-              ? _LockedView(trail: trail, planAsync: planAsync)
+              ? _DemoBridledView(trail: trail, planAsync: planAsync)
               : _UnlockedView(trail: trail, planAsync: planAsync),
         ),
       ),
@@ -63,101 +74,197 @@ class TrainingScreen extends ConsumerWidget {
 }
 
 // ===========================================================================
-// ETAT VERROUILLE (pas de pack/abo) — teaser + paywall
+// ETAT DEMO BRIDEE (gratuit / abonne) — JOUABLE « pour de faux », puis grise
 // ===========================================================================
 
-/// Vue VERROUILLEE (spec etat « verrouille ») : intro effort (visible), apercu
-/// FLOUTE des phases (seances masquees), encart paywall + bouton « Debloquer ».
-/// L'ecran donne envie, il ne livre pas le detail.
-class _LockedView extends ConsumerWidget {
-  const _LockedView({required this.trail, required this.planAsync});
+/// Vue DEMO BRIDEE (modele eco §2, tache 594 A2c).
+///
+/// CE QUI EXISTAIT AVAIT LE SENS INVERSE. L'ecran servait un `_LockedView` :
+/// les titres de phases restaient lisibles, mais les seances etaient
+/// REMPLACEES par trois barres grises et un cadenas. Visible, oui ; jouable,
+/// non. Le modele eco demande exactement le contraire — « SAC A DOS + PREPA
+/// PHYSIQUE jouables *pour de faux* (version bridee) » : on doit pouvoir s'en
+/// servir, pas seulement le regarder.
+///
+/// CE QUE FAIT CETTE VUE :
+///   * les [kDemoTrainingPhasesPlayable] premieres phases sont SERVIES
+///     ENTIERES et COCHABLES, exactement comme en debloque ;
+///   * « pour de faux » est pris au mot : les coches vivent dans l'etat local
+///     de ce widget et ne sont PAS persistees — l'essai ne fabrique pas un
+///     suivi d'entrainement mensonger, et le bandeau le DIT ;
+///   * les phases suivantes restent VISIBLES et GRISEES, verrouillees, jamais
+///     cachees (leur titre et leurs semaines se lisent, leurs seances non) ;
+///   * l'encart paywall reste en bas : on dit toujours ou acheter.
+class _DemoBridledView extends ConsumerStatefulWidget {
+  const _DemoBridledView({required this.trail, required this.planAsync});
 
   final TrailConfig trail;
   final AsyncValue<TrainingPlan> planAsync;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final plan = planAsync.value;
+  ConsumerState<_DemoBridledView> createState() => _DemoBridledViewState();
+}
+
+class _DemoBridledViewState extends ConsumerState<_DemoBridledView> {
+  /// Coches de l'essai : LOCALES, jamais ecrites. « Pour de faux ».
+  final Set<String> _cocheesPourDeFaux = <String>{};
+
+  @override
+  Widget build(BuildContext context) {
+    final plan = widget.planAsync.value;
+    final phases = plan?.phases ?? const <TrainingPhase>[];
+    final jouables = phases.take(kDemoTrainingPhasesPlayable).toList();
+    final grisees = phases.skip(kDemoTrainingPhasesPlayable).toList();
+
+    // TACHE 651, DEFAUT B — LE RAPPEL DE PRUDENCE MANQUAIT AUSSI ICI, ET C EST
+    // ICI QU IL MANQUAIT POUR DE VRAI.
+    //
+    // La campagne 650 notait « en demo l ecran est verrouille et n affiche
+    // AUCUN bandeau », donc que la contre-preuve C1 ne s appliquait pas a cet
+    // etat. La mesure du rejeu dit l inverse : cet ecran-la SERT UN PROGRAMME,
+    // phases depliables et seances cochables comprises (c est tout l objet du
+    // bridage « jouable pour de faux »). Un randonneur y lit donc un plan
+    // d entrainement complet pendant que la Faisabilite lui dit « Rythme a
+    // alleger » — exactement la contradiction que MAJEUR-4 a fait corriger le
+    // 21/09, et le persona S1 la rencontre AVANT d acheter, c est-a-dire dans
+    // l etat par lequel tout le monde passe.
+    //
+    // (Au passage : le detecteur de la campagne lisait l etat « verrouille » a
+    // la presence de l encart d achat, DERNIER enfant d une liste paresseuse —
+    // non construit tant qu on n a pas defile. Il rendait donc « ni verrouille
+    // ni debloque » sur cet ecran. Le bandeau, lui, manquait bel et bien.)
+    final needsCaution =
+        ref.watch(trainingPersonalizationProvider).value?.needsCaution ?? false;
+
     return ListView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
-        _IntroEffortCard(trail: trail, plan: plan),
+        _IntroEffortCard(trail: widget.trail, plan: plan),
         const SizedBox(height: AppTheme.spacingBase),
-        if (plan != null) _BlurredPhasesPreview(plan: plan),
-        const SizedBox(height: AppTheme.spacingBase),
-        _PaywallCard(trail: trail),
+        // Avant le bandeau d essai : la prudence parle du randonneur face au
+        // sentier, l essai ne parle que de ce qui est enregistre ou non.
+        if (needsCaution) ...[
+          _WarningBanner(message: t.training.cautionVerdictNotice),
+          const SizedBox(height: AppTheme.spacingBase),
+        ],
+        if (phases.isNotEmpty) ...[
+          const _DemoBridledBanner(),
+          const SizedBox(height: AppTheme.spacingBase),
+          for (final phase in jouables)
+            _PhaseBlock(
+              phase: phase,
+              isDone: _cocheesPourDeFaux.contains,
+              onToggle: (id) => setState(() {
+                if (!_cocheesPourDeFaux.remove(id)) _cocheesPourDeFaux.add(id);
+              }),
+            ),
+          for (final phase in grisees) _LockedPhaseRow(phase: phase),
+          const SizedBox(height: AppTheme.spacingBase),
+        ],
+        _PaywallCard(trail: widget.trail),
       ],
     );
   }
 }
 
-/// Apercu FLOUTE des phases (verrouille) : on montre les grandes phases, les
-/// seances restent masquees (flou + cadenas) — teaser de valeur.
-class _BlurredPhasesPreview extends StatelessWidget {
-  const _BlurredPhasesPreview({required this.plan});
-
-  final TrainingPlan plan;
+/// Bandeau d'essai : dit que c'est bride, et que les coches ne comptent pas.
+///
+/// Un essai muet passerait pour un plan reel : le randonneur cocherait ses
+/// seances pendant deux semaines avant de decouvrir que rien n'a ete garde.
+class _DemoBridledBanner extends StatelessWidget {
+  const _DemoBridledBanner();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return AppCard(
+      key: const ValueKey('training-demo-banner'),
+      backgroundColor: theme.colorScheme.secondary.withAlpha(18),
+      borderColor: theme.colorScheme.secondary.withAlpha(80),
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ligne des phases (lisible : donne envie) ...
-          Wrap(
-            spacing: AppTheme.spacingMd,
-            runSpacing: AppTheme.spacingSm,
+          Row(
             children: [
-              for (final phase in plan.phases)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(_phaseIcon(phase.icon),
-                        size: 18, color: theme.colorScheme.primary),
-                    const SizedBox(width: AppTheme.spacingXs),
-                    Text(
-                      pickLocalized(
-                        fr: phase.titleFr,
-                        en: phase.titleEn,
-                        de: phase.titleDe,
-                        it: phase.titleIt,
-                        es: phase.titleEs,
-                      ),
-                      style: theme.textTheme.labelLarge,
-                    ),
-                  ],
-                ),
-            ],
-          ),
-          const SizedBox(height: AppTheme.spacingMd),
-          // ... mais le detail des seances est FLOUTE (masque).
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              // Barres grisees simulant les seances masquees.
-              Column(
-                children: List.generate(
-                  3,
-                  (_) => Container(
-                    height: 14,
-                    margin:
-                        const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurface.withAlpha(25),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+              StepIcon(
+                StepwaysIcons.eprouvette,
+                size: 20,
+                color: theme.colorScheme.secondary,
+              ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  t.training.demoBridledTitle,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              Icon(
-                Icons.lock_outline,
-                color: theme.colorScheme.onSurface.withAlpha(120),
-              ),
             ],
           ),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            t.training.demoBridledBody,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withAlpha(180),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Phase GRISEE : visible, verrouillee, jamais cachee (modele eco §2).
+///
+/// Le titre et les semaines se lisent — on sait ce qu'on n'a pas. Les seances,
+/// elles, ne sont pas servies : c'est la partie qui s'achete.
+class _LockedPhaseRow extends StatelessWidget {
+  const _LockedPhaseRow({required this.phase});
+
+  final TrainingPhase phase;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final grise = theme.colorScheme.onSurface.withAlpha(110);
+    final title = pickLocalized(
+      fr: phase.titleFr,
+      en: phase.titleEn,
+      de: phase.titleDe,
+      it: phase.titleIt,
+      es: phase.titleEs,
+    );
+    return AppCard(
+      key: ValueKey('training-demo-locked-${phase.id}'),
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Row(
+        children: [
+          StepIcon(_phaseIcon(phase.icon), color: grise),
+          const SizedBox(width: AppTheme.spacingMd),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  t.training.phaseWeeks(
+                    start: phase.weekStart,
+                    end: phase.weekEnd,
+                    title: title,
+                  ),
+                  style: theme.textTheme.titleSmall?.copyWith(color: grise),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  t.training.demoLockedPhase,
+                  style: theme.textTheme.labelSmall?.copyWith(color: grise),
+                ),
+              ],
+            ),
+          ),
+          StepIcon(StepwaysIcons.cadenas, size: 18, color: grise),
         ],
       ),
     );
@@ -166,13 +273,13 @@ class _BlurredPhasesPreview extends StatelessWidget {
 
 /// Encart PAYWALL (spec) : cadenas + « inclus dans le pack <sentier> » + CTA
 /// « Debloquer » -> paywall. Le pack ouvre l'acces (pas le solde d'etapes).
-class _PaywallCard extends StatelessWidget {
+class _PaywallCard extends ConsumerWidget {
   const _PaywallCard({required this.trail});
 
   final TrailConfig trail;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final tr = t.training;
     return AppCard(
@@ -184,7 +291,11 @@ class _PaywallCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.lock, color: theme.colorScheme.primary, size: 22),
+              StepIcon(
+                StepwaysIcons.cadenas,
+                color: theme.colorScheme.primary,
+                size: 22,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -210,13 +321,9 @@ class _PaywallCard extends StatelessWidget {
           ),
           const SizedBox(height: AppTheme.spacingBase),
           AppButton(
-            icon: Icons.lock_open,
+            icon: StepwaysIcons.cadenasOuvert,
             label: tr.unlock,
-            onPressed: () => showPaywallSheet(
-              context,
-              trailId: trail.id,
-              totalStages: trail.totalStages,
-            ),
+            onPressed: () => buyTrail(context, ref, trailId: trail.id),
           ),
         ],
       ),
@@ -265,9 +372,72 @@ class _PlanContent extends ConsumerWidget {
     final theme = Theme.of(context);
 
     final daysUntil = ref.watch(trainingDaysUntilDepartureProvider);
-    final tooClose = ref.watch(trainingDepartureTooCloseProvider);
+    final belowMinimum = ref.watch(trainingBelowMinimumProvider);
     final perso = ref.watch(trainingPersonalizationProvider).value;
     final progress = ref.watch(trainingProgressProvider(trail.id));
+
+    // LE PLAN NE S'AFFICHE PLUS TOUJOURS (tache 570, S3-b et S3-c).
+    //
+    // DEUX REFUS, DEUX RAISONS DIFFERENTES, ET ON DIT LAQUELLE.
+    //
+    // (b) SANS DATE DE DEPART. Chris, verbatim : « en plus tu fais un plan sans
+    //     savoir quand il part ». Un plan progressif de huit semaines cale sur
+    //     un depart ne sait, sans ce depart, ni dans quelle semaine on se
+    //     trouve, ni quand affuter : ses phases « Semaines 1-2 / 3-5 / 6-8 » ne
+    //     designent alors rien, et sa derniere seance (« repos 48 h avant le
+    //     depart ») est un conseil sans date. L'ecran invitait deja a poser la
+    //     date — mais deroulait le plan par-dessus, ce qui rendait l'invite
+    //     decorative. Il ne le deroule plus.
+    //
+    // (c) SOUS LE PLANCHER DE HUIT SEMAINES. Chris : « 8 semaines c'est le
+    //     minimum en dessous duquel tu ne propose pas de prepa physique ». Ce
+    //     qui existait ici faisait l'inverse : sous 21 jours, un bandeau
+    //     annoncait un « plan condense sur le temps disponible » et les seances
+    //     restaient cochables. Condenser une preparation a la montagne, c'est
+    //     empiler la charge sans laisser le corps s'adapter — on ne propose donc
+    //     plus rien, et le refus est MOTIVE, plancher et source nommes.
+    //
+    // DANS LES DEUX CAS L'ECRAN RESTE DEBOUT ET UTILE : l'encart d'effort du
+    // sentier reste (il informe sans rien promettre), et c'est la raison du
+    // refus qui prend la place du plan — jamais un ecran vide.
+    // ET LE RAPPEL DE PRUDENCE PART AVEC EUX (tache 651, defaut B — MAJEUR).
+    //
+    // MAJEUR-4 (campagne du 21/09) exige que la Preparation physique ne puisse
+    // pas contredire la Faisabilite : verdict autre que vert -> rappel de
+    // prudence. Ce rappel vit plus bas, dans la SEULE branche « plan deroule ».
+    // Les deux retours anticipes ci-dessous, arrives avec la tache 570, le
+    // court-circuitaient donc : la Faisabilite disait « Rythme a alleger » et
+    // cet ecran ne disait rien (S1 Lea, campagne 650, reproduit trois fois —
+    // elle visite la Preparation physique AVANT de poser sa date).
+    //
+    // Le refus ne bouge pas d'un iota : sans date et sous huit semaines, aucun
+    // programme n'est propose et le motif reste affiche. Seul le rappel les
+    // rejoint — parce qu'un randonneur a qui on ne peut proposer AUCUNE
+    // preparation est precisement celui a qui la prudence doit etre dite.
+    final needsCaution = perso?.needsCaution ?? false;
+    if (daysUntil == null) {
+      return _NoPlanYet(
+        trail: trail,
+        plan: plan,
+        icon: StepwaysIcons.calendrier,
+        headline: tr.inviteSetDate,
+        explanation: tr.noDateWhy,
+        explanationKey: const ValueKey('training-no-date-why'),
+        needsCaution: needsCaution,
+      );
+    }
+    if (belowMinimum) {
+      return _NoPlanYet(
+        trail: trail,
+        plan: plan,
+        daysUntilDeparture: daysUntil,
+        icon: StepwaysIcons.sablier,
+        headline: tr.tooShortTitle,
+        explanation: tr.tooShortWhy(days: daysUntil, weeks: kTrainingMinWeeks),
+        explanationKey: const ValueKey('training-too-short-why'),
+        needsCaution: needsCaution,
+      );
+    }
 
     // Seances du plan (IDs stables) pour borner la progression.
     final planSessionIds = {
@@ -280,7 +450,7 @@ class _PlanContent extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
-        // --- Encart bleu : effort du sentier + compte a rebours (ou invite) ---
+        // --- Encart bleu : effort du sentier + compte a rebours ---
         _IntroEffortCard(
           trail: trail,
           plan: plan,
@@ -288,27 +458,10 @@ class _PlanContent extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.spacingBase),
 
-        // --- Etat « sans date » : pas de compte a rebours -> invite Calendrier ---
-        if (daysUntil == null) ...[
-          _InviteBanner(
-            icon: Icons.event_available,
-            message: tr.inviteSetDate,
-          ),
-          const SizedBox(height: AppTheme.spacingBase),
-        ],
-
-        // --- Etat « depart trop proche » : avertissement + plan condense ---
-        if (tooClose) ...[
-          _WarningBanner(
-            message: tr.departureTooClose(days: daysUntil ?? 0),
-          ),
-          const SizedBox(height: AppTheme.spacingBase),
-        ],
-
         // --- Etat « sans fiche » : invite non bloquante a remplir la fiche ---
         if (perso != null && !perso.hasProfile) ...[
           _InviteBanner(
-            icon: Icons.badge_outlined,
+            icon: StepwaysIcons.myAccount,
             message: tr.inviteFillProfile,
           ),
           const SizedBox(height: AppTheme.spacingBase),
@@ -331,20 +484,43 @@ class _PlanContent extends ConsumerWidget {
         // --- Titre de section ---
         Text(
           tr.planOverWeeks(n: plan.durationWeeks),
-          style: theme.textTheme.titleMedium
-              ?.copyWith(fontWeight: FontWeight.w700),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: AppTheme.spacingSm),
 
         // --- Blocs de phases depliables a seances cochables ---
+        //
+        // UNE CLE PAR PHASE, ET ELLE N'EST PAS DECORATIVE. Sans cle, les blocs
+        // etaient apparies par POSITION dans la liste : quand le bandeau
+        // « remplissez votre fiche » apparaissait ou disparaissait, tous les
+        // indices glissaient d'un cran et l'etat « deplie » restait sur la
+        // POSITION au lieu de suivre la PHASE — la phase ouverte se refermait,
+        // une autre s'ouvrait a sa place. Trouve en montant cet ecran avec
+        // trois phases (tache 594).
         for (final phase in plan.phases)
           _PhaseBlock(
+            key: ValueKey('training-phase-${phase.id}'),
             phase: phase,
-            condensed: tooClose,
             isDone: progress.isDone,
-            onToggle: (id) =>
-                ref.read(trainingProgressProvider(trail.id).notifier).toggle(id),
+            onToggle: (id) => ref
+                .read(trainingProgressProvider(trail.id).notifier)
+                .toggle(id),
           ),
+        const SizedBox(height: AppTheme.spacingSm),
+
+        // --- D'OU VIENNENT LES FREQUENCES (tache 570, S3-a) ---
+        // Le plan affiche maintenant des chiffres de rythme. Un chiffre de sante
+        // sans origine est un chiffre maison, et cette application ne s'autorise
+        // pas les chiffres maison : la ligne nomme les sources.
+        Text(
+          tr.freqSourceNotice,
+          key: const ValueKey('training-freq-sources'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withAlpha(150),
+          ),
+        ),
         const SizedBox(height: AppTheme.spacingBase),
 
         // --- Encart orange : objectif chiffre (repere du sentier) ---
@@ -386,8 +562,11 @@ class _IntroEffortCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.fitness_center,
-              color: AppTheme.bleuRepos, size: 24),
+          const StepIcon(
+            StepwaysIcons.preparationPhysique,
+            color: AppTheme.bleuRepos,
+            size: 24,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Column(
@@ -401,8 +580,7 @@ class _IntroEffortCard extends StatelessWidget {
                   ),
                   style: theme.textTheme.bodyMedium,
                 ),
-                if (daysUntilDeparture != null &&
-                    daysUntilDeparture! >= 0) ...[
+                if (daysUntilDeparture != null && daysUntilDeparture! >= 0) ...[
                   const SizedBox(height: AppTheme.spacingXs),
                   Text(
                     tr.countdown(days: daysUntilDeparture!),
@@ -422,18 +600,20 @@ class _IntroEffortCard extends StatelessWidget {
 }
 
 /// Bloc de phase DEPLIABLE a seances COCHABLES (maquette). Replie par defaut
-/// sauf la 1re. En mode condense (depart trop proche), l'affichage reste mais
-/// la phase est marquee « condensee ».
+/// sauf la 1re.
+///
+/// PLUS DE MODE « CONDENSE » (tache 570, S3-c) : il servait a tasser le plan
+/// quand le depart etait proche. En dessous de huit semaines on ne propose plus
+/// de preparation du tout, donc il n'y a plus rien a condenser.
 class _PhaseBlock extends StatelessWidget {
   const _PhaseBlock({
+    super.key,
     required this.phase,
-    required this.condensed,
     required this.isDone,
     required this.onToggle,
   });
 
   final TrainingPhase phase;
-  final bool condensed;
   final bool Function(String sessionId) isDone;
   final ValueChanged<String> onToggle;
 
@@ -461,15 +641,19 @@ class _PhaseBlock extends StatelessWidget {
       child: ExpansionTile(
         // 1re phase ouverte par defaut (maquette).
         initiallyExpanded: phase.id == 'foundation',
-        leading: Icon(_phaseIcon(phase.icon), color: theme.colorScheme.primary),
+        leading: StepIcon(
+          _phaseIcon(phase.icon),
+          color: theme.colorScheme.primary,
+        ),
         title: Text(
           tr.phaseWeeks(
             start: phase.weekStart,
             end: phase.weekEnd,
             title: title,
           ),
-          style: theme.textTheme.titleSmall
-              ?.copyWith(fontWeight: FontWeight.w600),
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         subtitle: subtitle.isEmpty
             ? null
@@ -493,6 +677,25 @@ class _PhaseBlock extends StatelessWidget {
                 ),
                 style: theme.textTheme.bodyMedium,
               ),
+              // LE RYTHME DE LA SEANCE (tache 570, S3-a).
+              //
+              // SANS LUI, CETTE LIGNE MENTAIT PAR OMISSION. Une case a cocher
+              // unique portant « Cardio 1 h » sur une phase de deux semaines se
+              // lit « une seule sortie cardio en quinze jours » — c'est
+              // exactement ce que Chris a lu, et il avait raison de le relever.
+              // Le plan portait des TYPES de seances, l'ecran affichait des
+              // seances. Le rythme leve l'ambiguite la ou elle nait : sur la
+              // ligne elle-meme.
+              subtitle: session.hasFrequency
+                  ? Text(
+                      _frequencyLabel(session),
+                      key: ValueKey('training-freq-${session.id}'),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  : null,
             ),
         ],
       ),
@@ -517,8 +720,11 @@ class _ObjectiveCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.my_location,
-              color: AppTheme.orangeDifficile, size: 22),
+          const StepIcon(
+            StepwaysIcons.maPosition,
+            color: AppTheme.orangeDifficile,
+            size: 22,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Column(
@@ -605,7 +811,7 @@ class _NoPlanState extends StatelessWidget {
 class _InviteBanner extends StatelessWidget {
   const _InviteBanner({required this.icon, required this.message});
 
-  final IconData icon;
+  final String icon;
   final String message;
 
   @override
@@ -619,7 +825,11 @@ class _InviteBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: theme.colorScheme.onSecondaryContainer),
+          StepIcon(
+            icon,
+            size: 20,
+            color: theme.colorScheme.onSecondaryContainer,
+          ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
@@ -653,32 +863,149 @@ class _WarningBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.warning_amber,
-              size: 20, color: AppTheme.orangeDifficile),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(message, style: theme.textTheme.bodySmall),
+          const StepIcon(
+            StepwaysIcons.danger,
+            size: 20,
+            color: AppTheme.orangeDifficile,
           ),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(child: Text(message, style: theme.textTheme.bodySmall)),
         ],
       ),
     );
   }
 }
 
+/// Traduit le RYTHME d'une seance (donnee) en texte lisible (couche UI).
+///
+/// Trois cas, et trois phrases differentes — parce que « 1x par semaine »,
+/// « une fois dans la phase » et « la derniere semaine seulement » ne se
+/// remplacent pas l'un l'autre : un test de materiel qu'on referait chaque
+/// semaine serait absurde, et un affutage repete pendant huit semaines n'est
+/// plus un affutage.
+String _frequencyLabel(TrainingSession session) {
+  switch (session.occurrence) {
+    case SessionOccurrence.oncePerPhase:
+      return t.training.freqOncePerPhase;
+    case SessionOccurrence.finalWeek:
+      return t.training.freqFinalWeek;
+    case SessionOccurrence.weekly:
+      return t.training.freqPerWeek(n: session.timesPerWeek);
+  }
+}
+
+/// ETAT « PAS DE PLAN, ET VOICI POURQUOI » (tache 570, S3-b et S3-c).
+///
+/// Sert les DEUX refus : date de depart absente, et depart sous le plancher de
+/// huit semaines. L'ecran garde son encart d'effort (informatif, sans promesse)
+/// et remplace le plan par la RAISON du refus. Jamais d'ecran vide, jamais de
+/// refus muet : c'est la meme regle que partout ailleurs dans cette
+/// application — on dit ce qu'on ne fait pas, et pourquoi.
+class _NoPlanYet extends StatelessWidget {
+  const _NoPlanYet({
+    required this.trail,
+    required this.plan,
+    required this.icon,
+    required this.headline,
+    required this.explanation,
+    required this.explanationKey,
+    required this.needsCaution,
+    this.daysUntilDeparture,
+  });
+
+  final TrailConfig trail;
+  final TrainingPlan plan;
+  final String icon;
+
+  /// Phrase courte qui NOMME le refus (ou l'invite).
+  final String headline;
+
+  /// Motif detaille du refus, sources comprises.
+  final String explanation;
+
+  /// Cle de reperage du motif (distingue les deux refus a l'oeil comme en test).
+  final Key explanationKey;
+
+  /// Le verdict du moteur unique appelle-t-il un rappel de prudence ?
+  ///
+  /// TACHE 651, DEFAUT B : le rappel de MAJEUR-4 ne vivait que dans la branche
+  /// « plan deroule ». Il doit suivre le VERDICT, pas la disponibilite du
+  /// programme — sinon les deux ecrans se contredisent a nouveau des que le
+  /// programme n'est pas proposable.
+  final bool needsCaution;
+
+  /// Compte a rebours, quand il existe (refus « trop court » seulement).
+  final int? daysUntilDeparture;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ListView(
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      children: [
+        _IntroEffortCard(
+          trail: trail,
+          plan: plan,
+          daysUntilDeparture: daysUntilDeparture,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        // Le rappel de prudence AVANT le motif du refus : il parle du
+        // randonneur face au sentier, le refus ne parle que du calendrier.
+        if (needsCaution) ...[
+          _WarningBanner(message: t.training.cautionVerdictNotice),
+          const SizedBox(height: AppTheme.spacingBase),
+        ],
+        AppCard(
+          key: const ValueKey('training-no-plan'),
+          backgroundColor: AppTheme.orangeDifficile.withAlpha(20),
+          borderColor: AppTheme.orangeDifficile.withAlpha(80),
+          padding: const EdgeInsets.all(AppTheme.spacingBase),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  StepIcon(icon, color: AppTheme.orangeDifficile, size: 22),
+                  const SizedBox(width: AppTheme.spacingSm),
+                  Expanded(
+                    child: Text(
+                      headline,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(
+                explanation,
+                key: explanationKey,
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// Resout le nom d'icone de phase (donnee) en [IconData] (couche UI).
-IconData _phaseIcon(String name) {
+String _phaseIcon(String name) {
   switch (name) {
     case 'terrain':
-      return Icons.terrain;
+      return StepwaysIcons.sommet;
     case 'hiking':
-      return Icons.hiking;
+      return StepwaysIcons.chaussure;
     case 'directions_walk':
-      return Icons.directions_walk;
+      return StepwaysIcons.pas;
     case 'fitness_center':
-      return Icons.fitness_center;
+      return StepwaysIcons.preparationPhysique;
     case 'favorite_outline':
-      return Icons.favorite_outline;
+      return StepwaysIcons.favori;
     default:
-      return Icons.directions_walk;
+      return StepwaysIcons.pas;
   }
 }

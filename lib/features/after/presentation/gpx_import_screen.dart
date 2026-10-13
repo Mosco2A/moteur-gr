@@ -1,3 +1,7 @@
+/// L'import d'une trace externe avec son apercu avant validation : carte,
+/// chiffres, etapes et avertissements.
+library;
+
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -7,26 +11,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/map/fond_de_carte.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/attribution_osm.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
-import '../../trek/domain/models/stage.dart';
+import '../../../domain/stage.dart';
 import '../data/gpx_import_service.dart';
 import '../providers/gpx_import_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Import GPX — permet d'importer une trace GPS externe (parite GR20).
 ///
-/// PARITE GR20 (`features/after/presentation/gpx_import_screen.dart`) : clone du
-/// flux (accueil -> picker -> preview carte+stats+etapes+warnings -> valider),
-/// mais GENERALISE (data-driven par sentier via [importTrailConfigProvider] :
-/// bornes/points d'etapes/nb etapes venant des DONNEES du sentier, aucune borne
-/// « Corse » ni refuge GR20 en dur) et i18n 5 langues (tous les libelles via
-/// Slang `t.import.*`). Post-validation : navigation vers le recap « Mon
-/// aventure » du sentier (route existante `/trail/:id/recap`).
+/// PARITE GR20 (`features/after/presentation/gpx_import_screen.dart`) : clone
+/// du flux (accueil -> picker -> preview carte+stats+etapes+warnings ->
+/// valider), mais GENERALISE (data-driven par sentier via
+/// [importTrailConfigProvider] : bornes/points d'etapes/nb etapes venant des
+/// DONNEES du sentier, aucune borne « Corse » ni refuge GR20 en dur) et i18n 5
+/// langues (tous les libelles via Slang `t.import.*`). Post-validation :
+/// navigation vers le recap « Mon aventure » du sentier (route existante
+/// `/trail/:id/recap`).
 class GpxImportScreen extends ConsumerStatefulWidget {
   const GpxImportScreen({super.key, required this.trailId});
 
@@ -43,6 +52,12 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
 
   /// Message d'erreur deja traduit (bandeau rouge). Null = pas d'erreur.
   String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.gpxImport, trail: widget.trailId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,20 +89,25 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     return AppCard(
       child: Column(
         children: [
-          Icon(Icons.upload_file, size: 48, color: theme.colorScheme.primary),
+          StepIcon(
+            StepwaysIcons.download,
+            size: 48,
+            color: theme.colorScheme.primary,
+          ),
           const SizedBox(height: AppTheme.spacingMd),
           Text(t.import.headerTitle, style: theme.textTheme.titleLarge),
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             t.import.headerBody,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppTheme.spacingLg),
           AppButton(
             label: t.import.pickButton,
-            icon: Icons.folder_open,
+            icon: StepwaysIcons.download,
             isLoading: _isImporting,
             onPressed: _isImporting ? null : _pickAndImportGpx,
           ),
@@ -101,19 +121,22 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       decoration: BoxDecoration(
-        color: AppTheme.rougeUrgence.withValues(alpha: 0.08),
+        color: AppTheme.emergencyRed.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        border: Border.all(color: AppTheme.rougeUrgence.withValues(alpha: 0.24)),
+        border: Border.all(
+          color: AppTheme.emergencyRed.withValues(alpha: 0.24),
+        ),
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline, color: AppTheme.rougeUrgence),
+          const StepIcon(StepwaysIcons.danger, color: AppTheme.emergencyRed),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Text(
               message,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.rougeUrgence),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.emergencyRed,
+              ),
             ),
           ),
         ],
@@ -126,88 +149,101 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     final durationMinutes = data.totalDuration.inMinutes % 60;
     final durationStr =
         '${durationHours}h${durationMinutes.toString().padLeft(2, '0')}';
-    final directionLabel =
-        data.direction == 'NS' ? t.import.directionNS : t.import.directionSN;
+    final directionLabel = data.direction == 'NS'
+        ? t.import.directionNS
+        : t.import.directionSN;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(title: t.import.traceSection, icon: Icons.route),
+        SectionHeader(
+          title: t.import.traceSection,
+          icon: StepwaysIcons.itineraire,
+        ),
         const SizedBox(height: AppTheme.spacingSm),
         _buildTraceMap(theme, data),
         const SizedBox(height: AppTheme.spacingLg),
-        SectionHeader(title: t.import.statsSection, icon: Icons.bar_chart),
+        SectionHeader(
+          title: t.import.statsSection,
+          icon: StepwaysIcons.statistiques,
+        ),
         const SizedBox(height: AppTheme.spacingSm),
-        Row(children: [
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: Icons.straighten,
-              label: t.import.statDistance,
-              value: '${data.totalDistanceKm.toStringAsFixed(1)} km',
-              color: theme.colorScheme.primary,
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.distance,
+                label: t.import.statDistance,
+                value: '${data.totalDistanceKm.toStringAsFixed(1)} km',
+                color: theme.colorScheme.primary,
+              ),
             ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: Icons.trending_up,
-              label: t.import.statElevationGain,
-              value: '${data.totalElevationGain} m',
-              color: theme.colorScheme.secondary,
+            const SizedBox(width: AppTheme.spacingSm),
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.denivelePlus,
+                label: t.import.statElevationGain,
+                value: '${data.totalElevationGain} m',
+                color: theme.colorScheme.secondary,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         const SizedBox(height: AppTheme.spacingSm),
-        Row(children: [
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: Icons.trending_down,
-              label: t.import.statElevationLoss,
-              value: '${data.totalElevationLoss} m',
-              color: AppTheme.orangeDifficile,
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.deniveleMoins,
+                label: t.import.statElevationLoss,
+                value: '${data.totalElevationLoss} m',
+                color: AppTheme.orangeDifficile,
+              ),
             ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: Icons.timer,
-              label: t.import.statDuration,
-              value: durationStr,
-              color: theme.colorScheme.primary,
+            const SizedBox(width: AppTheme.spacingSm),
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.clock,
+                label: t.import.statDuration,
+                value: durationStr,
+                color: theme.colorScheme.primary,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         const SizedBox(height: AppTheme.spacingSm),
-        Row(children: [
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: Icons.explore,
-              label: t.import.statDirection,
-              value: directionLabel,
-              color: theme.colorScheme.secondary,
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.trailCatalog,
+                label: t.import.statDirection,
+                value: directionLabel,
+                color: theme.colorScheme.secondary,
+              ),
             ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: _buildStatCard(
-              theme,
-              icon: Icons.gps_fixed,
-              label: t.import.statPoints,
-              value: '${data.trackPoints.length}',
-              color: theme.colorScheme.primary,
+            const SizedBox(width: AppTheme.spacingSm),
+            Expanded(
+              child: _buildStatCard(
+                theme,
+                icon: StepwaysIcons.maPosition,
+                label: t.import.statPoints,
+                value: '${data.trackPoints.length}',
+                color: theme.colorScheme.primary,
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
         const SizedBox(height: AppTheme.spacingLg),
         if (data.stagesDetected.isNotEmpty) ...[
           SectionHeader(
             title: t.import.stagesSection,
-            icon: Icons.flag,
+            icon: StepwaysIcons.depart,
             trailing: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppTheme.spacingSm,
@@ -238,7 +274,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         if (data.warnings.isNotEmpty) ...[
           SectionHeader(
             title: t.import.warningsSection,
-            icon: Icons.warning_amber,
+            icon: StepwaysIcons.danger,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           ...data.warnings.map((w) => _buildWarningRow(theme, _warningText(w))),
@@ -246,7 +282,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         ],
         AppButton(
           label: t.import.validateButton,
-          icon: Icons.check_circle,
+          icon: StepwaysIcons.cochePleine,
           onPressed: () => _validateImport(context, data),
         ),
         const SizedBox(height: AppTheme.spacingBase),
@@ -255,8 +291,9 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   }
 
   Widget _buildTraceMap(ThemeData theme, ImportedTrekData data) {
-    final points =
-        data.trackPoints.map((tp) => LatLng(tp.lat, tp.lng)).toList();
+    final points = data.trackPoints
+        .map((tp) => LatLng(tp.lat, tp.lng))
+        .toList();
     if (points.isEmpty) return const SizedBox.shrink();
     final bounds = LatLngBounds.fromPoints(points);
     return ClipRRect(
@@ -269,14 +306,12 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
               bounds: bounds,
               padding: const EdgeInsets.all(30),
             ),
-            interactionOptions:
-                const InteractionOptions(flags: InteractiveFlag.none),
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.none,
+            ),
           ),
           children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.moteur-gr.app',
-            ),
+            FondDeCarte(trailId: widget.trailId),
             PolylineLayer(
               polylines: [
                 Polyline(
@@ -298,8 +333,11 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child: const Icon(Icons.play_arrow,
-                        size: 14, color: Colors.white),
+                    child: const StepIcon(
+                      StepwaysIcons.save,
+                      size: 14,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 Marker(
@@ -312,11 +350,18 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child: const Icon(Icons.flag, size: 14, color: Colors.white),
+                    child: const StepIcon(
+                      StepwaysIcons.depart,
+                      size: 14,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
             ),
+            // ODbL : les tuiles viennent d OpenStreetMap, la carte le dit
+            // (integration 647).
+            const AttributionOsm(),
           ],
         ),
       ),
@@ -325,7 +370,7 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
 
   Widget _buildStatCard(
     ThemeData theme, {
-    required IconData icon,
+    required String icon,
     required String label,
     required String value,
     required Color color,
@@ -333,12 +378,14 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
     return AppCard(
       child: Column(
         children: [
-          Icon(icon, size: 24, color: color),
+          StepIcon(icon, size: 24, color: color),
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             value,
-            style: theme.textTheme.titleLarge
-                ?.copyWith(fontWeight: FontWeight.w700, fontSize: 16),
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
           ),
           const SizedBox(height: 2),
           Text(label, style: theme.textTheme.bodySmall),
@@ -358,36 +405,45 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
           horizontal: AppTheme.spacingMd,
           vertical: AppTheme.spacingSm,
         ),
-        child: Row(children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-            ),
-            child: Center(
-              child: Text(
-                t.import.stageBadge.replaceAll('{number}', '${stage.orderIndex}'),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.colorScheme.onSecondaryContainer,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 11,
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+              ),
+              child: Center(
+                child: Text(
+                  t.import.stageBadge.replaceAll(
+                    '{number}',
+                    '${stage.orderIndex}',
+                  ),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSecondaryContainer,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(
-              name,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(fontWeight: FontWeight.w600),
-              overflow: TextOverflow.ellipsis,
+            const SizedBox(width: AppTheme.spacingSm),
+            Expanded(
+              child: Text(
+                name,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-          ),
-          const Icon(Icons.check_circle, size: 18, color: AppTheme.vertFacile),
-        ]),
+            const StepIcon(
+              StepwaysIcons.cochePleine,
+              size: 18,
+              color: AppTheme.vertFacile,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -400,14 +456,18 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.warning_amber,
-                size: 18, color: AppTheme.orangeDifficile),
+            const StepIcon(
+              StepwaysIcons.danger,
+              size: 18,
+              color: AppTheme.orangeDifficile,
+            ),
             const SizedBox(width: AppTheme.spacingSm),
             Expanded(
               child: Text(
                 warning,
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: AppTheme.orangeDifficile),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppTheme.orangeDifficile,
+                ),
               ),
             ),
           ],
@@ -422,11 +482,15 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   String _warningText(ImportWarning warning) {
     switch (warning.type) {
       case ImportWarningType.outOfBounds:
-        return t.import.warningOutOfBounds
-            .replaceAll('{count}', '${warning.value}');
+        return t.import.warningOutOfBounds.replaceAll(
+          '{count}',
+          '${warning.value}',
+        );
       case ImportWarningType.offTrail:
-        return t.import.warningOffTrail
-            .replaceAll('{percent}', '${warning.value}');
+        return t.import.warningOffTrail.replaceAll(
+          '{percent}',
+          '${warning.value}',
+        );
     }
   }
 
@@ -492,8 +556,10 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   String _invalidText(ImportedTrekData data) {
     switch (data.invalidReason) {
       case ImportInvalidReason.tooFewPoints:
-        return t.import.invalidTooFewPoints
-            .replaceAll('{count}', '${data.invalidValue ?? 0}');
+        return t.import.invalidTooFewPoints.replaceAll(
+          '{count}',
+          '${data.invalidValue ?? 0}',
+        );
       case ImportInvalidReason.outOfBounds:
         return t.import.invalidOutOfBounds;
       case null:
@@ -503,16 +569,22 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
 
   void _validateImport(BuildContext context, ImportedTrekData data) {
     if (!data.isValid) return;
-    final directionLabel =
-        data.direction == 'NS' ? t.import.directionNS : t.import.directionSN;
+    final directionLabel = data.direction == 'NS'
+        ? t.import.directionNS
+        : t.import.directionSN;
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Row(children: [
-          const Icon(Icons.check_circle, color: AppTheme.vertFacile),
-          const SizedBox(width: 8),
-          Text(t.import.confirmTitle),
-        ]),
+        title: Row(
+          children: [
+            const StepIcon(
+              StepwaysIcons.cochePleine,
+              color: AppTheme.vertFacile,
+            ),
+            const SizedBox(width: 8),
+            Text(t.import.confirmTitle),
+          ],
+        ),
         content: Text(
           t.import.confirmBody
               .replaceAll('{points}', '${data.trackPoints.length}')
@@ -521,23 +593,25 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
               .replaceAll('{direction}', directionLabel),
         ),
         actions: [
-          TextButton(
+          AppButton(
+            variant: AppButtonVariant.text,
+            label: t.import.cancel,
+            isFullWidth: false,
             onPressed: () => Navigator.pop(ctx),
-            child: Text(t.import.cancel),
           ),
-          ElevatedButton(
+          AppButton(
+            label: t.import.validate,
             onPressed: () {
               Navigator.pop(ctx);
               // Parite GR20 : navigation vers le recap d'aventure du sentier
               // (route existante) + SnackBar de confirmation. GR20 ne PERSISTE
-              // pas la trace importee (stub) — StepWays conserve ce comportement
-              // (pas d'ecriture de session ici).
+              // pas la trace importee (stub) — StepWays conserve ce
+              // comportement (pas d'ecriture de session ici).
               context.go('/trail/${widget.trailId}/recap');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(t.import.importedSnack)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(t.import.importedSnack)));
             },
-            child: Text(t.import.validate),
           ),
         ],
       ),

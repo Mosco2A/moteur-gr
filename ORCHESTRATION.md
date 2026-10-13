@@ -146,6 +146,27 @@ RESTE / DETTE TRACEE (hors run, non bloquant) :
   (gradle/pod + symbolication). Cablage des call-sites (ref.read(analyticsServiceProvider)
   .logXxx aux moments cles : download, start/stop trek, share, diplome) + ecran de
   consentement RGPD relie a setConsent : infra prete, integration UI a faire.
+  MISE A JOUR TACHE 596 (C4) — cette dette etait sous-estimee de deux crans : meme le
+  wagon 3 fait, RIEN n'aurait remonte. Trois verrous mesures, tous corriges :
+    1. `firebaseProjectId` n'etait renseigne dans AUCUNE configuration de sentier et
+       AUCUN moyen n'existait de le renseigner. `FirebaseConfig` l'injecte desormais au
+       build (`--dart-define=STEPWAYS_FIREBASE_PROJECT_ID`), jamais dans le depot.
+    2. AUCUN filet d'erreur n'existait (`FlutterError.onError`,
+       `PlatformDispatcher.onError`, `runZonedGuarded` : zero occurrence dans lib/), et
+       `recordError`/`recordFatal` n'etaient appeles de nulle part. `ErrorNets` est pose
+       en premiere ligne de `main()`, rapporteur branche des que Firebase demarre.
+    3. `setConsent(granted: false)`, appele des la construction du provider, eteignait
+       AUSSI Crashlytics — et `recordError`/`recordFatal` etaient gardes par ce meme
+       consentement analytics, toujours faux. Mesure d'usage et remontee de panne ont
+       maintenant chacune leur interrupteur (`setCrashCollection`).
+  RESTE DONC AU WAGON 3 : flutterfire configure (genere `lib/firebase_options.dart`,
+  gitignore), le `options: DefaultFirebaseOptions.currentPlatform` dans
+  `firebase_service`, les greffons Gradle google-services + crashlytics, le deploiement
+  des regles Firestore (dont la nouvelle `user_feedback`), et la declaration magasins
+  « Crash logs » (docs/rgpd/data-safety.md, mise a jour). La mesure d'usage reste
+  volontairement coupee : aucune finalite « mesure d'usage » n'existe dans
+  `ConsentPurpose`, donc `setConsent(granted: true)` ne doit pas etre appele avant
+  qu'elle existe et soit recueillie.
 - a11y contraste residuel (audit honnete) : corrige la ou localise (token
   grisTexteSecondaire pour le suivi). RESTE en dette theme : boutons d'action suivi
   (texte blanc sur vert/orange clairs ~2.4:1) et certains textes secondaires grisGranite

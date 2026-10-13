@@ -1,5 +1,9 @@
+/// Dit la relation entre la position et les bornes d'une etape (dedans, entree,
+/// sortie), avec un evenement extensible plutot qu'un enum ferme.
+library;
+
 import 'geo_utils.dart';
-import '../models/stage.dart';
+import '../models/stage_row.dart';
 
 /// Evenement de detection d'etape.
 ///
@@ -34,10 +38,7 @@ abstract class StageDetectionEventValues {
 }
 
 /// Résultat de la détection d'étape.
-typedef StageDetection = ({
-  int stageNumber,
-  StageDetectionEvent event,
-});
+typedef StageDetection = ({int stageNumber, StageDetectionEvent event});
 
 /// Détecte l'étape courante en comparant la position projetée
 /// aux bornes start/end de chaque étape.
@@ -68,13 +69,17 @@ class StageDetector {
     // Vérifier la proximité avec les bornes de chaque étape
     for (final stage in stages) {
       final distToStart = GeoUtils.haversineDistance(
-        projectedLat, projectedLng,
-        stage.startLat, stage.startLng,
+        projectedLat,
+        projectedLng,
+        stage.startLat,
+        stage.startLng,
       );
 
       final distToEnd = GeoUtils.haversineDistance(
-        projectedLat, projectedLng,
-        stage.endLat, stage.endLng,
+        projectedLat,
+        projectedLng,
+        stage.endLat,
+        stage.endLng,
       );
 
       // Proche du point de départ de l'étape
@@ -101,13 +106,17 @@ class StageDetector {
 
     for (final stage in stages) {
       final distToStart = GeoUtils.haversineDistance(
-        projectedLat, projectedLng,
-        stage.startLat, stage.startLng,
+        projectedLat,
+        projectedLng,
+        stage.startLat,
+        stage.startLng,
       );
 
       final distToEnd = GeoUtils.haversineDistance(
-        projectedLat, projectedLng,
-        stage.endLat, stage.endLng,
+        projectedLat,
+        projectedLng,
+        stage.endLat,
+        stage.endLng,
       );
 
       // Score = distance combinée aux deux bornes

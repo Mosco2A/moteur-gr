@@ -27,9 +27,12 @@ void main() {
     final router = GoRouter(
       initialLocation: '/home',
       routes: [
-        GoRoute(path: '/home', builder: (_, __) => const Scaffold(
-          body: SingleChildScrollView(child: FinishTrekButton()),
-        )),
+        GoRoute(
+          path: '/home',
+          builder: (_, __) => const Scaffold(
+            body: SingleChildScrollView(child: FinishTrekButton()),
+          ),
+        ),
         GoRoute(
           path: '/trail/:id/recap',
           builder: (_, __) => const Text('RECAP_STUB'),
@@ -47,51 +50,73 @@ void main() {
   Override trekWith(TrackingSessionState s) =>
       trekSessionManagerProvider.overrideWith(() => _FakeTrekNotifier(s));
 
-  Override summaryWith(TrekLifecycleState? state) =>
-      currentTrailSummaryProvider.overrideWith((ref) async =>
-          state == null ? null : _summary(state));
+  Override summaryWith(TrekLifecycleState? state) => currentTrailSummaryProvider
+      .overrideWith((ref) async => state == null ? null : _summary(state));
 
   testWidgets('caché quand aucun trek en cours (idle + owned)', (tester) async {
-    await tester.pumpWidget(wrap(overrides: [
-      trekWith(const TrackingSessionState(status: TrackingSessionStatus.idle)),
-      summaryWith(TrekLifecycleState.owned),
-    ]));
+    await tester.pumpWidget(
+      wrap(
+        overrides: [
+          trekWith(
+            const TrackingSessionState(status: TrackingSessionStatus.idle),
+          ),
+          summaryWith(TrekLifecycleState.owned),
+        ],
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text(t.hub.finishTrek.action), findsNothing);
   });
 
-  testWidgets('visible quand le tracking est en cours (recording)',
-      (tester) async {
-    await tester.pumpWidget(wrap(overrides: [
-      trekWith(
-        const TrackingSessionState(status: TrackingSessionStatus.recording),
+  testWidgets('visible quand le tracking est en cours (recording)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      wrap(
+        overrides: [
+          trekWith(
+            const TrackingSessionState(status: TrackingSessionStatus.recording),
+          ),
+          summaryWith(null),
+        ],
       ),
-      summaryWith(null),
-    ]));
+    );
     await tester.pumpAndSettle();
 
     expect(find.text(t.hub.finishTrek.action), findsOneWidget);
   });
 
-  testWidgets('visible quand l\'état dérivé est inProgress (session persistée)',
-      (tester) async {
-    await tester.pumpWidget(wrap(overrides: [
-      trekWith(const TrackingSessionState(status: TrackingSessionStatus.idle)),
-      summaryWith(TrekLifecycleState.inProgress),
-    ]));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'visible quand l\'état dérivé est inProgress (session persistée)',
+    (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          overrides: [
+            trekWith(
+              const TrackingSessionState(status: TrackingSessionStatus.idle),
+            ),
+            summaryWith(TrekLifecycleState.inProgress),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.text(t.hub.finishTrek.action), findsOneWidget);
-  });
+      expect(find.text(t.hub.finishTrek.action), findsOneWidget);
+    },
+  );
 
   testWidgets('tap -> dialog de confirmation (annulable)', (tester) async {
-    await tester.pumpWidget(wrap(overrides: [
-      trekWith(
-        const TrackingSessionState(status: TrackingSessionStatus.recording),
+    await tester.pumpWidget(
+      wrap(
+        overrides: [
+          trekWith(
+            const TrackingSessionState(status: TrackingSessionStatus.recording),
+          ),
+          summaryWith(null),
+        ],
       ),
-      summaryWith(null),
-    ]));
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text(t.hub.finishTrek.action));
@@ -109,10 +134,8 @@ void main() {
   });
 }
 
-TrekSummary _summary(TrekLifecycleState state) => TrekSummary(
-      config: _config,
-      state: state,
-    );
+TrekSummary _summary(TrekLifecycleState state) =>
+    TrekSummary(config: _config, state: state);
 
 /// Config minimale (FinishTrekButton ne lit que l'id du sentier au clic).
 const _config = TrailConfig(

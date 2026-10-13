@@ -7,7 +7,7 @@ import 'package:moteur_gr/features/gamification/domain/user_stats.dart';
 /// Tests du DefiService (F7C-02) — progression LOCALE + classement cache.
 void main() {
   DefiSaisonnier defi({
-    String type = DefiObjectif.denivele,
+    String type = DefiObjectif.elevationGain,
     double cible = 3000,
   }) {
     return DefiSaisonnier(
@@ -23,10 +23,11 @@ void main() {
 
   group('localProgress — calcul LOCAL offline-first', () {
     test('denivele : progression depuis le cumul des stats', () {
-      final service =
-          DefiService(rankingRepository: InMemoryDefiRankingRepository());
+      final service = DefiService(
+        rankingRepository: InMemoryDefiRankingRepository(),
+      );
       final p = service.localProgress(
-        defi(type: DefiObjectif.denivele, cible: 3000),
+        defi(type: DefiObjectif.elevationGain, cible: 3000),
         const UserStats(totalElevationGainM: 1500),
       );
       expect(p.current, 1500);
@@ -36,8 +37,9 @@ void main() {
     });
 
     test('segments : progression depuis le nombre de segments', () {
-      final service =
-          DefiService(rankingRepository: InMemoryDefiRankingRepository());
+      final service = DefiService(
+        rankingRepository: InMemoryDefiRankingRepository(),
+      );
       final p = service.localProgress(
         defi(type: DefiObjectif.segments, cible: 5),
         const UserStats(segmentsCompleted: 5),
@@ -48,10 +50,11 @@ void main() {
     });
 
     test('ratio borne a 1 meme au-dela de la cible', () {
-      final service =
-          DefiService(rankingRepository: InMemoryDefiRankingRepository());
+      final service = DefiService(
+        rankingRepository: InMemoryDefiRankingRepository(),
+      );
       final p = service.localProgress(
-        defi(type: DefiObjectif.denivele, cible: 1000),
+        defi(type: DefiObjectif.elevationGain, cible: 1000),
         const UserStats(totalElevationGainM: 5000),
       );
       expect(p.ratio, 1.0);
@@ -70,19 +73,25 @@ void main() {
   group('ranking — lecture cache (calcul serveur, R2)', () {
     test('retourne le classement par tranche depuis le cache', () async {
       final repo = InMemoryDefiRankingRepository()
-        ..put(const DefiRanking(
-          defiId: 'defi-printemps',
-          tranches: [
-            DefiRankingTranche(
-              tranche: 'all',
-              participantCount: 6,
-              published: true,
-              entries: [
-                DefiRankingEntry(rank: 1, pseudonym: 'rndr-aaaa', value: 4200),
-              ],
-            ),
-          ],
-        ));
+        ..put(
+          const DefiRanking(
+            defiId: 'defi-printemps',
+            tranches: [
+              DefiRankingTranche(
+                tranche: 'all',
+                participantCount: 6,
+                published: true,
+                entries: [
+                  DefiRankingEntry(
+                    rank: 1,
+                    pseudonym: 'rndr-aaaa',
+                    value: 4200,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
       final service = DefiService(rankingRepository: repo);
       final r = await service.ranking('defi-printemps');
       expect(r, isNotNull);
@@ -91,8 +100,9 @@ void main() {
     });
 
     test('defi inconnu -> null (cache vide hors-ligne)', () async {
-      final service =
-          DefiService(rankingRepository: InMemoryDefiRankingRepository());
+      final service = DefiService(
+        rankingRepository: InMemoryDefiRankingRepository(),
+      );
       expect(await service.ranking('inconnu'), isNull);
     });
   });

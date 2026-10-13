@@ -1,3 +1,9 @@
+/// L'amorce de l'application : initialisations, portee Riverpod, et la porte
+/// qui attend que l'amorce soit resolue avant d'afficher une route.
+library;
+
+import 'dart:async';
+
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,26 +13,54 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/analytics/firebase_analytics_sink.dart';
+import 'core/branding/app_branding.dart';
+import 'core/config/firebase_config.dart';
 import 'core/config/mare_a_mare_centre_trail_config.dart';
+import 'core/theme/couleurs_semantiques.dart';
 import 'core/config/trail_config.dart';
+import 'core/error/error_nets.dart';
 import 'core/firebase/firebase_service.dart';
 import 'core/engine/trail_engine.dart';
 import 'core/providers/app_bootstrap_provider.dart';
-import 'core/providers/database_provider.dart';
+import 'core/providers/taches_d_amorcage.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/home_location_provider.dart';
+import 'core/services/descente_des_droits.dart';
+import 'core/services/mise_a_jour_a_la_source.dart';
+import 'core/services/ordonnanceur_de_synchronisation.dart';
+import 'core/services/sync_scheduler.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
+import 'shared/widgets/cadre_demo.dart';
 import 'features/ads/providers/ads_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
-import 'features/safety/presentation/health_info_screen.dart';
 import 'features/settings/data/settings_service.dart';
 import 'features/settings/providers/settings_provider.dart';
+import 'features/feasibility/data/hiker_profile_repository.dart';
+import 'features/safety/presentation/health_info_screen.dart'
+    show healthInfoFileProvider;
+import 'features/safety/presentation/backup_consent_gate.dart';
+import 'features/trek/presentation/mention_marche_simulee.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
+import 'shared/widgets/app_logo.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // LES FILETS D'ERREUR, POSES AVANT TOUT LE RESTE (596 C4).
+  //
+  // `FlutterError.onError`, `PlatformDispatcher.instance.onError` et
+  // `runZonedGuarded` avaient ZERO occurrence dans tout `lib/` : AUCUNE erreur
+  // de l'application n'etait collectee, nulle part. Firebase allume n'y aurait
+  // rien change — il n'y avait personne pour lui donner quoi que ce soit.
+  //
+  // Poses des la premiere ligne utile : une erreur survenue pendant l'amorce
+  // (lecture des prefs, dates, amorce du sentier) doit etre attrapee elle
+  // aussi. Sans rapporteur branche, elles partent dans les journaux locaux —
+  // ce qui est exactement le comportement attendu en mode local.
+  ErrorNets.installer();
 
   // OFFLINE-FIRST (fix cycle 3) : interdit tout fetch HTTP de police au runtime.
   // La typographie (Montserrat) est desormais EMBARQUEE comme famille Flutter
@@ -68,9 +102,30 @@ Future<void> main() async {
   // PARITE GR20 — LOT 1 (#99423) : la demo demarre sur Mare a Mare Centre
   // (sentier reel de StepWays), en tete du catalogue. Le moteur reste
   // generique : c'est une DONNEE (TrailConfig), aucune localite hardcodee ici.
+  //
+  // 596 C4 — L'IDENTIFIANT DE PROJET A ENFIN UN POINT D'ENTREE. Il n'etait
+  // renseigne dans AUCUNE configuration de sentier, et aucun moyen n'existait
+  // de le renseigner : `Firebase.initializeApp()` n'etait donc jamais execute,
+  // a 100 % des demarrages. Il est desormais injecte au build
+  // (`--dart-define=STEPWAYS_FIREBASE_PROJECT_ID=...`, cf. [FirebaseConfig]),
+  // jamais ecrit dans le depot. Absent => mode local, dit dans les journaux,
+  // et l'application demarre normalement.
   final firebaseService = await FirebaseService.initialize(
-    firebaseProjectId: mareAMareCentreTrailConfig.firebaseProjectId,
+    firebaseProjectId: FirebaseConfig.resoudre(
+      fromTrail: mareAMareCentreTrailConfig.firebaseProjectId,
+    ),
   );
+
+  // Le rapporteur de plantage n'est branche QUE si le cloud a vraiment demarre.
+  // C'est le second verrou du meme defaut : la configuration presente ne suffit
+  // pas, encore faut-il que quelqu'un transmette les erreurs.
+  if (firebaseService.isAvailable) {
+    final crash = FirebaseCrashSink();
+    ErrorNets.brancherRapporteur(
+      (error, stack, {bool fatal = false}) =>
+          unawaited(crash.recordError(error, stack, fatal: fatal)),
+    );
+  }
 
   runApp(
     MoteurGrApp(
@@ -79,6 +134,30 @@ Future<void> main() async {
     ),
   );
 }
+
+/// LES TRAVAUX D AMORCAGE DE L APPLICATION, DANS L ORDRE OU ILS SONT EXECUTES.
+///
+/// Sortie du `build` de [MoteurGrApp] pour qu un test puisse la monter telle
+/// quelle : tant qu elle etait une expression anonyme au milieu des overrides,
+/// AUCUN test ne pouvait affirmer qu elle porte bien ses deux travaux, ni dans
+/// quel ordre — une surcharge disparue ou intervertie n aurait rien fait
+/// rougir (regle maison #100350 : un garde qui echoue en silence est pire que
+/// pas de garde). Le corps est repris mot pour mot ; elle ne fait que
+/// construire la liste, elle n execute rien (c est `app_bootstrap_provider`
+/// qui appelle chaque travail, en sequence).
+List<TacheDAmorcage> tachesDAmorcageDeLApplication(Ref ref) => <TacheDAmorcage>[
+  // Tache 615 : l exclusion iCloud de la fiche medicale.
+  () => ref.read(healthInfoFileProvider).garantirExclusion(),
+  // Tache 623 : le profil du randonneur quitte les preferences, et
+  // l exclusion est reposee dans le meme geste (l ecriture atomique
+  // remplace le fichier, et un fichier remplace ne porte plus
+  // l attribut de celui qu il remplace).
+  () async {
+    final profile = ref.read(hikerProfileRepositoryProvider);
+    await profile.migrerDepuisPreferences();
+    await profile.fichier.garantirExclusion();
+  },
+];
 
 /// Application racine du Moteur GR.
 ///
@@ -107,16 +186,31 @@ class MoteurGrApp extends StatelessWidget {
         // Seul firebaseServiceProvider reste surcharge (service initialise
         // au demarrage, hors graphe Riverpod pur).
         firebaseServiceProvider.overrideWithValue(firebaseService),
-        // E57 (LOT D/D1) : cablage explicite du DAO sante sur la base Drift
-        // unique (databaseProvider). Le provider auto-derive deja de
-        // databaseProvider ; l'override rend le point d'injection explicite au
-        // niveau racine (spec E57 RF-8). Donnees LOCAL ONLY (art. 9), jamais le
-        // cloud. NB : databaseProvider est en memoire (etat app-wide inchange,
-        // hors perimetre D1) -> persistance = duree de session, comme les
-        // autres features Drift aujourd'hui.
-        healthInfoDaoProvider.overrideWith(
-          (ref) => ref.watch(databaseProvider).healthInfoDao,
-        ),
+        // LE CABLAGE DES TRAVAUX D AMORCAGE, ET C EST ICI QUE CA SE NOUE.
+        //
+        // `app_bootstrap_provider.dart` (socle) importait l ECRAN de la fiche
+        // sante pour y prendre `healthInfoFileProvider` : le socle
+        // connaissait une couche presentation (cas K1 du lot 645-05). La
+        // fleche est inversee — l amorcage ne declare qu un besoin, et c est
+        // `main.dart`, au-dessus du socle comme des features, qui a le droit
+        // de connaitre les deux et de les relier.
+        //
+        // L EXCLUSION iCLOUD DE LA FICHE MEDICALE EST REPOSEE A CHAQUE
+        // DEMARRAGE, et la raison entiere est dans `HealthInfoFile` :
+        // un randonneur qui avait rempli sa fiche avant la tache 615 ne la
+        // reecrira peut-etre jamais, et c est l amorce, et elle seule, qui
+        // repasse derriere lui. Elle ne leve jamais et elle est bornee par
+        // `ExclusionSauvegardeIcloud.delaiMax`.
+        tachesDAmorcageProvider.overrideWith(tachesDAmorcageDeLApplication),
+        // TACHE 613 — L'OVERRIDE DU DAO SANTE A ETE RETIRE, PAS OUBLIE. Il
+        // cablait la fiche medicale (E57 LOT D/D1) sur la base Drift commune.
+        // Cette base est desormais DURABLE et doit remonter dans la sauvegarde
+        // du telephone pour que la progression et le journal survivent au
+        // changement d'appareil ; un fichier de base ne s'excluant pas table par
+        // table, la fiche a recu son PROPRE fichier sous le dossier declare
+        // exclu (`HealthInfoFile`, cable par
+        // `healthInfoFileProvider`). Plus rien de medical ne passe par
+        // `databaseProvider` : il n'y a donc plus rien a cabler ici.
       ],
       // Migration Riverpod 3 (INC-1) : NEUTRALISATION du retry automatique.
       // Riverpod 3 re-essaie par defaut tout provider Future/Stream qui leve
@@ -215,7 +309,7 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
       // actif (appBootstrapProvider) est declenche et ATTENDU avant le premier
       // rendu des ecrans data. Sans cette garde, seedIfNeeded() n'etait appele
       // nulle part : carte/etapes/POI vides et meteo « introuvable ».
-      builder: (context, child) => _BootstrapGate(child: child),
+      builder: (context, child) => BootstrapGate(child: child),
     );
   }
 }
@@ -224,8 +318,10 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
 /// REACTIVE au changement de sentier).
 ///
 /// `ConsumerWidget` (sous le `ProviderScope`) : observe [appBootstrapProvider],
-/// qui force le seed du sentier actif (DB in-memory volatile -> re-seed a chaque
-/// lancement). Tant que le seed n'est pas resolu, affiche un ecran de chargement
+/// qui seede le sentier actif SI SES DONNEES NE SONT PAS DEJA EN BASE. Depuis la
+/// tache 613 la base est durable : le seed force a chaque lancement a ete retire,
+/// il aurait duplique etapes, POI et trace a chaque ouverture. Tant que le seed
+/// n'est pas resolu, affiche un ecran de chargement
 /// (i18n Slang) ; en cas d'echec, un ecran d'erreur discret. Une fois resolu, le
 /// [child] route (« Mes treks » puis le cockpit) s'affiche avec ses donnees deja
 /// en base.
@@ -239,19 +335,93 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
 /// `isLoading` vrai) : sans ca, l'app afficherait 1 frame l'ancien sentier
 /// (carte/etapes de l'ancien trek) avant le re-seed. On regarde donc
 /// `isLoading`/`isReloading` en plus du `hasValue` pour couvrir ce cas.
-class _BootstrapGate extends ConsumerWidget {
-  const _BootstrapGate({required this.child});
+///
+/// PUBLIQUE DEPUIS LA TACHE 637, ET CE N'EST PAS UN DETAIL D'ORGANISATION. Elle
+/// etait privee a ce fichier, donc AUCUN test de `test/` ne pouvait la monter :
+/// le socle « parcours reel » montait `MaterialApp.router` sans le `builder`
+/// ci-dessus, et les trois enveloppes de l'application — cette garde, le cadre
+/// demo et la porte de consentement — n'existaient dans aucun test. C'est ce trou
+/// qui a laisse passer le plantage du consentement (28 rapports Crashlytics sur
+/// les builds 6 et 7) ET qui empechait de mesurer l'ecran noir de Christophe :
+/// le loader de cette garde peint le vert sombre du splash, ce qui, sur un
+/// telephone, se lit « ecran noir ».
+class BootstrapGate extends ConsumerWidget {
+  const BootstrapGate({required this.child, super.key});
 
   /// Arbre route fourni par GoRouter (peut etre null tres tot dans le cycle de
   /// vie de MaterialApp.router — on affiche alors le loader).
   final Widget? child;
+
+  /// ARME UN SERVICE DE FOND SANS JAMAIS POUVOIR EMPORTER L'ECRAN AVEC LUI.
+  ///
+  /// ---------------------------------------------------------------------------
+  /// TACHE 637, VOLET 2 — L'ECRAN NOIR QUI BOUCLE, ET SA CAUSE MESUREE
+  /// ---------------------------------------------------------------------------
+  ///
+  /// Retour de Christophe, 30/09 11:02 (DEM-260930-1103), verbatim : « Mon compte
+  /// depuis le menu trek = ecran noir ; depuis la demo ca fonctionne ».
+  ///
+  /// CETTE GARDE ENVELOPPE TOUS LES ECRANS. Quand son `build` leve, Flutter
+  /// remplace l'arbre ENTIER par un `ErrorWidget` — en debug un cadre rouge qui
+  /// nomme la panne, en RELEASE un rectangle gris-noir SANS UN MOT. Et comme la
+  /// garde se reconstruit a chaque changement de provider qu'elle observe, elle
+  /// releve, et le noir revient : « boucle sur ecran noir », mot pour mot.
+  ///
+  /// CE QUI LEVAIT. Les cinq lectures ci-dessous arment des services de fond, et
+  /// chacun de leurs commentaires promettait « NON BLOQUANT », « best-effort »,
+  /// « l'app demarre meme si la pub echoue ». C'ETAIT FAUX : trois d'entre eux
+  /// sont des `Provider<void>` SYNCHRONES, et `ref.watch` d'un provider dont la
+  /// creation leve RELEVE la meme erreur ici, dans ce `build`. La montee en base
+  /// (tache 635) lisait `authServiceProvider`, qui CONSTRUIT
+  /// `FirebaseAuthService`, donc touche `FirebaseAuth.instance` : tout ce qui leve
+  /// la — Firebase non initialise, services Google Play absents ou trop vieux,
+  /// authentification non activee — noircissait l'application entiere. Mesure
+  /// faite : `ProviderException: Tried to use a provider that is in error state`
+  /// « thrown building BootstrapGate ».
+  ///
+  /// ET C'EST POURQUOI LA DEMO MARCHAIT. Le mode demo n'arme ni la montee en base
+  /// ni les ecritures du trek (gardes `enDemoProvider`) : les providers qui
+  /// levaient n'etaient jamais construits. Le meme geste, hors demo, les
+  /// construisait — d'ou « depuis le menu trek » et pas « depuis la demo ».
+  ///
+  /// LA REGLE POSEE ICI, ET ELLE VAUT POUR TOUT CE QU'ON AJOUTERA. Un service de
+  /// fond qui echoue coûte SON service, jamais l'ecran. La cause est corrigee
+  /// aussi chez chacun d'eux (ils ne levent plus) ; cette garde-ci est le filet
+  /// qui empeche le prochain ajout de rouvrir le meme trou.
+  static void _armer(String nom, void Function() armement) {
+    try {
+      armement();
+    } catch (erreur) {
+      // Volontairement muet a l'ecran : un service de fond qui ne s'arme pas ne
+      // se raconte pas au randonneur. Il se rearmera a la prochaine ouverture.
+      debugPrint('[Amorce] Service de fond « $nom » non arme : $erreur');
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Barriere de re-seed : le changement de sentier actif doit rejouer l'amorce
     // (le provider d'amorce watch deja la config ; cette lecture rend la
     // dependance explicite et documente l'invalidation au niveau de la garde).
-    ref.watch(trailConfigProvider.select((c) => c.id));
+    //
+    // CELLE-CI EST PORTANTE, pas best-effort : sans configuration de sentier il
+    // n'y a rien a afficher. Mais un ecran noir muet reste le pire des refus, donc
+    // si elle leve on montre l'ECRAN D'ERREUR de cette garde — le meme que pour
+    // une amorce en echec, qui au moins nomme la panne (tache 637, volet 2).
+    try {
+      ref.watch(trailConfigProvider.select((c) => c.id));
+    } catch (erreur) {
+      return _BootstrapScaffold(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Text(
+            '$erreur',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      );
+    }
 
     // ACCUEIL CONTEXTUEL TENU A JOUR AU NIVEAU DE L'APPLICATION (tache 548).
     //
@@ -273,27 +443,121 @@ class _BootstrapGate extends ConsumerWidget {
     // actif en permanence, donc il est rafraichi par l'ordonnanceur AVANT la
     // phase de build, jamais pendant. Aucun effet visuel : la garde rend le
     // meme arbre route.
-    ref.watch(homeLocationProvider);
+    _armer('accueil contextuel', () => ref.watch(homeLocationProvider));
 
     // StepWays L6/A6 : amorce PUB NON bloquante — resout le consentement UMP/CMP
     // puis initialise le SDK AdMob en tache de fond. On `watch` sans gater le
     // rendu dessus (best-effort) : l'app demarre meme si la pub echoue, et
     // aucune banniere ne s'affiche tant que le consentement n'est pas obtenu.
-    ref.watch(adsReadyProvider);
+    _armer('publicite', () => ref.watch(adsReadyProvider));
+
+    // LA CADENCE DE SYNCHRONISATION EST ARMEE ICI (tache 616), ET RIEN NE L ARMAIT.
+    //
+    // Demande de Christophe du 28/09 09:32 : « quand l appli recupere du reseau (et
+    // ensuite toutes les 4 heures par exemple) elle vient verifier toutes les
+    // donnees superieures a sa date de MAJ ». La mecanique existait depuis la tache
+    // E4.11c (`UpdateDownloader.scheduleBackgroundDownload`) mais AUCUN code de
+    // production ne l'appelait : un sentier ne se mettait a jour que si le
+    // randonneur rouvrait le catalogue et appuyait lui-meme.
+    //
+    // POURQUOI ICI ET PAS DANS UN ECRAN. Cette garde vit au-dessus du `Navigator`
+    // et ne se demonte jamais ; Riverpod 3 met en PAUSE les abonnements d'un ecran
+    // qui n'est plus a l'avant-plan, donc une cadence branchee depuis le catalogue
+    // s'arreterait des qu'on en sort. C'est le meme raisonnement que pour
+    // [homeLocationProvider] ci-dessus.
+    //
+    // NON BLOQUANT : l'ordonnanceur arme une horloge et une ecoute de
+    // connectivite, il ne declenche aucune passe au demarrage et ne retarde donc
+    // pas le premier ecran.
+    _armer(
+      'cadence de synchronisation',
+      () => ref.watch(ordonnanceurDemarreProvider),
+    );
+
+    // L ECOUTE EN DIRECT DES DROITS (tache 631), ARMEE AU MEME ENDROIT ET POUR
+    // LA MEME RAISON. Le scenario d acceptation de Christophe est : on ecrit ses
+    // droits depuis le PC et il les voit arriver dans l application OUVERTE,
+    // sans la fermer. La cadence de l ordonnanceur (quatre heures) est le repli
+    // pour le reste du temps ; ceci est le direct. Cette garde ne se demonte
+    // jamais et n est jamais mise en pause : l ecoute vit aussi longtemps que
+    // l application.
+    _armer('descente des droits', () => ref.watch(descenteEnDirectProvider));
+
+    // LA MONTEE EN BASE, ARMEE ICI ET NULLE PART AILLEURS (tache 635).
+    //
+    // Demande de Christophe du 29/09 : « je veux voir toutes les donnees en
+    // base qui se mettent a jour quand je rentre des infos dans l appli ». La
+    // mecanique de montee existait depuis le LOT A5 et DEUX ordonnanceurs
+    // etaient censes la reveiller — aucun des deux n avait le moindre appelant
+    // dans `lib/`. Le telephone n ecrivait donc RIEN : ni fiche technique, ni
+    // progression, ni sac, ni randos passees, d ou le constat « donnees dans la
+    // base ni utilisateur ni sentier ».
+    //
+    // MEME RAISON D ETRE ICI que la cadence et l ecoute des droits juste
+    // au-dessus : cette garde vit au-dessus du `Navigator` et ne se demonte
+    // jamais. Une montee branchee depuis un ecran s arreterait des qu on
+    // naviguerait ailleurs, c est-a-dire au moment meme ou le randonneur valide
+    // une etape et change d ecran.
+    //
+    // NON BLOQUANT : elle attend l identite en tache de fond et n empeche pas le
+    // premier rendu.
+    _armer('montee en base', () => ref.watch(monteeEnBaseDemarreeProvider));
+
+    // LA DESCENTE DES DONNEES DE SENTIER AU DEMARRAGE (tache 641).
+    //
+    // Demande de Christophe du 30/09 11:54 : « Je veux que les donnees des
+    // applications soient dans Firebase, chaque donnee a jour avec son timestamp
+    // de MAJ. Ensuite je veux que l application vienne mettre a jour ses donnees a
+    // cette source. » La descente par revision existait depuis le lot 605 et la
+    // cadence depuis le lot 616, mais la cadence ne s occupe que des sentiers
+    // DEJA telecharges — et le seul geste capable de poser ce premier repere
+    // n avait aucun appelant dans `lib/`. Aucun sentier ne pouvait donc jamais
+    // entrer dans le perimetre de la cadence : la chaine complete etait
+    // inatteignable en production.
+    //
+    // MEME RAISON D ETRE ICI que les trois gardes au-dessus : au-dessus du
+    // `Navigator`, elle ne se demonte jamais.
+    //
+    // NON BLOQUANT, ET C EST LE POINT : la copie embarquee est deja en base quand
+    // cette garde s arme (`appBootstrapProvider` a seede), donc l ecran est PLEIN.
+    // La mise a jour l ameliore quand elle arrive, elle ne la fait pas attendre.
+    ref.watch(miseAJourAuDemarrageProvider);
 
     final bootstrap = ref.watch(appBootstrapProvider);
     final t = Translations.of(context);
 
+    // LE PREMIER ECRAN FLUTTER PROLONGE LE SPLASH NATIF (tache 632).
+    //
+    // L'ecran de demarrage natif (flutter_native_splash, variante Foret) montre
+    // le logo sur le vert #1F3D2B, puis s'efface des que Flutter dessine sa
+    // premiere image — qui etait jusqu'ici un fond de theme CLAIR avec un
+    // tourniquet nu. Le randonneur voyait donc un flash blanc au lancement, et
+    // l'application ne disait son nom nulle part.
+    //
+    // Ce loader reprend la couleur ET le logo du splash natif : la passation ne
+    // se voit plus. C'est l'equivalent du `main_snippet.dart` livre par
+    // Christophe (`FlutterNativeSplash.preserve`), en mieux : la continuite
+    // couvre AUSSI le re-seed apres un changement de sentier, pas seulement
+    // l'amorce initiale — et sans garder la main sur le splash natif, donc sans
+    // risque de figer le demarrage si l'amorce echoue.
     Widget loader() => _BootstrapScaffold(
+      fond: AppBranding.couleurFondSplash,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const CircularProgressIndicator(),
+          const AppLogo.horizontal(
+            hauteur: 52,
+            surFondSombre: AppBranding.splashSurFondSombre,
+          ),
+          const SizedBox(height: 40),
+          const CircularProgressIndicator(color: _encreSurSplash),
           const SizedBox(height: 24),
           Text(
             t.bootstrap.loading,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: _encreSurSplash),
           ),
         ],
       ),
@@ -312,8 +576,36 @@ class _BootstrapGate extends ConsumerWidget {
       // awaite par `appBootstrapProvider` (donc immediatement disponible ici) ;
       // s'il a detecte une rando laissee par un arret brutal, on propose
       // Reprendre / Abandonner une seule fois au premier rendu.
-      data: (_) =>
-          OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
+      //
+      // ET SOUS LA PORTE DU CONSENTEMENT DE SAUVEGARDE (tache 617). La question
+      // « je refuse la sauvegarde de mes donnees par le systeme du telephone »
+      // etait posee a la seule connexion Google depuis la tache 612, dont le
+      // bilan nommait le trou : le randonneur anonyme ne la voyait jamais. Elle
+      // est posee ICI, une fois, a tout le monde. La PROTECTION, elle, s'applique
+      // deja (refus par defaut) : poser la question n'est pas proteger, et c'est
+      // ce qui autorise a la poser apres le premier rendu plutot qu'a bloquer le
+      // demarrage.
+      //
+      // ORDRE DES DEUX PORTES : la reprise orpheline est la plus interieure, donc
+      // son dialogue s'ouvre en second et se retrouve AU-DESSUS. C'est voulu :
+      // reprendre une rando interrompue est un geste urgent, le consentement de
+      // sauvegarde ne l'est pas, et il sera repose au lancement suivant s'il est
+      // ignore.
+      // LE CADRE ORANGE DE LA DEMO EST LA PLUS EXTERIEURE DES TROIS PORTES
+      // (tache 634, DEM-260929-1123). Il doit entourer TOUT l'ecran, y compris
+      // les dialogues des deux portes ci-dessous : « le tour des ecran devient
+      // orange », et la sortie doit rester visible en permanence. Hors demo, ce
+      // widget rend son enfant tel quel, sans ajouter un seul noeud.
+      data: (_) => CadreDemo(
+        // TACHE 742 : la mention « marche simulee » prend place sous le
+        // bandeau, pendant toute la simulation. C'est ICI qu'elle est donnee au
+        // cadre, et pas dans le cadre : `shared/` ne doit pas connaitre
+        // `features/` (ARB-645-05-a), et `main.dart` compose l'application.
+        sousLeBandeau: const MentionMarcheSimulee(),
+        child: BackupConsentGate(
+          child: OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
+        ),
+      ),
       loading: loader,
       error: (error, _) => _BootstrapScaffold(
         child: Padding(
@@ -329,18 +621,30 @@ class _BootstrapGate extends ConsumerWidget {
   }
 }
 
+/// Encre posee sur le fond de l'ecran de demarrage : le creme de la charte sur
+/// le vert sombre (variante Foret), le vert sombre sur le creme (variante
+/// Aube). Derive de la variante active, donc suit `tool/set_branding.py`.
+const Color _encreSurSplash = AppBranding.splashSurFondSombre
+    ? CouleursSemantiques.cremeSurSplashSombre
+    : CouleursSemantiques.vertSombreSurSplashClair;
+
 /// Echafaudage commun (loader / erreur) de la porte d'amorce : centre le
-/// contenu sur la couleur de fond du theme actif, pour une transition sans
-/// clignotement vers l'ecran route.
+/// contenu pour une transition sans clignotement vers l'ecran route.
+///
+/// [fond] laisse a null = couleur de fond du theme actif. C'est ce que garde la
+/// branche ERREUR : le message y est ecrit a l'encre du theme, et le forcer sur
+/// le vert du splash le rendrait illisible. Le loader, lui, passe la couleur du
+/// splash pour prolonger l'ecran de demarrage natif (tache 632).
 class _BootstrapScaffold extends StatelessWidget {
-  const _BootstrapScaffold({required this.child});
+  const _BootstrapScaffold({required this.child, this.fond});
 
   final Widget child;
+  final Color? fond;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: fond ?? Theme.of(context).scaffoldBackgroundColor,
       body: Center(child: child),
     );
   }

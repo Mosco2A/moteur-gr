@@ -1,0 +1,282 @@
+# PLATEFORME DECLAREE — 15.0, LUE ET NON CHOISIE. Cette valeur n est pas un
+# choix pris ici : elle est LUE dans `IPHONEOS_DEPLOYMENT_TARGET` des trois
+# configurations du projet Runner (Debug, Release, Profile), dont la cible
+# Runner herite, et recopiee. Le projet Xcode decide, ce fichier obeit.
+#
+# POURQUOI LA LIGNE EXISTE. Sans elle, CocoaPods ne se tait pas : il choisit
+# une plateforme lui-meme. Le journal de la premiere compilation iPhone, le
+# 07/10, le disait mot pour mot — « Automatically assigning platform iOS with
+# version 15.0 on target Runner because no platform was specified ». Une valeur
+# devinee par l outil n est pas une valeur tenue par le depot : on l ecrit.
+#
+# LES DEUX VALEURS SE CHANGENT ENSEMBLE, JAMAIS L UNE SANS L AUTRE. Des pods
+# compiles pour un iOS plus recent que l application, c est un module Swift
+# refuse a la compilation ; des pods compiles pour un iOS plus ancien, c est le
+# plancher du projet qui ne veut plus rien dire. C est aussi ce que fait
+# Flutter : depuis la version 3.47.0, `flutter build ios` passe la migration
+# `IOSDeploymentTargetMigration`, qui reecrit la cible dans le projet Xcode ET
+# dans cette ligne, du meme geste. Sous un Flutter 3.41 ou 3.44 les deux
+# restaient a 13.0 ; sous 3.47 les deux passent a 15.0.
+#
+# POURQUOI 15.0, ET DEPUIS QUAND. Cette ligne a dit 13.0 jusqu au 07/10/2026.
+# Elle mentait depuis le jour ou elle est nee : le lot qui a ecrit ce fichier et
+# le lot « fiche magasin et preparation Apple », qui a monte le projet Xcode de
+# 13.0 a 15.0 (commit `4e28192b`), sont nes de la MEME tete `52fb8ac2` et ne se
+# sont jamais vus. Les deux etaient justes, la fusion n a rien signale, et
+# l etat reuni etait faux. Le 07/10/2026, la valeur passe donc a 15.0, qui est
+# celle du projet. Et 13.0 etait de toute facon sous le plancher d une
+# dependance : `health` exige deja `s.ios.deployment_target = '14.0'` dans son
+# podspec. Un plancher iOS 15 en 2026 couvre toutes les dependances du depot —
+# la plus exigeante apres `health` demande 13.0 — et c est la valeur que la
+# migration de Flutter 3.47 imposerait de toute maniere.
+#
+# CE QUI SURVEILLE CETTE LIGNE DESORMAIS. La garde
+# `test/structurel/podfile_dit_la_cible_du_projet_733_test.dart` compare ce
+# nombre a celui du projet Xcode et rougit s ils divergent. Changer l un sans
+# l autre ne passe plus en silence.
+platform :ios, '15.0'
+
+# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+  end
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+end
+
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  use_frameworks!
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
+
+# L EN-TETE PRIVE DE LA REGIE PUBLICITAIRE — CE QUI SUIT DESARME UNE
+# VERIFICATION DE CLANG, SUR UNE SEULE CIBLE, ET IL FAUT SAVOIR LAQUELLE.
+#
+# LE DEFAUT. Build 4 du 08/10/2026, apres 545 s de Xcode, deux erreurs et
+# deux seulement :
+#   Include of non-modular header inside framework module
+#   'google_mobile_ads.FLTAd_Internal'  (puis '...FLTAdPreloader')
+#   .../XCFrameworkIntermediates/Google-Mobile-Ads-SDK/
+#   GoogleMobileAds.framework/PrivateHeaders/GoogleMobileAds_Beta.h
+# Mesure dans le cache de paquets : google_mobile_ads 9.1.0 importe
+# `<GoogleMobileAds/GoogleMobileAds_Beta.h>` a la ligne 23 de son
+# FLTAd_Internal.h et a la ligne 18 de son FLTAdPreloader.h (chemin
+# `ios/google_mobile_ads/Sources/google_mobile_ads/include/google_mobile_ads/`).
+# La version 5.3.1, elle, s arretait a `<GoogleMobileAds/GoogleMobileAds.h>`
+# — cet import est apparu avec la montee du greffon.
+#
+# POURQUOI CLANG REFUSE. Le fichier vise vit dans `PrivateHeaders/` d un
+# xcframework DEJA COMPILE, livre par Google (le chemin
+# `XCFrameworkIntermediates` du journal le prouve : c est la ou Xcode deplie
+# les frameworks binaires). `PrivateHeaders/`, par construction, n est pas
+# dans la carte de modules du framework. L inclure depuis les en-tetes d un
+# AUTRE module de framework (`google_mobile_ads`) est exactement ce que cette
+# verification interdit.
+#
+# CE QUE `YES` DESARME, EN TOUTES LETTRES. Clang cesse d exiger que tout
+# en-tete inclus depuis les en-tetes d un module de framework appartienne
+# lui-meme a un module. Il l inclut alors TEXTUELLEMENT dans le module. On
+# perd donc la garantie que le module `google_mobile_ads` est autonome : ses
+# declarations dependent d un en-tete que Google declare prive et peut
+# changer sans prevenir, et si un second module incluait le meme en-tete, les
+# memes declarations existeraient dans deux modules. C est une verification
+# d HYGIENE SUR DES EN-TETES TIERS, a la compilation seulement : aucun effet
+# a l execution, aucune surface magasin. Le depot n a aucun module de
+# framework a lui — ce drapeau ne peut donc jamais relacher sa propre rigueur.
+#
+# POURQUOI SUR CETTE SEULE CIBLE. Le module `google_mobile_ads` n est
+# construit que par deux cibles, et elles sont mesurees, pas devinees :
+#   1. le pod `google_mobile_ads` lui-meme, qui porte `DEFINES_MODULE = YES`
+#      (son podspec, ligne 21) ;
+#   2. la cible `Runner`, parce que `ios/Runner/GeneratedPluginRegistrant.m`
+#      fait `#import <google_mobile_ads/FLTGoogleMobileAdsPlugin.h>` a sa
+#      ligne 106 et que les TROIS configurations de `Runner` portent
+#      `CLANG_ENABLE_MODULES = YES` dans le projet Xcode. Un import de style
+#      framework sous `-fmodules` construit le module, et construire le module
+#      enumere TOUS ses en-tetes publics — dont FLTAd_Internal.h.
+# Aucun autre greffon du depot ne nomme `google_mobile_ads` cote natif (seule
+# occurrence : ce registre). Le pod recoit donc le drapeau ici ; la cible
+# `Runner` le recoit par `ios/Flutter/Debug.xcconfig` et
+# `ios/Flutter/Release.xcconfig`, qui sont ses reglages de base. Les 36 autres
+# greffons iOS gardent la verification : si l un d eux se met demain a
+# inclure un en-tete non modulaire, on nous le dira encore.
+#
+# POURQUOI PAS `use_modular_headers!`, QUE GR20 PORTE. Ce reglage fait
+# generer par CocoaPods une carte de modules aux pods de SOURCE qui n en ont
+# pas. `Google-Mobile-Ads-SDK` n est pas un pod de source : c est un
+# xcframework livre compile, avec SA carte de modules, et
+# `GoogleMobileAds_Beta.h` est volontairement HORS de cette carte. CocoaPods
+# ne peut donc rien y rendre modulaire : le reglage changerait l exposition
+# des en-tetes des 37 greffons iOS du depot pour ZERO effet sur CETTE erreur.
+# GR20 le porte, mais GR20 n a aucune regie publicitaire : ce n est pas une
+# preuve, c est un voisinage.
+#
+# CE QUI SURVEILLE CES LIGNES. La garde
+# `test/structurel/la_regie_autorise_l_entete_prive_736_test.dart` exige le
+# drapeau ici ET dans les deux reglages de l application, et refuse que le
+# projet Xcode le contredise.
+#
+#
+# LES SIX DEFINITIONS QUI ALLUMENT LES AUTORISATIONS D IPHONE — SANS ELLES,
+# AUCUNE FENETRE SYSTEME NE PEUT S AFFICHER, ET LA POSITION EST LE COEUR DU
+# PRODUIT.
+#
+# LE DEFAUT, MESURE DANS LA VERSION QUI COMPILE VRAIMENT. `pubspec.lock`
+# ligne 1566 resout `permission_handler_apple` en 9.4.7 (et
+# `.flutter-plugins-dependencies` pointe le meme dossier du cache), dont les
+# sources vivent dans `ios/Classes/`. Quatre mesures, dans cet ordre :
+#   1. `Classes/PermissionHandlerEnums.h` lignes 67-68, 73-74 et 87-88 :
+#      `#ifndef PERMISSION_LOCATION` / `#define PERMISSION_LOCATION 0`, et
+#      pareil pour les notifications et les capteurs. LE DEFAUT EST ZERO.
+#   2. `Classes/permission_handler_apple.podspec` ne porte AUCUN
+#      `GCC_PREPROCESSOR_DEFINITIONS` et aucun `pod_target_xcconfig` : le
+#      greffon ne s allume pas tout seul. Seul `Package.swift` calcule ces
+#      macros, et ce chemin-la — Swift Package Manager — n est pas actif sous
+#      Flutter 3.41.5 stable, qui passe par CocoaPods.
+#   3. Ce fichier n en definissait AUCUNE jusqu au 08/10/2026.
+#   4. Donc `Classes/strategies/LocationPermissionStrategy.h` ligne 9 ouvre
+#      `#if PERMISSION_LOCATION || PERMISSION_LOCATION_WHENINUSE ||
+#      PERMISSION_LOCATION_ALWAYS`, la condition est fausse, et sa branche
+#      `#else` ligne 17 fait heriter la classe de `UnknownPermissionStrategy`.
+#      Celle-ci, `Classes/strategies/UnknownPermissionStrategy.m`, renvoie
+#      `PermissionStatusDenied` ligne 12 a toute demande d etat et
+#      `PermissionStatusPermanentlyDenied` ligne 20 a toute demande
+#      d autorisation. L application lit donc « refuse pour toujours » SANS
+#      QU AUCUNE FENETRE N AIT ETE MONTREE A PERSONNE.
+# CE QUE CE DEFAUT N EST PAS : un risque d arret. La branche `#else` de
+# l en-tete declare bien un heritage, pas une classe sans methode, donc
+# `[permissionStrategy checkPermissionStatus:]` (`Classes/PermissionManager.m`
+# ligne 23, appele sans `respondsToSelector`) resout son selecteur. Le defaut
+# est silencieux, et c est pire : il se lit comme un refus de l utilisateur.
+#
+# POURQUOI CES SIX-LA, ET PAS UNE DE PLUS. Ce sont les permissions que
+# `lib/` demande reellement : `Permission.notification` (5 appels),
+# `Permission.locationAlways` (4), `Permission.locationWhenInUse` (2),
+# `Permission.sensors` (1), `Permission.activityRecognition` (1). Les onze
+# autres macros du greffon restent ETEINTES et ne sont pas ecrites ici : leur
+# defaut vaut zero, et une macro allumee sans raison ferait importer son
+# framework par le greffon, donc exigerait sa cle d usage et ferait refuser le
+# paquet par Apple. Les cles que ces six-la rendent obligatoires sont DEJA
+# posees : `NSLocationWhenInUseUsageDescription` (Info.plist ligne 59),
+# `NSLocationAlwaysAndWhenInUseUsageDescription` (ligne 61) et
+# `NSMotionUsageDescription` (ligne 69) ; les notifications n exigent aucun
+# texte d usage, UserNotifications ne demande rien.
+#
+# UNE DES SIX NE SERT A RIEN SUR APPLE, ET IL FAUT LE SAVOIR.
+# `PERMISSION_ACTIVITY_RECOGNITION` n apparait NULLE PART dans les sources
+# iOS du greffon — zero occurrence dans tout `permission_handler_apple`
+# 9.4.7, verifie fichier par fichier. Sur iPhone, la reconnaissance de
+# mouvement EST la permission des capteurs : c est `PERMISSION_SENSORS` qui
+# ouvre `CMMotionActivityManager`. Le depot le sait deja et fait le bon choix
+# — `lib/features/trek/data/background_gps_service.dart` demande
+# `Platform.isIOS ? Permission.sensors : Permission.activityRecognition`. La
+# macro est donc ecrite ici parce que le mandat la demande et parce qu elle
+# est inoffensive (une definition que nul `#if` ne lit ne change rien au
+# binaire), PAS parce qu elle agit. La garde 741 la nomme « inerte » pour que
+# personne ne croie demain qu elle fait quelque chose.
+#
+# LE PIEGE DE LA DOCUMENTATION, ET POURQUOI CE N EST PAS LA FORME CHOISIE.
+# Le lisez-moi du greffon propose
+# `config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [...]`. Ce `||=`
+# est un PIEGE a deux detentes. Premiere detente : en Ruby il n affecte que si
+# la clef est absente ou fausse. Or ce dictionnaire est un etat partage que
+# traversent la generation de CocoaPods, `flutter_additional_ios_build_settings`
+# appele juste au-dessus, et le `post_install` de n importe quel autre greffon.
+# Le jour ou l un d eux pose la clef le premier, nos six definitions
+# DISPARAISSENT EN SILENCE — et aucune gate de ce depot, qui tourne sous
+# Windows, ne peut voir un reglage de pod. Seconde detente : un reglage pose au
+# niveau de la cible MASQUE celui qui vient du `.xcconfig` genere par
+# CocoaPods, lequel porte `GCC_PREPROCESSOR_DEFINITIONS = $(inherited)
+# COCOAPODS=1` (plus `DEBUG=1` en debug). Ecrire une liste sans `$(inherited)`
+# effacerait donc `COCOAPODS=1` pour cette cible.
+#
+# LA FORME CHOISIE, ET LA PREUVE QUI LA JUSTIFIE. On LIT la valeur en place, on
+# s assure qu elle porte `$(inherited)`, on AJOUTE nos six definitions, et on
+# reaffecte. Jamais `||=`. Cette forme n est pas une invention : c est celle de
+# Flutter lui-meme. `packages/flutter_tools/bin/podhelper.rb` du SDK installe
+# ici (3.41.5 stable, revision 2c9eb20739dfec95e2c74bd3dfa4601b0a8a36aa) ne
+# pose JAMAIS `GCC_PREPROCESSOR_DEFINITIONS` — zero occurrence dans tout le
+# fichier, donc rien de ce cote ne nous prendra la clef — mais chaque fois qu
+# il doit AJOUTER a un reglage plutot que le remplacer, il ecrit une
+# affectation simple dont la valeur contient `$(inherited)`, a sa ligne 103 :
+#     build_configuration.build_settings['OTHER_LDFLAGS'] = '$(inherited) -framework Flutter'
+# et de meme a ses lignes 114 et 115 pour `EXCLUDED_ARCHS`. Les trois seuls
+# `||=` de ce fichier (lignes 212, 251, 292) portent sur des variables Ruby de
+# chemin, JAMAIS sur une clef de `build_settings`. Flutter n utilise donc
+# nulle part la forme que la documentation du greffon conseille.
+#
+# POURQUOI SUR TOUTES LES CIBLES DE PODS, ET NON SUR LA SEULE DU GREFFON. En
+# 9.4.7 le podspec declare `s.public_header_files = 'Classes/**/*.h'` : TOUS
+# les en-tetes sont publics, y compris ceux que `#if PERMISSION_X` garde. Or
+# ces en-tetes declarent la MEME classe de deux facons incompatibles selon la
+# valeur des macros — `NSObject <PermissionStrategy, CLLocationManagerDelegate>`
+# dans la branche vraie, `UnknownPermissionStrategy` dans l autre. Deux cibles
+# qui liraient ces en-tetes avec des valeurs differentes verraient deux
+# interfaces pour une seule classe. On definit donc les macros pour toutes les
+# cibles de pods, ce qui est aussi la portee du lisez-moi du greffon, donc le
+# chemin le mieux eprouve.
+#
+# CE QUE WINDOWS NE PEUT PAS PROUVER. `pod install` et Xcode ne tournent pas
+# ici : aucune gate de ce depot ne peut montrer que ces definitions arrivent
+# vraiment dans les reglages du pod. La garde ci-dessous verifie le TEXTE de ce
+# fichier, pas le resultat. Seule une compilation sur Mac — la chaine
+# `ios_testflight` de codemagic.yaml — le dira, et seule une installation sur
+# un iPhone montrera la fenetre d autorisation s ouvrir.
+#
+# CE QUI SURVEILLE CES LIGNES. La garde
+# `test/structurel/les_permissions_ios_sont_allumees_741_test.dart` exige les
+# six definitions a 1, refuse toute septieme, refuse le retour du `||=`, exige
+# `$(inherited)`, et reutilise le tableau de la garde 740 pour exiger la cle
+# d usage de chaque permission allumee.
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+
+    if target.name == 'google_mobile_ads'
+      target.build_configurations.each do |build_configuration|
+        build_configuration.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+      end
+    end
+
+    # LES AUTORISATIONS D IPHONE — voir l en-tete « LES SIX DEFINITIONS » plus
+    # haut. On ajoute a l existant en gardant `$(inherited)` ; jamais `||=`,
+    # qui ne ferait rien si la clef etait deja posee.
+    target.build_configurations.each do |build_configuration|
+      heritees = build_configuration.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] || ['$(inherited)']
+      heritees = [heritees] unless heritees.is_a?(Array)
+      unless heritees.any? { |definition| definition.to_s.include?('$(inherited)') }
+        heritees = ['$(inherited)'] + heritees
+      end
+      build_configuration.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = (heritees + [
+        'PERMISSION_LOCATION=1',
+        'PERMISSION_LOCATION_WHENINUSE=1',
+        'PERMISSION_LOCATION_ALWAYS=1',
+        'PERMISSION_NOTIFICATIONS=1',
+        'PERMISSION_SENSORS=1',
+        'PERMISSION_ACTIVITY_RECOGNITION=1',
+      ]).uniq
+    end
+  end
+end

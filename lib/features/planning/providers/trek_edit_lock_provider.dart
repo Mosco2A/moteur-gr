@@ -1,8 +1,13 @@
+/// Source unique de « on ne modifie que ce qui n'est pas encore fait »,
+/// agregeant les deux vues de la session sans en inventer une troisieme.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../after/providers/adventure_recap_provider.dart'
-    show latestTrekSessionProvider;
-import '../../trek/providers/tracking_providers.dart';
+import '../../../core/services/session_demo.dart';
+import '../../after/after_facade.dart' show latestTrekSessionProvider;
+import '../../trek/trek_facade.dart'
+    show TrackingSessionStatus, trekSessionManagerProvider;
 import '../domain/trek_edit_lock.dart';
 
 /// Verrou d'edition du programme pendant la rando (R12, LOT L9).
@@ -29,7 +34,8 @@ import '../domain/trek_edit_lock.dart';
 final trekEditLockProvider = Provider<TrekEditLock>((ref) {
   // --- Vue vivante (tracking en memoire) ---
   final tracking = ref.watch(trekSessionManagerProvider);
-  final liveActive = tracking.status == TrackingSessionStatus.recording ||
+  final liveActive =
+      tracking.status == TrackingSessionStatus.recording ||
       tracking.status == TrackingSessionStatus.paused;
   final liveDone = tracking.session?.completedStages ?? const <String>[];
 
@@ -37,9 +43,27 @@ final trekEditLockProvider = Provider<TrekEditLock>((ref) {
   // `.value` : tant que la lecture n'a pas abouti (ou si elle echoue), on
   // retombe proprement sur la seule vue vivante — jamais d'exception, jamais de
   // blocage de l'ecran.
-  final persisted = ref.watch(latestTrekSessionProvider).value;
+  //
+  // EN DEMONSTRATION, LA VUE PERSISTEE EST ECARTEE (tache 810). Depuis ce lot,
+  // [latestTrekSessionProvider] rend en demonstration une session FABRIQUEE,
+  // terminee, portant TOUTES les etapes du sentier — ce qu'il faut au
+  // recapitulatif et au diplome pour avoir quelque chose a montrer.
+  //
+  // SANS CETTE GARDE, CE VERROU AURAIT GELE LE PROGRAMME DE LA DEMONSTRATION.
+  // `doneStageIds` aurait recu les sept etapes et l'edition de chacune se
+  // serait fermee : le visiteur aurait trouve un programme en lecture seule,
+  // sans rien avoir marche. C'est l'inverse de la loi du lot — tout se voit,
+  // tout se manipule, rien ne s'ecrit.
+  //
+  // La vue VIVANTE, elle, reste lue : pendant une marche simulee, les etapes
+  // franchies ferment leur edition exactement comme en vrai. C'est la bonne
+  // source pour la demonstration, parce que c'est la seule qui dise ce que
+  // cette demonstration-la a reellement parcouru.
+  final enDemo = ref.watch(enDemoProvider);
+  final persisted = enDemo ? null : ref.watch(latestTrekSessionProvider).value;
   final persistedOngoing =
-      persisted != null && (persisted.status == 'active' || persisted.status == 'paused');
+      persisted != null &&
+      (persisted.status == 'active' || persisted.status == 'paused');
   final persistedDone = persisted?.completedStages ?? const <String>[];
 
   final started = liveActive || persistedOngoing;

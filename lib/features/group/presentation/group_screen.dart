@@ -1,17 +1,23 @@
+/// La gestion du groupe de position partagee, dont le champ de code force les
+/// majuscules pour qu'il se tape sans ambiguite.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/firebase/cloud_unavailable_notice.dart';
 import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
-import '../../auth/providers/auth_provider.dart';
+import '../../auth/auth_facade.dart' show authStateProvider;
 import '../models/group_member.dart';
 import '../providers/group_provider.dart';
 import '../services/group_tracking_service.dart';
 import '../widgets/member_position_card.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Ecran de gestion du groupe de localisation partagee.
 class GroupScreen extends ConsumerStatefulWidget {
@@ -25,6 +31,12 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
   final _codeController = TextEditingController();
   bool _isLoading = false;
   String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    observeScreenEntry(ref, ScreenBreadcrumb.group, trail: widget.trailId);
+  }
 
   @override
   void dispose() {
@@ -44,7 +56,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
         actions: [
           if (groupCode != null)
             IconButton(
-              icon: const Icon(Icons.exit_to_app),
+              icon: const StepIcon(StepwaysIcons.signOut),
               tooltip: 'Quitter le groupe',
               onPressed: _leaveGroup,
             ),
@@ -83,7 +95,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
           // desactive l'action), pleine largeur (Column stretch, iso-rendu).
           AppButton(
             isLoading: _isLoading,
-            icon: Icons.group_add,
+            icon: StepwaysIcons.suiveurs,
             label: 'Creer un groupe',
             onPressed: _isLoading ? null : _createGroup,
           ),
@@ -121,7 +133,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
           // largeur (Column stretch). Desactive pendant le chargement (iso).
           AppButton(
             variant: AppButtonVariant.outline,
-            icon: Icons.login,
+            icon: StepwaysIcons.signIn,
             label: 'Rejoindre',
             onPressed: _isLoading ? null : _joinGroup,
           ),
@@ -131,7 +143,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
               child: Text(
                 _error!,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.rougeUrgence,
+                  color: AppTheme.emergencyRed,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -177,7 +189,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.copy),
+                  icon: const StepIcon(StepwaysIcons.copier),
                   tooltip: 'Copier le code',
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: groupCode));
@@ -241,7 +253,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
               child: Text(
                 'Erreur chargement membres',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.rougeUrgence,
+                  color: AppTheme.emergencyRed,
                 ),
               ),
             ),

@@ -82,7 +82,7 @@
     "greetingFallback": "Hiker",
     "infoTooltip": "About this trail",
     "profileTooltip": "My profile",
-    "infoSheetBody": "This trail guides you every step of the way: plan your itinerary, pack your bag, then set off with GPS navigation. Every feature is reachable from this home screen.",
+    "infoSheetBody": "Plan your itinerary, then your bag. Then set off with GPS navigation. It all starts from this screen.",
     "trekCard": {
       "activeTitle": "Trek in progress",
       "distanceCovered": "Distance covered",
@@ -91,18 +91,17 @@
       "progressLabel": "$percent% of the trail",
       "resume": "Resume navigation",
       "noTrekTitle": "Ready to go?",
-      "noTrekBody": "Plan your itinerary, then start your trek whenever you're ready.",
+      "noTrekBody": "Plan your itinerary, then start your trek.",
       "plan": "Plan my trek",
       "completedTitle": "Trek completed"
     },
     "weather": {
       "title": "Today's weather",
       "unavailable": "Weather unavailable right now.",
-      "alertStorm": "Storm alert",
-      "tempRange": "$min° / $max°"
+      "alertStorm": "Storm alert"
     },
     "startCta": "Start the trek",
-    "startGateHint": "Complete Itinerary, Date and Programme first to start.",
+    "startGateHint": "To start: Itinerary, Calendar, Programme, and Medical card with its advice read.",
     "prepareExpand": "Show preparation",
     "prepareCollapse": "Collapse",
     "sections": {
@@ -113,7 +112,7 @@
     },
     "cards": {
       "feasibility": "Feasibility",
-      "feasibilitySub": "Assess your level",
+      "feasibilitySub": "Within your reach?",
       "itinerary": "Itinerary",
       "itinerarySub": "Your stages, day by day",
       "programme": "Programme",
@@ -128,12 +127,20 @@
       "checklistSub": "Prepare your backpack",
       "training": "Physical prep",
       "trainingSub": "Your training programme",
+      "health": "Medical card",
+      "healthSub": "Fill it in before you leave",
+      "cartes": "Offline maps",
+      "cartesSub": "Download the maps for the route",
       "offline": "Discover trails",
       "offlineSub": "Browse the catalogue",
       "group": "My group",
       "groupSub": "Track your companions",
       "navigation": "Navigation",
       "navigationSub": "Map and GPS tracking",
+      "emergency": "Emergency",
+      "emergencySub": "112, rescue and contacts",
+      "signalement": "Report",
+      "signalementSub": "Obstacle, water point, hazard",
       "journal": "Journal",
       "journalSub": "Your notes and memories",
       "accommodations": "Accommodation",
@@ -157,7 +164,7 @@
       "fire": "Fire",
       "fireSub": "Risks & alerts",
       "adjust": "Adjust the route",
-      "adjustSub": "Change my upcoming days"
+      "adjustSub": "Change your upcoming days"
     },
     "fab": {
       "feedback": "Give feedback",
@@ -166,7 +173,7 @@
     "finishTrek": {
       "action": "Finish trek",
       "confirmTitle": "Finish trek?",
-      "confirmBody": "The trek will be marked as finished. Stages you haven't walked won't be validated. You can still review your adventure.",
+      "confirmBody": "The trek goes to finished. Stages you haven't walked won't be validated.",
       "confirm": "Finish",
       "cancel": "Cancel"
     }
@@ -181,29 +188,40 @@
     "layersSubtitle": "Choose what to show on the map",
     "stageRemaining": "$km km left",
     "offTrackChip": "Off track",
+    "perimetreEtape": "Stage",
+    "perimetreSentier": "Trail",
+    "basculerVersSentier": "View whole trail",
+    "basculerVersEtape": "View stage",
+    "etapeFinie": "Well done, stage complete!",
     "guide": {
       "buttonsTitle": "Buttons",
-      "position": "Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.",
-      "track": "The trail line, in its own colour. It is the reference the off-track alert uses.",
-      "centerOnMe": "Brings the map back to your position after you have dragged it.",
-      "photo": "Takes a photo and adds it to the day's journal, without leaving the map.",
+      "position": "Your GPS position, updated as you walk. If the dot disappears, check the location permission.",
+      "track": "The trail line. The off-track alert refers to it.",
+      "centerOnMe": "Brings the map back to your position.",
+      "photo": "Takes a photo for the day's journal.",
       "sos": "Opens the emergency call with your GPS coordinates. To be used only in a real emergency.",
-      "currentStage": "What is left to walk on the current stage. A dash means the hike has not started yet.",
-      "offTrack": "Lights up when you move away from the line. Come back to the trail to clear it.",
+      "onlyInTrek": "Only visible once the hike has started.",
+      "currentStage": "What is left to walk on the current stage. A dash: the hike has not started.",
+      "offTrack": "Lights up when you move away from the line. Come back to it to clear it.",
       "poi": {
-        "water": "A spring or fountain marked along the trail. A spring can run dry in summer: do not rely on it without checking.",
-        "shelter": "A refuge or shelter on the route. Tap the marker to see what is known: altitude, services, contact.",
-        "accommodation": "Lodging other than a refuge: guesthouse, room, hotel. Booking is made with the establishment itself.",
-        "campsite": "A campsite or bivouac spot. Bivouac rules depend on the land you cross: check before pitching a tent.",
-        "shop": "A shop where you can resupply. Opening hours are not guaranteed off season: keep a margin.",
+        "water": "A spring or fountain marked on the trail. A spring can run dry in summer: do not rely on it.",
+        "shelter": "A refuge or shelter. Tap the marker: altitude, services, contact.",
+        "accommodation": "Guesthouse, room or hotel. You book with the establishment.",
+        "campsite": "Campsite or bivouac spot. The rules change with the land you cross: check before pitching a tent.",
+        "shop": "A shop where you can resupply. Opening hours not guaranteed off season.",
         "restaurant": "A restaurant or guest table on or very near the route.",
-        "viewpoint": "A notable viewpoint. A landmark for a break, not for navigation.",
-        "danger": "A passage flagged as tricky. Slow down and look at the ground before committing.",
+        "viewpoint": "A notable viewpoint. Good for a break.",
+        "danger": "Tricky passage. Slow down and look at the ground before committing.",
         "emergency": "An emergency point: post, helipad or emergency call point.",
         "info": "A trail information sign or point."
       }
     },
-    "supplyDismiss": "Dismiss alert"
+    "supplyDismiss": "Dismiss alert",
+    "pinMergedTitle": "Several markers at the same place",
+    "attribution": {
+      "licence": "Map data under ODbL licence — view the licence",
+      "traces": "Trail tracks surveyed in OpenStreetMap"
+    }
   },
   "stage": {
     "distance": "Distance",
@@ -284,7 +302,8 @@
     "denied": "Location access denied",
     "disabled": "Location service disabled",
     "offTrack": "Off track",
-    "centerOnMe": "Center on my position"
+    "centerOnMe": "Center on my position",
+    "centeredOnTrack": "Location unavailable — map recentred on the route"
   },
   "navAlert": {
     "offTrackBanner": "You are moving away from the trail — $meters m. Check your position.",
@@ -327,7 +346,9 @@
     "stageCount(plural)": {
       "one": "$n stage",
       "other": "$n stages"
-    }
+    },
+    "daysTotal": "Days in total",
+    "daysBreakdown": "${walk} walking days + ${rest} rest days"
   },
   "tracking": {
     "start": "Start",
@@ -349,13 +370,30 @@
     "avgSpeed": "Avg speed",
     "altitude": "Altitude",
     "total": "Total",
+    "remaining": "Remaining",
     "covered": "Covered",
+    "stagesDone": "Stages",
     "backgroundRationale": {
       "title": "Recording your track with the screen off",
       "body": "While you hike, StepWays records your track continuously, even with the phone in your pocket. Android will ask you to allow location “All the time”: that is what it is for, and only during an ongoing hike.",
       "ifRefused": "If you decline, the hike still starts: your track is recorded as long as the app stays on screen.",
       "allow": "Show the request",
       "later": "Later"
+    },
+    "stepCounting": {
+      "title": "Counting your steps during the hike",
+      "body": "StepWays counts your steps to follow your progress without keeping the GPS on all the time: your battery lasts the day. The count stays on your phone, nothing leaves it. Your phone will ask you to allow physical activity.",
+      "ifRefused": "If you decline, the hike still starts.",
+      "allow": "Show the request",
+      "later": "Later",
+      "whyGps": "Without your step count, StepWays follows your progress with GPS alone: the battery drains faster. You can allow it at any time in the settings.",
+      "continuousGps": "You are not on the known trail: StepWays keeps the GPS on to follow you, and the battery drains faster.",
+      "settingsTitle": "Step count",
+      "stateGranted": "Allowed: your steps help follow your progress without draining the battery.",
+      "stateDenied": "Not allowed: StepWays follows your progress with GPS alone. Tap to allow it.",
+      "statePermanentlyDenied": "Denied in the phone settings: StepWays follows your progress with GPS alone. Tap to open the settings.",
+      "stateUnavailable": "Your phone does not count steps: StepWays follows your progress with GPS alone.",
+      "stateStreamError": "Step counting stopped: StepWays follows your progress with GPS alone."
     }
   },
   "checklist": {
@@ -586,7 +624,8 @@
       "understood": "Got it",
       "validateAnyway": "Validate anyway",
       "bagValidatedMissingSnack": "Pack validated (with missing items)!",
-      "shareGroupHint": "Join a group to share your checklist."
+      "shareGroupHint": "Join a group to share your checklist.",
+      "shareFailed": "Sharing could not open on this device."
     },
     "seasonalBanner": "Pack adapted to the season ($season) and your trail.",
     "seasons": {
@@ -597,7 +636,11 @@
     },
     "seasonalAdd": "Add",
     "seasonalAdded": "Added",
-    "seasonalWeight": "$g g"
+    "seasonalWeight": "$g g",
+    "demoBridledTitle": "Trial version",
+    "demoBridledBody": "The first categories are playable for pretend. The full pack, matched to the hike and the season, opens with the hike.",
+    "demoLockedCategory": "Buy the hike for this category",
+    "demoUnlockCta": "Buy the hike"
   },
   "journal": {
     "title": "Trek journal",
@@ -639,7 +682,7 @@
     "shareError": "Sharing failed",
     "lockedTitle": "The journal is part of the pack",
     "lockedBody": "Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.",
-    "lockedUnlock": "Unlock"
+    "lockedUnlock": "Buy"
   },
   "weather": {
     "title": "Weather",
@@ -669,7 +712,7 @@
     "stormAlertsToggleOff": "Storm alerts off",
     "lastUpdate": "Updated $date",
     "guideTitle": "Understanding the weather",
-    "guideBody": "Forecasts cover 7 days for each stage. Watch storm and wind alerts: in the mountains, weather changes fast. When offline, the last saved data is shown.",
+    "guideBody": "Forecasts are given STAGE BY STAGE: for each day of your plan, the weather at that day's arrival point. They reach 10 days at most; the first 7 are reliable, the next ones are only a trend, and beyond that the app says so instead of making it up. Every bulletin shows when it was fetched: in the mountains, with no network, the last fetch is what stays on screen.",
     "source": {
       "api": "Live data",
       "cache": "Saved data",
@@ -704,9 +747,37 @@
       },
       "fire": {
         "title": "Fire risk",
-        "desc": "$value°C expected. High fire risk."
+        "desc": "$temperature expected. High fire risk."
       }
-    }
+    },
+    "program": {
+      "title": "Weather stage by stage",
+      "subtitle": "The weather where you will be, on the day you will be there.",
+      "dayLabel": "Day $day",
+      "restDay": "Rest",
+      "place": "at $place",
+      "trendBadge": "Trend",
+      "trendHint": "Beyond $reliable days this is only a trend: a 10-day forecast is right about half the time.",
+      "beyondHorizon": "No forecast yet: forecasts only reach $horizon days ahead.",
+      "noData": "No data for this place.",
+      "unknownDeparture": "Pick your departure date: without it there is no way to tell which day you reach which stage."
+    },
+    "freshness": {
+      "justNow": "Fetched just now",
+      "at": "Fetched on $date",
+      "stale": "Fetched $duration ago, no update since",
+      "never": "Never fetched"
+    },
+    "duration": {
+      "seconds": "a few seconds",
+      "minutes": "$n min",
+      "hours": "${n} h",
+      "days": "$n d"
+    },
+    "refreshFailed": "Update failed. The data shown was fetched on $date.",
+    "refreshFailedNoData": "Update failed and no data is saved.",
+    "refreshedAt": "Data updated ($date)",
+    "refreshPartial": "Partial update: $done of $total stage(s)."
   },
   "share": {
     "title": "Share",
@@ -743,7 +814,7 @@
     "recapStages": "{count} stages completed",
     "recapDistance": "{km} km covered",
     "recapElevation": "{meters} m elevation",
-    "recapDuration": "{days} days of trekking",
+    "recapDuration": "{days} days in total, walking and rest included",
     "recapMapTrace": "Route trace",
     "recapNoMap": "Trace not available",
     "recapJournalEntries": "{count} journal entries",
@@ -766,7 +837,10 @@
     "schedulerCountdownTitle": "Your trek is coming up!",
     "schedulerCountdownBody": "Departure in 2 days. Check your checklist and the weather.",
     "schedulerDailyTitle": "Have a great trek day!",
-    "schedulerDailyBody": "Check the weather and prepare today's stage."
+    "schedulerDailyBody": "Check the weather and prepare today's stage.",
+    "permissionBlockedTitle": "Notifications blocked",
+    "permissionBlockedBody": "Your phone is blocking notifications from the app: no reminder and no alert will reach you.",
+    "permissionAsk": "Allow notifications"
   },
   "settings": {
     "title": "Settings",
@@ -795,19 +869,6 @@
     "noDateChosen": "No date chosen",
     "departureDate": "Departure date"
   },
-  "appearance": {
-    "title": "Appearance",
-    "subtitle": "Choose the app’s look and feel",
-    "skinSentierVivant": "Living Trail",
-    "skinSentierVivantDesc": "Modern and colorful, the trail color takes the stage",
-    "skinTopographique": "Topographic",
-    "skinTopographiqueDesc": "Ordnance-map style, data first",
-    "skinGrandAir": "Great Outdoors",
-    "skinGrandAirDesc": "Full-screen photos, adventure-journal feel",
-    "unavailableOnTrail": "Unavailable on this trail",
-    "changeSkin": "Change skin",
-    "selected": "Selected"
-  },
   "feedback": {
     "title": "Feedback",
     "type": "Feedback type",
@@ -822,7 +883,12 @@
     "send": "Send",
     "sending": "Sending...",
     "thanks": "Thank you for your feedback!",
-    "pending": "pending"
+    "pending": "pending",
+    "emptyMessage": "Write your message before sending it.",
+    "sendFailed": "Your message could not be saved.",
+    "keptLocally": "Saved on this phone. Your feedback will be sent as soon as sending is possible.",
+    "keptLocallyNotice": "Feedback sending is not open yet: your messages are kept on this phone.",
+    "sentThanks": "Thank you, your feedback has been sent."
   },
   "auth": {
     "profile": "Profile",
@@ -845,12 +911,13 @@
     "changeAvatar": "Change avatar",
     "chooseAvatar": "Choose an avatar",
     "errorLoading": "Loading error",
-    "appVersion": "StepWays v$version (build $build)"
+    "appVersion": "StepWays v$version (build $build)",
+    "errorTimeout": "Your account did not respond. Check your connection, then try again."
   },
   "feasibility": {
     "restart": "Start over",
     "objectiveTitle": "Feasibility for this trek",
-    "objectiveIntro": "Verdict based on your real profile crossed with the trek requirements.",
+    "objectiveIntro": "This verdict crosses your real profile with the trek's demands.",
     "openProfile": "My details",
     "openWalkTest": "6-minute test",
     "openPastHikes": "My last 5 hikes",
@@ -868,7 +935,14 @@
     },
     "formula": {
       "title": "Feasibility for this trek",
-      "intro": "We compare each walking day's effort to what your profile can handle. Green, orange or red light.",
+      "answerTitle": "Can you do it?",
+      "answerGreen": "Yes. This trail is within your reach in ${days} days.",
+      "answerOrange": "Yes, in ${days} days. But one day will be hard.",
+      "answerRed": "Not yet. One day of this trail asks more than you can hold today. Get fitter, or go outside summer.",
+      "answerDaysNote": "The trail walks in ${walking} days. ${rest} rest day(s) advised.",
+      "answerNoRest": "The trail walks in ${walking} days.",
+      "explainToggle": "How this result is worked out",
+      "intro": "We compare each day's effort to what you can hold. Green, orange or red.",
       "ceilingLabel": "Recommended ceiling: ${value} energy-km/day (${level})",
       "stagesTitle": "Day by day",
       "stageEffort": "${distance} km + ${elevation} m ascent = ${effort} energy-km",
@@ -879,8 +953,8 @@
       "limitingLabel": "Limiting factor: ${factor}",
       "trainingReco": "Recommended training: ${weeks} weeks before departure",
       "adviceTitle": "Tips for your plan",
-      "generateProgram": "Generate my plan (${days} days)",
-      "generateProgramDone": "Plan generated over ${days} days — tweak it as you like.",
+      "generateProgram": "Generate my plan (${days} walking days)",
+      "generateProgramDone": "Plan generated over ${days} walking days — tweak it as you like.",
       "noStages": "No day to assess yet.",
       "levels": {
         "beginner": "beginner",
@@ -889,9 +963,9 @@
         "expert": "expert"
       },
       "verdicts": {
-        "green": "Feasible split",
-        "orange": "Demanding split",
-        "red": "Split too tight"
+        "green": "Comfortable pace",
+        "orange": "Demanding pace",
+        "red": "Pace to ease off"
       },
       "limitingFactors": {
         "distance": "the daily distance",
@@ -902,67 +976,77 @@
         "heat": "the heat of the season"
       },
       "advice": {
-        "balancedOk": "Your plan is balanced: keep a margin and listen to your body.",
-        "balanced": "Spread the stages out to smooth the effort across the days.",
-        "optimalDays": "Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.",
-        "split": "Split day ${stage} in two: it clearly exceeds your ceiling.",
-        "splitImpossible": "Day ${stage} stays above your capacity even cut in two, and it cannot be cut shorter: this is no longer a matter of scheduling. Train, wait for milder conditions, or pick a less demanding trail.",
+        "balancedOk": "Your plan is balanced.",
+        "balanced": "Spread the stages out to smooth the effort.",
+        "optimalDays": "Aim for ${walk} walking days instead of ${current}. Plus ${rest} rest day(s) advised.",
         "rest": "Plan a rest day after day ${stages}.",
-        "training": "Train for ${weeks} weeks before departure (physical preparation).",
-        "restAdvised": "Add ${days} rest day(s), after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict."
+        "training": "Train for ${weeks} weeks before departure.",
+        "restAdvised": "Add ${days} rest day(s) after days ${stages}: they look too much alike for the body to recover.",
+        "optimalDaysNoChoice": "Aim for the trail's ${walk} walking days. Plus ${rest} rest day(s) advised.",
+        "hardStageAlert": "Day ${stage} goes over your ceiling. It cannot be shortened: a stage ends where there is a roof. Train, your ceiling rises and this day drops back under it.",
+        "noViableDuration": "Adding days will change nothing: even on the most spread-out plan, day ${stage} stays above your ceiling. Train, or leave outside summer. Otherwise, choose a less demanding trail.",
+        "restReference": "You have not chosen your plan yet. On the trail's own, plan a rest day after day ${stages}.",
+        "restAdvisedReference": "You have not chosen your plan yet. On the trail's own, add ${days} rest day(s) after days ${stages}: they look too much alike for the body to recover."
       },
-      "retainedPlan": "Retained split: ${days} walking days.",
-      "retainedPlanNone": "No split retained: the trail stays on its default ${days} days.",
-      "energyUnitNotice": "1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.",
+      "retainedPlan": "Retained plan: ${days} days in total, walking and rest included.",
+      "retainedPlanNone": "No plan retained: the trail stays on its ${days} days in total, walking and rest included.",
+      "energyUnitNotice": "1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill.",
       "circuitTitle": "Circuit verdict",
-      "circuitScore": "Circuit score: ${value}",
-      "circuitIsWorstStage": "The circuit verdict is the verdict of your hardest day: nothing else makes it harsher.",
+      "circuitScore": "Circuit score: ${value} — green up to ${green}, orange up to ${orange}, red beyond.",
+      "circuitIsWorstStage": "The circuit verdict is the verdict of your hardest day.",
       "restWindowWhole": "Rest measured over the whole trek (${days} days).",
       "restWindowSlice": "Rest measured over the worst week: days ${start} to ${end}.",
-      "restNotApplicable": "Rest cannot be computed on a one-day trail: there is no chaining to measure. The constraint is declared not applicable, it is not replaced by a number.",
-      "restExtrapolation": "The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.",
-      "restNotDecisive": "This figure is shown and advises, it never decides: your verdict stays the one of your hardest day.",
+      "restNotApplicable": "A one-day trail has no chaining: rest is not computed.",
+      "restExtrapolation": "The rest threshold comes from a measurement made on athletes, carried over to hiking.",
+      "restNotDecisive": "This figure advises, it does not decide. The verdict follows your hardest day.",
       "restAdvisedLine": "Advice: ${days} rest day(s) spread through your plan bring this figure back under its threshold.",
-      "restTwoDays": "On days of equal size, one rest day a week is not enough: it takes two.",
+      "restTwoDays": "Days of equal size need two rest days a week, not one.",
       "habitGap": "Gap to your habit: ${value} (reference 0.8 to 1.3).",
-      "habitGapNotDecisive": "This gap is shown, never decisive: no study demonstrates that it causes anything.",
+      "habitGapNotDecisive": "This gap decides nothing: no study gives it an effect.",
       "conditionsTitle": "What went into this verdict",
-      "floorActive": "Your best day already held (${value} energy-km) is above your level ceiling: it is what serves as the base. You will never be told you cannot do what you have already done.",
+      "floorActive": "Your best day already held (${value} energy-km) is above your level ceiling: it is what serves as the base.",
       "altitudeApplied": "Altitude: ${value} m at the highest point, your daily capacity drops by ${pct} %.",
-      "altitudeBelowThreshold": "Altitude: ${value} m at the highest point, below the 1,500 m from which it counts. It changes nothing here.",
-      "altitudeMissing": "Altitude: this trail's track does not carry any. It changes nothing here for lack of data — not because it would have no effect.",
+      "altitudeBelowThreshold": "Altitude: ${value} m at the highest point. It only counts from 1,500 m.",
+      "altitudeMissing": "Altitude: this trail's track does not carry any. With no data, it changes nothing here.",
       "heatApplied": "Summer departure: aerobic capacity drops by 7 %, that is measured.",
-      "seasonNoSource": "Spring or autumn departure: no published measurement allows an effect to be quantified. The season changes nothing here, for lack of a source.",
-      "seasonMissing": "No departure date is set: the season changes nothing here, for lack of data.",
-      "massNotCounted": "Neither your weight nor your pack's enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.",
-      "winterInvalid": "Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.",
+      "seasonNoSource": "Spring or autumn departure: nothing is applied. Only summer carries a measurement, 7 % less aerobic capacity.",
+      "seasonMissing": "No departure date is set: this verdict holds for a departure outside summer. In summer it tightens by 7 %. The date is set in the Calendar.",
+      "massNotCounted": "Neither your weight nor your pack's enters this verdict: it measures what you have already held. At 65 or at 95 kg, the same verdict.",
+      "ageCounted": "Age, on the other hand, counts: it sets the reference distance of your walk test, and it lowers your level by one notch at 60, by two at 75. Aerobic capacity declines with age, that is measured.",
+      "winterInvalid": "Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather and dry ground.",
       "restDaysCounted": "Rest days counted in this verdict: ${count}.",
-      "restDaysNone": "No rest day is set in your plan: add some and this figure moves.",
+      "restDaysNone": "No rest day in your plan: add some and this figure moves.",
       "averageLoad": "Average daily load: ${value} (the hardest is at ${worst}).",
-      "averageLoadInfo": "These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.",
-      "durationStatement": "This trek lasts ${days} walking days; your longest chained outing is ${done} days.",
-      "durationStatementInfo": "This is shown, it does not decide: no published measurement says after how many chained days a hiker drops off. Judge for yourself.",
-      "stageDominantFactor": "What weighs most on this day: ${factor}"
+      "averageLoadInfo": "Far apart: the trek has one hard day. Close together: it is hard every day. This does not decide.",
+      "durationStatement": "This trek lasts ${days} walking days; your longest chained outing is ${done} walking days in a row.",
+      "durationStatementInfo": "This does not decide: no measurement says after how many chained days a hiker drops off. Judge for yourself.",
+      "stageDominantFactor": "What weighs most on this day: ${factor}",
+      "verdictHowTitle": "How this verdict is computed",
+      "verdictHowStage": "Your hardest day is ${stage}: ${distance} km and ${elevation} m of ascent.",
+      "verdictHowEnergy": "In energy-km: ${distance} + ${elevation} ÷ 42 = ${energy}.",
+      "verdictHowCeiling": "Your daily ceiling is ${capacity} energy-km (${level} level).",
+      "verdictHowRatio": "${energy} ÷ ${capacity} = ${score}. Up to ${green} it is green, up to ${orange} orange, beyond that red.",
+      "verdictHowNoBlackBox": "This ratio is the whole calculation. Three works feed it: Minetti 2002 for the energy, MOVE 2026 for altitude, Linsell 2020 for heat."
     },
     "flow": {
       "title": "Are you ready for this trek?",
-      "intro": "Answer 3 quick steps: we work out your real level, then tell you if the trek is doable.",
+      "intro": "Three quick steps, and we tell you if this trek is doable.",
       "progress": "${done}/${total} steps done",
       "stepProfile": "Your info sheet",
       "stepProfileSub": "Age, height, weight (stays on your phone).",
       "stepWalkTest": "6-minute walk test",
-      "stepWalkTestSub": "Measures your current fitness — changes your result.",
+      "stepWalkTestSub": "Measures your current fitness: it moves your result.",
       "stepPastHikes": "Your last 5 hikes",
       "stepPastHikesSub": "What you have already handled: pace, distance, elevation.",
       "optionalTag": "(optional)",
       "validate": "Confirm and see my result",
-      "partialNotice": "Provisional result: the 6-minute walk test has not been done. Your level is estimated by default; take the test to refine the verdict.",
+      "partialNotice": "Provisional result: the walk test has not been done, your level is estimated. Take the test for a real verdict.",
       "missingTitle": "Some information is still missing",
-      "missingIntro": "The verdict only appears once every required criterion is filled in. Still to complete:",
+      "missingIntro": "Still to complete:",
       "missingProfile": "Your full info sheet: age, height and weight",
       "missingPastHikes": "At least one of your 5 latest hikes",
-      "missingWalkTestNote": "The 6-minute test stays optional: without it, your result is shown as provisional.",
-      "hintBlocked": "Complete the criteria above: that is what decides your verdict.",
+      "missingWalkTestNote": "The 6-minute test stays optional: without it, your result is provisional.",
+      "hintBlocked": "Complete the criteria above.",
       "hintReady": "All set: you can see your result."
     }
   },
@@ -993,7 +1077,7 @@
     },
     "altitude": "Min. altitude",
     "screenTitle": "Advice sheets",
-    "screenIntro": "Everything to make your hike a success",
+    "screenIntro": "Preparation, gear, safety, health.",
     "followUs": "Follow us:",
     "viewOnFacebook": "View on Facebook",
     "viewOnInstagram": "Instagram",
@@ -1021,13 +1105,65 @@
   },
   "catalog": {
     "title": "Trail catalog",
-    "enter": "Enter",
+    "prepare": "Prepare",
     "mustDownload": "Download this trail to explore it.",
     "emptyTitle": "No trail available",
     "emptySubtitle": "No trail is offered in the catalog yet.",
     "a11y": {
-      "enterButton": "Enter trail $nom"
-    }
+      "prepareButton": "Prepare trail $nom",
+      "buyButton": "Buy trail $nom",
+      "freeTrailBadge": "Free trail"
+    },
+    "freeTrailName": "$nom — Free demo",
+    "freeBadge": "Free",
+    "freeTrailTagline": "The first $etapes stages, on us. Everything works: planning, start, navigation, journal, finish.",
+    "loadFailedTitle": "Trail list unavailable",
+    "loadFailedSubtitle": "The trail list could not be retrieved right now. Trails you already downloaded remain available offline.",
+    "loadFailedRetry": "Try again",
+    "staleNoticeOffline": "Offline: these are the trails you already downloaded. The full list will refresh once you are back online."
+  },
+  "demo": {
+    "matiereFabriquee": "Made-up example for the demo: these figures and notes are not yours, and nothing is saved.",
+    "carnetNoteDepart": "Day one: $nom. The pack feels heavy, but the trail is ours.",
+    "carnetNoteMontee": "$nom. Long climb in the cool of the morning, a break halfway up.",
+    "carnetNoteVillage": "$nom. Arrived in the early afternoon, a quiet evening at the stop.",
+    "carnetNoteArrivee": "$nom. Last stage, and that is that. My legs will remember it.",
+    "bandeau": "DEMO MODE",
+    "quitter": "Exit",
+    "boutonTitre": "Try the demo",
+    "boutonSous": "The whole app. Nothing is saved.",
+    "rienNeCompte": "You are in demo mode: nothing is saved. No stages, no diploma, no purchase.",
+    "simulerEtape": "Simulate the next stage",
+    "simulerFin": "Simulate the finish",
+    "simulerRelancer": "Restart the demo",
+    "marcheSimulee": "Simulated walk — time sped up ×$facteur",
+    "arriveeTitre": "Well done, you made it!",
+    "arriveeTexte": "You completed the trail in demo mode. Nothing was saved.",
+    "arriveeChiffres": "Your demo",
+    "arriveeFermer": "Close",
+    "sortieTitre": "End of demo",
+    "sortieEnTeteCatalogue": "The demo stays at the top of the trail list.",
+    "sortieDansMonCompte": "The button leaves the catalogue. The demo stays in “My account”.",
+    "cacherLabel": "Hide demo mode",
+    "sortieConfirmer": "Leave the demo",
+    "sortieAnnuler": "Continue the demo",
+    "indisponible": "Not available in demo",
+    "departSimule": "In demo, starting launches a simulated hike: nothing is saved.",
+    "compteTitre": "Demo mode",
+    "compteRelancer": "See the demo again",
+    "compteRelancerSous": "The whole app. Nothing is saved.",
+    "compteReafficher": "Show the demo button in the catalogue",
+    "compteReafficherSous": "The button comes back to the top of the trail list",
+    "collecteTitre": "What the calculation used",
+    "collecteIntro": "The information used to work out feasibility.",
+    "collecteProfil": "Your profile",
+    "collecteForme": "Your fitness",
+    "collecteExperience": "Your experience",
+    "collecteSaison": "Departure season",
+    "collecteSentier": "The trail",
+    "collecteJours": "Number of days",
+    "collecteAbsent": "Not provided",
+    "sortieFaite": "You have left the demo."
   },
   "updates": {
     "readyTitle": "Update ready",
@@ -1067,20 +1203,89 @@
   "monetization": {
     "demoBanner": "Demo mode — tap to unlock",
     "paywallTitle": "Unlock this trek",
-    "paywallBody": "Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.",
+    "paywallBody": "Planning is free, with ads. Walking this trek is paid in steps, taken from your account. You fill your account one step at a time, with a pack, or with the subscription.",
     "featureMap": "Offline map + GPS + live tracking",
     "featureJournal": "Full trek journal",
     "featureDiploma": "End-of-trek diploma",
     "featureFollowers": "2 free followers",
     "featureNoAds": "Zero ads",
-    "buyCta": "Unlock this trek",
-    "buyCtaWithPrice": "Unlock this trek — €$price",
-    "rewardedCta": "Watch an ad (24 h ad-free)",
+    "buyCta": "Buy",
+    "buyCtaWithSteps(plural)": {
+      "one": "Buy — $n step",
+      "other": "Buy — $n steps"
+    },
+    "complementTitle": "You are short of steps",
+    "complementBody": "You do not have enough steps in your account to buy this trail. Buy the complement, or get a pack.",
+    "complementDoorExact(plural)": {
+      "one": "Buy the complement — $n step",
+      "other": "Buy the complement — $n steps"
+    },
+    "complementDoorPack(plural)": {
+      "one": "Get a pack — $n step",
+      "other": "Get a pack — $n steps"
+    },
+    "complementExactPending": "Buying step by step is not open in the store yet. A pack still works, and the spare steps stay on your step account.",
+    "rewardedCta": "A day without ads — watch a video",
     "rewardedEarned": "Thanks! Ad-free for 24 h.",
     "rewardedUnavailable": "No video available right now.",
     "walletTitle": "Step account",
     "walletSubtitle": "Your steps unlock hikes",
-    "walletUnit": "steps"
+    "walletUnit": "steps",
+    "storeUnavailable": "Payment is not available right now.",
+    "restoreUnavailable": "Cannot restore: payment is not available right now.",
+    "restoreRequested": "Restore requested. Your purchases will reappear shortly.",
+    "restoreCta": "Restore my purchases",
+    "restoreWhatItCovers": "Restoring brings back your subscription and your top-ups. Hikes unlocked with your steps are stored on this device.",
+    "rechargeTitle": "Top up my step account",
+    "rechargeSubtitle": "Steps unlock hikes. They are yours for life.",
+    "rechargeBalance": "Current balance",
+    "packSteps(plural)": {
+      "one": "$n step",
+      "other": "$n steps"
+    },
+    "rechargeCta": "Top up",
+    "subscriptionTitle": "Ad-free subscription",
+    "subscriptionSubtitle": "No ads anywhere, as long as the subscription is active.",
+    "subscriptionIncludesNoAds": "No ads, across the whole app",
+    "subscriptionIncludesAllowance(plural)": {
+      "one": "$n step credited every month",
+      "other": "$n steps credited every month"
+    },
+    "subscriptionExcludes": "The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.",
+    "subscriptionCta": "Subscribe",
+    "subscriptionActive": "Subscription active",
+    "subscriptionActiveUntil": "Active until $date",
+    "subscriptionInactive": "No active subscription",
+    "subscriptionAllowancePending": "The allowance amount has not been set yet.",
+    "realizationLockedTitle": "This hike is not unlocked",
+    "realizationLockedBody": "Hiking a route requires unlocking it first. Preparing stays free.",
+    "buyOutcomeOwned": "Hike unlocked. Enjoy the trail!",
+    "buyOutcomeAlreadyOwned": "This hike is already unlocked.",
+    "buyOutcomeOffline(plural)": {
+      "one": "You are $n step short and payment requires a connection. Nothing was charged.",
+      "other": "You are $n steps short and payment requires a connection. Nothing was charged."
+    },
+    "buyOutcomeFailed": "The payment did not go through. Nothing was charged.",
+    "buyOutcomeUnknownPrice": "This trail is not on sale right now. Nothing was charged.",
+    "buyOutcomeDemo": "You are in demo mode: no purchase is possible, and nothing was charged.",
+    "subscriptionPrice": "$price per month",
+    "subscriptionAllowanceForLife": "Credited steps are yours for life, even if you stop the subscription.",
+    "cancelCta": "Stop my subscription",
+    "cancelExplains": "Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited steps stay yours.",
+    "cancelStoreUnavailable": "The store could not be opened. Open it yourself, then go to Subscriptions.",
+    "adsBadgePub": "With ads",
+    "adsBadgeAbonne": "Subscriber — ad-free",
+    "adsBadgeAchete": "Purchased — ad-free",
+    "adsBadgeVideo": "Ad-free — $reste",
+    "adsA11yPub": "An ad will be shown when preparing",
+    "adsResteHeures": "${heures} h left",
+    "adsResteMinutes": "${minutes} min left",
+    "removeAdsCta": "Remove ads",
+    "removeAdsTitle": "Remove advertising",
+    "removeAdsSubscribe": "Subscribe",
+    "removeAdsSubscribeBody": "Ad-free everywhere, as long as the subscription is active.",
+    "removeAdsWatch": "Watch a video",
+    "removeAdsWatchBody": "Ad-free for 24 h. Nothing else: no steps, no hike unlocked."
   },
   "signalement": {
     "title": "Report",
@@ -1148,7 +1353,7 @@
     "paywallTitle": "Personalised training plan",
     "paywallIncludedIn": "Included in the « $trail » pack.",
     "paywallSubtitle": "Plan tailored to your profile and departure date.",
-    "unlock": "Unlock",
+    "unlock": "Buy",
     "effortIntro": "A progressive $weeks-week plan to tackle the $km km and about $elevation m of elevation gain.",
     "countdown": "Departure in $days days",
     "planOverWeeks": "$n-week plan",
@@ -1157,7 +1362,16 @@
     "inviteSetDate": "Set your departure date in the Calendar to enable the countdown.",
     "inviteFillProfile": "Fill in your info sheet to tailor the plan to your profile.",
     "cautionVerdictNotice": "Your feasibility calls for caution: follow the progression and do not cut the preparation short.",
-    "departureTooClose": "$days days left: plan condensed to the available time."
+    "freqPerWeek": "$n× per week",
+    "freqOncePerPhase": "once during the phase",
+    "freqFinalWeek": "the final week only",
+    "freqSourceNotice": "The frequencies are not in-house numbers: 3 endurance sessions and 2 strength sessions a week, 2 rest days, after REI (Conditioning for Backpacking), Terres d'Aventure and the 2020 WHO guidelines.",
+    "noDateWhy": "Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.",
+    "tooShortTitle": "No preparation offered",
+    "tooShortWhy": "There are $days days left before departure, less than $weeks weeks. No physical preparation is offered to you: below $weeks weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This $weeks-week floor is the one trek operators use — Terres d'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload.",
+    "demoBridledTitle": "Trial version",
+    "demoBridledBody": "The first phase is playable for pretend: your ticks are not kept. The next phases open with the hike.",
+    "demoLockedPhase": "Unlock the hike to see the sessions"
   },
   "eta": {
     "title": "Estimated time",
@@ -1297,66 +1511,58 @@
       "savedPendingSync": "It will be published when the network is back.",
       "pendingCount": "$n pending synchronization",
       "close": "Close",
-      "emptyTitle": "Please enter a title for the waypoint.",
-      "emptyComment": "Please enter your observation.",
+      "emptyTitle": "Enter a title for the waypoint.",
+      "emptyComment": "Enter your observation.",
       "noLocation": "GPS position unavailable. Try again under open sky.",
       "error": "Cannot save right now."
     }
   },
-  "packs": {
-    "title": "Trail packs",
-    "subtitle": "Download a pack to hike 100% offline.",
-    "alaCarteNote": "A la carte: buy only the pack you need, no subscription.",
-    "size": "$mo MB",
-    "states": {
-      "notDownloaded": "Not downloaded",
-      "downloaded": "Downloaded",
-      "updateAvailable": "Update available"
+  "cartesHorsLigne": {
+    "title": "Offline maps",
+    "intro": "One single download: the maps for the whole route, so you can walk without a network.",
+    "unSeulGeste": "The whole route at once, no parts to choose from.",
+    "poids": "$mo MB to download",
+    "poidsTotal": "Total size for the route: $mo MB",
+    "reprise": "$mo MB are already on the phone: resuming will only download the rest.",
+    "telecharger": "DOWNLOAD THE MAPS FOR THE ROUTE",
+    "reprendre": "RESUME THE DOWNLOAD",
+    "reessayer": "TRY AGAIN",
+    "annuler": "CANCEL",
+    "supprimer": "DELETE THE MAPS",
+    "enCours": "$recus MB of $total MB",
+    "verification": "Checking the map",
+    "pretes": "Maps ready offline",
+    "pretesPoids": "$mo MB on the phone",
+    "libere": "Maps deleted, space freed.",
+    "supprimerTitre": "Delete the maps?",
+    "supprimerCorps": "The maps will be removed from the phone to free up space. You can download them again.",
+    "supprimerAnnuler": "Cancel",
+    "supprimerConfirmer": "Delete",
+    "horsWifiTitre": "$mo MB on your mobile data?",
+    "horsWifiCorps": "You are not on Wi-Fi. A route's maps can weigh heavily on a mobile plan.",
+    "horsWifiAttendre": "Wait for Wi-Fi",
+    "horsWifiContinuer": "Download anyway",
+    "refus": {
+      "niveauInsuffisant": "The maps come down when you prepare the route to actually walk it.",
+      "sentierInconnu": "This route is not on your phone yet. Download it from the trail list.",
+      "aucuneCartePubliee": "No offline map has been published for this route yet. The track itself is still available.",
+      "droitDeRealiserManquant": "Offline maps are part of the route you buy.",
+      "horsLigne": "Without a network a map cannot be downloaded. Reconnect, then try again.",
+      "stockageIndisponible": "The phone did not answer. Try again; if it persists, restart it."
     },
-    "actions": {
-      "download": "Download",
-      "update": "Update",
-      "delete": "Delete",
-      "retry": "Retry",
-      "buy": "Buy this pack",
-      "buyWithPrice": "Buy this pack — $price"
+    "echec": {
+      "reseau": "The connection dropped. What is already downloaded is kept: resume whenever you like.",
+      "empreinteInvalide": "The map received does not match the published one: it was discarded. Try again.",
+      "tailleInattendue": "The map received is incomplete: it was discarded. Try again.",
+      "plusDePlace": "There is no space left on the phone. Free up some space, then resume.",
+      "ecritureImpossible": "Writing to the phone failed. What is downloaded is kept: resume.",
+      "stockageIndisponible": "The phone did not give up its storage. Try again; if it persists, restart it.",
+      "annulee": "Download cancelled. What is already downloaded is kept."
     },
-    "progress": {
-      "downloading": "Downloading… $done/$total",
-      "verifying": "Verifying integrity…",
-      "completed": "Pack ready offline",
-      "error": "Download failed"
-    },
-    "delete": {
-      "confirmTitle": "Delete this pack?",
-      "confirmBody": "The pack will be removed from the device to free up space. You can download it again later.",
-      "cancel": "Cancel",
-      "confirm": "Delete",
-      "freed": "Space freed."
-    },
-    "empty": "No pack available for this trail.",
+    "demoIndisponible": "Downloading the maps is not available during the demo.",
     "a11y": {
-      "packCard": "Pack $nom, $state",
-      "downloadButton": "Download pack $nom",
-      "deleteButton": "Delete pack $nom"
-    },
-    "types": {
-      "nord": {
-        "nom": "Mare a Mare North",
-        "description": "The northern half of the trail, offline."
-      },
-      "sud": {
-        "nom": "Mare a Mare South",
-        "description": "The southern half of the trail, offline."
-      },
-      "complet": {
-        "nom": "Mare a Mare Full",
-        "description": "The whole trail, offline."
-      },
-      "mam": {
-        "nom": "Mare a Mare",
-        "description": "The Mare a Mare trail, offline."
-      }
+      "bouton": "Download the maps for the whole route",
+      "progression": "Downloading maps: $pourcent %"
     }
   },
   "guides": {
@@ -1398,14 +1604,25 @@
       "allergies": "Allergies",
       "treatments": "Current treatments",
       "doctor": "Family doctor",
-      "insurance": "Insurance no. / health cover"
+      "insurance": "Insurance no. / health cover",
+      "fullName": "First and last name",
+      "birthDate": "Date of birth",
+      "birthDateClear": "Clear date of birth",
+      "address": "Address",
+      "conditions": "Medical conditions and history",
+      "organDonor": "Organ donation"
     },
     "hint": {
       "bloodType": "e.g. A+, O-, AB+",
       "allergies": "e.g. penicillin, peanuts",
       "treatments": "e.g. Levothyrox 50 mg/day",
       "doctor": "e.g. Dr Smith +44 20 xxxx xxxx",
-      "insurance": "e.g. European health card"
+      "insurance": "e.g. European health card",
+      "fullName": "e.g. Christophe Mosconi",
+      "birthDate": "Tap to choose",
+      "address": "e.g. 12 Lilac Street, 20000 Ajaccio",
+      "conditions": "e.g. type 1 diabetes, epilepsy, blood thinner",
+      "organDonor": "Make your choice"
     },
     "error": {
       "bloodType": "Invalid blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)"
@@ -1432,11 +1649,66 @@
     "consent": {
       "purpose": "This info helps rescuers assist you. It stays on your phone, never sent over the internet.",
       "manage": "Manage my health consent"
-    }
+    },
+    "advice": {
+      "title": "How to use it on the trail",
+      "whereToFind": "Where to find it when you are down: your card lives under Prepare, the « Medical card » tile, and it opens with no network. Show it to your walking partners before you leave — the day you can no longer speak, they are the ones who will open your phone.",
+      "showToRescue": "How to show it to rescuers: open this screen and hand over the phone. Who you are, who to call, then allergies, treatments, medical history and blood group — in the order a rescuer reads. Nothing is sent over the internet: what you show is exactly what is written here.",
+      "phoneCard": "Copy it into your phone's own medical ID: it shows on the lock screen, without your passcode. A rescuer who finds your phone gets there in two taps, even without knowing this app.",
+      "paper": "Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.",
+      "ackButton": "I have read this advice",
+      "ackDone": "Advice read"
+    },
+    "section": {
+      "identity": "Who you are",
+      "identityWhy": "The first thing a rescuer reads: with no name, they treat a stranger and can call nobody.",
+      "contacts": "Who to call",
+      "contactsWhy": "What rescuers look for right after identifying you. Three people at most: beyond that, none gets called.",
+      "vital": "What treats you",
+      "vitalWhy": "In the order an emergency doctor asks: first what can kill you during treatment, then what the hospital needs.",
+      "admin": "Paperwork",
+      "adminWhy": "What gets copied at the hospital desk, not what is read in the rain."
+    },
+    "bloodTypeUnknown": "I don't know",
+    "bloodTypeLegacy": "Your previous entry « $valeur » is not a recognised blood group. Choose from the list.",
+    "organDonor": {
+      "yes": "Donor",
+      "no": "Opted out",
+      "unknown": "I have not decided"
+    },
+    "contacts": {
+      "add": "Add someone to call",
+      "name": "Person's name",
+      "nameHint": "e.g. Marie, my sister",
+      "phone": "Phone",
+      "phoneHint": "e.g. +33 6 12 34 56 78",
+      "remove": "Remove this person",
+      "errorName": "Give a name, otherwise rescuers do not know who they are calling.",
+      "errorPhone": "Give a number, otherwise this name is useless."
+    },
+    "cards": {
+      "vitale": "Photo of the health insurance card",
+      "mutuelle": "Photo of the top-up insurance card",
+      "take": "Take a photo",
+      "retake": "Retake the photo",
+      "pick": "Pick an image",
+      "remove": "Remove the photo",
+      "stored": "Photo stored on this phone. It is sent nowhere and goes away with the card when you erase it.",
+      "explain": "The photo stays on this phone, in the same protected folder as the rest of the card.",
+      "permissionRefused": "Camera access refused. The card works perfectly well without it.",
+      "failed": "The photo could not be saved."
+    },
+    "phoneCard": {
+      "title": "Copy your card into the phone's own one",
+      "why": "It is the only screen a rescuer reaches without your passcode, on iPhone as on Android. Phone settings, Emergency or Health section: name, blood group, allergies, medication and people to call.",
+      "done": "Done, my card is in the phone too"
+    },
+    "localOnlyPriceTitle": "Switching phones means typing it in again",
+    "localOnlyPrice": "If you switch phones, this card does not follow you: you will have to type in your blood type, your allergies and your treatments again. That is the price of the promise, and it is why nobody, us included, can read it anywhere but here."
   },
   "trailSelection": {
     "title": "Switch trail",
-    "subtitle": "Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.",
+    "subtitle": "Pick the trail to explore. The whole app (map, stages, points of interest, offline maps, guides) follows your selection.",
     "current": "Active trail",
     "select": "Choose this trail",
     "selected": "Selected trail",
@@ -1453,7 +1725,7 @@
     "settingsTitle": "Privacy and consent",
     "settingsIntro": "Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.",
     "settingsEntry": "Privacy and consent",
-    "settingsEntryDesc": "Manage my permissions (location, sharing, health)",
+    "settingsEntryDesc": "Manage my permissions (location, sharing, advertising, health)",
     "purposes": {
       "locationNavigation": "Personal navigation",
       "locationNavigationDesc": "Use your location for the map and to track your stage. Stays on your device.",
@@ -1461,6 +1733,8 @@
       "socialSharingDesc": "Appear in leaderboards and the community feed, under a pseudonym.",
       "publicReporting": "Public reporting",
       "publicReportingDesc": "Post reports (water, hazard, conditions) visible to other hikers.",
+      "advertising": "Personalised advertising",
+      "advertisingDesc": "Tailor ads to your interests. Without this permission the free app still shows ads, but they are not targeted and no targeting data leaves your device.",
       "healthData": "Health data",
       "healthDataDesc": "Read your heart rate (chest strap or health app) to enrich your effort tracking."
     },
@@ -1474,8 +1748,11 @@
     "notDecided": "Awaiting your choice",
     "acceptSelected": "Confirm my choices",
     "declineAll": "Decline all",
+    "declineAllNote": "Decline all withdraws your five permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.",
+    "declineAllCancel": "Cancel",
     "continueLabel": "Continue",
     "privacyPolicyLink": "Read the privacy policy",
+    "adsPrivacyOptions": "Advertising privacy options",
     "reviewNeeded": "Our policy has changed: please review your choices.",
     "a11y": {
       "purposeToggle": "$purpose, currently $state",
@@ -1483,7 +1760,7 @@
       "policyButton": "Open the privacy policy"
     },
     "healthDataMorphoNote": "Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.",
-    "healthBackupNote": "Without this permission, your medical information sheet is not backed up: you will not be able to retrieve it on another phone, nor show it to rescuers from a new device."
+    "healthBackupNote": "This permission does not cover your medical card: that one is never backed up, neither by us nor anywhere else, with or without permission. If you switch phones you will type it in again. That is the price of keeping it to yourself."
   },
   "erasure": {
     "section": "My data",
@@ -1523,8 +1800,8 @@
     "submit": "Send report",
     "submitting": "Sending…",
     "sent": "Report sent. Thank you, a moderator will review it.",
-    "errorRequired": "Please fill in the reason, your email and the good-faith declaration.",
-    "errorGeneric": "The report could not be sent. Please try again.",
+    "errorRequired": "Fill in the reason, your email and the good-faith declaration.",
+    "errorGeneric": "The report could not be sent. Try again.",
     "cancel": "Cancel",
     "reasonsTitle": "Why was this content restricted?",
     "reasonsIntro": "In accordance with article 17, here is the reason for the moderation decision regarding your content.",
@@ -1542,7 +1819,7 @@
     "complaintExposeHint": "Describe the reasons for your challenge.",
     "complaintSubmit": "Send challenge",
     "complaintSent": "Challenge recorded. It will be reviewed.",
-    "complaintEmpty": "Please explain your challenge.",
+    "complaintEmpty": "Explain your challenge.",
     "a11y": {
       "reportForm": "Content reporting form",
       "reasonSelector": "Report reason selector",
@@ -1569,7 +1846,7 @@
     "stages": "{done} / {total} stages walked",
     "distance": "{km} km travelled",
     "elevation": "{meters} m of elevation gain",
-    "duration": "{days} days",
+    "duration": "{days} days in total, walking and rest included",
     "dates": "From {start} to {end}",
     "viewDiploma": "View my diploma",
     "viewJournal": "View my journal",
@@ -1594,16 +1871,10 @@
     "helpTooltip": "Help",
     "duration": {
       "label": "Number of days",
-      "days": "{count} d",
-      "daysWithRest": "{total} d (incl. {rest} rest)",
-      "splitNote": "More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.",
-      "splitExhausted": "Every day is already cut as short as it goes: the slider will not ease the verdict any further.",
-      "difficulty": {
-        "comfortable": "Comfortable",
-        "standard": "Standard",
-        "sporty": "Sporty",
-        "demanding": "Very demanding"
-      }
+      "daysWithRest": "{total} d in total (incl. {rest} rest)",
+      "splitNote": "More days = rest days. They make no day easier.",
+      "splitExhausted": "No way to spread it further: every stage already has its own day.",
+      "daysTotal": "{count} d in total"
     },
     "stats": {
       "distance": "Distance",
@@ -1622,7 +1893,7 @@
     "restDayLabel": "R",
     "actions": {
       "merge": "Merge",
-      "split": "Split",
+      "split": "Ungroup",
       "rest": "Rest",
       "removeRest": "Remove this rest day"
     },
@@ -1662,8 +1933,8 @@
         "body": "Insert a recovery day between two stages."
       },
       "mergeSplit": {
-        "title": "Merge / Split",
-        "body": "Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep."
+        "title": "Merge / Ungroup",
+        "body": "Merge joins two days into one. Ungroup gives each stage its own day back. A stage stays whole: it ends where there is a roof."
       },
       "colors": {
         "title": "Colours",
@@ -1673,8 +1944,7 @@
       "close": "Got it!"
     },
     "splitBlocked": {
-      "single": "Cannot split: there is nothing to cut on this day.",
-      "portion": "Cannot split: this stage is already cut in two.",
+      "single": "Cannot ungroup: this day carries a single stage, there is nothing to ungroup.",
       "locked": "Day already walked: it can no longer be changed"
     },
     "reorderBlocked": "Trek started: the order of stages can no longer change",
@@ -1697,7 +1967,7 @@
         },
         "upcoming": {
           "title": "Upcoming days",
-          "body": "Merge, split or add a rest day on the rest of your route."
+          "body": "Merge, ungroup or add a rest day on the rest of your route."
         },
         "order": {
           "title": "Stage order",
@@ -1725,7 +1995,7 @@
     "adjustStages": "ADJUST STAGES",
     "stageSingular": "Stage {n}",
     "stagesPlural": "Stages {list}",
-    "splitStages": "Split the stages",
+    "splitStages": "Ungroup the day",
     "mergeWithNext": "Merge with the next day",
     "weekdays": {
       "mon": "Mon",
@@ -1808,7 +2078,8 @@
     "a11y": {
       "call": "Call $label",
       "website": "Open website"
-    }
+    },
+    "noneForTrail": "No transport information for this trail."
   },
   "fireRisk": {
     "title": "Fire risk",
@@ -1865,7 +2136,11 @@
       "call": "Call $label at $number",
       "decree": "Open prefectural orders",
       "levelBadge": "Risk level $level out of 5"
-    }
+    },
+    "refreshNothing": "Nothing to update right now.",
+    "refreshPartial": "Partial update: $done of $total stage(s).",
+    "refreshedAt": "Data updated ($date)",
+    "stagePlace": "Arrival: $place"
   },
   "shop": {
     "title": "Supplies",
@@ -1891,7 +2166,8 @@
       "openDetail": "View details for $name",
       "call": "Call $label",
       "website": "Open website"
-    }
+    },
+    "noneForTrail": "No shop is listed for this trail."
   },
   "summary": {
     "title": "Plan summary",
@@ -1999,7 +2275,9 @@
       "trekCard": "Trek $nom, $state",
       "openTrek": "Open trek $nom"
     },
-    "settingsSubtitle": "Language, units, theme"
+    "settingsSubtitle": "Language, units, theme",
+    "emptyCatalogueOuDemo": "You do not have a trail yet. Open the catalogue to choose one, or try the demo at the top of the list.",
+    "emptyCatalogueSeul": "You do not have a trail yet. Open the catalogue to choose one."
   },
   "trekState": {
     "abandonDialog": {
@@ -2022,6 +2300,7 @@
     "fieldAge": "Age",
     "hintAge": "In years",
     "errorAge": "Invalid age (18 to 120 years)",
+    "ageUsage": "What your age is used for: it sets the reference distance of your walk test, and it lowers the retained level by one notch from 60, by two from 75. It is used for nothing else, and none of it leaves your phone.",
     "fieldHeight": "Height",
     "hintHeight": "In centimetres",
     "errorHeight": "Invalid height (60 to 255 cm)",
@@ -2030,6 +2309,7 @@
     "errorWeight": "Invalid weight (25 to 200 kg)",
     "errorCountry": "Invalid country code (e.g. FR)",
     "errorEmpty": "Empty profile: enter at least your age, height or weight.",
+    "errorSaveFailed": "Your details could not be saved. Nothing was changed: try again.",
     "errorConsentRequired": "Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.",
     "fieldSex": "Sex (optional)",
     "sexFemale": "Female",
@@ -2037,6 +2317,9 @@
     "sexUnspecified": "Unspecified",
     "fieldCountry": "Country",
     "countryUnspecified": "Unspecified",
+    "countryPickerTitle": "Choose a country",
+    "countrySearchHint": "Search for a country",
+    "countryNoResult": "No country matches",
     "hintCountry": "Code (e.g. FR)",
     "consentTitle": "Body metrics (GDPR article 9)",
     "consentBody": "Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.",
@@ -2076,7 +2359,8 @@
       "excellent": "Excellent"
     },
     "absoluteScaleNotice": "Your level is read on the raw distance scale: the comparison to a reference was not established for your build, so we do not apply it. Your test itself remains perfectly valid.",
-    "ageClampNotice": "Beyond 80 the test reference stops: it is computed as at 80, and we say so."
+    "ageClampNotice": "Beyond 80 the test reference stops: it is computed as at 80, and we say so.",
+    "gpsUnavailable": "Location is not available on this device: the test cannot measure distance."
   },
   "pastHikes": {
     "title": "Your last 5 hikes",
@@ -2097,11 +2381,9 @@
     "editHike": "Edit hike",
     "deleteHike": "Delete",
     "save": "Save",
+    "backToFeasibility": "Back to feasibility",
     "saved": "Hikes saved",
-    "maxReached": "Maximum of 5 hikes reached.",
-    "difficultiesTitle": "Difficulties encountered",
-    "difficultiesHint": "One text for all these hikes: blisters, knees on descents, breathlessness at altitude, heat stress...",
-    "difficultiesSaved": "Note saved"
+    "maxReached": "Maximum of 5 hikes reached."
   },
   "ffrando": {
     "cotationTitle": "FFRandonnee rating",
@@ -2127,6 +2409,12 @@
     "positionTitle": "Your current position",
     "positionUnavailable": "GPS position unavailable",
     "gpsAcquiring": "Acquiring GPS…",
+    "ageNow": "Position just now",
+    "ageMinutes": "Position $minutes min ago",
+    "ageHours": "Position $hours h $minutes ago",
+    "estimated": "Estimated on the trail from your steps",
+    "freshFailed": "No newer position within $seconds s: the last known one is still shown.",
+    "unavailableHelp": "Call 112 anyway: give the last place you passed (hut, pass, trail marker) and stay where you are if you can.",
     "positionLine": "Position: $lat, $lng  -  Alt. $alt m",
     "noContacts": "No contact configured",
     "callContact": "Call $name",
@@ -2138,18 +2426,21 @@
       "action": "Phone medical ID",
       "hint": "Show your vital info to rescuers, even on the lock screen.",
       "unavailable": "Open the medical ID in your phone's Health settings."
-    }
+    },
+    "cannotCall": "This device cannot place the call. Dial $number."
   },
   "recovery": {
     "section": "Account and recovery",
     "sectionDesc": "View my recovery code",
     "title": "My recovery code",
-    "intro": "This code unlocks your vault (profile, personal info and step balance) on another phone. Write it down and keep it safe: it works like a password.",
+    "intro": "This code unlocks your vault (nickname, avatar and step balance) on another phone. Write it down and keep it safe: it works like a password. Your medical card is NOT in it: it never leaves this phone.",
     "codeLabel": "Your code",
     "copy": "Copy code",
     "copied": "Code copied",
     "warning": "No one else can read your vault, not even us. If you lose this code, your data will be permanently unrecoverable.",
-    "error": "Unable to generate the code right now."
+    "error": "Unable to generate the code right now.",
+    "noVaultTitle": "No vault to unlock yet",
+    "noVaultBody": "Online backup is not enabled on this installation: your data stays on this phone. There is therefore no vault to unlock elsewhere, and no code to write down for now."
   },
   "common": {
     "cannotLoadStages": "Unable to load stages",
@@ -2162,6 +2453,40 @@
     "noPoiForStage": "No point of interest for this stage.",
     "viewOnMap": "View on map",
     "error": "Error",
-    "pageNotFound": "Page not found: $path"
+    "pageNotFound": "Page not found: $path",
+    "retry": "Try again",
+    "retrying": "Trying again…",
+    "retryFailed": "The new attempt did not work."
+  },
+  "systemBackup": {
+    "title": "Your phone's backup",
+    "refuseGoogle": "I refuse to have my data backed up to the Google cloud",
+    "refuseApple": "I refuse to have my data backed up to iCloud",
+    "explainGoogle": "Your phone backs itself up to Google. This box is ticked in advance and keeps on this phone everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.",
+    "explainApple": "Your phone backs itself up to iCloud. This box is ticked in advance and keeps on this phone everything you entrust to us: your profile (age, height, weight), your past hikes, your progress, your journal, your photos and your medical card.",
+    "cost": "If you leave it ticked and you change phone or reinstall the app, you start from scratch. Your progress, your journal, your completed treks and your photos will not come back. On this phone nothing is deleted: a completed trek keeps its track and its logbook for life. But nothing follows you elsewhere.",
+    "whatComesBack": "If you untick it, your progress, your journal, your completed treks and your medical card go into the backup, and come back on your next phone. Never your photos or your settings: copying the photos would double the space taken on your phone.",
+    "notOurServers": "None of this goes to our servers, whether this box is ticked or not. It only concerns the backup your phone makes through its own system.",
+    "confirm": "Got it",
+    "a11yCheckbox": "Refuse the backup of all my data by the system of the phone"
+  },
+  "lieu": {
+    "ouvrirDansLesCartes": "Open in maps",
+    "cartesIndisponibles": "No maps app could be opened on this device.",
+    "adresse": "Address",
+    "telephoner": "Call",
+    "siteOfficiel": "Official website",
+    "aCompleter": "Information still to be confirmed",
+    "source": "Source",
+    "a11y": {
+      "ouvrirDansLesCartes": "Open $name in the maps app",
+      "telephoner": "Call $name",
+      "siteOfficiel": "Open the official website of $name"
+    },
+    "rafraichir": "Refresh from the database",
+    "rafraichirFait": "$n item(s) updated from the database.",
+    "rafraichirDejaAJour": "Already up to date: the database holds nothing newer.",
+    "rafraichirHorsLigne": "No network: what you see is what is on the phone.",
+    "rafraichirEchec": "The update failed. The data on the phone is intact."
   }
 }

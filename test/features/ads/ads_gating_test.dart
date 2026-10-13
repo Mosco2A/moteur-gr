@@ -58,7 +58,7 @@ void main() {
       connectivityMonitor: _FakeConnectivityMonitor(),
       nowFn: () => now,
       prefs: prefs,
-      showcaseTrailIds: const {},
+      freeTrailIds: const {},
     );
     await svc.load();
     final container = ProviderContainer(
@@ -70,6 +70,14 @@ void main() {
       ],
     );
     addTearDown(container.dispose);
+    // PLUS RIEN A DECLARER SUR LA RANDO EN COURS (tache 601). Ce monde
+    // surchargeait `latestTrekSessionProvider` et attendait sa lecture, parce que
+    // la decision publicitaire refusait toute publicite en realisation et
+    // repondait « en rando » tant que la base n'avait pas parle. Cette garde a
+    // ete retiree par Chris le 27/09 14:41 : « TOUT PORTER LA PUB sauf si tu es
+    // abonne ou sur le trek que tu as achete .. Pas la peine de mettre plus de
+    // regles ». La decision ne consulte plus l'etat de rando du tout, donc la
+    // surcharge ne servait plus qu'a decorer.
     return container;
   }
 

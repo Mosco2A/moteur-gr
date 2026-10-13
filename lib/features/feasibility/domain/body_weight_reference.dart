@@ -118,8 +118,13 @@ class BodyWeightReference {
   /// Sans reference calculable, la base retombe sur le POIDS REEL — le
   /// comportement actuel — et l'ecran dit que le plafond est calcule sur le
   /// poids reel et non sur une reference de taille (#5-h).
-  static double loadBaseKg({required int heightCm, required double bodyWeightKg}) {
-    final weight = bodyWeightKg.isFinite && bodyWeightKg > 0 ? bodyWeightKg : 0.0;
+  static double loadBaseKg({
+    required int heightCm,
+    required double bodyWeightKg,
+  }) {
+    final weight = bodyWeightKg.isFinite && bodyWeightKg > 0
+        ? bodyWeightKg
+        : 0.0;
     final reference = referenceMassKg(heightCm);
     if (reference == null) return weight;
     return math.min(weight, reference);
@@ -134,7 +139,8 @@ class BodyWeightReference {
     required int heightCm,
     required double bodyWeightKg,
   }) =>
-      backpackShare * loadBaseKg(heightCm: heightCm, bodyWeightKg: bodyWeightKg);
+      backpackShare *
+      loadBaseKg(heightCm: heightCm, bodyWeightKg: bodyWeightKg);
 
   /// Plancher « refuge » du bandeau de recommandation, meme denominateur (#7-f).
   static double refugeBackpackKg({

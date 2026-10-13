@@ -50,14 +50,28 @@ void main() {
 
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  Widget wrap({required bool isDemo, TrainingPlan? planOverride}) {
+  /// LA DATE DE DEPART EST DESORMAIS UNE CONDITION D'AFFICHAGE (tache 570, S3).
+  ///
+  /// Ces tests montaient l'ecran SANS date et attendaient le plan : c'etait
+  /// precisement le defaut releve par Chris (« tu fais un plan sans savoir quand
+  /// il part »). Le plan ne s'affiche plus sans date, ni sous huit semaines : la
+  /// rampe par defaut est donc un depart LOIN (90 jours), et les deux refus ont
+  /// leurs propres tests dans `training_frequency_and_floor_test.dart`.
+  Widget wrap({
+    required bool isDemo,
+    TrainingPlan? planOverride,
+    int daysUntilDeparture = 90,
+  }) {
+    final now = DateTime.now();
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
-        isDemoModeProvider(testTrailConfig.id)
-            .overrideWith((ref) async => isDemo),
-        trainingPlanProvider.overrideWith(
-          (ref) async => planOverride ?? plan,
+        isDemoModeProvider(
+          testTrailConfig.id,
+        ).overrideWith((ref) async => isDemo),
+        trainingPlanProvider.overrideWith((ref) async => planOverride ?? plan),
+        trainingDepartureDateProvider.overrideWithValue(
+          DateTime(now.year, now.month, now.day + daysUntilDeparture),
         ),
       ],
       child: TranslationProvider(
@@ -65,7 +79,10 @@ void main() {
           routerConfig: GoRouter(
             initialLocation: '/training',
             routes: [
-              GoRoute(path: '/training', builder: (_, __) => const TrainingScreen()),
+              GoRoute(
+                path: '/training',
+                builder: (_, __) => const TrainingScreen(),
+              ),
               GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
             ],
           ),
@@ -75,8 +92,18 @@ void main() {
   }
 
   group('TrainingScreen — verrou premium', () {
-    testWidgets('verrouille : teaser + bouton Debloquer, pas de seance cochable',
-        (tester) async {
+    // RETOURNE PAR LA TACHE 594 (A2c) — LE SENS ETAIT INVERSE.
+    //
+    // Ce test verrouillait le contraire de la decision : il exigeait ZERO
+    // seance cochable en demo. Le modele eco du 08/09, source de verite unique,
+    // demande la prepa physique « jouable *pour de faux* (version bridee) ».
+    // Flouter n'est pas brider. Ce qui reste verrouille ici, c'est ce qui doit
+    // l'etre : les phases AU-DELA du bridage, visibles et grisees, et le
+    // chemin d'achat toujours present. Le detail est dans
+    // `test/comportement/demo_bridee_594_test.dart`.
+    testWidgets('demo bridee : jouable, borne, et on dit ou acheter', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(isDemo: true));
       await tester.pumpAndSettle();
 
@@ -84,24 +111,40 @@ void main() {
       expect(find.text(t.training.title), findsWidgets);
       expect(find.text(t.training.unlock), findsOneWidget);
       expect(find.text(t.training.paywallTitle), findsOneWidget);
-      // Le detail (seances cochables) reste masque en verrouille.
-      expect(find.byType(CheckboxListTile), findsNothing);
+      // La part BRIDEE est jouable (la premiere phase, ses seances cochables).
+      expect(find.byType(CheckboxListTile), findsWidgets);
+      // Et la part payante reste verrouillee, visible, jamais cachee.
+      expect(
+        find.byKey(const ValueKey('training-demo-locked-endurance')),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('debloque : plan cochable + objectif + progression',
-        (tester) async {
+    testWidgets('debloque : plan cochable + objectif + progression', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(isDemo: false));
       await tester.pumpAndSettle();
 
-      // Pas de paywall ; l'objectif et la progression sont visibles.
+      // Pas de paywall ; l'objectif et la progression sont dans l'arbre.
+      //
+      // `skipOffstage: false` : la ligne qui NOMME LES SOURCES des frequences
+      // (tache 570, S3-a) s'insere entre les phases et l'objectif, et pousse ce
+      // dernier sous le pli du viewport de test par defaut. Ce qui est sous test
+      // ici est la PRESENCE de l'objectif dans un plan debloque, pas la hauteur
+      // du telephone : le defilement est verifie ailleurs.
       expect(find.text(t.training.unlock), findsNothing);
-      expect(find.text(t.training.objectiveTitle), findsOneWidget);
+      expect(
+        find.text(t.training.objectiveTitle, skipOffstage: false),
+        findsOneWidget,
+      );
       // La 1re phase est ouverte par defaut -> ses seances sont cochables.
       expect(find.byType(CheckboxListTile), findsWidgets);
     });
 
-    testWidgets('debloque : cocher une seance fait avancer le suivi',
-        (tester) async {
+    testWidgets('debloque : cocher une seance fait avancer le suivi', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(isDemo: false));
       await tester.pumpAndSettle();
 
@@ -123,8 +166,9 @@ void main() {
     // met rien ». La cle est supprimee des cinq langues, l'ecran ne promet plus
     // rien, et ce test verrouille qu'il reste DEBOUT et MUET : aucune exception,
     // aucune seance fantome, et aucune promesse revenue par une autre porte.
-    testWidgets('plan vide (aucune phase) -> aucune promesse, aucun crash',
-        (tester) async {
+    testWidgets('plan vide (aucune phase) -> aucune promesse, aucun crash', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(
           isDemo: false,
@@ -141,8 +185,11 @@ void main() {
         'prochainement',
         'en cours de développement',
       ]) {
-        expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
-            reason: 'l ecran sans plan promet encore « $promesse »');
+        expect(
+          find.textContaining(promesse, skipOffstage: false),
+          findsNothing,
+          reason: 'l ecran sans plan promet encore « $promesse »',
+        );
       }
     });
   });

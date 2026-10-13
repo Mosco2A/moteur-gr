@@ -42,9 +42,13 @@ void main() {
 
     test('bornes incluses (valeurs limites valides)', () {
       expect(
-          liveBmiWithinBounds(kHeightMinCm, kWeightMinKg.toDouble()), isNotNull);
+        liveBmiWithinBounds(kHeightMinCm, kWeightMinKg.toDouble()),
+        isNotNull,
+      );
       expect(
-          liveBmiWithinBounds(kHeightMaxCm, kWeightMaxKg.toDouble()), isNotNull);
+        liveBmiWithinBounds(kHeightMaxCm, kWeightMaxKg.toDouble()),
+        isNotNull,
+      );
     });
   });
 }

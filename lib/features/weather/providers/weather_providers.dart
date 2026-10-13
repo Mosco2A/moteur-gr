@@ -1,3 +1,7 @@
+/// Le cablage de la meteo : les coordonnees viennent des etapes en base, et les
+/// previsions passent par le cache a TTL.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,10 +59,7 @@ final weatherRepositoryProvider = Provider<WeatherRepository>((ref) {
 
 /// Parametres pour identifier une etape meteo.
 class WeatherStageParams {
-  const WeatherStageParams({
-    required this.trailId,
-    required this.stageNumber,
-  });
+  const WeatherStageParams({required this.trailId, required this.stageNumber});
 
   final String trailId;
   final int stageNumber;
@@ -81,20 +82,36 @@ class WeatherState {
     this.isLoading = false,
     this.isFromCache = false,
     this.errorMessage,
+    this.refreshFailed = false,
   });
 
   final WeatherForecast? forecast;
   final List<WeatherAlert> alerts;
   final bool isLoading;
   final bool isFromCache;
+
+  /// Cause technique du dernier echec (journal). Jamais affichee brute : l'ecran
+  /// en tire un message i18n (voir [refreshFailed]).
   final String? errorMessage;
 
+  /// LA DERNIERE MISE A JOUR A ECHOUE — et l'ecran doit le DIRE (tache 572, U2).
+  ///
+  /// `errorMessage` existait deja, mais AUCUN widget du module ne le lisait :
+  /// un rafraichissement rate etait donc visuellement identique a un
+  /// rafraichissement reussi. Ce drapeau est la question que l'UI pose
+  /// reellement (« dois-je afficher un echec ? ») et il est rendu a l'ecran.
+  final bool refreshFailed;
+
+  /// Copie. `errorMessage` et `refreshFailed` ne sont PAS conserves par defaut :
+  /// un echec appartient a l'operation qui l'a produit, il ne doit pas survivre
+  /// silencieusement a l'operation suivante (le passer explicitement le garde).
   WeatherState copyWith({
     WeatherForecast? forecast,
     List<WeatherAlert>? alerts,
     bool? isLoading,
     bool? isFromCache,
     String? errorMessage,
+    bool refreshFailed = false,
   }) {
     return WeatherState(
       forecast: forecast ?? this.forecast,
@@ -102,6 +119,7 @@ class WeatherState {
       isLoading: isLoading ?? this.isLoading,
       isFromCache: isFromCache ?? this.isFromCache,
       errorMessage: errorMessage,
+      refreshFailed: refreshFailed,
     );
   }
 }
@@ -137,9 +155,7 @@ class StageWeatherNotifier extends Notifier<WeatherState> {
   @override
   WeatherState build() {
     // select() sur le repository — ne reconstruit que si l'instance change
-    _repo = ref.watch(
-      weatherRepositoryProvider.select((repo) => repo),
-    );
+    _repo = ref.watch(weatherRepositoryProvider.select((repo) => repo));
 
     // select() sur la connectivite — ne reconstruit que sur changement de statut
     _connectivity = ref.watch(
@@ -163,47 +179,62 @@ class StageWeatherNotifier extends Notifier<WeatherState> {
 
     if (forecast != null) {
       final alerts = WeatherAlert.fromForecast(forecast);
+      // « Vient du cache » ne se devine plus a la connectivite seule : depuis la
+      // tache 572 le bulletin porte son instant de releve, donc on le SAIT. Un
+      // bulletin plus vieux que la fenetre de re-telechargement vient
+      // forcement du cache, connexion ou pas.
+      final age = forecast.ageAt();
       state = WeatherState(
         forecast: forecast,
         alerts: alerts,
-        isFromCache: _connectivity == ConnectivityStatusValues.offline,
+        isFromCache:
+            _connectivity == ConnectivityStatusValues.offline ||
+            (age != null &&
+                age > const Duration(hours: WeatherCacheDao.cacheTtlHours)),
       );
       return;
     }
 
-    // 2. Pas de donnees disponibles
-    if (_connectivity == ConnectivityStatusValues.offline) {
-      state = const WeatherState(
-        errorMessage: 'Pas de connexion. Donnees meteo indisponibles.',
-      );
-    } else {
-      state = const WeatherState(
-        errorMessage: 'Impossible de charger la meteo.',
-      );
-    }
+    // 2. Aucune donnee disponible, meme perimee. `errorMessage` porte la CAUSE
+    //    TECHNIQUE (journal, diagnostic) : l'ecran ne l'affiche jamais brute, il
+    //    en tire un message i18n. Avant, ce champ contenait du francais en dur —
+    //    prêt a fuiter a l'ecran dans une app a cinq langues — et n'etait de
+    //    toute facon lu par personne.
+    state = WeatherState(
+      errorMessage: _connectivity == ConnectivityStatusValues.offline
+          ? 'hors ligne et aucun bulletin en cache pour '
+                '${_params.trailId}/${_params.stageNumber}'
+          : 'chargement impossible pour '
+                '${_params.trailId}/${_params.stageNumber}',
+    );
   }
 
-  /// Force le rafraichissement depuis l'API (pull-to-refresh).
-  Future<void> refresh() async {
+  /// Force le rafraichissement depuis l'API (bouton « Actualiser »,
+  /// pull-to-refresh).
+  ///
+  /// Rend `true` si la mise a jour a abouti. Le resultat est REMONTE : l'ecran
+  /// incendie rafraichit plusieurs etapes d'un coup et doit pouvoir dire
+  /// combien ont reellement abouti au lieu d'annoncer un succes global
+  /// (tache 572, U3).
+  Future<bool> refresh() async {
     state = state.copyWith(isLoading: true);
 
-    final forecast = await _repo.refreshForecast(
+    final result = await _repo.refreshForecast(
       trailId: _params.trailId,
       stageNumber: _params.stageNumber,
     );
 
-    if (forecast != null) {
-      final alerts = WeatherAlert.fromForecast(forecast);
-      state = WeatherState(
-        forecast: forecast,
-        alerts: alerts,
-      );
-    } else {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: 'Impossible de charger la meteo.',
-      );
-    }
+    final forecast = result.forecast;
+    state = WeatherState(
+      forecast: forecast,
+      alerts: forecast == null ? const [] : WeatherAlert.fromForecast(forecast),
+      // Un echec laisse le dernier bulletin connu a l'ecran : il vient donc du
+      // cache, et l'age affiche le dira.
+      isFromCache: result.failed && forecast != null,
+      refreshFailed: result.failed,
+      errorMessage: result.reason,
+    );
+    return !result.failed;
   }
 }
 
@@ -212,8 +243,12 @@ class StageWeatherNotifier extends Notifier<WeatherState> {
 /// Auto-refresh via select() sur la connectivite :
 /// quand le statut change (offline -> online), le build() est relance
 /// et recharge les donnees depuis l'API.
-final stageWeatherProvider = NotifierProvider.family<StageWeatherNotifier,
-    WeatherState, WeatherStageParams>(StageWeatherNotifier.new);
+final stageWeatherProvider =
+    NotifierProvider.family<
+      StageWeatherNotifier,
+      WeatherState,
+      WeatherStageParams
+    >(StageWeatherNotifier.new);
 
 // ---------------------------------------------------------------------------
 // Providers derives avec select() pour performance UI
@@ -223,35 +258,15 @@ final stageWeatherProvider = NotifierProvider.family<StageWeatherNotifier,
 /// Evite de reconstruire le widget si seules les alertes changent.
 final weatherForecastProvider =
     Provider.family<WeatherForecast?, WeatherStageParams>((ref, params) {
-  return ref.watch(
-    stageWeatherProvider(params).select((s) => s.forecast),
-  );
-});
+      return ref.watch(stageWeatherProvider(params).select((s) => s.forecast));
+    });
 
-/// Provider derive : alertes seules.
-/// Evite de reconstruire le widget si seule la prevision change.
-final weatherAlertsProvider =
-    Provider.family<List<WeatherAlert>, WeatherStageParams>((ref, params) {
-  return ref.watch(
-    stageWeatherProvider(params).select((s) => s.alerts),
-  );
-});
-
-/// Provider derive : indicateur de chargement.
-final weatherLoadingProvider =
-    Provider.family<bool, WeatherStageParams>((ref, params) {
-  return ref.watch(
-    stageWeatherProvider(params).select((s) => s.isLoading),
-  );
-});
-
-/// Provider derive : indicateur de donnees depuis le cache.
-final weatherFromCacheProvider =
-    Provider.family<bool, WeatherStageParams>((ref, params) {
-  return ref.watch(
-    stageWeatherProvider(params).select((s) => s.isFromCache),
-  );
-});
+// TACHE 572 — `weatherAlertsProvider`, `weatherLoadingProvider` et
+// `weatherFromCacheProvider` ont ete RETIRES : trois providers derives
+// « pour la performance UI » que RIEN dans l'application ne lisait. Le reaudit
+// demandait de dire ce qui sert et de retirer le reste plutot que de le garder
+// par prudence. Seul `weatherForecastProvider` a un consommateur reel
+// (`all_stages_weather_list.dart`).
 
 /// Toggle « alertes orage » de l'ecran meteo (RF-1, P7).
 ///

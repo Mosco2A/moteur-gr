@@ -1,3 +1,7 @@
+/// Transforme un identifiant Firebase en hash SHA-256 irreversible. Le sel est
+/// FIXE, parce que le hash doit rester le meme d'un appareil a l'autre.
+library;
+
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';

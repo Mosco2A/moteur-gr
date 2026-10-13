@@ -1,6 +1,11 @@
+/// Les hebergements hors trace avec leur detour estime : StepWays ouvre le site
+/// du prestataire, il ne reserve rien.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/screen_entry.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -8,6 +13,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/models/hebergement_peripherique.dart';
 import '../providers/hebergement_peripherique_providers.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Écran des hébergements périphériques A/R (F6D-02, F6.4).
 ///
@@ -27,10 +33,14 @@ class HebergementsPeripheriquesScreen extends ConsumerWidget {
     WidgetRef ref,
     HebergementPeripherique h,
   ) async {
+    // SANS LIEN, RIEN A OUVRIR (lot 645-08). Le bouton n'est pas construit
+    // dans ce cas-la ; cette garde est la ceinture, pas la bretelle.
+    final url = h.deeplinkUrl;
+    if (url == null || url.isEmpty) return;
     final launcher = ref.read(deeplinkLauncherProvider);
     final t = Translations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final opened = await launcher.open(h.deeplinkUrl);
+    final opened = await launcher.open(url);
     if (!opened) {
       messenger.showSnackBar(SnackBar(content: Text(t.hebergement.cannotOpen)));
     }
@@ -38,6 +48,14 @@ class HebergementsPeripheriquesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // LA MIETTE D ENTREE D ECRAN (lot 645-09). Cet ecran n a pas
+    // d etat : le service deduplique, donc une miette part par
+    // ENTREE et non par reconstruction. Rien n est attendu ici.
+    observeScreenEntry(
+      ref,
+      ScreenBreadcrumb.hebergementsPeripheriques,
+      trail: trailId,
+    );
     final t = Translations.of(context);
     final theme = Theme.of(context);
     final hebergements = ref.watch(hebergementsPeripheriquesProvider(trailId));
@@ -129,7 +147,7 @@ class _HebergementCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              StepIcon(
                 _iconFor(hebergement.type),
                 color: theme.colorScheme.primary,
               ),
@@ -155,55 +173,73 @@ class _HebergementCard extends StatelessWidget {
             label: t.hebergement.detourAR(
               km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
             ),
+            // DEBORDEMENT MESURE (tache 580, Y3) : 117 pixels coupes sur la
+            // droite, le pire de l'application. La phrase du detour — le
+            // chiffre qui decide si on va dormir la ou ailleurs — tenait a
+            // cote d'une icone dans une [Row] qui ne laissait a personne la
+            // possibilite de se replier. Le texte devient [Expanded] : il
+            // passe a la ligne au lieu de sortir de la carte. L'icone garde
+            // sa taille, la [Semantics] au-dessus annonce toujours la phrase
+            // entiere — seule la mise en page change.
             child: Row(
               children: [
-                const Icon(Icons.directions_walk, size: 18),
+                const StepIcon(StepwaysIcons.pas, size: 18),
                 const SizedBox(width: AppTheme.spacingXs),
-                Text(
-                  t.hebergement.detourAR(
-                    km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
+                Expanded(
+                  child: Text(
+                    t.hebergement.detourAR(
+                      km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
+                    ),
+                    style: theme.textTheme.bodyMedium,
                   ),
-                  style: theme.textTheme.bodyMedium,
                 ),
               ],
             ),
           ),
-          const SizedBox(height: AppTheme.spacingSm),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Semantics(
-              button: true,
-              label: t.hebergement.openSite,
-              // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline, pleine
-              // largeur. Le theme OutlinedButton impose minimumSize infinie :
-              // le bouton s'etirait deja sur toute la largeur (l'Align n'avait
-              // pas d'effet visible) -> isFullWidth:true = iso-rendu verifie
-              // par sonde de largeur. Semantics(button+label) conservee.
-              child: AppButton(
-                variant: AppButtonVariant.outline,
-                icon: Icons.open_in_new,
+          // PAS DE LIEN, PAS DE BOUTON — ET PAS D'ESPACE RESERVE NON PLUS
+          // (lot 645-08, voie V2). L'espacement qui precede le bouton entre
+          // dans la condition avec lui : sans ca, une carte sans lien se
+          // terminerait par un blanc que rien ne justifie. La carte s'arrete
+          // donc apres le detour A/R.
+          if (hebergement.hasDeeplink) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Semantics(
+                button: true,
                 label: t.hebergement.openSite,
-                onPressed: onOpen,
+                // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline,
+                // pleine largeur. Le theme OutlinedButton impose minimumSize
+                // infinie : le bouton s'etirait deja sur toute la largeur
+                // (l'Align n'avait pas d'effet visible) -> isFullWidth:true =
+                // iso-rendu verifie par sonde de largeur. Semantics
+                // (button+label) conservee.
+                child: AppButton(
+                  variant: AppButtonVariant.outline,
+                  icon: StepwaysIcons.lien,
+                  label: t.hebergement.openSite,
+                  onPressed: onOpen,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );
   }
 
-  IconData _iconFor(HebergementType type) {
+  String _iconFor(HebergementType type) {
     switch (type) {
       case HebergementType.refuge:
-        return Icons.cabin;
+        return StepwaysIcons.nuitees;
       case HebergementType.gite:
-        return Icons.house_outlined;
+        return StepwaysIcons.hebergement;
       case HebergementType.hotel:
-        return Icons.hotel;
+        return StepwaysIcons.hebergement;
       case HebergementType.camping:
-        return Icons.cottage_outlined;
+        return StepwaysIcons.hebergement;
       case HebergementType.chambreHote:
-        return Icons.bedroom_parent_outlined;
+        return StepwaysIcons.hebergement;
     }
   }
 }
@@ -227,8 +263,8 @@ class _FacilitatorBanner extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.info_outline,
+            StepIcon(
+              StepwaysIcons.info,
               size: 20,
               color: theme.colorScheme.onSecondaryContainer,
             ),

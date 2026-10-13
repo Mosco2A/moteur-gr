@@ -1,3 +1,7 @@
+/// La salutation du cockpit, et RIEN d'autre : ni bandeau demo ni bandeau trek
+/// demo, et un prenom derive du pseudonyme, donc sans donnee nominative.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

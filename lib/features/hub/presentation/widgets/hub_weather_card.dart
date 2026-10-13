@@ -1,3 +1,7 @@
+/// La meteo du jour de l'etape de reference, avec sa pastille d'alerte orage,
+/// qui se degrade proprement quand la prevision manque.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,12 +9,19 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
+import '../../../../domain/temperature_unit.dart'
+    show TemperatureUnit, formatTemperatureRange;
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
-import '../../../weather/models/weather_forecast.dart';
-import '../../../weather/providers/current_stage_provider.dart';
-import '../../../weather/providers/weather_providers.dart';
-import '../../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
+import '../../../settings/settings_facade.dart' show settingsProvider;
+import '../../../weather/weather_facade.dart'
+    show
+        DayForecast,
+        WeatherIcon,
+        WeatherStageParams,
+        referenceStageNumberProvider,
+        stageWeatherProvider;
+import '../../../../core/branding/stepways_icons.dart';
 
 /// Tuile météo du jour du HUB (AM-3, LOT-B — tuile réelle).
 ///
@@ -28,11 +39,14 @@ class HubWeatherCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final t = Translations.of(context);
+    final unit = ref.watch(settingsProvider.select((s) => s.temperatureUnit));
 
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
     final stageNumber = ref.watch(referenceStageNumberProvider);
-    final params =
-        WeatherStageParams(trailId: trailId, stageNumber: stageNumber);
+    final params = WeatherStageParams(
+      trailId: trailId,
+      stageNumber: stageNumber,
+    );
     final state = ref.watch(stageWeatherProvider(params));
 
     final forecast = state.forecast;
@@ -41,7 +55,8 @@ class HubWeatherCard extends ConsumerWidget {
         : null;
 
     // Pastille orage : aujourd'hui ou demain au-dessus du seuil.
-    final stormSoon = forecast != null &&
+    final stormSoon =
+        forecast != null &&
         forecast.days.take(2).any((d) => d.stormProbability >= 60);
 
     // Tap seulement si la route météo est utile (toujours vraie ici : la route
@@ -53,8 +68,13 @@ class HubWeatherCard extends ConsumerWidget {
         children: [
           // Icone meteo en orange categoriel (parite GR20 Meteo -> orangeTerre)
           // au lieu de l'accent-sentier unique. Portee par le theme (#IR02).
-          _leading(context, today, state.isLoading, scheme,
-              CategoryIconColors.of(context).orange),
+          _leading(
+            context,
+            today,
+            state.isLoading,
+            scheme,
+            CategoryIconColors.of(context).orange,
+          ),
           const SizedBox(width: AppTheme.spacingBase),
           Expanded(
             child: Column(
@@ -64,10 +84,10 @@ class HubWeatherCard extends ConsumerWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(t.hub.weather.title,
-                          style: theme.textTheme.titleMedium,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
+                      child: Text(
+                        t.hub.weather.title,
+                        style: theme.textTheme.titleMedium,
+                      ),
                     ),
                     if (stormSoon) ...[
                       const SizedBox(width: AppTheme.spacingSm),
@@ -77,7 +97,7 @@ class HubWeatherCard extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppTheme.spacingXs),
                 Text(
-                  _subtitle(context, today, state.isLoading, t),
+                  _subtitle(context, today, state.isLoading, t, unit),
                   style: theme.textTheme.bodySmall?.copyWith(
                     // R1 (retour Chris) : le sous-titre meteo etait illisible
                     // (gris sur fond sombre, ~0.7 d'opacite -> contraste < AA).
@@ -87,13 +107,14 @@ class HubWeatherCard extends ConsumerWidget {
                     // la typo/le layout. Vise WCAG AA (>= 4.5:1).
                     color: scheme.onSurface.withValues(alpha: 0.87),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: scheme.onSurface.withAlpha(120)),
+          StepIcon(
+            StepwaysIcons.chevronDroite,
+            color: scheme.onSurface.withAlpha(120),
+          ),
         ],
       ),
     );
@@ -120,8 +141,8 @@ class HubWeatherCard extends ConsumerWidget {
         child: CircularProgressIndicator(strokeWidth: 2),
       );
     }
-    return Icon(
-      Icons.wb_cloudy_outlined,
+    return StepIcon(
+      StepwaysIcons.weather,
       size: 32,
       color: scheme.onSurface.withValues(alpha: 0.6),
     );
@@ -132,11 +153,17 @@ class HubWeatherCard extends ConsumerWidget {
     DayForecast? today,
     bool loading,
     Translations t,
+    TemperatureUnit unit,
   ) {
     if (today != null) {
-      final temp = t.hub.weather.tempRange(
-        min: today.temperatureMin.round(),
-        max: today.temperatureMax.round(),
+      // P2 (#101255 point 2) : l'ancienne cle i18n `hub.weather.tempRange`
+      // portait « ° » EN DUR dans les cinq langues, sans jamais dire laquelle.
+      // Le format vit maintenant dans `lib/domain/`, avec le symbole qui suit
+      // le reglage — et l'ordre min / max du cockpit est conserve.
+      final temp = formatTemperatureRange(
+        today.temperatureMin,
+        today.temperatureMax,
+        unit,
       );
       return '$temp · ${today.weatherDescription}';
     }
@@ -160,19 +187,22 @@ class _StormBadge extends StatelessWidget {
         vertical: 2,
       ),
       decoration: BoxDecoration(
-        color: AppTheme.rougeUrgence.withAlpha(28),
+        color: AppTheme.emergencyRed.withAlpha(28),
         borderRadius: BorderRadius.circular(AppTheme.radiusChip),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.thunderstorm,
-              size: 13, color: AppTheme.rougeUrgence),
+          const StepIcon(
+            StepwaysIcons.orage,
+            size: 13,
+            color: AppTheme.emergencyRed,
+          ),
           const SizedBox(width: 3),
           Text(
             label,
             style: theme.textTheme.labelSmall?.copyWith(
-              color: AppTheme.rougeUrgence,
+              color: AppTheme.emergencyRed,
               fontWeight: FontWeight.w600,
             ),
           ),

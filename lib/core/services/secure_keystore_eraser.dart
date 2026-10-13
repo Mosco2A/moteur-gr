@@ -1,3 +1,7 @@
+/// Le troisieme etage que l'effacement n'ouvrait pas : le keystore de l'OS, ou
+/// dormaient les cles qui survivaient a un effacement « complet ».
+library;
+
 // TACHE 562 (LOT K) — LE TROISIEME ETAGE DE STOCKAGE, CELUI QUE L'EFFACEMENT
 // N'AVAIT JAMAIS OUVERT.
 //
@@ -44,7 +48,7 @@ typedef SecureKeystoreErasure = Future<int> Function();
 /// exceptions nommees dans [preservedKeys] survivent.
 class SecureKeystoreEraser {
   SecureKeystoreEraser({FlutterSecureStorage? secureStorage})
-      : _storage = secureStorage ?? const FlutterSecureStorage();
+    : _storage = secureStorage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _storage;
 
@@ -76,8 +80,10 @@ class SecureKeystoreEraser {
       deleted++;
     }
     if (deleted > 0) {
-      _log.d('[SecureKeystore] $deleted cle(s) effacee(s) du keystore OS '
-          '(art. 17)');
+      _log.d(
+        '[SecureKeystore] $deleted cle(s) effacee(s) du keystore OS '
+        '(art. 17)',
+      );
     }
     return deleted;
   }

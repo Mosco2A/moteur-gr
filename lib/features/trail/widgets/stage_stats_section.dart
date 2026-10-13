@@ -1,9 +1,14 @@
+/// Les trois chiffres d'une etape dans un meme encart : distance, duree
+/// estimee, denivele.
+library;
+
 import 'package:flutter/material.dart';
 
-import '../../../core/models/stage.dart';
+import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/section_header.dart';
 import 'elevation_indicator.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// Section statistiques d'une étape : distance, durée, dénivelé.
 ///
@@ -34,14 +39,14 @@ class StageStatsSection extends StatelessWidget {
             children: [
               Expanded(
                 child: _StatItem(
-                  icon: Icons.straighten,
+                  icon: StepwaysIcons.distance,
                   label: 'Distance',
                   value: '${stage.distanceKm.toStringAsFixed(1)} km',
                 ),
               ),
               Expanded(
                 child: _StatItem(
-                  icon: Icons.schedule,
+                  icon: StepwaysIcons.clock,
                   label: 'Durée estimée',
                   value: formattedDuration,
                 ),
@@ -69,7 +74,7 @@ class _StatItem extends StatelessWidget {
     required this.value,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -78,7 +83,7 @@ class _StatItem extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        Icon(icon, size: 18, color: theme.colorScheme.primary),
+        StepIcon(icon, size: 18, color: theme.colorScheme.primary),
         const SizedBox(width: AppTheme.spacingSm),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,10 +95,7 @@ class _StatItem extends StatelessWidget {
                 fontSize: 12,
               ),
             ),
-            Text(
-              value,
-              style: theme.textTheme.titleMedium,
-            ),
+            Text(value, style: theme.textTheme.titleMedium),
           ],
         ),
       ],
@@ -103,10 +105,7 @@ class _StatItem extends StatelessWidget {
 
 /// Section coordonnées départ / arrivée d'une étape
 class StageCoordinatesSection extends StatelessWidget {
-  const StageCoordinatesSection({
-    super.key,
-    required this.stage,
-  });
+  const StageCoordinatesSection({super.key, required this.stage});
 
   final StageModel stage;
 
@@ -117,20 +116,12 @@ class StageCoordinatesSection extends StatelessWidget {
       children: [
         const SectionHeader(
           title: 'Coordonnées',
-          icon: Icons.my_location,
+          icon: StepwaysIcons.maPosition,
         ),
         const SizedBox(height: AppTheme.spacingSm),
-        _CoordRow(
-          label: 'Départ',
-          lat: stage.startLat,
-          lng: stage.startLng,
-        ),
+        _CoordRow(label: 'Départ', lat: stage.startLat, lng: stage.startLng),
         const SizedBox(height: AppTheme.spacingSm),
-        _CoordRow(
-          label: 'Arrivée',
-          lat: stage.endLat,
-          lng: stage.endLng,
-        ),
+        _CoordRow(label: 'Arrivée', lat: stage.endLat, lng: stage.endLng),
       ],
     );
   }
@@ -138,11 +129,7 @@ class StageCoordinatesSection extends StatelessWidget {
 
 /// Ligne de coordonnées (départ ou arrivée)
 class _CoordRow extends StatelessWidget {
-  const _CoordRow({
-    required this.label,
-    required this.lat,
-    required this.lng,
-  });
+  const _CoordRow({required this.label, required this.lat, required this.lng});
 
   final String label;
   final double lat;
@@ -153,8 +140,8 @@ class _CoordRow extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        Icon(
-          Icons.circle,
+        StepIcon(
+          StepwaysIcons.pastille,
           size: 10,
           color: theme.colorScheme.primary,
         ),

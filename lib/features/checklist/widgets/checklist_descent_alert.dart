@@ -1,3 +1,7 @@
+/// L'alerte de descente vit dans le SAC et non dans le moteur, parce que le
+/// moteur ne porte aucun terme de masse ni de denivele negatif.
+library;
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -6,10 +10,11 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../feasibility/domain/body_weight_reference.dart';
-import '../../feasibility/domain/feasibility_formula.dart';
-import '../../feasibility/providers/trek_feasibility_provider.dart';
+import '../../../domain/feasibility_formula.dart';
+import '../../feasibility/feasibility_facade.dart'
+    show BodyWeightReference, feasibilityAssessmentProvider;
 import '../providers/checklist_provider.dart';
+import '../../../core/branding/stepways_icons.dart';
 
 /// ALERTE DESCENTE — SORTIE 2 DU DISPOSITIF POIDS (#4-c, #4-j, #4-l).
 ///
@@ -90,9 +95,9 @@ class ChecklistDescentAlert extends ConsumerWidget {
     final stages = assessment == null
         ? const <StageVerdict>[]
         : assessment.stagesByDescentDesc
-            .where((v) => v.stage.elevationLossM > 0)
-            .take(maxStages)
-            .toList();
+              .where((v) => v.stage.elevationLossM > 0)
+              .take(maxStages)
+              .toList();
 
     final theme = Theme.of(context);
     final w = t.checklist.weight;
@@ -118,7 +123,11 @@ class ChecklistDescentAlert extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.trending_down, size: 20, color: color),
+              const StepIcon(
+                StepwaysIcons.deniveleMoins,
+                size: 20,
+                color: color,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -138,10 +147,12 @@ class ChecklistDescentAlert extends ConsumerWidget {
             // alors a la variante qui ne parle que du sac.
             aboveReferenceKg >= 0.05
                 ? w.descentAlertBody
-                    .replaceAll('{pack}', nombre.format(packKg))
-                    .replaceAll('{above}', nombre.format(aboveReferenceKg))
-                : w.descentAlertBodyPackOnly
-                    .replaceAll('{pack}', nombre.format(packKg)),
+                      .replaceAll('{pack}', nombre.format(packKg))
+                      .replaceAll('{above}', nombre.format(aboveReferenceKg))
+                : w.descentAlertBodyPackOnly.replaceAll(
+                    '{pack}',
+                    nombre.format(packKg),
+                  ),
             style: theme.textTheme.bodySmall,
           ),
           // Les etapes qui descendent le plus, nommees. Pas de seuil : un

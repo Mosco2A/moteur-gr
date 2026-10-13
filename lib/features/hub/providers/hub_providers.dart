@@ -1,6 +1,10 @@
+/// Le cockpit ne cree AUCUN etat metier : tout y est derive des providers
+/// existants, en lecture seule.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../auth/providers/auth_provider.dart';
+import '../../auth/auth_facade.dart' show authStateProvider;
 
 /// Providers du HUB d'accueil (E07 / LOT-A).
 ///
@@ -20,9 +24,7 @@ import '../../auth/providers/auth_provider.dart';
 ///
 /// Aucun etat cree : simple derivation `select` de l'auth (respecte AM-5).
 final displayNameProvider = Provider<String?>((ref) {
-  final name = ref.watch(
-    authStateProvider.select((user) => user?.displayName),
-  );
+  final name = ref.watch(authStateProvider.select((user) => user?.displayName));
   if (name == null) return null;
   final trimmed = name.trim();
   return trimmed.isEmpty ? null : trimmed;

@@ -1,3 +1,7 @@
+/// L'ouverture d'un lien sortant, derriere une abstraction injectable :
+/// StepWays FACILITE, il ne vend rien.
+library;
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -64,10 +68,7 @@ GuideSectionLabels guideSectionLabels(BuildContext context, String categorie) {
         contenu: g.intro.transport,
       );
     case GuideCategory.eau:
-      return GuideSectionLabels(
-        titre: g.categories.eau,
-        contenu: g.intro.eau,
-      );
+      return GuideSectionLabels(titre: g.categories.eau, contenu: g.intro.eau);
     case GuideCategory.sante:
       return GuideSectionLabels(
         titre: g.categories.sante,
@@ -90,8 +91,7 @@ GuideSectionLabels guideSectionLabels(BuildContext context, String categorie) {
 List<TownGuide> townGuidesForContext(BuildContext context, String trailId) {
   return TownGuideCatalog.guidesFor(
     trailId,
-    sectionLabelResolver: (categorie) =>
-        guideSectionLabels(context, categorie),
+    sectionLabelResolver: (categorie) => guideSectionLabels(context, categorie),
   );
 }
 
@@ -104,7 +104,6 @@ TownGuide? townGuideByIdForContext(
   return TownGuideCatalog.guideById(
     trailId,
     guideId,
-    sectionLabelResolver: (categorie) =>
-        guideSectionLabels(context, categorie),
+    sectionLabelResolver: (categorie) => guideSectionLabels(context, categorie),
   );
 }

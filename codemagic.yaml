@@ -1,20 +1,81 @@
 # Codemagic CI/CD pour Moteur GR (StepWays)
-# Workflows:
-#   pr_gate         — PR : analyze + tests + format + regles Firestore
-#   merge           — push main : gate + APK debug
-#   android_release — tag v* : AAB release signe (secrets wagon 3)
-#   ios_release     — tag v* : IPA App Store (secrets wagon 3)
+#
+# SEPT workflows, dans l ordre ou ils apparaissent plus bas. Ce compte est
+# verifie a chaque relecture : un commentaire qui enumere faux est un
+# commentaire menteur.
+#   1. pr_gate         — PR, toute branche : analyze + tests + format + regles
+#                        Firestore. Ne produit AUCUN artefact.
+#   2. merge           — push sur main SEULEMENT : gate + APK debug en artefact.
+#   3. android_test    — push, TOUTE branche : gate + APK debug EN ARTEFACT.
+#                        (tache 619) La seule chaine qui livre un installable
+#                        depuis une branche d integration, avant que main bouge.
+#                        AUCUNE valeur de signature. Depuis la tache 626 elle
+#                        depose la configuration Firebase — et les deux lignes
+#                        qui lui donnent le groupe attendent que le groupe
+#                        existe (voir plus bas).
+#   4. ios_compile     — push, TOUTE branche : COMPILE l iPhone sans signature et
+#                        ne livre RIEN (tache 618). Aucun artefact, par choix.
+#   5. android_release — etiquette v* : AAB release SIGNE (wagon 3).
+#   6. ios_release     — etiquette v* : IPA App Store signe, en artefact.
+#   7. ios_testflight  — A LA MAIN UNIQUEMENT, aucun declencheur : signe l IPA
+#                        et le DEPOSE sur TestFlight (tache 621). La SEULE
+#                        chaine du fichier qui publie quelque part.
+#   Les deux chaines iPhone qui signent suivent le modele de GR20 (meme compte
+#   Apple) : certificat et profils appeles PAR LEUR NOM dans Codemagic, Xcode
+#   epingle, et, pour le depot, l integration App Store Connect nommee. Leurs
+#   gardes s arretent en nommant ce qui manque.
+#
+# QUI LIVRE QUOI, PARCE QUE C EST LA QUESTION QU ON SE POSE VRAIMENT :
+#   - installable tout de suite, sans rien a remplir : android_test (APK debug) ;
+#   - preuve que le natif iPhone compile : ios_compile (rien a telecharger) ;
+#   - installable sur un iPhone : ios_testflight, et ELLE SEULE. Apple
+#     n autorise AUCUNE installation hors magasin, donc telecharger l IPA
+#     depose par ios_release ne sert a rien sans machine Apple : il faut
+#     passer par TestFlight, donc par un bloc publishing, donc par cette
+#     chaine (mesure du lot 619 : aucune des six autres n en porte) ;
+#   - paquets publiables sur les magasins : les deux *_release, sur etiquette, et
+#     seulement quand leur signature est en place (groupe de variables cote
+#     Android, identites nommees dans Codemagic cote iPhone).
+#
+# LA CONFIGURATION FIREBASE ARRIVE ICI, ET JAMAIS PAR LE DEPOT (tache 626).
+# Firebase etait MUET sur les deux telephones : google-services.json est hors
+# depot et AUCUNE chaine ne le fournissait ; cote iPhone,
+# GoogleService-Info.plist n etait reference nulle part dans le projet Xcode.
+# Rien de ce que publie le collecteur serveur ne pouvait donc arriver chez
+# Christophe. Cinq chaines appellent desormais
+# `scripts/ci/config_firebase.sh deposer`, alimente par le groupe de variables
+# stepways_firebase — groupe SEPARE des groupes de signature, un groupe par
+# usage. Les chaines de branche continuent sans lui, en le disant dans leur
+# journal ; celles qui livrent un paquet a quelqu un (les deux *_release et
+# ios_testflight) passent `exiger` et s ARRETENT plutot que de livrer muet.
+# ios_compile et pr_gate ne recoivent rien : la premiere ne repond qu a « est-ce
+# que ca compile », la seconde ne construit aucun paquet.
+#
+# Il faut LES DEUX MOITIES : le fichier de configuration ET
+# --dart-define=STEPWAYS_FIREBASE_PROJECT_ID. Sans la seconde,
+# Firebase.initializeApp() n est jamais appele (tache 596) et le paquet est muet
+# avec un fichier parfaitement valide dedans.
+#
+# DEUX LIGNES RESTENT A AJOUTER, ET C EST VOLONTAIRE : le bloc `groups:` de
+# `merge` et de `android_test`. Le groupe n existe pas encore dans la console
+# Codemagic, et la documentation Codemagic ne dit PAS ce qu il arrive a une
+# chaine qui reclame un groupe inexistant. `android_test` etant la seule chaine
+# qui livre un installable depuis une branche, on ne parie pas : les deux lignes
+# sont ecrites en commentaire a leur place exacte, a decommenter dans la meme
+# session que la creation du groupe. Les trois chaines de livraison, elles, sont
+# DEJA inertes aujourd hui : le groupe y est reclame sans risque.
 #
 # P1-5 audit #327 : workflows release REECRITS depuis les specs (aucun
-# merge de la branche E5.6b pre-decontamination). Signature 100% par
-# variables d environnement Codemagic (groupes) — AUCUN secret dans le
-# repo. Secrets absents = ARRET PROPRE avec message explicite (jamais
-# d echec silencieux ni d artefact non signe presente comme release).
+# merge de la branche E5.6b pre-decontamination). AUCUN secret dans le repo :
+# signature Android par groupe de variables Codemagic, signature iPhone par
+# identites deposees dans Codemagic et appelees par leur nom. Signature absente
+# = ARRET PROPRE avec message explicite (jamais d echec silencieux ni
+# d artefact non signe presente comme release).
 
 workflows:
   # --- Workflow PR Gate ---
   # Declenche sur chaque Pull Request
-  # Steps: dart analyze + flutter test + format + tests regles Firestore
+  # Steps: flutter analyze + flutter test + format + tests regles Firestore
   pr_gate:
     name: PR Gate
     max_build_duration: 30
@@ -25,17 +86,36 @@ workflows:
         - pattern: '*'
           include: true
     environment:
-      flutter: stable
+      # VERSION DE FLUTTER EPINGLEE — 07/10/2026.
+      #
+      # La version est epinglee sur celle de la machine de Christophe :
+      # Flutter 3.41.5, avec Dart 3.11.3. C est sous celle-la, et sous aucune
+      # autre a ce jour, que la suite de tests de StepWays est verte.
+      #
+      # `flutter: stable` avait amene 3.47.6. Sous 3.47.6, la suite rend 41
+      # ECHECS sur la base elle-meme, avant toute modification du depot : une
+      # assertion neuve du SDK (« ListTile ... wrapped in a DecoratedBox that
+      # has a background color ») frappe onze fichiers de feasibility, safety,
+      # personas et structurel. L etape de tests etant bloquante dans les sept
+      # chaines, elles tomberaient toutes.
+      #
+      # La montee de version est un lot a elle seule : il devra traiter ces 41
+      # tests AVANT de desepingler cette ligne. Les six autres chaines
+      # renvoient a cet en-tete.
+      flutter: 3.41.5
       xcode: latest
     scripts:
       - name: Installer les dependances
         script: flutter pub get
 
-      - name: Analyse statique (dart analyze)
+      - name: Analyse statique (flutter analyze)
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) et
+        # l etape tombait donc TOUJOURS, quel que soit le code.
         script: |
-          dart analyze lib/ test/
+          flutter analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
+            echo "ERREUR: flutter analyze a detecte des problemes"
             exit 1
           fi
 
@@ -81,19 +161,29 @@ workflows:
         - pattern: main
           include: true
     environment:
-      flutter: stable
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
       xcode: latest
       android_signing:
         - moteur_gr_debug
+      # TACHE 626 — memes deux lignes que pour 'android_test', meme raison
+      # (le groupe n existe pas encore dans Codemagic, et le comportement d une
+      # chaine qui reclame un groupe inexistant n est pas documente) :
+      #
+      #   groups:
+      #     - stepways_firebase
     scripts:
       - name: Installer les dependances
         script: flutter pub get
 
-      - name: Analyse statique (dart analyze)
+      - name: Analyse statique (flutter analyze)
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) et
+        # l etape tombait donc TOUJOURS, quel que soit le code.
         script: |
-          dart analyze lib/ test/
+          flutter analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
+            echo "ERREUR: flutter analyze a detecte des problemes"
             exit 1
           fi
 
@@ -113,11 +203,403 @@ workflows:
             exit 1
           fi
 
+      # TACHE 626 — la configuration Firebase arrive a la fabrication, jamais
+      # par le depot. Souple ici comme dans 'android_test'.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer android
+
       - name: Build APK debug
-        script: flutter build apk --debug
+        script: |
+          flutter build apk --debug \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="${STEPWAYS_FIREBASE_PROJECT_ID:-}"
 
     artifacts:
       - build/**/outputs/**/*.apk
+
+  # ==========================================================================
+  # --- Workflow Android Test — LE SEUL QUI LIVRE UN INSTALLABLE (tache 619) --
+  # ==========================================================================
+  #
+  # LE TROU QUE CETTE CHAINE FERME. `merge` est la seule chaine qui fabriquait
+  # un APK, et elle est filtree sur `branch_patterns: main`. Or tout le travail
+  # des lots 605 a 618 vit sur des branches, et main n a pas bouge depuis
+  # 708b82c. Christophe n avait donc RIEN a telecharger : le travail existait,
+  # l installable n existait pas. Cette chaine produit un APK depuis N IMPORTE
+  # QUELLE branche, AVANT que main bouge — c est exactement le geste que
+  # `ios_compile` (tache 618) fait pour l iPhone, sauf qu ici on LIVRE le
+  # fichier au lieu de seulement prouver que ca compile. Un iPhone ne s installe
+  # pas depuis un artefact telecharge ; un Android, si.
+  #
+  # POURQUOI DEBUG ET NON RELEASE — DEUX RAISONS, ET AUCUNE N EST LA PARESSE.
+  #   1. AUCUN SECRET REQUIS. Un APK debug est signe par la cle de debogage que
+  #      Flutter fabrique lui-meme. Cette chaine n a donc besoin d aucun
+  #      `groups:`, d aucun keystore, d aucune valeur App Store Connect — elle
+  #      tourne des aujourd hui sans que personne ait rien a remplir.
+  #   2. AUCUN RISQUE DE MENTIR SUR CE QU ON LIVRE. Sans `android/key.properties`,
+  #      un build `--release` est signe avec les cles DEBUG (voir
+  #      android/app/build.gradle.kts, repli explicite P1-3) : on presenterait un
+  #      artefact non publiable sous l etiquette « release ». Dire debug et
+  #      livrer du debug, c est la seule version honnete de cette chaine. Le vrai
+  #      AAB signe reste le travail d `android_release`, sur etiquette de version.
+  #
+  # ELLE NE PUBLIE RIEN : aucun bloc `publishing:`, aucun `groups:`, aucun
+  # `android_signing:`. Elle DEPOSE un artefact — c est toute la difference, et
+  # c est tout son objet. Si un jour cette chaine se met a reclamer un groupe de
+  # variables, c est qu on s est trompe de chaine.
+  #
+  # POURQUOI LE CONTROLE DE FORMATAGE N ARRETE PAS CETTE CHAINE, ET C EST MESURE.
+  # `dart format --set-exit-if-changed lib/ test/` echoue sur CE DEPOT DEPUIS
+  # LONGTEMPS, main comprise : 654 fichiers sur 1041 seraient reformates sur
+  # 708b82c, 745 sur 1132 sur la branche du lot 616 (mesure du 28/09 avec le
+  # formateur de Flutter 3.41). La derive est anterieure a tout ce travail et
+  # vient du changement de style du formateur Dart, pas d un lot. Consequence
+  # qu il faut nommer : le controle de formatage de `pr_gate` et de `merge`
+  # ETAIT DEJA ROUGE, donc `merge` n a jamais depose son APK non plus.
+  # Recopier ici un controle rouge par avance produirait une chaine qui ne livre
+  # JAMAIS rien — exactement le probleme qu elle est censee resoudre. Le controle
+  # est donc EXECUTE et RAPPORTE A VOIX HAUTE, sans arreter la chaine. Les deux
+  # controles qui passent reellement, eux, restent bloquants : analyse statique
+  # et tests. `pr_gate` et `merge` ne sont PAS touches — leur version bloquante
+  # reste en place, rien n est affaibli ailleurs.
+  # POINT OUVERT NOMME, a trancher par Christophe : soit reformater le depot en
+  # un commit dedie et rendre le controle bloquant ici aussi, soit epingler la
+  # version du formateur. Tant que ce n est pas tranche, ce commentaire est la
+  # seule chose qui empeche de croire le depot propre.
+  android_test:
+    name: Android Test (APK debug, toute branche)
+    max_build_duration: 60
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: '*'
+          include: true
+    environment:
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
+      # TACHE 626 — DEUX LIGNES A AJOUTER ICI, ET PAS AVANT UN GESTE DE
+      # CHRISTOPHE. Pour que Firebase parle dans CET APK — celui que Christophe
+      # installe — cette chaine doit recevoir le groupe de variables :
+      #
+      #   groups:
+      #     - stepways_firebase
+      #
+      # POURQUOI CES DEUX LIGNES NE SONT PAS DEJA LA, ET C EST UN REFUS DE
+      # PARIER. Le groupe `stepways_firebase` n existe pas encore dans la console
+      # Codemagic : il est a creer a la main (trois variables, voir
+      # docs/ci/626_etape_codemagic_config_firebase.md). Or la documentation
+      # Codemagic NE DIT PAS ce qu il arrive a une chaine qui reclame un groupe
+      # inexistant — build refuse a l initialisation, ou variables simplement
+      # vides. Les deux reponses circulent, aucune n est documentee, et cette
+      # chaine est LA SEULE qui livre un installable depuis une branche. On ne
+      # joue pas ca a la devinette : les deux lignes s ajoutent au moment ou le
+      # groupe est cree, dans la meme session : geste 5 du mode operatoire.
+      #
+      # Ce n est PAS un groupe de signature : la garde ci-dessous refuse les
+      # secrets de PUBLICATION (CM_KEYSTORE, APP_STORE_CONNECT_*,
+      # CERTIFICATE_PRIVATE_KEY), et aucune variable Firebase n en fait partie.
+      # La distinction est reelle — une cle de signature permet de publier au nom
+      # de Christophe, une configuration Firebase cliente voyage dans CHAQUE APK
+      # distribue et se lit en decompressant le paquet. Ce qui protege les
+      # donnees, ce sont les regles de securite Firestore et Storage.
+    scripts:
+      - name: Cette chaine ne doit voir AUCUN secret de publication
+        script: |
+          set -eu
+          fuites=""
+          for nom in CM_KEYSTORE CM_KEYSTORE_PASSWORD CM_KEY_ALIAS \
+                     CM_KEY_PASSWORD APP_STORE_CONNECT_ISSUER_ID \
+                     APP_STORE_CONNECT_KEY_IDENTIFIER \
+                     APP_STORE_CONNECT_PRIVATE_KEY CERTIFICATE_PRIVATE_KEY; do
+            eval "valeur=\${$nom:-}"
+            if [ -n "$valeur" ]; then fuites="$fuites $nom"; fi
+          done
+          if [ -n "$fuites" ]; then
+            echo "============================================================"
+            echo "ARRET — un groupe d environnement a ete ajoute a"
+            echo "'android_test'. Cette chaine livre un APK DEBUG : elle n a"
+            echo "besoin d AUCUN secret, et ne doit pouvoir s authentifier"
+            echo "nulle part. Variables vues :$fuites"
+            echo ""
+            echo "Un APK signe avec une vraie cle appartient a"
+            echo "'android_release', sur etiquette de version."
+            echo "============================================================"
+            exit 1
+          fi
+          echo "Aucun secret present — c est l etat attendu."
+
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Analyse statique (flutter analyze) — BLOQUANT
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) et
+        # l etape tombait donc TOUJOURS, quel que soit le code.
+        script: |
+          flutter analyze --no-fatal-infos lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: flutter analyze a detecte des problemes"
+            exit 1
+          fi
+
+      - name: Tests unitaires (flutter test) — BLOQUANT
+        script: |
+          flutter test --reporter=expanded
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: des tests ont echoue"
+            exit 1
+          fi
+
+      - name: Verification formatage (dart format) — RAPPORTE, NE BLOQUE PAS
+        script: |
+          # Voir le commentaire d en-tete de cette chaine : la derive de
+          # formatage est anterieure a ce lot et touche main elle-meme. Bloquer
+          # ici empecherait la seule chaine qui livre un installable de livrer
+          # quoi que ce soit. On mesure et on le dit, sans arreter.
+          if dart format --output=none --set-exit-if-changed lib/ test/ \
+             >/dev/null 2>&1; then
+            echo "Formatage conforme."
+          else
+            echo "============================================================"
+            echo "AVERTISSEMENT — formatage non conforme (derive connue et"
+            echo "anterieure, main comprise). Cette chaine CONTINUE : son objet"
+            echo "est de livrer un APK installable. Detail :"
+            dart format --output=none --set-exit-if-changed lib/ test/ \
+              2>&1 | tail -5 || true
+            echo "============================================================"
+          fi
+
+      # TACHE 626 — SANS CETTE ETAPE, L APK QUE CHRISTOPHE INSTALLE EST MUET.
+      # google-services.json est hors depot (.gitignore) et AUCUNE chaine ne le
+      # fournissait : les greffons Gradle, rendus conditionnels par la tache
+      # 619, ne se posaient donc jamais. Le paquet sortait, Firebase y dormait,
+      # et rien de ce que publie le collecteur serveur ne pouvait arriver sur le
+      # telephone. Ici PAS de 'exiger' : cette chaine compile TOUTE branche et
+      # doit rester verte meme quand le groupe n est pas rempli.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer android
+
+      - name: Build APK debug
+        # LES DEUX MOITIES, ET IL FAUT LES DEUX. Le fichier ci-dessus ne suffit
+        # pas : sans --dart-define, FirebaseConfig.resoudre() rend null et
+        # Firebase.initializeApp() n est JAMAIS appele (tache 596). Variable
+        # vide = chaine vide = absence, traitee comme telle : aucun 'if' a
+        # ecrire, et la chaine reste verte sans le groupe.
+        script: |
+          flutter build apk --debug \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="${STEPWAYS_FIREBASE_PROJECT_ID:-}"
+
+      - name: Dire ou est le fichier a installer
+        script: |
+          set -eu
+          apk=$(find build -name '*.apk' -type f | head -1)
+          if [ -z "$apk" ]; then
+            echo "ERREUR: aucun APK produit — la chaine n a pas rempli son role."
+            exit 1
+          fi
+          echo "============================================================"
+          echo "APK pret a installer : $apk"
+          echo "Taille : $(du -h "$apk" | cut -f1)"
+          echo ""
+          echo "Il se telecharge depuis l onglet Artifacts de ce build."
+          echo "Sur le telephone : autoriser l installation depuis cette"
+          echo "source, puis ouvrir le fichier."
+          echo "============================================================"
+
+    artifacts:
+      - build/**/outputs/**/*.apk
+
+  # ==========================================================================
+  # --- Workflow Compilation iPhone — LE FILET DU CODE NATIF (tache 618) ---
+  # ==========================================================================
+  #
+  # LE TROU QUE CETTE CHAINE FERME. Avant elle, AUCUNE chaine n appelait le
+  # compilateur iPhone en dehors d une publication : `pr_gate` et `merge`
+  # installent, analysent et testent du Dart — ils ne compilent aucun Swift —
+  # et la seule compilation iPhone vivait dans `ios_release`, declenchee par
+  # une ETIQUETTE DE VERSION. Verifier trois lignes de Swift exigeait donc de
+  # poser une etiquette de version, c est-a-dire de declencher une
+  # publication. Consequence mesuree : le canal natif de la tache 615
+  # (`ios/Runner/AppDelegate.swift`, exclusion iCloud de la fiche medicale)
+  # est arrive dans le depot SANS AVOIR JAMAIS ETE COMPILE. Un Swift qui ne
+  # compile pas ne dit rien : les tests Dart parlent a un canal espion et
+  # restent verts.
+  #
+  # CE QU ELLE FAIT, ET RIEN D AUTRE. Elle compile l application iPhone sur
+  # n importe quelle branche et echoue si le natif ne compile pas. Elle
+  # N ANALYSE PAS et NE LANCE PAS les tests Dart : `pr_gate` et `merge` le
+  # font deja, et les refaire ici doublerait la facture de minutes macOS sans
+  # apporter une seule information nouvelle.
+  #
+  # POURQUOI SANS SIGNATURE, ET POURQUOI C EST LA BONNE REPONSE.
+  # `flutter build ios --release --no-codesign` passe a xcodebuild
+  # CODE_SIGNING_ALLOWED=NO : Xcode compile TOUT (Swift, ObjC, podspecs des
+  # greffons) et ne signe rien. Donc :
+  #   - AUCUN identifiant Apple n est necessaire — ni cle App Store Connect,
+  #     ni certificat, ni profil, ni DEVELOPMENT_TEAM (il n en existe aucun
+  #     en dur dans le pbxproj, verifie) ;
+  #   - aucune identite deposee dans Codemagic n est appelee, donc cette
+  #     chaine tourne des aujourd hui sans rien demander a personne ;
+  #   - les droits `com.apple.security.application-groups` de Runner et de
+  #     TrekWidgetExtension ne sont consommes qu A LA SIGNATURE : ne pas
+  #     signer ne les met pas en defaut.
+  # Certificat et profils servent a produire un IPA INSTALLABLE. Ici on ne
+  # veut rien installer : on veut savoir si ca compile.
+  #
+  # POURQUOI `--release` ET PAS `--debug`. La configuration Release est celle
+  # que `ios_release` compile. Un vert ici predit donc reellement que l etape
+  # de compilation de `ios_release` passera. `--debug` serait ~2 min plus
+  # court mais laisserait dehors ce que seule la configuration Release
+  # compile (optimisation Swift par module entier, compilation AOT du Dart).
+  #
+  # ELLE NE PUBLIE RIEN, ET CE N EST PAS UNE INTENTION MAIS UNE MECANIQUE :
+  #   - aucun bloc `publishing:` — rien n est envoye nulle part ;
+  #   - aucun `groups:` — la chaine ne recoit AUCUN secret, elle ne PEUT donc
+  #     s authentifier nulle part, et la premiere etape ci-dessous le VERIFIE
+  #     pour que l ajout d un groupe par erreur arrete la chaine ;
+  #   - aucun bloc `artifacts:` — meme la page de build ne propose rien a
+  #     telecharger ;
+  #   - `--no-codesign` — l app produite est ininstallable par construction,
+  #     et l absence d IPA est verifiee a la fin.
+  ios_compile:
+    name: iOS Compile (sans signature, sans publication)
+    max_build_duration: 60
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: '*'
+          include: true
+    environment:
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
+      # EPINGLE A 26.4, LE MEME QUE LES DEUX CHAINES QUI SIGNENT. `latest` ne
+      # designe pas un compilateur fixe (Codemagic propose aussi 27.0 et
+      # 27.1) : un vert obtenu ici sur un autre Xcode ne predirait plus rien
+      # de la compilation de `ios_release` et `ios_testflight`.
+      xcode: 26.4
+      cocoapods: default
+    scripts:
+      - name: Cette chaine ne doit voir AUCUN secret de publication
+        script: |
+          set -eu
+          fuites=""
+          for nom in APP_STORE_CONNECT_ISSUER_ID \
+                     APP_STORE_CONNECT_KEY_IDENTIFIER \
+                     APP_STORE_CONNECT_PRIVATE_KEY \
+                     CERTIFICATE_PRIVATE_KEY \
+                     CM_KEYSTORE; do
+            eval "valeur=\${$nom:-}"
+            if [ -n "$valeur" ]; then
+              fuites="$fuites $nom"
+            fi
+          done
+          if [ -n "$fuites" ]; then
+            echo "============================================================"
+            echo "ARRET — cette chaine a recu des secrets de PUBLICATION :"
+            echo "  $fuites"
+            echo ""
+            echo "Elle ne publie rien et n a donc besoin d aucun secret."
+            echo "Un groupe d environnement a ete ajoute a 'ios_compile' :"
+            echo "retirer le bloc 'groups:' de CE workflow. La publication"
+            echo "est le travail de 'ios_release', declenche par etiquette."
+            echo "============================================================"
+            exit 1
+          fi
+          echo "Aucun secret present — cette chaine ne peut rien publier."
+
+      - name: Le Swift de l app est-il DANS la phase Sources du projet Xcode
+        script: |
+          set -eu
+          pbxproj="ios/Runner.xcodeproj/project.pbxproj"
+          # On ne cherche PAS dans tout le fichier : on isole la section des
+          # phases « Sources » et on cherche DEDANS. Un fichier seulement
+          # reference ailleurs dans le pbxproj n est PAS compile.
+          phases=$(sed -n \
+            '/Begin PBXSourcesBuildPhase section/,/End PBXSourcesBuildPhase section/p' \
+            "$pbxproj")
+          if ! echo "$phases" | grep -q 'AppDelegate\.swift in Sources'; then
+            echo "============================================================"
+            echo "ARRET — AppDelegate.swift n est dans AUCUNE phase Sources."
+            echo ""
+            echo "Sans cette declaration le fichier n est PAS compile : le"
+            echo "canal d exclusion iCloud de la fiche medicale (tache 615)"
+            echo "serait muet, la fiche monterait dans iCloud, et tous les"
+            echo "tests Dart resteraient verts puisqu ils parlent a un canal"
+            echo "espion. La compilation ci-dessous ne verrait rien non plus :"
+            echo "elle reussirait sur un fichier jamais lu."
+            echo ""
+            echo "Meme invariante, cote Dart :"
+            echo "  test/comportement/exclusion_icloud_615_test.dart"
+            echo "============================================================"
+            exit 1
+          fi
+          echo "AppDelegate.swift est dans une phase Sources — il sera compile."
+
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Compiler l application iPhone SANS SIGNATURE
+        # C EST L ETAPE QUI TIENT TOUT LE LOT. Elle echoue des qu une ligne de
+        # Swift ou d ObjC du projet ou d un greffon ne compile pas, et elle
+        # n a besoin d aucun identifiant Apple pour le faire.
+        script: flutter build ios --release --no-codesign
+
+      - name: Preuve du natif compile, et aucun paquet installable produit
+        script: |
+          set -eu
+
+          # 1. L app existe et porte un binaire non vide. Une compilation qui
+          #    « reussit » sans rien produire serait un faux vert.
+          app=$(ls -d build/ios/iphoneos/*.app 2>/dev/null | head -n 1 || true)
+          if [ -z "$app" ]; then
+            echo "ARRET — aucune .app dans build/ios/iphoneos/ :"
+            echo "la compilation n a rien produit."
+            exit 1
+          fi
+          executable=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' \
+            "$app/Info.plist")
+          binaire="$app/$executable"
+          if [ ! -s "$binaire" ]; then
+            echo "ARRET — le binaire $binaire est absent ou vide."
+            exit 1
+          fi
+          echo "Compile : $binaire ($(du -h "$binaire" | cut -f1))"
+
+          # 2. RIEN D INSTALLABLE. Un IPA ici voudrait dire qu une signature
+          #    est entree dans cette chaine par un chemin imprevu.
+          if ls build/ios/ipa/*.ipa >/dev/null 2>&1; then
+            echo "ARRET — un IPA a ete produit. Cette chaine ne doit produire"
+            echo "aucun paquet installable : seule 'ios_release' le fait."
+            exit 1
+          fi
+          echo "Aucun IPA produit — rien d installable, rien a publier."
+
+          # 3. SONDE, VOLONTAIREMENT NON BLOQUANTE. Le nom du canal natif est
+          #    lu dans le Swift lui-meme (aucune troisieme copie a maintenir)
+          #    puis cherche dans le binaire. Present = le code de la tache 615
+          #    est entre dans l executable, pas seulement dans le depot.
+          #    Absent n arrete PAS la chaine : un litteral peut etre deduplique
+          #    ou depose autrement par le compilateur, et cette chaine ne doit
+          #    pas bloquer une branche sur une hypothese non verifiee. La
+          #    garantie, elle, est deja tenue deux fois : le fichier est dans
+          #    la phase Sources (etape 2) et la compilation ci-dessus echoue
+          #    si son Swift est casse.
+          canal=$(sed -n 's/.*canalExclusionSauvegarde = "\(.*\)".*/\1/p' \
+            ios/Runner/AppDelegate.swift | head -n 1)
+          if [ -z "$canal" ]; then
+            echo "SONDE — nom du canal illisible dans AppDelegate.swift."
+          elif strings -a "$binaire" | grep -q "$canal"; then
+            echo "SONDE OK — « $canal » est dans le binaire : le canal natif"
+            echo "de la tache 615 a bien ete compile dans l executable."
+          else
+            echo "SONDE — « $canal » introuvable dans le binaire."
+            echo "Ce n est PAS un echec : voir le commentaire de cette etape."
+          fi
+
+    # PAS de bloc 'artifacts:' et PAS de bloc 'publishing:' — VOULU. Cette
+    # chaine repond a une seule question (« est-ce que ca compile ? ») et ne
+    # met rien a disposition de personne, nulle part.
 
   # --- Workflow Android Release (AAB) ---
   # Declenche sur tag v* (ou lancement manuel).
@@ -137,10 +619,18 @@ workflows:
         - pattern: 'v*'
           include: true
     environment:
-      flutter: stable
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
       java: 17
       groups:
         - stepways_android_signing
+        # TACHE 626 — groupe SEPARE de la signature : un groupe par usage. Il
+        # est reclame ICI et pas dans les chaines de branche parce que celle-ci
+        # est DEJA inerte aujourd hui : elle ne part que sur une etiquette de
+        # version et s arrete a sa premiere etape tant que le groupe de
+        # signature est vide. Reclamer un groupe qui n existe pas encore ne peut
+        # donc rien casser qui marche.
+        - stepways_firebase
     scripts:
       - name: Verifier les secrets de signature (arret propre sinon)
         script: |
@@ -179,11 +669,14 @@ workflows:
       - name: Installer les dependances
         script: flutter pub get
 
-      - name: Analyse statique (dart analyze)
+      - name: Analyse statique (flutter analyze)
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) et
+        # l etape tombait donc TOUJOURS, quel que soit le code.
         script: |
-          dart analyze lib/ test/
+          flutter analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
+            echo "ERREUR: flutter analyze a detecte des problemes"
             exit 1
           fi
 
@@ -195,8 +688,18 @@ workflows:
             exit 1
           fi
 
+      # TACHE 626 — ICI 'exiger', et c est la difference avec les chaines de
+      # branche : un paquet publie au magasin avec Firebase muet serait livre a
+      # des inconnus, avec un catalogue vide et aucun moyen de le savoir avant
+      # qu ils cherchent leurs sentiers. La chaine s arrete plutot que de
+      # publier ca.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer android exiger
+
       - name: Build AAB release signe
-        script: flutter build appbundle --release
+        script: |
+          flutter build appbundle --release \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="$STEPWAYS_FIREBASE_PROJECT_ID"
 
     artifacts:
       - build/app/outputs/bundle/release/*.aab
@@ -205,19 +708,60 @@ workflows:
     # Google Play — bloc "publishing: google_play:" a ajouter avec la
     # cle dans un groupe d env, JAMAIS dans le repo).
 
-  # --- Workflow iOS Release (IPA) ---
-  # Declenche sur tag v* (ou lancement manuel).
-  # Secrets attendus dans le groupe d env "stepways_ios_signing"
-  # (a creer dans Codemagic au wagon 3 — compte App Store Connect) :
-  #   APP_STORE_CONNECT_ISSUER_ID       issuer id de la cle ASC
-  #   APP_STORE_CONNECT_KEY_IDENTIFIER  key id de la cle ASC
-  #   APP_STORE_CONNECT_PRIVATE_KEY     contenu .p8 de la cle ASC
-  #   CERTIFICATE_PRIVATE_KEY           cle privee RSA du certificat de
-  #                                     distribution (generee une fois)
-  #   BUNDLE_ID                         bundle id reel de l app iOS
+  # ==========================================================================
+  # --- LES DEUX CHAINES QUI SIGNENT — REECRITES SUR LE MODELE DE GR20 ---
+  # ==========================================================================
+  #
+  # CE QUI A CHANGE, ET POURQUOI. StepWays n a jamais ete compilee SIGNEE pour
+  # iPhone. `ios_release` et `ios_testflight` attendaient cinq valeurs brutes
+  # dans un groupe `stepways_ios_signing` qui n a jamais existe. L application
+  # GR20, sur le MEME compte Apple, a cinquante builds iOS Release reussis et
+  # signe autrement : c est son modele qui est repris ici, point par point.
+  #
+  # D OU VIENT LA SIGNATURE. Du bloc `ios_signing`, qui appelle PAR LEUR NOM DE
+  # REFERENCE un certificat et deux profils deposes dans Codemagic (Team
+  # settings > codemagic.yaml settings > Code signing identities). Codemagic
+  # les pose sur la machine, certificat dans le trousseau, AVANT la premiere
+  # etape. Aucune clef privee ne passe par une variable, aucune ne se manipule.
+  #
+  # POURQUOI PLUS `app-store-connect fetch-signing-files`. Mesure dans le code
+  # de l outil (codemagic-cli-tools 0.69.1, fetch_signing_files_action.py) :
+  # sans `--certificate-key` il s arrete sur « Cannot save Signing Certificates
+  # without certificate private key ». Or le certificat de l equipe a ete CREE
+  # PAR CODEMAGIC et sa clef privee vit dans le magasin d identites, pas dans
+  # une variable. Lui donner une clef neuve avec `--create` fabriquerait un
+  # SECOND certificat de distribution, dans une limite de trois chez Apple.
+  #
+  # DEUX PAQUETS, DONC DEUX PROFILS (decision du 07/10 : « on garde le
+  # widget »). L application `com.only1cent.stepways` ET l extension
+  # `com.only1cent.stepways.TrekWidget` partent ensemble, et toutes deux
+  # reclament le groupe `group.com.only1cent.stepways` dans leurs droits
+  # (ios/Runner/Runner.entitlements, ios/TrekWidget/TrekWidgetExtension.entitlements).
+  # NOMS DE REFERENCE ATTENDUS DANS CODEMAGIC, A LA LETTRE :
+  #   stepways_appstore_profile            -> com.only1cent.stepways
+  #   stepways_trekwidget_appstore_profile -> com.only1cent.stepways.TrekWidget
+  #   GR20 Distribution                    -> le certificat de distribution de
+  #                                           L EQUIPE, partage avec GR20. Son
+  #                                           nom ne se change pas : la chaine
+  #                                           de GR20 l appelle aussi.
+  # Pas a pas, ecran par ecran : docs/ci/signature_ios_modele_gr20.md
+  #
+  # XCODE EPINGLE A 26.4. Apple exige le SDK iOS 26 pour tout depot depuis
+  # avril 2026, et `latest` ne designe pas un compilateur fixe : Codemagic
+  # propose aussi 27.0 et 27.1. 26.4 est celui avec lequel GR20 signe et
+  # depose. `ios_compile` est epinglee a la meme valeur, pour que son vert
+  # parle du compilateur qui signe.
+  #
+  # INSTANCE `mac_mini_m2` : celle de GR20.
+  #
+  # `ios_release` N A PAS L INTEGRATION App Store Connect, et c est voulu : elle
+  # ne publie rien, et signer par `ios_signing` ne demande aucune clef d API.
+  # Une chaine declenchee par une etiquette n a pas a pouvoir s authentifier
+  # chez Apple. Seule `ios_testflight` la recoit.
   ios_release:
     name: iOS Release (IPA)
     max_build_duration: 90
+    instance_type: mac_mini_m2
     triggering:
       events:
         - tag
@@ -225,50 +769,167 @@ workflows:
         - pattern: 'v*'
           include: true
     environment:
-      flutter: stable
-      xcode: latest
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
+      # Epingle : voir l en-tete de cette chaine.
+      xcode: 26.4
+      ios_signing:
+        provisioning_profiles:
+          - profile: stepways_appstore_profile
+            environment_variable: STEPWAYS_PROFIL_APP
+          - profile: stepways_trekwidget_appstore_profile
+            environment_variable: STEPWAYS_PROFIL_WIDGET
+        certificates:
+          - GR20 Distribution
+      # Trois valeurs PUBLIQUES, deja ecrites dans le projet Xcode et dans les
+      # droits des deux paquets : ce ne sont pas des secrets. Les deux premieres
+      # etapes verifient qu elles disent la meme chose que le depot.
+      vars:
+        BUNDLE_ID: com.only1cent.stepways
+        WIDGET_BUNDLE_ID: com.only1cent.stepways.TrekWidget
+        APP_GROUP: group.com.only1cent.stepways
       groups:
-        - stepways_ios_signing
+        # TACHE 626 — groupe SEPARE de la signature : un groupe par usage.
+        # Chaine qui ne part que sur une etiquette de version : reclamer un
+        # groupe encore inexistant ne peut rien casser qui marche.
+        - stepways_firebase
     scripts:
-      - name: Verifier les secrets de signature (arret propre sinon)
+      - name: Les identifiants annonces sont-ils ceux du projet Xcode
         script: |
-          if [ -z "${APP_STORE_CONNECT_ISSUER_ID:-}" ] \
-             || [ -z "${APP_STORE_CONNECT_KEY_IDENTIFIER:-}" ] \
-             || [ -z "${APP_STORE_CONNECT_PRIVATE_KEY:-}" ] \
-             || [ -z "${CERTIFICATE_PRIVATE_KEY:-}" ] \
-             || [ -z "${BUNDLE_ID:-}" ]; then
+          set -eu
+          pbxproj="ios/Runner.xcodeproj/project.pbxproj"
+          # Une faute de frappe ici ne se voit PAS tout de suite : c est la
+          # signature, dix minutes plus tard, qui rend un message d Xcode
+          # illisible. On la voit ici, en nommant la valeur fautive.
+          for ident in "$BUNDLE_ID" "$WIDGET_BUNDLE_ID"; do
+            if ! grep -qF "PRODUCT_BUNDLE_IDENTIFIER = $ident;" "$pbxproj"; then
+              echo "============================================================"
+              echo "ARRET — « $ident » ne correspond a AUCUNE cible du projet"
+              echo "Xcode. Corriger le bloc 'vars:' de cette chaine dans"
+              echo "codemagic.yaml pour qu il dise ce que dit $pbxproj."
+              echo "============================================================"
+              exit 1
+            fi
+          done
+          for droits in ios/Runner/Runner.entitlements \
+                        ios/TrekWidget/TrekWidgetExtension.entitlements; do
+            if ! grep -qF "<string>$APP_GROUP</string>" "$droits"; then
+              echo "============================================================"
+              echo "ARRET — $droits ne reclame pas le groupe $APP_GROUP."
+              echo "Les deux profils sont crees pour ce groupe : un paquet qui"
+              echo "en reclame un autre ne se signera pas."
+              echo "============================================================"
+              exit 1
+            fi
+          done
+          echo "Application, widget et groupe d applications : conformes au projet."
+
+      - name: Les deux profils nommes sont-ils la, et couvrent-ils chacun leur paquet
+        script: |
+          set -eu
+          # Codemagic a deja pose le certificat et les deux profils avant cette
+          # etape. Ce qu on verifie ici, c est qu ils SIGNERONT : chaque profil
+          # couvre le bon identifiant, porte le groupe d applications, est de
+          # type App Store, n est pas expire, et a ete emis pour un certificat
+          # present dans le trousseau. Chacun de ces defauts rendrait, plus
+          # loin, un message d Xcode qui ne nomme pas le profil en cause.
+          aide="docs/ci/signature_ios_modele_gr20.md"
+          identites=$(security find-identity -v -p codesigning || true)
+          if ! printf '%s\n' "$identites" | grep -q 'Distribution'; then
             echo "============================================================"
-            echo "ARRET — Secrets de signature iOS ABSENTS."
-            echo ""
-            echo "Le groupe d environnement Codemagic 'stepways_ios_signing'"
-            echo "doit fournir : APP_STORE_CONNECT_ISSUER_ID,"
-            echo "APP_STORE_CONNECT_KEY_IDENTIFIER, APP_STORE_CONNECT_PRIVATE_KEY,"
-            echo "CERTIFICATE_PRIVATE_KEY, BUNDLE_ID."
-            echo ""
-            echo "Compte developpeur Apple + cles = wagon 3 (Christophe)."
-            echo "Aucun IPA distribuable ne peut etre produit sans signature :"
-            echo "ce workflow s arrete ICI, explicitement."
+            echo "ARRET — aucune identite de DISTRIBUTION dans le trousseau."
+            echo "Le certificat 'GR20 Distribution' n a pas ete pose. Verifier"
+            echo "qu il existe sous ce nom EXACT dans Codemagic : Team settings"
+            echo "> codemagic.yaml settings > Code signing identities > onglet"
+            echo "iOS certificates. Voir : $aide"
             echo "============================================================"
             exit 1
           fi
-          echo "Secrets de signature presents — on continue."
 
-      - name: Recuperer certificats et profils de signature
-        script: |
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --certificate-key=@env:CERTIFICATE_PRIVATE_KEY \
-            --create
-          xcode-project use-profiles
+          travail=$(mktemp -d)
+          cat > "$travail/lire_profil.py" <<'PY'
+          import datetime, hashlib, plistlib, sys
+          chemin, attendu, groupe, identites = sys.argv[1:5]
+          with open(chemin, "rb") as f:
+              profil = plistlib.load(f)
+          droits = profil.get("Entitlements", {})
+          appid = droits.get("application-identifier", "")
+          couvert = appid.split(".", 1)[1] if "." in appid else appid
+          fautes = []
+          if couvert != attendu:
+              fautes.append("il couvre « %s » au lieu de « %s »" % (couvert, attendu))
+          if groupe not in droits.get("com.apple.security.application-groups", []):
+              fautes.append("il ne porte pas le groupe d applications %s" % groupe)
+          if (profil.get("ProvisionedDevices") or profil.get("ProvisionsAllDevices")
+                  or droits.get("get-task-allow")):
+              fautes.append("ce n est pas un profil App Store (Distribution > App Store Connect)")
+          fin = profil.get("ExpirationDate")
+          if fin is not None:
+              if fin.tzinfo is not None:
+                  fin = fin.astimezone(datetime.timezone.utc).replace(tzinfo=None)
+              if fin < datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None):
+                  fautes.append("il est expire depuis le %s" % fin.date())
+          empreintes = [hashlib.sha1(c).hexdigest().upper()
+                        for c in profil.get("DeveloperCertificates", [])]
+          if not any(e in identites.upper() for e in empreintes):
+              fautes.append("il n a ete emis pour AUCUN certificat present dans le trousseau")
+          for faute in fautes:
+              print("    - " + faute)
+          sys.exit(1 if fautes else 0)
+          PY
+
+          echec=0
+          verifier() {
+            reference="$1"; chemin="$2"; attendu="$3"
+            if [ -z "$chemin" ] || [ ! -f "$chemin" ]; then
+              echo "MANQUE — le profil '$reference' n a pas ete pose sur la"
+              echo "  machine. Il doit exister sous ce nom de reference EXACT"
+              echo "  dans Codemagic, onglet iOS provisioning profiles, et"
+              echo "  couvrir $attendu."
+              echec=1
+              return 0
+            fi
+            if ! security cms -D -i "$chemin" > "$travail/profil.plist"; then
+              echo "FAUX — le fichier du profil '$reference' est illisible."
+              echec=1
+              return 0
+            fi
+            if python3 "$travail/lire_profil.py" "$travail/profil.plist" \
+                 "$attendu" "$APP_GROUP" "$identites"; then
+              echo "OK — '$reference' couvre $attendu et signera."
+            else
+              echo "FAUX — le profil '$reference' est pose mais ne signera pas"
+              echo "  $attendu (motifs ci-dessus). Le recreer chez Apple puis"
+              echo "  le recuperer a nouveau dans Codemagic sous le meme nom."
+              echec=1
+            fi
+          }
+          verifier stepways_appstore_profile "${STEPWAYS_PROFIL_APP:-}" "$BUNDLE_ID"
+          verifier stepways_trekwidget_appstore_profile \
+            "${STEPWAYS_PROFIL_WIDGET:-}" "$WIDGET_BUNDLE_ID"
+          if [ "$echec" -ne 0 ]; then
+            echo "============================================================"
+            echo "ARRET — rien n a ete construit. Il faut DEUX profils App"
+            echo "Store, un par paquet, crees chez Apple avec le certificat de"
+            echo "distribution de l equipe, puis recuperes dans Codemagic sous"
+            echo "les deux noms ci-dessus. Pas a pas ecran par ecran : $aide"
+            echo "============================================================"
+            exit 1
+          fi
 
       - name: Installer les dependances
         script: flutter pub get
 
-      - name: Analyse statique (dart analyze)
+      - name: Analyse statique (flutter analyze)
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) sur
+        # toute version de Dart depuis 2.19, et l etape tombait donc
+        # TOUJOURS. Les infos restent non bloquantes, les avertissements
+        # et les erreurs bloquants : c est la porte du plan 644-03.
         script: |
-          dart analyze lib/ test/
+          flutter analyze --no-fatal-infos lib/ test/
           if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
+            echo "ERREUR: flutter analyze a detecte des problemes"
             exit 1
           fi
 
@@ -280,12 +941,432 @@ workflows:
             exit 1
           fi
 
+      # TACHE 626 — le plist iPhone arrive ici, et le projet Xcode le copie
+      # desormais dans le paquet (avant ce lot il n y etait reference nulle
+      # part : meme depose, le SDK ne le lisait pas). 'exiger' pour la meme
+      # raison que cote Android : un IPA de release muet n a pas de sens.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer ios exiger
+
+      - name: Appliquer les deux profils au projet Xcode
+        # Ecrit aussi /Users/builder/export_options.plist, lu a l etape suivante.
+        script: xcode-project use-profiles
+
       - name: Build IPA release signe
         script: |
           flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist
+            --export-options-plist=/Users/builder/export_options.plist \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="$STEPWAYS_FIREBASE_PROJECT_ID"
+
+      - name: L IPA existe, et l application ET chacune de ses extensions sont signees
+        script: |
+          set -eu
+          ipa=$(ls build/ios/ipa/*.ipa 2>/dev/null | head -n 1 || true)
+          if [ -z "$ipa" ]; then
+            echo "ARRET — aucun IPA dans build/ios/ipa/."
+            exit 1
+          fi
+          travail=$(mktemp -d)
+          unzip -q "$ipa" -d "$travail"
+          app=$(ls -d "$travail"/Payload/*.app 2>/dev/null | head -n 1 || true)
+          if [ -z "$app" ]; then
+            echo "ARRET — $ipa ne contient aucune application."
+            exit 1
+          fi
+          if [ ! -f "$app/embedded.mobileprovision" ]; then
+            echo "ARRET — l application de $ipa n embarque aucun profil :"
+            echo "elle n est PAS signee pour la distribution."
+            exit 1
+          fi
+          widget=""
+          for appex in "$app"/PlugIns/*.appex; do
+            [ -d "$appex" ] || continue
+            if [ ! -f "$appex/embedded.mobileprovision" ]; then
+              echo "ARRET — l extension $(basename "$appex") n embarque"
+              echo "aucun profil : le paquet entier serait rejete."
+              exit 1
+            fi
+            ident=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' \
+              "$appex/Info.plist")
+            if [ "$ident" = "$WIDGET_BUNDLE_ID" ]; then widget=1; fi
+            echo "Extension signee : $(basename "$appex") ($ident)"
+          done
+          if [ -z "$widget" ]; then
+            echo "ARRET — l extension $WIDGET_BUNDLE_ID n est PAS dans l IPA."
+            echo "Decision du 07/10 : l application et le widget partent"
+            echo "ensemble. Un IPA sans widget n est pas ce qu on livre."
+            exit 1
+          fi
+          echo "IPA signe, application et widget compris : $(basename "$ipa")"
 
     artifacts:
       - build/ios/ipa/*.ipa
-    # Publication TestFlight/App Store : wagon 3 (bloc "publishing:
-    # app_store_connect:" a ajouter quand le compte est cree).
+      # Les journaux d Xcode : sans eux, un echec de signature au premier
+      # essai se lit sur une seule ligne de resume et ne se diagnostique pas.
+      - /tmp/xcodebuild_logs/*.log
+    # PAS de bloc 'publishing:' et PAS de depot par script ICI, et ce n est pas
+    # un manque : le depot sur TestFlight est le travail de 'ios_testflight'
+    # ci-dessous, qui se lance a la main. Cette chaine-ci reste un IPA en
+    # artefact, sur etiquette de version.
+
+  # ==========================================================================
+  # --- Workflow iOS TestFlight — LE SEUL CHEMIN VERS UN IPHONE (tache 621) ---
+  # ==========================================================================
+  #
+  # LE TROU QUE CETTE CHAINE FERME. Apple n autorise AUCUNE installation hors
+  # magasin : un IPA ne s installe pas depuis la page d un build. Il faut
+  # TestFlight, donc un depot chez Apple, et `ios_release` ne fait que deposer
+  # son IPA en artefact. Cette chaine est le seul chemin vers un iPhone.
+  #
+  # LANCABLE A LA MAIN, ET C EST UN CHOIX. AUCUN bloc `triggering:`. La
+  # documentation Codemagic : « If no events are defined, you can start builds
+  # only manually. » Un depot consomme chez Apple un numero de build qui ne se
+  # reprend jamais, et l etiquette `v*` appartient deja a `ios_release`.
+  #
+  # SIGNATURE : MEME MODELE QUE `ios_release` (voir son en-tete) — memes deux
+  # profils, meme certificat, meme Xcode, meme instance, memes gardes.
+  #
+  # CE QU ELLE A EN PLUS : L INTEGRATION `Only1Cent`. Le bloc `integrations:`
+  # appelle par son nom la clef d API App Store Connect deja enregistree dans
+  # Codemagic (Team integrations > Developer Portal). Codemagic en tire lui-meme
+  # l identite Apple de l environnement : APP_STORE_CONNECT_ISSUER_ID,
+  # APP_STORE_CONNECT_KEY_IDENTIFIER, APP_STORE_CONNECT_PRIVATE_KEY, les trois
+  # noms que `app-store-connect` lit par defaut. GR20 depose ainsi sans passer
+  # aucune de ces valeurs a la commande. La premiere etape verifie qu elles sont
+  # la, et s arrete en nommant l integration si elles n y sont pas.
+  #
+  # LA PUBLICATION N EST PLUS DECLARATIVE, ET C EST LE CONTOURNEMENT D UN BUG
+  # REEL. Sous Xcode 26, le nouvel altool ne resout pas l identifiant sur les
+  # comptes a plusieurs applications de prefixe proche — com.only1cent.*,
+  # nommement — et rend « Cannot determine the Apple ID from Bundle ID ».
+  # StepWays (com.only1cent.stepways) partage ce prefixe avec GR20. Le bloc
+  # `publishing:` ne laisse pas choisir l outil de televersement ; la commande,
+  # si : `--altool-additional-arguments='--use-old-altool'`, exactement comme
+  # GR20. Le depot est donc une ETAPE, la derniere, et elle ne tourne que si
+  # toutes les precedentes ont reussi.
+  #
+  # `--testflight` = ce que faisait `submit_to_testflight: true` : le build est
+  # soumis a la revue beta d Apple apres traitement. AUCUN groupe de testeurs,
+  # AUCUNE soumission a la revue de l App Store. Christophe est testeur INTERNE
+  # de sa propre equipe : le build lui est ouvert des la fin du traitement.
+  #
+  # POURQUOI LE NUMERO DE BUILD VIENT DE CODEMAGIC ET NON DU pubspec. Apple
+  # refuse un numero de build deja vu pour la meme version. PROJECT_BUILD_NUMBER
+  # est le compteur de Codemagic pour ce projet — il ne se reprend jamais.
+  #
+  # POURQUOI PAS DE CONTROLE DE FORMATAGE ICI. Il est rouge sur ce depot depuis
+  # longtemps, main comprise : voir le long commentaire d `android_test`.
+  # L analyse et les tests, eux, restent BLOQUANTS.
+  ios_testflight:
+    name: iOS TestFlight (a lancer a la main)
+    # 120 minutes = le maximum autorise par Codemagic. Le depot attend, sur la
+    # machine, que le traitement d Apple se termine, et ce delai n est pas de
+    # notre cote.
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    # AUCUN bloc 'triggering:' — VOULU. Voir l en-tete de cette chaine.
+    integrations:
+      app_store_connect: Only1Cent
+    environment:
+      # Flutter epingle : voir l en-tete de `pr_gate`.
+      flutter: 3.41.5
+      # Epingle : voir l en-tete de `ios_release`.
+      xcode: 26.4
+      cocoapods: default
+      ios_signing:
+        provisioning_profiles:
+          - profile: stepways_appstore_profile
+            environment_variable: STEPWAYS_PROFIL_APP
+          - profile: stepways_trekwidget_appstore_profile
+            environment_variable: STEPWAYS_PROFIL_WIDGET
+        certificates:
+          - GR20 Distribution
+      vars:
+        BUNDLE_ID: com.only1cent.stepways
+        WIDGET_BUNDLE_ID: com.only1cent.stepways.TrekWidget
+        APP_GROUP: group.com.only1cent.stepways
+      groups:
+        # TACHE 626 — groupe SEPARE de la signature : un groupe par usage. Sans
+        # lui, le paquet depose chez un testeur aurait un catalogue vide.
+        - stepways_firebase
+    scripts:
+      - name: L integration Only1Cent a-t-elle donne l identite Apple (sinon ARRET explicite)
+        script: |
+          manquantes=""
+          for nom in APP_STORE_CONNECT_ISSUER_ID \
+                     APP_STORE_CONNECT_KEY_IDENTIFIER \
+                     APP_STORE_CONNECT_PRIVATE_KEY; do
+            eval "valeur=\${$nom:-}"
+            if [ -z "$valeur" ]; then manquantes="$manquantes $nom"; fi
+          done
+          if [ -n "$manquantes" ]; then
+            echo "============================================================"
+            echo "ARRET — rien n a ete construit, et c est voulu."
+            echo ""
+            echo "Absent de l environnement :$manquantes"
+            echo ""
+            echo "Ces valeurs ne se saisissent PAS a la main : c est"
+            echo "l integration 'Only1Cent' qui les donne. Il n y a AUCUNE"
+            echo "clef a creer, la clef d API de l equipe existe deja."
+            echo "Verifier dans Codemagic : Team settings > Team integrations"
+            echo "> Developer Portal > Manage keys, qu une clef porte le nom"
+            echo "EXACT 'Only1Cent'. Sinon, corriger le nom sous"
+            echo "'integrations: app_store_connect:' de cette chaine pour"
+            echo "qu il dise celui de la clef enregistree."
+            echo ""
+            echo "PAS A PAS : docs/ci/signature_ios_modele_gr20.md"
+            echo "============================================================"
+            exit 1
+          fi
+          echo "Identite Apple fournie par l integration — on continue."
+
+      - name: Les identifiants annonces sont-ils ceux du projet Xcode
+        script: |
+          set -eu
+          pbxproj="ios/Runner.xcodeproj/project.pbxproj"
+          # Une faute de frappe ici ne se voit PAS tout de suite : c est la
+          # signature, dix minutes plus tard, qui rend un message d Xcode
+          # illisible. On la voit ici, en nommant la valeur fautive.
+          for ident in "$BUNDLE_ID" "$WIDGET_BUNDLE_ID"; do
+            if ! grep -qF "PRODUCT_BUNDLE_IDENTIFIER = $ident;" "$pbxproj"; then
+              echo "============================================================"
+              echo "ARRET — « $ident » ne correspond a AUCUNE cible du projet"
+              echo "Xcode. Corriger le bloc 'vars:' de cette chaine dans"
+              echo "codemagic.yaml pour qu il dise ce que dit $pbxproj."
+              echo "============================================================"
+              exit 1
+            fi
+          done
+          for droits in ios/Runner/Runner.entitlements \
+                        ios/TrekWidget/TrekWidgetExtension.entitlements; do
+            if ! grep -qF "<string>$APP_GROUP</string>" "$droits"; then
+              echo "============================================================"
+              echo "ARRET — $droits ne reclame pas le groupe $APP_GROUP."
+              echo "Les deux profils sont crees pour ce groupe : un paquet qui"
+              echo "en reclame un autre ne se signera pas."
+              echo "============================================================"
+              exit 1
+            fi
+          done
+          echo "Application, widget et groupe d applications : conformes au projet."
+
+      - name: Les deux profils nommes sont-ils la, et couvrent-ils chacun leur paquet
+        script: |
+          set -eu
+          # Codemagic a deja pose le certificat et les deux profils avant cette
+          # etape. Ce qu on verifie ici, c est qu ils SIGNERONT : chaque profil
+          # couvre le bon identifiant, porte le groupe d applications, est de
+          # type App Store, n est pas expire, et a ete emis pour un certificat
+          # present dans le trousseau. Chacun de ces defauts rendrait, plus
+          # loin, un message d Xcode qui ne nomme pas le profil en cause.
+          aide="docs/ci/signature_ios_modele_gr20.md"
+          identites=$(security find-identity -v -p codesigning || true)
+          if ! printf '%s\n' "$identites" | grep -q 'Distribution'; then
+            echo "============================================================"
+            echo "ARRET — aucune identite de DISTRIBUTION dans le trousseau."
+            echo "Le certificat 'GR20 Distribution' n a pas ete pose. Verifier"
+            echo "qu il existe sous ce nom EXACT dans Codemagic : Team settings"
+            echo "> codemagic.yaml settings > Code signing identities > onglet"
+            echo "iOS certificates. Voir : $aide"
+            echo "============================================================"
+            exit 1
+          fi
+
+          travail=$(mktemp -d)
+          cat > "$travail/lire_profil.py" <<'PY'
+          import datetime, hashlib, plistlib, sys
+          chemin, attendu, groupe, identites = sys.argv[1:5]
+          with open(chemin, "rb") as f:
+              profil = plistlib.load(f)
+          droits = profil.get("Entitlements", {})
+          appid = droits.get("application-identifier", "")
+          couvert = appid.split(".", 1)[1] if "." in appid else appid
+          fautes = []
+          if couvert != attendu:
+              fautes.append("il couvre « %s » au lieu de « %s »" % (couvert, attendu))
+          if groupe not in droits.get("com.apple.security.application-groups", []):
+              fautes.append("il ne porte pas le groupe d applications %s" % groupe)
+          if (profil.get("ProvisionedDevices") or profil.get("ProvisionsAllDevices")
+                  or droits.get("get-task-allow")):
+              fautes.append("ce n est pas un profil App Store (Distribution > App Store Connect)")
+          fin = profil.get("ExpirationDate")
+          if fin is not None:
+              if fin.tzinfo is not None:
+                  fin = fin.astimezone(datetime.timezone.utc).replace(tzinfo=None)
+              if fin < datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None):
+                  fautes.append("il est expire depuis le %s" % fin.date())
+          empreintes = [hashlib.sha1(c).hexdigest().upper()
+                        for c in profil.get("DeveloperCertificates", [])]
+          if not any(e in identites.upper() for e in empreintes):
+              fautes.append("il n a ete emis pour AUCUN certificat present dans le trousseau")
+          for faute in fautes:
+              print("    - " + faute)
+          sys.exit(1 if fautes else 0)
+          PY
+
+          echec=0
+          verifier() {
+            reference="$1"; chemin="$2"; attendu="$3"
+            if [ -z "$chemin" ] || [ ! -f "$chemin" ]; then
+              echo "MANQUE — le profil '$reference' n a pas ete pose sur la"
+              echo "  machine. Il doit exister sous ce nom de reference EXACT"
+              echo "  dans Codemagic, onglet iOS provisioning profiles, et"
+              echo "  couvrir $attendu."
+              echec=1
+              return 0
+            fi
+            if ! security cms -D -i "$chemin" > "$travail/profil.plist"; then
+              echo "FAUX — le fichier du profil '$reference' est illisible."
+              echec=1
+              return 0
+            fi
+            if python3 "$travail/lire_profil.py" "$travail/profil.plist" \
+                 "$attendu" "$APP_GROUP" "$identites"; then
+              echo "OK — '$reference' couvre $attendu et signera."
+            else
+              echo "FAUX — le profil '$reference' est pose mais ne signera pas"
+              echo "  $attendu (motifs ci-dessus). Le recreer chez Apple puis"
+              echo "  le recuperer a nouveau dans Codemagic sous le meme nom."
+              echec=1
+            fi
+          }
+          verifier stepways_appstore_profile "${STEPWAYS_PROFIL_APP:-}" "$BUNDLE_ID"
+          verifier stepways_trekwidget_appstore_profile \
+            "${STEPWAYS_PROFIL_WIDGET:-}" "$WIDGET_BUNDLE_ID"
+          if [ "$echec" -ne 0 ]; then
+            echo "============================================================"
+            echo "ARRET — rien n a ete construit. Il faut DEUX profils App"
+            echo "Store, un par paquet, crees chez Apple avec le certificat de"
+            echo "distribution de l equipe, puis recuperes dans Codemagic sous"
+            echo "les deux noms ci-dessus. Pas a pas ecran par ecran : $aide"
+            echo "============================================================"
+            exit 1
+          fi
+
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Analyse statique (flutter analyze) — BLOQUANT
+        # `flutter analyze`, PAS `dart analyze` : ce dernier refuse
+        # `--no-fatal-infos` (« Cannot negate option », sortie 64) sur
+        # toute version de Dart depuis 2.19, et l etape tombait donc
+        # TOUJOURS. Les infos restent non bloquantes, les avertissements
+        # et les erreurs bloquants : c est la porte du plan 644-03.
+        script: |
+          flutter analyze --no-fatal-infos lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: flutter analyze a detecte des problemes — pas de depot"
+            exit 1
+          fi
+
+      - name: Tests unitaires (flutter test) — BLOQUANT
+        script: |
+          flutter test
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: des tests ont echoue — rien ne part chez un testeur"
+            exit 1
+          fi
+
+      # TACHE 626 — 'exiger' : cette chaine est le SEUL chemin vers l iPhone de
+      # Christophe, et un paquet TestFlight avec Firebase muet serait un test
+      # pour rien — le catalogue distant est justement ce qu il doit verifier.
+      - name: Deposer la configuration Firebase (hors depot)
+        script: sh scripts/ci/config_firebase.sh deposer ios exiger
+
+      - name: Appliquer les deux profils au projet Xcode
+        # Ecrit aussi /Users/builder/export_options.plist, lu a l etape suivante.
+        script: xcode-project use-profiles
+
+      - name: Construire l IPA signe pour l App Store
+        script: |
+          flutter build ipa --release \
+            --build-number=$PROJECT_BUILD_NUMBER \
+            --export-options-plist=/Users/builder/export_options.plist \
+            --dart-define=STEPWAYS_FIREBASE_PROJECT_ID="$STEPWAYS_FIREBASE_PROJECT_ID"
+
+      - name: L IPA existe, l application ET chacune de ses extensions sont signees
+        script: |
+          set -eu
+          ipa=$(ls build/ios/ipa/*.ipa 2>/dev/null | head -n 1 || true)
+          if [ -z "$ipa" ]; then
+            echo "ARRET — aucun IPA dans build/ios/ipa/ : rien a deposer."
+            exit 1
+          fi
+
+          # Un IPA non signe se fabrique SANS erreur et se fait refuser par
+          # Apple apres coup, par courriel. On le verifie ICI, avant de
+          # televerser : la presence du profil embarque est la preuve qu une
+          # identite de distribution a bien ete appliquee.
+          travail=$(mktemp -d)
+          unzip -q "$ipa" -d "$travail"
+          app=$(ls -d "$travail"/Payload/*.app 2>/dev/null | head -n 1 || true)
+          if [ -z "$app" ]; then
+            echo "ARRET — $ipa ne contient aucune application."
+            exit 1
+          fi
+          if [ ! -f "$app/embedded.mobileprovision" ]; then
+            echo "ARRET — l application de $ipa n embarque aucun profil :"
+            echo "elle n est PAS signee pour la distribution. Apple"
+            echo "l aurait refusee apres coup. On ne depose rien."
+            exit 1
+          fi
+
+          # Chaque extension embarquee doit etre signee elle aussi, sinon le
+          # paquet entier est rejete. Et le widget DOIT y etre.
+          widget=""
+          for appex in "$app"/PlugIns/*.appex; do
+            [ -d "$appex" ] || continue
+            if [ ! -f "$appex/embedded.mobileprovision" ]; then
+              echo "ARRET — l extension $(basename "$appex") n embarque"
+              echo "aucun profil : le paquet entier serait rejete."
+              exit 1
+            fi
+            ident=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' \
+              "$appex/Info.plist")
+            if [ "$ident" = "$WIDGET_BUNDLE_ID" ]; then widget=1; fi
+            echo "Extension signee : $(basename "$appex") ($ident)"
+          done
+          if [ -z "$widget" ]; then
+            echo "ARRET — l extension $WIDGET_BUNDLE_ID n est PAS dans l IPA."
+            echo "Decision du 07/10 : l application et le widget partent"
+            echo "ensemble. On ne depose pas un paquet sans widget."
+            exit 1
+          fi
+
+          version=$(/usr/libexec/PlistBuddy -c \
+            "Print :CFBundleShortVersionString" "$app/Info.plist")
+          numero=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" \
+            "$app/Info.plist")
+          echo "============================================================"
+          echo "Paquet pret a partir : $(basename "$ipa")"
+          echo "Taille  : $(du -h "$ipa" | cut -f1)"
+          echo "Version : $version (build $numero)"
+          echo ""
+          echo "Il part a l etape suivante vers App Store Connect. Apple le"
+          echo "traite ensuite de quelques minutes a une demi-heure : tant que"
+          echo "le traitement dure, le build n apparait pas dans TestFlight."
+          echo "Sur l iPhone : application TestFlight, connecte avec le meme"
+          echo "identifiant Apple que celui de l equipe."
+          echo "============================================================"
+
+      # LA SEULE LIGNE DU FICHIER QUI FAIT SORTIR L APPLICATION DU DEPOT. Pas
+      # de bloc 'publishing:' : il ne laisse pas choisir l ancien altool. Voir
+      # l en-tete de cette chaine pour le bug que '--use-old-altool' contourne.
+      # Aucune valeur d identite ici : la commande lit les trois variables que
+      # l integration a posees, verifiees a la premiere etape.
+      - name: Deposer sur TestFlight (ancien altool — bug Xcode 26 des comptes com.only1cent.*)
+        script: |
+          set -eu
+          ipa=$(ls build/ios/ipa/*.ipa | head -n 1)
+          app-store-connect publish \
+            --path "$ipa" \
+            --testflight \
+            --altool-additional-arguments='--use-old-altool'
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      # Les journaux d Xcode : sans eux, un echec de signature au premier
+      # essai se lit sur une seule ligne de resume et ne se diagnostique pas.
+      - /tmp/xcodebuild_logs/*.log
+    # PAS de bloc 'publishing:' — voir l etape de depot ci-dessus. PAS de
+    # soumission a la revue de l App Store, PAS de groupe de testeurs.

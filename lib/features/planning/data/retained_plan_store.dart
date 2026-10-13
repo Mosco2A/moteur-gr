@@ -11,9 +11,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// Le decoupage retenu est une DECISION du randonneur, pas un etat d'ecran :
 /// il se range donc a cote des autres decisions durables de la preparation
-/// (fiche profil, randos passees, date de depart) — SharedPreferences, source
-/// durable de l'application (la base Drift tourne en memoire, cf.
-/// `hiker_profile_repository.dart`).
+/// (randos passees, date de depart, etapes coeur vues) — SharedPreferences.
+///
+/// CE COMMENTAIRE A ETE CORRIGE (lot coche de preparation, 07/10). Il
+/// justifiait ce choix par « la base Drift tourne en memoire » : c'etait vrai
+/// a l'ecriture de ce fichier, c'est FAUX depuis la tache 613, ou la base est
+/// passee dans un fichier durable (`database.dart`, en-tete de la migration).
+/// Le rangement en preferences reste, mais pour une autre raison : une valeur
+/// scalaire par sentier, relue sans attendre la base, comme ses voisines.
 ///
 /// UNE CLE PAR SENTIER : le moteur est multi-sentiers, deux sentiers ont deux
 /// plans. Aucun identifiant en dur.

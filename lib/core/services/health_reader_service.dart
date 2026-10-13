@@ -1,3 +1,7 @@
+/// Lecture seule de la montre deja portee par le marcheur (HealthKit / Health
+/// Connect) : ni app montre proprietaire, ni ecriture.
+library;
+
 import 'package:health/health.dart';
 
 import '../error/error_handler.dart';
@@ -120,8 +124,9 @@ class HealthReaderService {
 
       final granted = await _health.requestAuthorization(
         readTypes,
-        permissions:
-            readTypes.map((_) => HealthDataAccess.READ).toList(growable: false),
+        permissions: readTypes
+            .map((_) => HealthDataAccess.READ)
+            .toList(growable: false),
       );
       if (!granted) {
         return const HealthSnapshot.notAuthorized();
@@ -134,8 +139,11 @@ class HealthReaderService {
       );
       return aggregate(points);
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'HealthReaderService.readForInterval');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'HealthReaderService.readForInterval',
+      );
       // Lecture sante non bloquante : degrade en 'non autorise' sans crash.
       return const HealthSnapshot.notAuthorized();
     }

@@ -1,4 +1,10 @@
+/// Le point bleu pulsant du marcheur : la pulsation est la pour dire que la
+/// position est VIVANTE, pas seulement connue.
+library;
+
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/couleurs_semantiques.dart';
 
 /// Marqueur bleu pulsant pour la position de l'utilisateur sur la carte.
 ///
@@ -8,7 +14,7 @@ class UserPositionMarker extends StatefulWidget {
   const UserPositionMarker({
     super.key,
     this.size = 20.0,
-    this.color = const Color(0xFF1976D2),
+    this.color = CouleursSemantiques.bleuDeLaPositionDuMarcheur,
   });
 
   /// Taille du cercle en pixels
@@ -35,13 +41,15 @@ class _UserPositionMarkerState extends State<UserPositionMarker>
       vsync: this,
     )..repeat();
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 2.5).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 2.5,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _opacityAnimation = Tween<double>(begin: 0.4, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _opacityAnimation = Tween<double>(
+      begin: 0.4,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -85,10 +93,7 @@ class _UserPositionMarkerState extends State<UserPositionMarker>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: widget.color,
-              border: Border.all(
-                color: Colors.white,
-                width: 3.0,
-              ),
+              border: Border.all(color: Colors.white, width: 3.0),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withAlpha(64),

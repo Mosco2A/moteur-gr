@@ -41,13 +41,16 @@ void main() {
 
     setUp(() => d = OffTrackDetector());
 
-    test('SORTIE : au-dela du seuil de sortie -> enteredOffTrack (une fois)', () {
-      expect(d.update(81), OffTrackTransition.enteredOffTrack);
-      expect(d.isOffTrack, isTrue);
-      // Rester au-dela ne re-declenche pas (UNE seule alerte).
-      expect(d.update(120), OffTrackTransition.none);
-      expect(d.update(200), OffTrackTransition.none);
-    });
+    test(
+      'SORTIE : au-dela du seuil de sortie -> enteredOffTrack (une fois)',
+      () {
+        expect(d.update(81), OffTrackTransition.enteredOffTrack);
+        expect(d.isOffTrack, isTrue);
+        // Rester au-dela ne re-declenche pas (UNE seule alerte).
+        expect(d.update(120), OffTrackTransition.none);
+        expect(d.update(200), OffTrackTransition.none);
+      },
+    );
 
     test('pile au seuil de sortie (80 m) ne declenche pas (> strict)', () {
       expect(d.update(80), OffTrackTransition.none);

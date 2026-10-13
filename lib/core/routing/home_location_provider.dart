@@ -1,3 +1,7 @@
+/// Ou mene le bouton « Accueil », qui depend de l'etat : le cockpit s'il y a
+/// une rando en cours, le catalogue sinon.
+library;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/treks/providers/my_treks_provider.dart';

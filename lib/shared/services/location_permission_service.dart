@@ -1,3 +1,7 @@
+/// L'escalade des permissions de localisation jusqu'au suivi en fond, avec un
+/// resultat nomme a chaque palier.
+library;
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,9 +85,11 @@ class LocationPermissionService {
       }
       return true;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context: 'LocationPermissionService.shouldAskBackgroundRationale');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'LocationPermissionService.shouldAskBackgroundRationale',
+      );
       return false;
     }
   }
@@ -94,10 +100,12 @@ class LocationPermissionService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(kBackgroundRationaleDeclinedKey, true);
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context:
-              'LocationPermissionService.rememberBackgroundRationaleDeclined');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context:
+            'LocationPermissionService.rememberBackgroundRationaleDeclined',
+      );
     }
   }
 
@@ -143,9 +151,11 @@ class LocationPermissionService {
       }
       return BackgroundLocationStatus.whileInUseOnly;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context: 'LocationPermissionService.requestBackgroundPermission');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'LocationPermissionService.requestBackgroundPermission',
+      );
       return BackgroundLocationStatus.denied;
     }
   }
@@ -162,9 +172,11 @@ class LocationPermissionService {
       final status = await Permission.notification.request();
       return status.isGranted;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context: 'LocationPermissionService.requestNotificationPermission');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'LocationPermissionService.requestNotificationPermission',
+      );
       return false;
     }
   }
@@ -183,10 +195,12 @@ class LocationPermissionService {
       final status = await Permission.ignoreBatteryOptimizations.request();
       return status.isGranted;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context:
-              'LocationPermissionService.requestBatteryOptimizationExemption');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context:
+            'LocationPermissionService.requestBatteryOptimizationExemption',
+      );
       return false;
     }
   }
@@ -199,9 +213,11 @@ class LocationPermissionService {
     try {
       return await Permission.ignoreBatteryOptimizations.isGranted;
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st,
-          context: 'LocationPermissionService.hasBatteryExemption');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'LocationPermissionService.hasBatteryExemption',
+      );
       return true;
     }
   }
@@ -262,7 +278,8 @@ class LocationPermissionService {
 }
 
 /// Provider singleton du service de permissions de localisation.
-final locationPermissionServiceProvider =
-    Provider<LocationPermissionService>((ref) {
+final locationPermissionServiceProvider = Provider<LocationPermissionService>((
+  ref,
+) {
   return LocationPermissionService();
 });

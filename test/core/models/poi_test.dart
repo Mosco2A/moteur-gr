@@ -106,12 +106,20 @@ void main() {
 
     test('equality fonctionne avec freezed', () {
       const a = PoiModel(
-        trailId: 't1', stageNumber: 1, name: 'A',
-        type: 'water', lat: 42.0, lng: 9.0,
+        trailId: 't1',
+        stageNumber: 1,
+        name: 'A',
+        type: 'water',
+        lat: 42.0,
+        lng: 9.0,
       );
       const b = PoiModel(
-        trailId: 't1', stageNumber: 1, name: 'A',
-        type: 'water', lat: 42.0, lng: 9.0,
+        trailId: 't1',
+        stageNumber: 1,
+        name: 'A',
+        type: 'water',
+        lat: 42.0,
+        lng: 9.0,
       );
       expect(a, equals(b));
     });

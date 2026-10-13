@@ -1,3 +1,8 @@
+/// Le sentier de demonstration reel sur lequel l'app demarre. Le moteur reste
+/// generique : ce fichier n'est qu'une DONNEE parmi d'autres.
+library;
+
+import '../branding/stepways_legal.dart';
 import 'trail_config.dart';
 
 /// Configuration du sentier Mare a Mare Centre (Corse).
@@ -14,15 +19,33 @@ import 'trail_config.dart';
 /// L'[id] est EXACTEMENT le `trailId` des assets embarques
 /// (`assets/data/mare_a_mare_centre/{stages,pois}.json` -> `mam-c-s*`) et de la
 /// trace GPX : toute divergence casserait les jointures Drift au seed.
-/// Totaux (7 etapes / 84 km / D+ 3750 m) derives des donnees `stages.json`.
+///
+/// TACHE 761 — UN SEUL CHIFFRE CIRCULE DESORMAIS, ET IL EST MESURE. Quatre
+/// chiffres se contredisaient, et aucun n etait mesure sur un vrai chemin :
+///   * 84,0 km — somme des sept `distanceKm` declarees, arrondies a l unite ;
+///   * 3 750 m — somme des sept `elevationGainM` de `stages.json`, affichee par
+///     l ecran Itineraire ;
+///   * 3 550 m — somme des sept `elevationGain` de `mare_a_mare_centre.json`,
+///     portee ici et par la fiche publiee ; les deux sommes etaient
+///     justes, mais sur DEUX DECOUPAGES D ETAPES DIFFERENTS, d ou l ecart
+///     de 200 m ;
+///   * 72,9 km — la seule mesure reelle, mais faite sur une trace de 53 points
+///     qui coupait a travers la montagne : elle sous-estimait le chemin.
+/// Les trois premiers etaient des estimations a la main ; le quatrieme mesurait
+/// un croquis. Totaux ci-dessous RECALCULES sur la trace relevee dans
+/// OpenStreetMap (3 590 points, espacement median 19 m) : 87,3 km et 4 274 m de
+/// D+, soit la somme des sept etapes de `stages.json`, elles-memes mesurees sur
+/// cette trace. Le denivele est calcule sur le profil EU-DEM lisse sur sept
+/// points avec un seuil de bruit de 3 m ; la somme brute du modele de terrain
+/// donnerait 5 492 m, un chiffre que seule la resolution du modele explique.
 const mareAMareCentreTrailConfig = TrailConfig(
   id: 'mare-a-mare-centre',
   name: 'Mare a Mare Centre',
   displayName: 'Mare a Mare Centre',
   tagline: 'De la mer a la mer, au coeur de la Corse',
   totalStages: 7,
-  totalDistanceKm: 84.0,
-  totalElevationGain: 3750,
+  totalDistanceKm: 87.3,
+  totalElevationGain: 4274,
   region: 'Corse',
   country: 'France',
   primaryColorValue: 0xFF2E7D32, // Vert maquis
@@ -33,15 +56,37 @@ const mareAMareCentreTrailConfig = TrailConfig(
   defaultDuration: 7,
   offlineFirst: true,
   hasPremium: false,
-  // PARITE GR20, LOT 2 (#99433) : sentier VITRINE de demonstration. Entierement
-  // jouable (GPS + journal + navigation) SANS achat, comme le mode demo « tout
-  // debloque » de GR20. Le debridage passe par CE flag (donnee de config), pas
-  // par un id de localite en dur : seule la vitrine par defaut est debridee, le
-  // modele a la carte reste intact sur les autres sentiers (decision Christophe).
-  isShowcaseTrail: true,
+  // PRIX : 7 etapes, soit une par etape (defaut du modele, `priceStages` nul).
+  // CE SENTIER EST PAYANT, ET IL L EST REDEVENU (tache 601). Il portait
+  // `isShowcaseTrail: true`, qui le resolvait `owned` sans le moindre achat : il
+  // etait donc INVENDABLE — realisation gratuite, outils complets gratuits, et
+  // meme le sans-pub permanent reserve a l achat. La demonstration se fait
+  // desormais sur un AUTRE sentier, gratuit, du catalogue
+  // (`mareAMareCentreDemoTrailConfig`).
   emergencyNumbers: [
-    // Secours regional fourni par la config (jamais hardcode dans le moteur).
-    TrailEmergencyNumber(name: 'Secours montagne Corse', phone: '+33495613636'),
+    // Secours regionaux fournis par la config (jamais hardcodes dans le moteur).
+    // Le 112 n est pas ici : il est UNIVERSEL et vit dans le moteur
+    // (`kUniversalEmergencyContacts`), parce qu il vaut sur tous les sentiers.
+    //
+    // INTEGRATION 647 — UN NUMERO NON CONFIRME EST PARTI, ET C EST UNE DECISION
+    // DE CHRISTOPHE DU 30/09. Cette liste portait « Secours montagne Corse
+    // +33 4 95 61 36 36 », dont la SOURCE n a jamais pu etre etablie. Un numero
+    // de secours faux ne coute pas un appel rate : il coute le temps qu on met a
+    // comprendre qu il est faux, et c est le pire moment pour le decouvrir. On
+    // ne garde donc que ce qui est source.
+    //
+    // CES DEUX-LA LE SONT, et ils sont ceux que porte la fiche du sentier en
+    // base (lot 641, publication/sources/mare-a-mare-centre/sentier.json) : le
+    // compile et la base disent desormais la MEME chose, ce qui est tout
+    // l interet d avoir les deux.
+    TrailEmergencyNumber(
+      name: 'PGHM Corte (secours en montagne)',
+      phone: '+33495477146',
+    ),
+    TrailEmergencyNumber(
+      name: 'Parc naturel regional de Corse',
+      phone: '+33495345480',
+    ),
   ],
   // Declenche le chargement du DOSSIER de donnees (stages/pois/track) au seed.
   seedAssetsBase: 'assets/data/mare_a_mare_centre',
@@ -52,5 +97,5 @@ const mareAMareCentreTrailConfig = TrailConfig(
   accommodationsAssetPath: 'assets/data/mare_a_mare_centre.json',
   // Fiches conseils rattachees au sentier (chargees au seed).
   tipAssetPaths: ['assets/tips/mare_a_mare_tips.json'],
-  privacyPolicyUrl: 'https://example.org/mare-a-mare-centre/privacy',
+  privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );
