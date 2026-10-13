@@ -42,7 +42,6 @@ import 'package:moteur_gr/core/services/session_demo.dart';
 import 'package:moteur_gr/features/safety/presentation/refus_sauvegarde_systeme_dialog.dart';
 import 'package:moteur_gr/features/trek/data/marcheur_simule_providers.dart';
 import 'package:moteur_gr/features/trek/presentation/mention_marche_simulee.dart';
-import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/shared/widgets/cadre_demo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
