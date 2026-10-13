@@ -619,6 +619,7 @@ class _Translations$diploma$es extends Translations$diploma$fr {
 	@override String get title => 'Diploma de trekking';
 	@override String get yourName => 'Tu nombre';
 	@override String get namePlaceholder => 'Introduce tu nombre...';
+	@override String get namePending => 'Tu nombre aparecerá aquí';
 	@override String get generatePdf => 'Generar PDF';
 	@override String get certifies => 'Certifica que';
 	@override String get completed => 'ha recorrido el';
@@ -4947,6 +4948,7 @@ extension on TranslationsEs {
 			'diploma.title' => 'Diploma de trekking',
 			'diploma.yourName' => 'Tu nombre',
 			'diploma.namePlaceholder' => 'Introduce tu nombre...',
+			'diploma.namePending' => 'Tu nombre aparecerá aquí',
 			'diploma.generatePdf' => 'Generar PDF',
 			'diploma.certifies' => 'Certifica que',
 			'diploma.completed' => 'ha recorrido el',
@@ -5282,9 +5284,9 @@ extension on TranslationsEs {
 			'follow.title' => 'Seguimiento en directo',
 			'follow.connecting' => 'Conectando…',
 			'follow.live' => 'En directo',
-			'follow.offline' => 'Sin conexión',
 			_ => null,
 		} ?? switch (path) {
+			'follow.offline' => 'Sin conexión',
 			'follow.invalidLink' => 'Enlace no válido',
 			'follow.invalidLinkHint' => 'Este enlace de seguimiento no existe o ha caducado.',
 			'cloud.localModeTitle' => 'Modo local',
@@ -5796,9 +5798,9 @@ extension on TranslationsEs {
 			'moderation.a11y.complaintForm' => 'Formulario de impugnación de la decisión',
 			'bootstrap.loading' => 'Preparando tu excursión…',
 			'recap.title' => 'Mi aventura',
-			'recap.lockedTitle' => 'Disponible al final de la ruta',
 			_ => null,
 		} ?? switch (path) {
+			'recap.lockedTitle' => 'Disponible al final de la ruta',
 			'recap.lockedMessage' => 'Termina o abandona tu ruta para ver el resumen de tu aventura.',
 			'recap.finisherTitle' => 'Felicidades!',
 			'recap.finisherSubtitle' => 'Has completado tu ruta',

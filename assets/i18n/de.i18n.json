@@ -803,6 +803,7 @@
     "title": "Wanderdiplom",
     "yourName": "Dein Name",
     "namePlaceholder": "Gib deinen Namen ein...",
+    "namePending": "Dein Name erscheint hier",
     "generatePdf": "PDF erstellen",
     "certifies": "Bestätigt, dass",
     "completed": "den Weg abgeschlossen hat",

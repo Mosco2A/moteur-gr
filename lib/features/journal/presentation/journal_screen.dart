@@ -27,6 +27,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/bandeau_matiere_fabriquee.dart';
 import '../../../shared/widgets/paywall_sheet.dart';
+import '../../trek/trek_facade.dart' show cadrageDOuverture;
 import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
 import '../providers/journal_day_providers.dart';
@@ -530,6 +531,13 @@ class _JournalDayView extends ConsumerWidget {
 /// Hauteur de la carte du trace du jour, en points (valeur de parite).
 const double _dayTraceMapHeight = 200;
 
+/// La marge entre la trace et le bord de la vignette, en points.
+///
+/// Elle sert DEUX fois et doit donc etre nommee : au cadrage d'ouverture, qui
+/// en deduit le zoom, et au `initialCameraFit` garde-fou. Deux valeurs
+/// differentes feraient sauter la vue entre la premiere image et la suivante.
+const double _margeDeLaVignette = 24;
+
 /// Trace GPS de la journee affichee (CORRECTIF L4-2).
 ///
 /// Ne devient visible que si la journee porte VRAIMENT des points : une
@@ -578,40 +586,86 @@ class _DayTraceCard extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 child: SizedBox(
                   height: _dayTraceMapHeight,
-                  child: FlutterMap(
-                    options: MapOptions(
-                      initialCameraFit: CameraFit.bounds(
-                        bounds: LatLngBounds.fromPoints(latLngs),
-                        padding: const EdgeInsets.all(24),
-                      ),
-                      // Vignette de lecture, pas un ecran de navigation :
-                      // aucun geste, pour ne pas voler le defilement de la
-                      // liste des notes sous le doigt.
-                      interactionOptions: const InteractionOptions(
-                        flags: InteractiveFlag.none,
-                      ),
-                    ),
-                    children: [
-                      const FondDeCarte.duSentierActif(),
-                      PolylineLayer(
-                        polylines: [
-                          Polyline(
-                            points: latLngs,
-                            strokeWidth: 3,
-                            color: theme.colorScheme.primary,
+                  // LA VIGNETTE OUVRE SUR LA TRACE, ET NON SUR UNE VUE QUE
+                  // PERSONNE NE VERRA (tache 836).
+                  //
+                  // CE QUI SE VOYAIT : la trace verte dessinee sur un fond
+                  // GRIS et vide. Le fond de carte etait pourtant bien monte
+                  // — [FondDeCarte], quelques lignes plus bas. Le defaut
+                  // n'etait pas une couche absente, c'etait un ORDRE.
+                  //
+                  // `initialCameraFit` SEUL NE SUFFIT PAS, et la raison est
+                  // ecrite en entier dans `cadrage_d_ouverture.dart` :
+                  // `flutter_map` ne l'applique qu'en POST-FRAME, et d'ici la
+                  // la couche de tuiles a deja demande une pleine fournee au
+                  // zoom par DEFAUT, pour le point par defaut du paquet. Son
+                  // flux d'evenements etant un `broadcast` SANS REJEU, aucune
+                  // seconde fournee n'est demandee pour la vue reelle.
+                  //
+                  // ET ICI C'ETAIT DEFINITIF — c'est ce qui distingue cette
+                  // vignette de l'ecran de navigation, ou le defaut a ete
+                  // corrige par la tache 758. Sur la carte, le moindre geste
+                  // rattrapait le coup (« il faut sortir puis revenir pour
+                  // qu'elle s'affiche »). Cette vignette est en
+                  // `InteractiveFlag.none` : aucun geste n'est possible, donc
+                  // plus rien ne pouvait declencher le chargement.
+                  //
+                  // LE CENTRE ET LE ZOOM SONT DONC CALCULES AVANT LA PREMIERE
+                  // IMAGE, sur la taille reelle du cadre. Le
+                  // `initialCameraFit` reste en garde-fou, comme sur l'ecran
+                  // de navigation.
+                  child: LayoutBuilder(
+                    builder: (context, contraintes) {
+                      final cible = LatLngBounds.fromPoints(latLngs);
+                      final ouverture = cadrageDOuverture(
+                        cible,
+                        _margeDeLaVignette,
+                        contraintes.biggest,
+                      );
+                      return FlutterMap(
+                        options: MapOptions(
+                          initialCenter: ouverture.centre,
+                          initialZoom: ouverture.zoom,
+                          initialCameraFit: CameraFit.bounds(
+                            bounds: cible,
+                            padding: const EdgeInsets.all(_margeDeLaVignette),
                           ),
+                          // Vignette de lecture, pas un ecran de navigation :
+                          // aucun geste, pour ne pas voler le defilement de la
+                          // liste des notes sous le doigt.
+                          interactionOptions: const InteractionOptions(
+                            flags: InteractiveFlag.none,
+                          ),
+                        ),
+                        children: [
+                          const FondDeCarte.duSentierActif(),
+                          PolylineLayer(
+                            polylines: [
+                              Polyline(
+                                points: latLngs,
+                                strokeWidth: 3,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ],
+                          ),
+                          MarkerLayer(
+                            markers: [
+                              _traceDot(
+                                latLngs.first,
+                                theme.colorScheme.primary,
+                              ),
+                              _traceDot(
+                                latLngs.last,
+                                theme.colorScheme.tertiary,
+                              ),
+                            ],
+                          ),
+                          // ODbL : les tuiles viennent d OpenStreetMap, la
+                          // carte le dit (integration 647).
+                          const AttributionOsm(),
                         ],
-                      ),
-                      MarkerLayer(
-                        markers: [
-                          _traceDot(latLngs.first, theme.colorScheme.primary),
-                          _traceDot(latLngs.last, theme.colorScheme.tertiary),
-                        ],
-                      ),
-                      // ODbL : les tuiles viennent d OpenStreetMap, la carte
-                      // le dit (integration 647).
-                      const AttributionOsm(),
-                    ],
+                      );
+                    },
                   ),
                 ),
               ),

@@ -69,6 +69,15 @@ export 'data/source_des_releves.dart'
         sourceDesRelevesProvider;
 export 'data/track_simplifier.dart' show DouglasPeucker;
 export 'domain/longueur_de_pas.dart' show StrideCalibration;
+// LE CADRAGE D'OUVERTURE SORT DE LA CARTE (tache 836). C'est une fonction PURE
+// de geometrie — des bornes, une marge, une taille, et elle rend un centre et
+// un zoom — et le defaut qu'elle corrige frappait AUSSI la vignette du carnet
+// et celle de l'import GPX : une carte qui ouvre sur le zoom par defaut de
+// `flutter_map` demande ses tuiles pour une vue que personne ne verra, puis
+// n'en redemande jamais. La recopier ailleurs aurait fait un troisieme endroit
+// ou se tromper.
+export 'presentation/map/cadrage_d_ouverture.dart'
+    show CadrageDOuverture, cadrageDOuverture;
 export 'presentation/map/marker_cluster.dart' show dynamicEpsilonForZoom;
 export 'presentation/podometre_autorisation.dart'
     show PodometerSettingsTile, ensureStepCountingExplained;
