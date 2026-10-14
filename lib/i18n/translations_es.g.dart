@@ -270,6 +270,8 @@ class _Translations$map$es extends Translations$map$fr {
 	@override String get waterGapTitle => 'Puntos de agua limitados';
 	@override String waterGapRange({required Object n, required Object km}) => 'Último punto de agua antes de ${n} etapas y ${km} km. ¡Llena tus botellas!';
 	@override String waterGapStages({required Object n}) => 'Último punto de agua antes de ${n} etapas. ¡Llena tus botellas!';
+	@override String get waterGapTitleFilter => 'Agua para filtrar';
+	@override String get waterGapTitleTreat => 'Agua para tratar';
 	@override String get pinMergedTitle => 'Varios puntos en el mismo lugar';
 	@override late final _Translations$map$attribution$es attribution = _Translations$map$attribution$es._(_root);
 }
@@ -337,6 +339,7 @@ class _Translations$poi$es extends Translations$poi$fr {
 	@override String get filter => 'Filtrar puntos de interés';
 	@override String get altitude => 'Altitud';
 	@override String get hours => 'Horarios';
+	@override late final _Translations$poi$waterAction$es waterAction = _Translations$poi$waterAction$es._(_root);
 }
 
 // Path: accommodation
@@ -2240,6 +2243,20 @@ class _Translations$stage$advice$es extends Translations$stage$advice$fr {
 	@override String get bigClimb => 'Fuerte desnivel positivo: dosifica el esfuerzo y haz pausas regulares.';
 }
 
+// Path: poi.waterAction
+class _Translations$poi$waterAction$es extends Translations$poi$waterAction$fr {
+	_Translations$poi$waterAction$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get drinkAsIs => 'Agua potable: se bebe tal cual';
+	@override String get filter => 'Filtrar antes de beber';
+	@override String get treatOrBoil => 'Tratar o hervir antes de beber';
+	@override String get doNotDrink => 'No beber';
+	@override String get precaution => 'Por precaución: los datos no dicen nada de esta agua. No es un dato medido.';
+}
+
 // Path: accommodation.types
 class _Translations$accommodation$types$es extends Translations$accommodation$types$fr {
 	_Translations$accommodation$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -2365,6 +2382,7 @@ class _Translations$checklist$items$es extends Translations$checklist$items$fr {
 	@override String get driedFruits => 'Frutos secos';
 	@override String get freezeDriedMeal => 'Comida liofilizada';
 	@override String get waterPurification => 'Pastillas potabilizadoras';
+	@override String get waterFilter => 'Filtro de agua';
 	@override String get electrolytes => 'Electrolitos';
 	@override String get carriedWater => 'Agua transportada (1L = 1000g)';
 	@override String get soap => 'Jabón biodegradable';
@@ -4470,6 +4488,8 @@ extension on TranslationsEs {
 			'map.waterGapTitle' => 'Puntos de agua limitados',
 			'map.waterGapRange' => ({required Object n, required Object km}) => 'Último punto de agua antes de ${n} etapas y ${km} km. ¡Llena tus botellas!',
 			'map.waterGapStages' => ({required Object n}) => 'Último punto de agua antes de ${n} etapas. ¡Llena tus botellas!',
+			'map.waterGapTitleFilter' => 'Agua para filtrar',
+			'map.waterGapTitleTreat' => 'Agua para tratar',
 			'map.pinMergedTitle' => 'Varios puntos en el mismo lugar',
 			'map.attribution.licence' => 'Datos cartograficos con licencia ODbL — ver la licencia',
 			'map.attribution.traces' => 'Trazados de los senderos recogidos en OpenStreetMap',
@@ -4523,6 +4543,11 @@ extension on TranslationsEs {
 			'poi.filter' => 'Filtrar puntos de interés',
 			'poi.altitude' => 'Altitud',
 			'poi.hours' => 'Horarios',
+			'poi.waterAction.drinkAsIs' => 'Agua potable: se bebe tal cual',
+			'poi.waterAction.filter' => 'Filtrar antes de beber',
+			'poi.waterAction.treatOrBoil' => 'Tratar o hervir antes de beber',
+			'poi.waterAction.doNotDrink' => 'No beber',
+			'poi.waterAction.precaution' => 'Por precaución: los datos no dicen nada de esta agua. No es un dato medido.',
 			'accommodation.types.refuge' => 'Refugio',
 			'accommodation.types.bergerie' => 'Majada',
 			'accommodation.types.gite' => 'Albergue',
@@ -4665,6 +4690,7 @@ extension on TranslationsEs {
 			'checklist.items.driedFruits' => 'Frutos secos',
 			'checklist.items.freezeDriedMeal' => 'Comida liofilizada',
 			'checklist.items.waterPurification' => 'Pastillas potabilizadoras',
+			'checklist.items.waterFilter' => 'Filtro de agua',
 			'checklist.items.electrolytes' => 'Electrolitos',
 			'checklist.items.carriedWater' => 'Agua transportada (1L = 1000g)',
 			'checklist.items.soap' => 'Jabón biodegradable',
@@ -4779,6 +4805,8 @@ extension on TranslationsEs {
 			'checklist.ui.requiredWarnBody' => 'Este equipo es obligatorio por seguridad (inspirado en el reglamento UTMB). Seguro que quieres quitarlo?',
 			'checklist.ui.keep' => 'Mantener',
 			'checklist.ui.removeAnyway' => 'Quitar de todos modos',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.reduceQuantity' => 'Reducir cantidad',
 			'checklist.ui.increaseQuantity' => 'Aumentar cantidad',
 			'checklist.ui.addToShoppingList' => 'Añadir a la lista de la compra',
@@ -4787,8 +4815,6 @@ extension on TranslationsEs {
 			'checklist.ui.shoppingListTitle' => 'Lista de la compra',
 			'checklist.ui.shoppingListEmpty' => 'Tu lista de la compra está vacía. Añade artículos con el botón del carrito.',
 			'checklist.ui.shoppingToBuy' => 'Por comprar',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.shoppingPurchased' => 'Ya comprado',
 			'checklist.ui.share' => 'COMPARTIR',
 			'checklist.ui.infoTitle' => 'Equipo & Mochila',
@@ -5293,6 +5319,8 @@ extension on TranslationsEs {
 			'demo.collecteIntro' => 'La información usada para calcular la viabilidad.',
 			'demo.collecteProfil' => 'Tu perfil',
 			'demo.collecteForme' => 'Tu forma física',
+			_ => null,
+		} ?? switch (path) {
 			'demo.collecteExperience' => 'Tu experiencia',
 			'demo.collecteSaison' => 'Temporada de salida',
 			'demo.collecteSentier' => 'El sendero',
@@ -5301,8 +5329,6 @@ extension on TranslationsEs {
 			'demo.sortieFaite' => 'Has salido de la demo.',
 			'updates.readyTitle' => 'Actualización lista',
 			'updates.readyBodyOne' => 'Un sendero ha sido actualizado.',
-			_ => null,
-		} ?? switch (path) {
 			'updates.readyBodyMany' => ({required Object count}) => '${count} senderos han sido actualizados.',
 			'follow.title' => 'Seguimiento en directo',
 			'follow.connecting' => 'Conectando…',
@@ -5807,6 +5833,8 @@ extension on TranslationsEs {
 			'moderation.decisions.remove' => 'Contenido retirado',
 			'moderation.noStatement' => 'No se ha aplicado ninguna restricción a tu contenido.',
 			'moderation.complaintAction' => 'Impugnar esta decisión',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.complaintTitle' => 'Impugnar una decisión',
 			'moderation.complaintIntro' => 'Puedes impugnar una decisión de moderación. Explica por qué consideras la decisión injustificada (artículo 20).',
 			'moderation.complaintExposeLabel' => 'Tu impugnación',
@@ -5815,8 +5843,6 @@ extension on TranslationsEs {
 			'moderation.complaintSent' => 'Impugnación registrada. Será examinada.',
 			'moderation.complaintEmpty' => 'Explica tu impugnación.',
 			'moderation.a11y.reportForm' => 'Formulario de denuncia de contenido',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.a11y.reasonSelector' => 'Selector del motivo de la denuncia',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Declaración de buena fe, ${state}',
 			'moderation.a11y.submitReport' => 'Enviar denuncia',
@@ -6321,6 +6347,8 @@ extension on TranslationsEs {
 			'systemBackup.a11yCheckbox' => 'Rechazar la copia de seguridad de todos mis datos por el sistema del teléfono',
 			'lieu.ouvrirDansLesCartes' => 'Abrir en mapas',
 			'lieu.cartesIndisponibles' => 'Ninguna aplicación de mapas pudo abrirse en este dispositivo.',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.adresse' => 'Dirección',
 			'lieu.telephoner' => 'Llamar',
 			'lieu.siteOfficiel' => 'Sitio oficial',
@@ -6329,8 +6357,6 @@ extension on TranslationsEs {
 			'lieu.rafraichir' => 'Actualizar desde la base de datos',
 			'lieu.rafraichirFait' => ({required Object n}) => '${n} información(es) actualizada(s) desde la base de datos.',
 			'lieu.rafraichirDejaAJour' => 'Ya está al día: la base de datos no tiene nada más reciente.',
-			_ => null,
-		} ?? switch (path) {
 			'lieu.rafraichirHorsLigne' => 'Sin red: lo que ves es lo que hay en el teléfono.',
 			'lieu.rafraichirEchec' => 'La actualización ha fallado. Los datos del teléfono están intactos.',
 			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => 'Abrir ${name} en la aplicación de mapas',

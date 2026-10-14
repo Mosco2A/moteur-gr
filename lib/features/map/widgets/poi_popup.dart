@@ -64,7 +64,7 @@ class _PoiPopupState extends State<PoiPopup> {
   Widget build(BuildContext context) {
     final poi = widget.poi;
     final theme = Theme.of(context);
-    final color = PoiMarker.colorFor(poi.type);
+    final color = PoiMarker.colorFor(poi.type, waterAction: poi.waterAction);
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -91,7 +91,7 @@ class _PoiPopupState extends State<PoiPopup> {
                 Row(
                   children: [
                     StepIcon(
-                      PoiMarker.iconFor(poi.type),
+                      PoiMarker.iconFor(poi.type, waterAction: poi.waterAction),
                       color: color,
                       size: 20,
                     ),

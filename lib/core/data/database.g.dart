@@ -1092,6 +1092,17 @@ class $PoisTable extends Pois with TableInfo<$PoisTable, Poi> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _waterActionMeta = const VerificationMeta(
+    'waterAction',
+  );
+  @override
+  late final GeneratedColumn<String> waterAction = GeneratedColumn<String>(
+    'water_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1104,6 +1115,7 @@ class $PoisTable extends Pois with TableInfo<$PoisTable, Poi> {
     lng,
     altitudeM,
     openingHours,
+    waterAction,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1195,6 +1207,15 @@ class $PoisTable extends Pois with TableInfo<$PoisTable, Poi> {
         ),
       );
     }
+    if (data.containsKey('water_action')) {
+      context.handle(
+        _waterActionMeta,
+        waterAction.isAcceptableOrUnknown(
+          data['water_action']!,
+          _waterActionMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1244,6 +1265,10 @@ class $PoisTable extends Pois with TableInfo<$PoisTable, Poi> {
         DriftSqlType.string,
         data['${effectivePrefix}opening_hours'],
       ),
+      waterAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}water_action'],
+      ),
     );
   }
 
@@ -1283,6 +1308,16 @@ class Poi extends DataClass implements Insertable<Poi> {
 
   /// Horaires d'ouverture (nullable)
   final String? openingHours;
+
+  /// LE GESTE A FAIRE AVANT DE BOIRE, tel que la donnee du sentier le DECLARE
+  /// (tache 846) : `drink_as_is`, `filter`, `treat_or_boil`, `do_not_drink`.
+  ///
+  /// NULLABLE, ET SANS VALEUR PAR DEFAUT — c'est voulu. Une colonne a
+  /// `DEFAULT 'filter'` aurait rendu un point MUET indiscernable d'un point
+  /// RELEVE a filtrer, et l'application doit dire lequel des deux elle montre.
+  /// Le repli de prudence vit dans `WaterAction.parPrudence`, cote modele, pas
+  /// dans le schema.
+  final String? waterAction;
   const Poi({
     required this.id,
     required this.trailId,
@@ -1294,6 +1329,7 @@ class Poi extends DataClass implements Insertable<Poi> {
     required this.lng,
     required this.altitudeM,
     this.openingHours,
+    this.waterAction,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1309,6 +1345,9 @@ class Poi extends DataClass implements Insertable<Poi> {
     map['altitude_m'] = Variable<int>(altitudeM);
     if (!nullToAbsent || openingHours != null) {
       map['opening_hours'] = Variable<String>(openingHours);
+    }
+    if (!nullToAbsent || waterAction != null) {
+      map['water_action'] = Variable<String>(waterAction);
     }
     return map;
   }
@@ -1327,6 +1366,9 @@ class Poi extends DataClass implements Insertable<Poi> {
       openingHours: openingHours == null && nullToAbsent
           ? const Value.absent()
           : Value(openingHours),
+      waterAction: waterAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(waterAction),
     );
   }
 
@@ -1346,6 +1388,7 @@ class Poi extends DataClass implements Insertable<Poi> {
       lng: serializer.fromJson<double>(json['lng']),
       altitudeM: serializer.fromJson<int>(json['altitudeM']),
       openingHours: serializer.fromJson<String?>(json['openingHours']),
+      waterAction: serializer.fromJson<String?>(json['waterAction']),
     );
   }
   @override
@@ -1362,6 +1405,7 @@ class Poi extends DataClass implements Insertable<Poi> {
       'lng': serializer.toJson<double>(lng),
       'altitudeM': serializer.toJson<int>(altitudeM),
       'openingHours': serializer.toJson<String?>(openingHours),
+      'waterAction': serializer.toJson<String?>(waterAction),
     };
   }
 
@@ -1376,6 +1420,7 @@ class Poi extends DataClass implements Insertable<Poi> {
     double? lng,
     int? altitudeM,
     Value<String?> openingHours = const Value.absent(),
+    Value<String?> waterAction = const Value.absent(),
   }) => Poi(
     id: id ?? this.id,
     trailId: trailId ?? this.trailId,
@@ -1387,6 +1432,7 @@ class Poi extends DataClass implements Insertable<Poi> {
     lng: lng ?? this.lng,
     altitudeM: altitudeM ?? this.altitudeM,
     openingHours: openingHours.present ? openingHours.value : this.openingHours,
+    waterAction: waterAction.present ? waterAction.value : this.waterAction,
   );
   Poi copyWithCompanion(PoisCompanion data) {
     return Poi(
@@ -1406,6 +1452,9 @@ class Poi extends DataClass implements Insertable<Poi> {
       openingHours: data.openingHours.present
           ? data.openingHours.value
           : this.openingHours,
+      waterAction: data.waterAction.present
+          ? data.waterAction.value
+          : this.waterAction,
     );
   }
 
@@ -1421,7 +1470,8 @@ class Poi extends DataClass implements Insertable<Poi> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('altitudeM: $altitudeM, ')
-          ..write('openingHours: $openingHours')
+          ..write('openingHours: $openingHours, ')
+          ..write('waterAction: $waterAction')
           ..write(')'))
         .toString();
   }
@@ -1438,6 +1488,7 @@ class Poi extends DataClass implements Insertable<Poi> {
     lng,
     altitudeM,
     openingHours,
+    waterAction,
   );
   @override
   bool operator ==(Object other) =>
@@ -1452,7 +1503,8 @@ class Poi extends DataClass implements Insertable<Poi> {
           other.lat == this.lat &&
           other.lng == this.lng &&
           other.altitudeM == this.altitudeM &&
-          other.openingHours == this.openingHours);
+          other.openingHours == this.openingHours &&
+          other.waterAction == this.waterAction);
 }
 
 class PoisCompanion extends UpdateCompanion<Poi> {
@@ -1466,6 +1518,7 @@ class PoisCompanion extends UpdateCompanion<Poi> {
   final Value<double> lng;
   final Value<int> altitudeM;
   final Value<String?> openingHours;
+  final Value<String?> waterAction;
   const PoisCompanion({
     this.id = const Value.absent(),
     this.trailId = const Value.absent(),
@@ -1477,6 +1530,7 @@ class PoisCompanion extends UpdateCompanion<Poi> {
     this.lng = const Value.absent(),
     this.altitudeM = const Value.absent(),
     this.openingHours = const Value.absent(),
+    this.waterAction = const Value.absent(),
   });
   PoisCompanion.insert({
     this.id = const Value.absent(),
@@ -1489,6 +1543,7 @@ class PoisCompanion extends UpdateCompanion<Poi> {
     required double lng,
     this.altitudeM = const Value.absent(),
     this.openingHours = const Value.absent(),
+    this.waterAction = const Value.absent(),
   }) : trailId = Value(trailId),
        stageNumber = Value(stageNumber),
        name = Value(name),
@@ -1506,6 +1561,7 @@ class PoisCompanion extends UpdateCompanion<Poi> {
     Expression<double>? lng,
     Expression<int>? altitudeM,
     Expression<String>? openingHours,
+    Expression<String>? waterAction,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1518,6 +1574,7 @@ class PoisCompanion extends UpdateCompanion<Poi> {
       if (lng != null) 'lng': lng,
       if (altitudeM != null) 'altitude_m': altitudeM,
       if (openingHours != null) 'opening_hours': openingHours,
+      if (waterAction != null) 'water_action': waterAction,
     });
   }
 
@@ -1532,6 +1589,7 @@ class PoisCompanion extends UpdateCompanion<Poi> {
     Value<double>? lng,
     Value<int>? altitudeM,
     Value<String?>? openingHours,
+    Value<String?>? waterAction,
   }) {
     return PoisCompanion(
       id: id ?? this.id,
@@ -1544,6 +1602,7 @@ class PoisCompanion extends UpdateCompanion<Poi> {
       lng: lng ?? this.lng,
       altitudeM: altitudeM ?? this.altitudeM,
       openingHours: openingHours ?? this.openingHours,
+      waterAction: waterAction ?? this.waterAction,
     );
   }
 
@@ -1580,6 +1639,9 @@ class PoisCompanion extends UpdateCompanion<Poi> {
     if (openingHours.present) {
       map['opening_hours'] = Variable<String>(openingHours.value);
     }
+    if (waterAction.present) {
+      map['water_action'] = Variable<String>(waterAction.value);
+    }
     return map;
   }
 
@@ -1595,7 +1657,8 @@ class PoisCompanion extends UpdateCompanion<Poi> {
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('altitudeM: $altitudeM, ')
-          ..write('openingHours: $openingHours')
+          ..write('openingHours: $openingHours, ')
+          ..write('waterAction: $waterAction')
           ..write(')'))
         .toString();
   }
@@ -20917,6 +20980,7 @@ typedef $$PoisTableCreateCompanionBuilder =
       required double lng,
       Value<int> altitudeM,
       Value<String?> openingHours,
+      Value<String?> waterAction,
     });
 typedef $$PoisTableUpdateCompanionBuilder =
     PoisCompanion Function({
@@ -20930,6 +20994,7 @@ typedef $$PoisTableUpdateCompanionBuilder =
       Value<double> lng,
       Value<int> altitudeM,
       Value<String?> openingHours,
+      Value<String?> waterAction,
     });
 
 class $$PoisTableFilterComposer extends Composer<_$AppDatabase, $PoisTable> {
@@ -20987,6 +21052,11 @@ class $$PoisTableFilterComposer extends Composer<_$AppDatabase, $PoisTable> {
 
   ColumnFilters<String> get openingHours => $composableBuilder(
     column: $table.openingHours,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get waterAction => $composableBuilder(
+    column: $table.waterAction,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -21048,6 +21118,11 @@ class $$PoisTableOrderingComposer extends Composer<_$AppDatabase, $PoisTable> {
     column: $table.openingHours,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get waterAction => $composableBuilder(
+    column: $table.waterAction,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PoisTableAnnotationComposer
@@ -21094,6 +21169,11 @@ class $$PoisTableAnnotationComposer
     column: $table.openingHours,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get waterAction => $composableBuilder(
+    column: $table.waterAction,
+    builder: (column) => column,
+  );
 }
 
 class $$PoisTableTableManager
@@ -21134,6 +21214,7 @@ class $$PoisTableTableManager
                 Value<double> lng = const Value.absent(),
                 Value<int> altitudeM = const Value.absent(),
                 Value<String?> openingHours = const Value.absent(),
+                Value<String?> waterAction = const Value.absent(),
               }) => PoisCompanion(
                 id: id,
                 trailId: trailId,
@@ -21145,6 +21226,7 @@ class $$PoisTableTableManager
                 lng: lng,
                 altitudeM: altitudeM,
                 openingHours: openingHours,
+                waterAction: waterAction,
               ),
           createCompanionCallback:
               ({
@@ -21158,6 +21240,7 @@ class $$PoisTableTableManager
                 required double lng,
                 Value<int> altitudeM = const Value.absent(),
                 Value<String?> openingHours = const Value.absent(),
+                Value<String?> waterAction = const Value.absent(),
               }) => PoisCompanion.insert(
                 id: id,
                 trailId: trailId,
@@ -21169,6 +21252,7 @@ class $$PoisTableTableManager
                 lng: lng,
                 altitudeM: altitudeM,
                 openingHours: openingHours,
+                waterAction: waterAction,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

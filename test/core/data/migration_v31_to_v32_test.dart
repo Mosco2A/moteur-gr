@@ -71,7 +71,11 @@ void main() {
       final names = columns.map((r) => r.read<String>('name')).toSet();
       expect(names, contains('source'), reason: 'colonne ajoutee en v32');
       final version = await db.customSelect('PRAGMA user_version').getSingle();
-      expect(version.data.values.first, 32);
+      // 33 DEPUIS LA TACHE 846 (le geste de l eau sur un point d eau) : ce
+      // test ouvre la base au schema COURANT, donc son compteur monte a chaque
+      // marche ajoutee. Ce qu il verifie ne change pas — la colonne `source`
+      // de la v32 est bien la, et aucun point n a ete perdu en route.
+      expect(version.data.values.first, 33);
 
       final points = await db.sessionTrackPointsDao.getBySessionId(
         'sess-v31',

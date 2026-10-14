@@ -127,6 +127,20 @@ abstract final class StepwaysIcons {
   static const refuge = 'assets/icons/refuge.svg'; // Refuge
   static const camping = 'assets/icons/camping.svg'; // Camping
   static const pointEau = 'assets/icons/point-eau.svg'; // Point d'eau
+
+  /// Point d'eau A FILTRER (tache 846) : la goutte, barree d'un tamis.
+  ///
+  /// MEME GOUTTE, A LA COURBE PRES, que [pointEau] — c'est de l'eau, et le
+  /// marcheur doit la reconnaitre comme telle d'un coup d'oeil. Ce qui change
+  /// est ce qu'il y a DEDANS : deux traits horizontaux, le tamis.
+  static const pointEauAFiltrer = 'assets/icons/point-eau-a-filtrer.svg';
+
+  /// Point d'eau qui NE SE BOIT PAS (tache 846) : la goutte, barree.
+  ///
+  /// La barre diagonale du refus ([interdit]) posee sur la goutte. On arrive
+  /// assoiffe devant une source thermale, et on ne lit pas les etiquettes dans
+  /// cet etat : il faut que le dessin dise non.
+  static const pointEauInterdit = 'assets/icons/point-eau-interdit.svg';
   static const parking = 'assets/icons/parking.svg'; // Parking
   static const pointDeVue = 'assets/icons/point-de-vue.svg'; // Point de vue
   static const lac = 'assets/icons/lac.svg'; // Lac

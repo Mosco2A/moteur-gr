@@ -25,7 +25,24 @@ mixin _$PoiModel {
  double get lat;/// Longitude
  double get lng;/// Altitude en metres
  int get altitudeM;/// Horaires d'ouverture (nullable)
- String? get openingHours;
+ String? get openingHours;/// LE GESTE A FAIRE AVANT DE BOIRE, TEL QUE LA DONNEE LE DECLARE.
+///
+/// `null` QUAND LA DONNEE N'EN DIT RIEN, et c'est le point entier de ce
+/// champ : il ne porte que du releve. Le geste a montrer au marcheur se lit
+/// sur [waterAction], qui applique le repli de prudence ; et
+/// [waterActionIsPrecaution] dit lequel des deux on vient de lire.
+///
+/// N'a de sens que sur un point d'eau (les types de `PoiTypeConfig`
+/// `waterTypes`).
+/// AUCUNE ANNOTATION ICI, ET C'EST VOLONTAIRE. La donnee du sentier ecrit
+/// ce geste sous la cle `waterAction`, en `snake_case`
+/// ([WaterAction.versDonnee]), et c'est le SEMEUR qui la lit — lui seul,
+/// explicitement, via [WaterAction.depuisDonnee]. [PoiModel.fromJson]
+/// n'est PAS le chemin de la donnee embarquee : lui coller un `@JsonKey`
+/// pour faire coincider les deux orthographes n'aurait servi personne, et
+/// une annotation sur un parametre de fabrique freezed n'est de toute
+/// facon pas a sa place.
+ WaterAction? get declaredWaterAction;
 /// Create a copy of PoiModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -38,16 +55,16 @@ $PoiModelCopyWith<PoiModel> get copyWith => _$PoiModelCopyWithImpl<PoiModel>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PoiModel&&(identical(other.id, id) || other.id == id)&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.type, type) || other.type == type)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.altitudeM, altitudeM) || other.altitudeM == altitudeM)&&(identical(other.openingHours, openingHours) || other.openingHours == openingHours));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PoiModel&&(identical(other.id, id) || other.id == id)&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.type, type) || other.type == type)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.altitudeM, altitudeM) || other.altitudeM == altitudeM)&&(identical(other.openingHours, openingHours) || other.openingHours == openingHours)&&(identical(other.declaredWaterAction, declaredWaterAction) || other.declaredWaterAction == declaredWaterAction));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,trailId,stageNumber,name,description,type,lat,lng,altitudeM,openingHours);
+int get hashCode => Object.hash(runtimeType,id,trailId,stageNumber,name,description,type,lat,lng,altitudeM,openingHours,declaredWaterAction);
 
 @override
 String toString() {
-  return 'PoiModel(id: $id, trailId: $trailId, stageNumber: $stageNumber, name: $name, description: $description, type: $type, lat: $lat, lng: $lng, altitudeM: $altitudeM, openingHours: $openingHours)';
+  return 'PoiModel(id: $id, trailId: $trailId, stageNumber: $stageNumber, name: $name, description: $description, type: $type, lat: $lat, lng: $lng, altitudeM: $altitudeM, openingHours: $openingHours, declaredWaterAction: $declaredWaterAction)';
 }
 
 
@@ -58,7 +75,7 @@ abstract mixin class $PoiModelCopyWith<$Res>  {
   factory $PoiModelCopyWith(PoiModel value, $Res Function(PoiModel) _then) = _$PoiModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String trailId, int stageNumber, String name, String description, String type, double lat, double lng, int altitudeM, String? openingHours
+ int id, String trailId, int stageNumber, String name, String description, String type, double lat, double lng, int altitudeM, String? openingHours, WaterAction? declaredWaterAction
 });
 
 
@@ -75,7 +92,7 @@ class _$PoiModelCopyWithImpl<$Res>
 
 /// Create a copy of PoiModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? trailId = null,Object? stageNumber = null,Object? name = null,Object? description = null,Object? type = null,Object? lat = null,Object? lng = null,Object? altitudeM = null,Object? openingHours = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? trailId = null,Object? stageNumber = null,Object? name = null,Object? description = null,Object? type = null,Object? lat = null,Object? lng = null,Object? altitudeM = null,Object? openingHours = freezed,Object? declaredWaterAction = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
@@ -87,7 +104,8 @@ as String,lat: null == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nul
 as double,lng: null == lng ? _self.lng : lng // ignore: cast_nullable_to_non_nullable
 as double,altitudeM: null == altitudeM ? _self.altitudeM : altitudeM // ignore: cast_nullable_to_non_nullable
 as int,openingHours: freezed == openingHours ? _self.openingHours : openingHours // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,declaredWaterAction: freezed == declaredWaterAction ? _self.declaredWaterAction : declaredWaterAction // ignore: cast_nullable_to_non_nullable
+as WaterAction?,
   ));
 }
 
@@ -172,10 +190,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String trailId,  int stageNumber,  String name,  String description,  String type,  double lat,  double lng,  int altitudeM,  String? openingHours)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String trailId,  int stageNumber,  String name,  String description,  String type,  double lat,  double lng,  int altitudeM,  String? openingHours,  WaterAction? declaredWaterAction)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PoiModel() when $default != null:
-return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.description,_that.type,_that.lat,_that.lng,_that.altitudeM,_that.openingHours);case _:
+return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.description,_that.type,_that.lat,_that.lng,_that.altitudeM,_that.openingHours,_that.declaredWaterAction);case _:
   return orElse();
 
 }
@@ -193,10 +211,10 @@ return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.descri
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String trailId,  int stageNumber,  String name,  String description,  String type,  double lat,  double lng,  int altitudeM,  String? openingHours)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String trailId,  int stageNumber,  String name,  String description,  String type,  double lat,  double lng,  int altitudeM,  String? openingHours,  WaterAction? declaredWaterAction)  $default,) {final _that = this;
 switch (_that) {
 case _PoiModel():
-return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.description,_that.type,_that.lat,_that.lng,_that.altitudeM,_that.openingHours);case _:
+return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.description,_that.type,_that.lat,_that.lng,_that.altitudeM,_that.openingHours,_that.declaredWaterAction);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -213,10 +231,10 @@ return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.descri
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String trailId,  int stageNumber,  String name,  String description,  String type,  double lat,  double lng,  int altitudeM,  String? openingHours)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String trailId,  int stageNumber,  String name,  String description,  String type,  double lat,  double lng,  int altitudeM,  String? openingHours,  WaterAction? declaredWaterAction)?  $default,) {final _that = this;
 switch (_that) {
 case _PoiModel() when $default != null:
-return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.description,_that.type,_that.lat,_that.lng,_that.altitudeM,_that.openingHours);case _:
+return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.description,_that.type,_that.lat,_that.lng,_that.altitudeM,_that.openingHours,_that.declaredWaterAction);case _:
   return null;
 
 }
@@ -228,7 +246,7 @@ return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.descri
 @JsonSerializable()
 
 class _PoiModel extends PoiModel {
-  const _PoiModel({this.id = 0, required this.trailId, required this.stageNumber, required this.name, this.description = '', required this.type, required this.lat, required this.lng, this.altitudeM = 0, this.openingHours}): super._();
+  const _PoiModel({this.id = 0, required this.trailId, required this.stageNumber, required this.name, this.description = '', required this.type, required this.lat, required this.lng, this.altitudeM = 0, this.openingHours, this.declaredWaterAction}): super._();
   factory _PoiModel.fromJson(Map<String, dynamic> json) => _$PoiModelFromJson(json);
 
 /// Cle primaire DB (0 si pas encore insere)
@@ -251,6 +269,24 @@ class _PoiModel extends PoiModel {
 @override@JsonKey() final  int altitudeM;
 /// Horaires d'ouverture (nullable)
 @override final  String? openingHours;
+/// LE GESTE A FAIRE AVANT DE BOIRE, TEL QUE LA DONNEE LE DECLARE.
+///
+/// `null` QUAND LA DONNEE N'EN DIT RIEN, et c'est le point entier de ce
+/// champ : il ne porte que du releve. Le geste a montrer au marcheur se lit
+/// sur [waterAction], qui applique le repli de prudence ; et
+/// [waterActionIsPrecaution] dit lequel des deux on vient de lire.
+///
+/// N'a de sens que sur un point d'eau (les types de `PoiTypeConfig`
+/// `waterTypes`).
+/// AUCUNE ANNOTATION ICI, ET C'EST VOLONTAIRE. La donnee du sentier ecrit
+/// ce geste sous la cle `waterAction`, en `snake_case`
+/// ([WaterAction.versDonnee]), et c'est le SEMEUR qui la lit — lui seul,
+/// explicitement, via [WaterAction.depuisDonnee]. [PoiModel.fromJson]
+/// n'est PAS le chemin de la donnee embarquee : lui coller un `@JsonKey`
+/// pour faire coincider les deux orthographes n'aurait servi personne, et
+/// une annotation sur un parametre de fabrique freezed n'est de toute
+/// facon pas a sa place.
+@override final  WaterAction? declaredWaterAction;
 
 /// Create a copy of PoiModel
 /// with the given fields replaced by the non-null parameter values.
@@ -265,16 +301,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PoiModel&&(identical(other.id, id) || other.id == id)&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.type, type) || other.type == type)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.altitudeM, altitudeM) || other.altitudeM == altitudeM)&&(identical(other.openingHours, openingHours) || other.openingHours == openingHours));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PoiModel&&(identical(other.id, id) || other.id == id)&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.type, type) || other.type == type)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.altitudeM, altitudeM) || other.altitudeM == altitudeM)&&(identical(other.openingHours, openingHours) || other.openingHours == openingHours)&&(identical(other.declaredWaterAction, declaredWaterAction) || other.declaredWaterAction == declaredWaterAction));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,trailId,stageNumber,name,description,type,lat,lng,altitudeM,openingHours);
+int get hashCode => Object.hash(runtimeType,id,trailId,stageNumber,name,description,type,lat,lng,altitudeM,openingHours,declaredWaterAction);
 
 @override
 String toString() {
-  return 'PoiModel(id: $id, trailId: $trailId, stageNumber: $stageNumber, name: $name, description: $description, type: $type, lat: $lat, lng: $lng, altitudeM: $altitudeM, openingHours: $openingHours)';
+  return 'PoiModel(id: $id, trailId: $trailId, stageNumber: $stageNumber, name: $name, description: $description, type: $type, lat: $lat, lng: $lng, altitudeM: $altitudeM, openingHours: $openingHours, declaredWaterAction: $declaredWaterAction)';
 }
 
 
@@ -285,7 +321,7 @@ abstract mixin class _$PoiModelCopyWith<$Res> implements $PoiModelCopyWith<$Res>
   factory _$PoiModelCopyWith(_PoiModel value, $Res Function(_PoiModel) _then) = __$PoiModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String trailId, int stageNumber, String name, String description, String type, double lat, double lng, int altitudeM, String? openingHours
+ int id, String trailId, int stageNumber, String name, String description, String type, double lat, double lng, int altitudeM, String? openingHours, WaterAction? declaredWaterAction
 });
 
 
@@ -302,7 +338,7 @@ class __$PoiModelCopyWithImpl<$Res>
 
 /// Create a copy of PoiModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? trailId = null,Object? stageNumber = null,Object? name = null,Object? description = null,Object? type = null,Object? lat = null,Object? lng = null,Object? altitudeM = null,Object? openingHours = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? trailId = null,Object? stageNumber = null,Object? name = null,Object? description = null,Object? type = null,Object? lat = null,Object? lng = null,Object? altitudeM = null,Object? openingHours = freezed,Object? declaredWaterAction = freezed,}) {
   return _then(_PoiModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
@@ -314,7 +350,8 @@ as String,lat: null == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nul
 as double,lng: null == lng ? _self.lng : lng // ignore: cast_nullable_to_non_nullable
 as double,altitudeM: null == altitudeM ? _self.altitudeM : altitudeM // ignore: cast_nullable_to_non_nullable
 as int,openingHours: freezed == openingHours ? _self.openingHours : openingHours // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,declaredWaterAction: freezed == declaredWaterAction ? _self.declaredWaterAction : declaredWaterAction // ignore: cast_nullable_to_non_nullable
+as WaterAction?,
   ));
 }
 

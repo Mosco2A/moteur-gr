@@ -221,6 +221,8 @@
     "waterGapTitle": "Begrenzte Wasserstellen",
     "waterGapRange": "Letzte Wasserstelle vor $n Etappen und $km km. Füll deine Flaschen!",
     "waterGapStages": "Letzte Wasserstelle vor $n Etappen. Füll deine Flaschen!",
+    "waterGapTitleFilter": "Wasser filtern",
+    "waterGapTitleTreat": "Wasser abkochen",
     "pinMergedTitle": "Mehrere Markierungen am selben Ort",
     "attribution": {
       "licence": "Kartendaten unter ODbL-Lizenz — Lizenz ansehen",
@@ -289,7 +291,14 @@
     "info": "Information",
     "filter": "Sehenswürdigkeiten filtern",
     "altitude": "Höhe",
-    "hours": "Öffnungszeiten"
+    "hours": "Öffnungszeiten",
+    "waterAction": {
+      "drinkAsIs": "Trinkwasser: direkt trinkbar",
+      "filter": "Vor dem Trinken filtern",
+      "treatOrBoil": "Vor dem Trinken behandeln oder abkochen",
+      "doNotDrink": "Nicht trinken",
+      "precaution": "Vorsorglich: die Daten sagen nichts über dieses Wasser. Das ist keine Messung."
+    }
   },
   "accommodation": {
     "types": {
@@ -466,6 +475,7 @@
       "driedFruits": "Trockenfrüchte",
       "freezeDriedMeal": "Gefriergetrocknete Mahlzeit",
       "waterPurification": "Wasser-Entkeimungstabletten",
+      "waterFilter": "Wasserfilter",
       "electrolytes": "Elektrolyte",
       "carriedWater": "Getragenes Wasser (1L = 1000g)",
       "soap": "Biologisch abbaubare Seife",

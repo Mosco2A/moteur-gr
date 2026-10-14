@@ -223,7 +223,10 @@ class _ChecklistGroup extends ConsumerWidget {
                 ),
               ),
               secondary: StepIcon(
-                PoiTypeConfig.getStyle(poi.type).icon,
+                PoiTypeConfig.getStyle(
+                  poi.type,
+                  waterAction: poi.waterAction,
+                ).icon,
                 color: color,
               ),
             ),

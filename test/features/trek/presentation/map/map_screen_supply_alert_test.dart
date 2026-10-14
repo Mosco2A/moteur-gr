@@ -6,12 +6,14 @@ import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/geo/trace_point.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
+import 'package:moteur_gr/core/models/water_action.dart';
 import 'package:moteur_gr/core/utils/nombre_en_clair.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';
 import 'package:moteur_gr/features/map/providers/supply_alert_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/domain/trek_session.dart';
+import 'package:moteur_gr/features/trek/presentation/map/libelle_de_l_alerte.dart';
 import 'package:moteur_gr/features/trek/presentation/map/map_screen.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
@@ -389,6 +391,113 @@ void main() {
           tester.takeException(),
           isNull,
           reason: 'debordement en $langue',
+        );
+      }
+    });
+  });
+
+  /// CE QUE LE GESTE COUTE A L'ECRAN : RIEN (tache 846).
+  ///
+  /// CE BANC A DECIDE D'UN CHOIX DE CONCEPTION, ET VOICI LE CHIFFRE. Le geste
+  /// avait d'abord ete ecrit en fin de corps de texte, en une phrase de plus
+  /// (« Le prochain est a filtrer. »). Mesure ici meme : a 320 points de large
+  /// — le plus petit telephone encore vendu — cette phrase coutait
+  /// 32 POINTS DE HAUTEUR, soit DEUX lignes, pendant qu'elle n'en coutait
+  /// qu'une a 360, 390 et 412. Or le bandeau partage sa [Column] avec la
+  /// pastille SOS et se trouve au-dessus d'elle : trente-deux points, c'est le
+  /// SOS qui descend pendant la marche.
+  ///
+  /// LE GESTE EST DONC PASSE DANS LE TITRE, ou « a filtrer » remplace
+  /// « limites » sur une ligne qui existait deja. Ce groupe verrouille le
+  /// resultat : la hauteur du bandeau est EXACTEMENT la meme avec et sans
+  /// geste, aux quatre largeurs, et aucun debordement dans les cinq langues.
+  ///
+  /// La lecon vient de la tache 844, ou une note de donnee rallongee a fait
+  /// deborder un bandeau de 124 pixels sur un telephone courant : on mesure
+  /// AVANT de poser le texte, et quand la mesure dit non, c'est le texte qui
+  /// bouge.
+  group('La place prise par le geste (846)', () {
+    const sansClause = SupplyGapAlert(
+      stageNumber: 1,
+      gap: 2,
+      kind: SupplyGapKind.water,
+      km: 28.6,
+      waterAction: WaterAction.drinkAsIs,
+    );
+    const avecClause = SupplyGapAlert(
+      stageNumber: 1,
+      gap: 2,
+      kind: SupplyGapKind.water,
+      km: 28.6,
+      waterAction: WaterAction.filter,
+    );
+
+    test('le geste change le TITRE, et ne touche pas au corps', () {
+      // Le corps est identique au point d'exclamation pres : c'est la phrase
+      // de la tache 834, deja relue et deja mesuree.
+      expect(texteDeLAlerte(avecClause), texteDeLAlerte(sansClause));
+      // Le titre, lui, dit le geste.
+      expect(titreDeLAlerte(sansClause), 'Points d\'eau limités');
+      expect(titreDeLAlerte(avecClause), 'Eau à filtrer');
+    });
+
+    for (final largeur in largeurs) {
+      testWidgets('a $largeur de large, le geste ne fait pas grandir', (
+        tester,
+      ) async {
+        final temoin = await hauteurDuBandeau(
+          tester,
+          alerte: sansClause,
+          texte: texteDeLAlerte(sansClause),
+          largeur: largeur,
+        );
+        final avec = await hauteurDuBandeau(
+          tester,
+          alerte: avecClause,
+          texte: texteDeLAlerte(avecClause),
+          largeur: largeur,
+        );
+        // LE TITRE DU GESTE EST PLUS COURT QUE CELUI QU'IL REMPLACE, dans les
+        // cinq langues : il ne peut donc pas prendre une ligne de plus. Le
+        // temoin est le titre d'avant (« Points d'eau limites », 20
+        // caracteres) ; « Eau a filtrer » en fait 13.
+        expect(
+          avec,
+          lessThanOrEqualTo(temoin),
+          reason:
+              'le geste ajoute ${avec - temoin} points a $largeur de large, '
+              'alors que son titre est plus court que celui qu il remplace',
+        );
+      });
+    }
+
+    testWidgets('le titre du geste ne deborde dans AUCUNE des cinq langues', (
+      tester,
+    ) async {
+      addTearDown(() => LocaleSettings.setLocaleRaw('fr'));
+      for (final langue in <String>['fr', 'en', 'de', 'it', 'es']) {
+        LocaleSettings.setLocaleRaw(langue);
+        tester.view.physicalSize = const Size(320, hauteur);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        // Arbre vide d'abord : meme raison qu'au test voisin, l'egalite de
+        // VALEUR de [SupplyGapAlert] ne notifierait pas un changement de
+        // langue seul.
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pumpWidget(
+          harness(status: TrackingSessionStatus.recording),
+        );
+        conteneur(tester).read(alerteProvider.notifier).state = avecClause;
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(
+          find.text(titreDeLAlerte(avecClause)),
+          findsOneWidget,
+          reason: 'titre du geste absent en $langue',
+        );
+        expect(
+          tester.takeException(),
+          isNull,
+          reason: 'debordement du titre du geste en $langue',
         );
       }
     });

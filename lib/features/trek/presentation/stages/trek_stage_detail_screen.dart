@@ -1057,7 +1057,10 @@ class _AccommodationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = PoiTypeConfig.getStyle(poi.type);
+    final style = PoiTypeConfig.getStyle(
+      poi.type,
+      waterAction: poi.waterAction,
+    );
     final color = style.color;
 
     return Container(

@@ -2,7 +2,6 @@
 /// tant que le marcheur ne l'a pas renseigne.
 library;
 
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/database.dart';
@@ -20,8 +19,11 @@ import '../../feasibility/feasibility_facade.dart'
         kWeightMinKg;
 import '../../notifications/notifications_facade.dart'
     show downloadReminderProvider;
+import '../../trail/trail_facade.dart' show poisProvider;
+import '../data/ce_que_ce_sentier_exige.dart';
 import '../data/checklist_seasonal_adapter.dart';
 import '../data/checklist_template.dart';
+import '../data/les_lignes_manquantes.dart';
 import '../domain/season.dart';
 import '../../../core/services/session_demo.dart';
 
@@ -298,22 +300,44 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   late AppDatabase _db;
   late String _trailId;
 
-  /// Template de base (parite GR20 : 84 articles, ordre GR20). Le Sac ADAPTATIF
-  /// (LOT 5, B) n'INJECTE PAS d'articles ici (sinon la parite casserait) : les
-  /// suggestions saison/trek sont une SECTION additive a part
+  /// CE QUE CE SENTIER IMPOSE, lu une fois par chargement (tache 846).
+  ///
+  /// Vide par defaut, et vide pour un sentier de fontaines : la parite GR20
+  /// reste alors exactement a 84 articles.
+  List<ChecklistTemplateItem> _exigesParLeSentier = const [];
+
+  /// Template de base (parite GR20 : 84 articles, ordre GR20) PLUS ce que ce
+  /// sentier-la impose.
+  ///
+  /// Le Sac ADAPTATIF (LOT 5, B) n'INJECTE PAS d'articles ici (sinon la parite
+  /// casserait) : les suggestions saison/trek sont une SECTION additive a part
   /// ([ChecklistSeasonalSection]), ajoutables au sac a la demande (comptees dans
   /// la jauge une fois ajoutees, via le meme chemin que les articles custom).
-  List<ChecklistTemplateItem> get _template => defaultChecklistTemplate;
+  ///
+  /// CE QUI PASSE ICI N'EST PAS UNE SUGGESTION (tache 846) : une suggestion se
+  /// lit et s'ignore, ce que le sentier EXIGE, le sac le pose. La regle, et
+  /// pourquoi elle merite le badge « Obligatoire », vivent dans
+  /// [articlesExigesParLeSentier] ; ici on ne fait que concatener, l'ordre
+  /// GR20 des 84 intact devant.
+  List<ChecklistTemplateItem> get _template => [
+    ...defaultChecklistTemplate,
+    ..._exigesParLeSentier,
+  ];
 
   /// Charge l'etat de la checklist depuis la DB.
   /// Si la DB est vide, initialise depuis le template.
   Future<void> _load() async {
     state = ChecklistState.empty;
 
+    // CE QUE CE SENTIER EXIGE, LU AVANT LA BASE (tache 846). L'ordre compte :
+    // la pose des lignes ci-dessous doit voir le filtre, sinon il s'afficherait
+    // sans ligne et sa coche n'irait pas jusqu'au telephone.
+    _exigesParLeSentier = await _lireCeQueLeSentierExige();
+
     final dao = ChecklistDao(_db);
     var dbItems = await dao.getByTrailId(_trailId);
 
-    // Premiere ouverture : initialiser depuis le template
+    // Premiere ouverture : initialiser depuis le template.
     //
     // SAUF EN DEMO : LE SEED N'ATTEINT PAS LA BASE (tache 638, bug 14). Ce seed
     // etait la DERNIERE ecriture non barree du sac : ouvrir le sac pendant une
@@ -324,9 +348,18 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
     // — l'ecran est identique, les coches fonctionnent, et le telephone n'a rien
     // appris. Si le randonneur a DEJA un sac sur ce sentier, il est relu tel quel
     // (lire n'a jamais rien ecrit) : la demo montre alors son vrai sac.
-    if (dbItems.isEmpty && !ref.read(enDemoProvider)) {
-      await _initFromTemplate(dao);
-      dbItems = await dao.getByTrailId(_trailId);
+    //
+    // LES LIGNES MANQUANTES SONT POSEES, PAS SEULEMENT CELLES D'UN SAC VIDE
+    // (tache 846). La raison tient dans [lignesManquantes], avec le piege
+    // qu'elle ferme : un article neuf du template n'avait pas de ligne chez un
+    // marcheur ayant deja ouvert son sac, et sa coche n'atteignait pas la base.
+    // Sur un sac vide, le comportement est identique a l'ancien.
+    if (!ref.read(enDemoProvider)) {
+      final manquants = lignesManquantes(dbItems, _template);
+      if (manquants.isNotEmpty) {
+        await poserLesLignes(dao, _trailId, manquants);
+        dbItems = await dao.getByTrailId(_trailId);
+      }
     }
 
     final itemStates = _buildItemStates(dbItems);
@@ -394,20 +427,21 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
     return itemStates;
   }
 
-  /// Initialise la checklist en DB depuis le template resolu (base + saison/trek).
-  Future<void> _initFromTemplate(ChecklistDao dao) async {
-    final entries = _template.map((item) {
-      return ChecklistItemsCompanion(
-        trailId: Value(_trailId),
-        itemId: Value(item.id),
-        category: Value(item.category),
-        isChecked: const Value(false),
-        // Poids de reference du template (parite GR20). Editable ensuite.
-        weightGrams: Value(item.weightGrams),
-        quantity: Value(item.quantity),
+  /// Ce que le sentier actif impose au sac, ou RIEN si on n'a pas pu le lire.
+  ///
+  /// Les POI arrivent par la facade de `trail` ([poisProvider]), la meme source
+  /// que l'alerte d'eau de la carte. Un echec de lecture ne rend pas le sac :
+  /// il s'ouvre sur ses 84 articles et n'impose rien — ne rien imposer est le
+  /// seul repli honnete quand on ignore ce que le sentier porte, et la
+  /// prochaine ouverture reposera la question.
+  Future<List<ChecklistTemplateItem>> _lireCeQueLeSentierExige() async {
+    try {
+      return articlesExigesParLeSentier(
+        await ref.read(poisProvider(_trailId).future),
       );
-    }).toList();
-    await dao.insertAll(entries);
+    } catch (_) {
+      return const [];
+    }
   }
 
   /// Recalcule les compteurs et pousse un nouvel etat a partir d'items donnes.

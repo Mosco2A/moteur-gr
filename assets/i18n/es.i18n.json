@@ -221,6 +221,8 @@
     "waterGapTitle": "Puntos de agua limitados",
     "waterGapRange": "Último punto de agua antes de $n etapas y $km km. ¡Llena tus botellas!",
     "waterGapStages": "Último punto de agua antes de $n etapas. ¡Llena tus botellas!",
+    "waterGapTitleFilter": "Agua para filtrar",
+    "waterGapTitleTreat": "Agua para tratar",
     "pinMergedTitle": "Varios puntos en el mismo lugar",
     "attribution": {
       "licence": "Datos cartograficos con licencia ODbL — ver la licencia",
@@ -289,7 +291,14 @@
     "info": "Información",
     "filter": "Filtrar puntos de interés",
     "altitude": "Altitud",
-    "hours": "Horarios"
+    "hours": "Horarios",
+    "waterAction": {
+      "drinkAsIs": "Agua potable: se bebe tal cual",
+      "filter": "Filtrar antes de beber",
+      "treatOrBoil": "Tratar o hervir antes de beber",
+      "doNotDrink": "No beber",
+      "precaution": "Por precaución: los datos no dicen nada de esta agua. No es un dato medido."
+    }
   },
   "accommodation": {
     "types": {
@@ -466,6 +475,7 @@
       "driedFruits": "Frutos secos",
       "freezeDriedMeal": "Comida liofilizada",
       "waterPurification": "Pastillas potabilizadoras",
+      "waterFilter": "Filtro de agua",
       "electrolytes": "Electrolitos",
       "carriedWater": "Agua transportada (1L = 1000g)",
       "soap": "Jabón biodegradable",

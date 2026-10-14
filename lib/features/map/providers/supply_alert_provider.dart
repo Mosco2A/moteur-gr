@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/poi.dart';
 import '../../../core/models/stage_row.dart';
+import '../../../core/models/water_action.dart';
 import '../../planning/planning_facade.dart' show trailShopsProvider;
 import '../../trail/trail_facade.dart' show poisProvider, stagesProvider;
 import 'track_position_provider.dart';
@@ -38,6 +39,7 @@ class SupplyGapAlert {
     required this.gap,
     this.kind = SupplyGapKind.food,
     this.km,
+    this.waterAction,
   });
 
   /// Etape courante detectee sur le trace au moment du declenchement.
@@ -63,16 +65,31 @@ class SupplyGapAlert {
   /// donnees vaut aussi pour les alertes (#99460).
   final double? km;
 
+  /// LE GESTE QUI ATTEND AU BOUT DU TROU, ou `null` hors alerte d'eau.
+  ///
+  /// POURQUOI L'ALERTE DOIT LE PORTER (tache 846). Un point filtrable COMPTE
+  /// comme de l'eau — avec un filtre au sac, il se boit — mais le compter sans
+  /// le dire serait mentir par omission : le marcheur qui lit « prochain point
+  /// d'eau dans deux etapes » et arrive devant un ruisseau sans filtre a ete
+  /// trompe par une alerte exacte. Elle dit donc les deux : la distance ET le
+  /// geste.
+  ///
+  /// C'est le MEILLEUR geste de l'etape d'arrivee, celui des points qui
+  /// donnent de l'eau ([WaterAction.meilleur]) : une etape qui porte une
+  /// fontaine et un ruisseau s'annonce a la fontaine.
+  final WaterAction? waterAction;
+
   @override
   bool operator ==(Object other) =>
       other is SupplyGapAlert &&
       other.stageNumber == stageNumber &&
       other.gap == gap &&
       other.kind == kind &&
-      other.km == km;
+      other.km == km &&
+      other.waterAction == waterAction;
 
   @override
-  int get hashCode => Object.hash(stageNumber, gap, kind, km);
+  int get hashCode => Object.hash(stageNumber, gap, kind, km, waterAction);
 }
 
 /// LES TYPES DE POI QUI COMPTENT COMME UN POINT D'EAU.
@@ -83,23 +100,37 @@ class SupplyGapAlert {
 /// distingue l'eau potable de l'eau de baignade, c'est ICI que la liste
 /// s'allonge, en un seul endroit.
 ///
-/// LIMITE CONNUE, ET ELLE EST DANS LA DONNEE, PAS DANS CE CODE : le type
-/// `water` ne dit pas la POTABILITE. Sur le Mare a Mare Centre, les cinq POI
-/// d'eau comptent quatre fontaines potables et UNE source thermale sulfureuse
-/// (« Sources thermales de Guitera », baignade) — qui partage son etape avec la
-/// Funtana di Croce, potable. L'ensemble des etapes servies est donc le meme
-/// avec ou sans elle, et aucune alerte ne ment aujourd'hui. L'application de
-/// reference portait pourtant un booleen `isReliable` (« source fiable meme en
-/// aout ») sur chacune de ses sources : il merite de revenir, et c'est note au
-/// compte rendu.
+/// LA LIMITE QUE CETTE LISTE PORTAIT EST LEVEE DEPUIS LA TACHE 846 : le type
+/// `water` ne disait pas la potabilite, et une source thermale sulfureuse
+/// comptait donc comme de l'eau. Ce n'est plus le type qui decide, c'est le
+/// GESTE a faire ([PoiModel.waterAction]) — le type ne dit plus que « il y a
+/// de l'eau ici », ce qui est tout ce qu'on lui demande.
 const _waterPoiTypes = <String>{'water'};
 
-/// Etapes portant au moins un point d'eau, d'apres les POI du sentier.
-Set<int> _waterStages(List<PoiModel>? pois) {
-  if (pois == null) return const <int>{};
-  return <int>{
-    for (final p in pois)
-      if (_waterPoiTypes.contains(p.type)) p.stageNumber,
+/// LE GESTE A FAIRE, ETAPE PAR ETAPE — et une etape sans eau UTILISABLE n'y
+/// figure pas du tout.
+///
+/// DEUX DECISIONS DE LA TACHE 846 TIENNENT DANS CETTE FONCTION.
+///
+/// UN POINT « NE PAS BOIRE » NE COMPTE JAMAIS, MEME AVEC UN FILTRE AU SAC.
+/// [WaterAction.meilleur] les ecarte avant de choisir : une etape qui ne porte
+/// que de l'eau thermale sort de la carte des etapes servies, et l'alerte
+/// compte le trou par-dessus elle. C'est le cas que la donnee d'hier ratait.
+///
+/// UNE ETAPE S'ANNONCE A SON MEILLEUR POINT. L'etape 3 du Mare a Mare Centre
+/// porte la source thermale de Guitera (qui ne se boit pas) et la Funtana di
+/// Croce (muette, donc a filtrer par precaution) : ce qui attend le marcheur
+/// la-bas, c'est « a filtrer », pas « rien » et pas « buvable ».
+Map<int, WaterAction> _gestesParEtape(List<PoiModel>? pois) {
+  if (pois == null) return const <int, WaterAction>{};
+  final parEtape = <int, List<WaterAction>>{};
+  for (final p in pois) {
+    if (!_waterPoiTypes.contains(p.type)) continue;
+    (parEtape[p.stageNumber] ??= <WaterAction>[]).add(p.waterAction);
+  }
+  return <int, WaterAction>{
+    for (final etape in parEtape.entries)
+      if (WaterAction.meilleur(etape.value) case final geste?) etape.key: geste,
   };
 }
 
@@ -179,9 +210,10 @@ final supplyGapAlertProvider = Provider<SupplyGapAlert?>((ref) {
   );
 
   // L'EAU D'ABORD.
-  final waterStages = _waterStages(
+  final gestesParEtape = _gestesParEtape(
     ref.watch(poisProvider(trailId).select((async) => async.value)),
   );
+  final waterStages = gestesParEtape.keys;
   if (shops.isWaterGapAlert(stageNumber, waterStages)) {
     final gap = shops.waterGapAfter(stageNumber, waterStages);
     return SupplyGapAlert(
@@ -189,6 +221,11 @@ final supplyGapAlertProvider = Provider<SupplyGapAlert?>((ref) {
       gap: gap,
       kind: SupplyGapKind.water,
       km: _kmBetween(stages, stageNumber, stageNumber + gap),
+      // LE GESTE QUI ATTEND AU BOUT DU TROU. L'ecart vaut `gap` etapes, donc
+      // l'eau retrouvee est a l'etape `stageNumber + gap` : c'est la MEME
+      // etape que celle qui a ferme le calcul de l'ecart, relue dans la meme
+      // carte, et non une seconde recherche qui pourrait en designer une autre.
+      waterAction: gestesParEtape[stageNumber + gap],
     );
   }
 

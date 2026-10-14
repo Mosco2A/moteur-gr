@@ -270,6 +270,8 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get waterGapTitle => 'Limited water points';
 	@override String waterGapRange({required Object n, required Object km}) => 'Last water point before ${n} stages and ${km} km. Fill up!';
 	@override String waterGapStages({required Object n}) => 'Last water point before ${n} stages. Fill up!';
+	@override String get waterGapTitleFilter => 'Water to filter';
+	@override String get waterGapTitleTreat => 'Water to treat';
 	@override String get pinMergedTitle => 'Several markers at the same place';
 	@override late final _Translations$map$attribution$en attribution = _Translations$map$attribution$en._(_root);
 }
@@ -337,6 +339,7 @@ class _Translations$poi$en extends Translations$poi$fr {
 	@override String get filter => 'Filter points of interest';
 	@override String get altitude => 'Altitude';
 	@override String get hours => 'Opening hours';
+	@override late final _Translations$poi$waterAction$en waterAction = _Translations$poi$waterAction$en._(_root);
 }
 
 // Path: accommodation
@@ -2240,6 +2243,20 @@ class _Translations$stage$advice$en extends Translations$stage$advice$fr {
 	@override String get bigClimb => 'Large positive elevation: pace yourself and take regular breaks.';
 }
 
+// Path: poi.waterAction
+class _Translations$poi$waterAction$en extends Translations$poi$waterAction$fr {
+	_Translations$poi$waterAction$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get drinkAsIs => 'Drinkable: drink as is';
+	@override String get filter => 'Filter before drinking';
+	@override String get treatOrBoil => 'Treat or boil before drinking';
+	@override String get doNotDrink => 'Do not drink';
+	@override String get precaution => 'As a precaution: the data says nothing about this water. This is not a survey.';
+}
+
 // Path: accommodation.types
 class _Translations$accommodation$types$en extends Translations$accommodation$types$fr {
 	_Translations$accommodation$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -2365,6 +2382,7 @@ class _Translations$checklist$items$en extends Translations$checklist$items$fr {
 	@override String get driedFruits => 'Dried fruits';
 	@override String get freezeDriedMeal => 'Freeze-dried meal';
 	@override String get waterPurification => 'Water purification tablets';
+	@override String get waterFilter => 'Water filter';
 	@override String get electrolytes => 'Electrolytes';
 	@override String get carriedWater => 'Carried water (1L = 1000g)';
 	@override String get soap => 'Biodegradable soap';
@@ -4470,6 +4488,8 @@ extension on TranslationsEn {
 			'map.waterGapTitle' => 'Limited water points',
 			'map.waterGapRange' => ({required Object n, required Object km}) => 'Last water point before ${n} stages and ${km} km. Fill up!',
 			'map.waterGapStages' => ({required Object n}) => 'Last water point before ${n} stages. Fill up!',
+			'map.waterGapTitleFilter' => 'Water to filter',
+			'map.waterGapTitleTreat' => 'Water to treat',
 			'map.pinMergedTitle' => 'Several markers at the same place',
 			'map.attribution.licence' => 'Map data under ODbL licence — view the licence',
 			'map.attribution.traces' => 'Trail tracks surveyed in OpenStreetMap',
@@ -4523,6 +4543,11 @@ extension on TranslationsEn {
 			'poi.filter' => 'Filter points of interest',
 			'poi.altitude' => 'Altitude',
 			'poi.hours' => 'Opening hours',
+			'poi.waterAction.drinkAsIs' => 'Drinkable: drink as is',
+			'poi.waterAction.filter' => 'Filter before drinking',
+			'poi.waterAction.treatOrBoil' => 'Treat or boil before drinking',
+			'poi.waterAction.doNotDrink' => 'Do not drink',
+			'poi.waterAction.precaution' => 'As a precaution: the data says nothing about this water. This is not a survey.',
 			'accommodation.types.refuge' => 'Mountain hut',
 			'accommodation.types.bergerie' => 'Shepherd\'s hut',
 			'accommodation.types.gite' => 'Lodge',
@@ -4665,6 +4690,7 @@ extension on TranslationsEn {
 			'checklist.items.driedFruits' => 'Dried fruits',
 			'checklist.items.freezeDriedMeal' => 'Freeze-dried meal',
 			'checklist.items.waterPurification' => 'Water purification tablets',
+			'checklist.items.waterFilter' => 'Water filter',
 			'checklist.items.electrolytes' => 'Electrolytes',
 			'checklist.items.carriedWater' => 'Carried water (1L = 1000g)',
 			'checklist.items.soap' => 'Biodegradable soap',
@@ -4779,6 +4805,8 @@ extension on TranslationsEn {
 			'checklist.ui.requiredWarnBody' => 'This gear is required for safety (inspired by UTMB rules). Do you really want to remove it?',
 			'checklist.ui.keep' => 'Keep',
 			'checklist.ui.removeAnyway' => 'Remove anyway',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.reduceQuantity' => 'Decrease quantity',
 			'checklist.ui.increaseQuantity' => 'Increase quantity',
 			'checklist.ui.addToShoppingList' => 'Add to shopping list',
@@ -4787,8 +4815,6 @@ extension on TranslationsEn {
 			'checklist.ui.shoppingListTitle' => 'Shopping list',
 			'checklist.ui.shoppingListEmpty' => 'Your shopping list is empty. Add items with the cart button.',
 			'checklist.ui.shoppingToBuy' => 'To buy',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.shoppingPurchased' => 'Already bought',
 			'checklist.ui.share' => 'SHARE',
 			'checklist.ui.infoTitle' => 'Gear & Pack',
@@ -5293,6 +5319,8 @@ extension on TranslationsEn {
 			'demo.collecteIntro' => 'The information used to work out feasibility.',
 			'demo.collecteProfil' => 'Your profile',
 			'demo.collecteForme' => 'Your fitness',
+			_ => null,
+		} ?? switch (path) {
 			'demo.collecteExperience' => 'Your experience',
 			'demo.collecteSaison' => 'Departure season',
 			'demo.collecteSentier' => 'The trail',
@@ -5301,8 +5329,6 @@ extension on TranslationsEn {
 			'demo.sortieFaite' => 'You have left the demo.',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
-			_ => null,
-		} ?? switch (path) {
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
 			'follow.title' => 'Live tracking',
 			'follow.connecting' => 'Connecting…',
@@ -5807,6 +5833,8 @@ extension on TranslationsEn {
 			'moderation.decisions.remove' => 'Content removed',
 			'moderation.noStatement' => 'No restriction has been applied to your content.',
 			'moderation.complaintAction' => 'Challenge this decision',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.complaintTitle' => 'Challenge a decision',
 			'moderation.complaintIntro' => 'You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).',
 			'moderation.complaintExposeLabel' => 'Your challenge',
@@ -5815,8 +5843,6 @@ extension on TranslationsEn {
 			'moderation.complaintSent' => 'Challenge recorded. It will be reviewed.',
 			'moderation.complaintEmpty' => 'Explain your challenge.',
 			'moderation.a11y.reportForm' => 'Content reporting form',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.a11y.reasonSelector' => 'Report reason selector',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
 			'moderation.a11y.submitReport' => 'Send report',
@@ -6321,6 +6347,8 @@ extension on TranslationsEn {
 			'systemBackup.a11yCheckbox' => 'Refuse the backup of all my data by the system of the phone',
 			'lieu.ouvrirDansLesCartes' => 'Open in maps',
 			'lieu.cartesIndisponibles' => 'No maps app could be opened on this device.',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.adresse' => 'Address',
 			'lieu.telephoner' => 'Call',
 			'lieu.siteOfficiel' => 'Official website',
@@ -6329,8 +6357,6 @@ extension on TranslationsEn {
 			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => 'Open ${name} in the maps app',
 			'lieu.a11y.telephoner' => ({required Object name}) => 'Call ${name}',
 			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Open the official website of ${name}',
-			_ => null,
-		} ?? switch (path) {
 			'lieu.rafraichir' => 'Refresh from the database',
 			'lieu.rafraichirFait' => ({required Object n}) => '${n} item(s) updated from the database.',
 			'lieu.rafraichirDejaAJour' => 'Already up to date: the database holds nothing newer.',

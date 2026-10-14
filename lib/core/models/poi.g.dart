@@ -17,6 +17,10 @@ _PoiModel _$PoiModelFromJson(Map<String, dynamic> json) => _PoiModel(
   lng: (json['lng'] as num).toDouble(),
   altitudeM: (json['altitudeM'] as num?)?.toInt() ?? 0,
   openingHours: json['openingHours'] as String?,
+  declaredWaterAction: $enumDecodeNullable(
+    _$WaterActionEnumMap,
+    json['declaredWaterAction'],
+  ),
 );
 
 Map<String, dynamic> _$PoiModelToJson(_PoiModel instance) => <String, dynamic>{
@@ -30,4 +34,12 @@ Map<String, dynamic> _$PoiModelToJson(_PoiModel instance) => <String, dynamic>{
   'lng': instance.lng,
   'altitudeM': instance.altitudeM,
   'openingHours': instance.openingHours,
+  'declaredWaterAction': _$WaterActionEnumMap[instance.declaredWaterAction],
+};
+
+const _$WaterActionEnumMap = {
+  WaterAction.drinkAsIs: 'drinkAsIs',
+  WaterAction.filter: 'filter',
+  WaterAction.treatOrBoil: 'treatOrBoil',
+  WaterAction.doNotDrink: 'doNotDrink',
 };

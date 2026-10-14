@@ -47,7 +47,10 @@ class PoiMarkersLayer extends StatelessWidget {
 
     return MarkerLayer(
       markers: filtered.map((poi) {
-        final style = PoiTypeConfig.getStyle(poi.type);
+        final style = PoiTypeConfig.getStyle(
+          poi.type,
+          waterAction: poi.waterAction,
+        );
         return Marker(
           point: LatLng(poi.lat, poi.lng),
           width: markerSize,

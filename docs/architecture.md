@@ -15,6 +15,12 @@
 > ont changé — fichiers et lignes de `lib/`, de `lib/features/`, de
 > `lib/shared/` et de `planning`, et les croisements par façade.
 >
+> Remesuré le 14/10/2026 (Hephaistos, tâche 846 « le geste de l'eau », au-dessus
+> de la tête `dedc0359`), **en dernier, après le gel du code** : onze chiffres
+> marqués ont bougé — fichiers et lignes de `lib/`, de `lib/core/`, de
+> `lib/features/`, de `lib/shared/` et de `trek`, et les croisements par façade
+> (178 → 179 : le Sac lit les points d'eau du sentier par `trail_facade.dart`).
+>
 > Un chiffre suivi d'un commentaire HTML `audit:` et sa clé (invisible au rendu)
 > est **revérifié à chaque `flutter test`** par
 > `test/structurel/la_doc_ne_mente_pas_645_test.dart`, qui relance l'audit
@@ -65,16 +71,16 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte731<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-144 155<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte734<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+144 798<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
-| `lib/core/` |194 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |32 986<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` |481<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |100 767<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
-| `lib/shared/` | 31 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 5 613<!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
+| `lib/core/` |195 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |33 216<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
+| `lib/features/` |483<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |101 129<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/shared/` | 31 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 5 664<!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
 **`lib/domain/` n'a pas de ligne dans l'audit** : `mesurer_arborescence` ne
@@ -88,7 +94,7 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 
 | Feature | Fichiers | Lignes |
 |---|---|---|
-| `trek` |81<!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> |17 868<!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
+| `trek` |81<!-- audit:arborescence.detail_lib.lib/features/trek.fichiers --> |17 929<!-- audit:arborescence.detail_lib.lib/features/trek.lignes --> |
 | `safety` | 33 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> |7 323 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
 | `feasibility` | 31 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 736 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
 | `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 5 201 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
@@ -103,14 +109,15 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 | Imports du socle (`core/`, `shared/`, `domain/`) vers une feature | 72 <!-- audit:couches.nombre_socle_vers_feature --> | voir les deux lignes suivantes |
 | … dont depuis `lib/core/routing/app_router.dart` | 51 <!-- audit:couches.socle_vers_feature[~^lib/core/routing/app_router\.dart ] --> | **oui**, exception ARB-645-05-a (règle 9) |
 | … dont depuis tout autre fichier du socle | 21 <!-- audit:couches.socle_vers_feature[!~^lib/core/routing/app_router\.dart ] --> | **non** (règle 9) |
-| Imports d'une feature vers une autre feature |178<!-- audit:couches.nombre_croisements --> | voir les deux lignes suivantes |
-| … dont par la façade de la voisine |178<!-- audit:couches.croisements_entre_features[~_facade\.dart$] --> | **oui**, ARB-645-05-b (règle 10) |
+| Imports d'une feature vers une autre feature |179<!-- audit:couches.nombre_croisements --> | voir les deux lignes suivantes |
+| … dont par la façade de la voisine |179<!-- audit:couches.croisements_entre_features[~_facade\.dart$] --> | **oui**, ARB-645-05-b (règle 10) |
 | … dont vers l'intérieur de la voisine | 0 <!-- audit:couches.croisements_entre_features[!~_facade\.dart$] --> | **oui** : zéro depuis le lot 645-05c (règle 10) |
 | Fichiers de présentation qui importent un paquet de données | 0 <!-- audit:couches.nombre_presentation_donnees --> | **oui** (ECR-25) |
 | Fichiers de feature hors d'une couche reconnue | 23 <!-- audit:couches.nombre_hors_couche --> | **non** (RNG-01, avertissement) |
 
-Les 160 croisements passent TOUS par une façade (remesuré le 07/10 sur l'arbre
-fusionné de l'intégration 671). Le 05/10, le lot produit P1 (#101255) en a
+Les 179 croisements passent TOUS par une façade (remesuré le 14/10, tâche 846,
+au-dessus de la tête `dedc0359` ; le chiffre en prose disait encore 160 quand le
+tableau en comptait 178 — c'est corrigé). Le 05/10, le lot produit P1 (#101255) en a
 ajouté 7 en branchant `weather` et `hub` sur le réglage d'unité
 de température, par `settings_facade.dart` ; le 06/10, le lot 671-00 en a
 ajouté 3 en branchant la carte (`location_provider`, `off_track_provider`) et
