@@ -206,9 +206,9 @@ void main() {
       // portent un ShopKind, donc l ancienne regle (« une entree existe »)
       // les comptait comme des ravitaillements et se taisait. Ici l etape 5
       // porte DEUX entrees, aucune n approvisionne : le trou reste entier.
-      final shops = TrailShops(
+      const shops = TrailShops(
         trailId: trailId,
-        shops: const [
+        shops: [
           Shop(
             name: 'Epicerie du depart',
             type: ShopKind.epicerie,

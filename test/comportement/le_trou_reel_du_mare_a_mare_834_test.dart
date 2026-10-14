@@ -11,7 +11,6 @@ import 'package:moteur_gr/core/utils/nombre_en_clair.dart';
 import 'package:moteur_gr/features/map/providers/supply_alert_provider.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
 import 'package:moteur_gr/features/planning/domain/shop_catalog.dart';
-import 'package:moteur_gr/features/planning/domain/shop_info.dart';
 import 'package:moteur_gr/features/planning/providers/shop_providers.dart';
 import 'package:moteur_gr/features/trail/providers/pois_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
@@ -29,11 +28,11 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 ///
 /// CE QU'IL VERROUILLE, ET POURQUOI. Le catalogue a ete refait le 14/10 sur un
 /// releve OpenStreetMap (tache 844) et sa note annonce « les cinq etapes entre
-/// Cozzano et Porticcio (52,5 km) n'en ont aucune ». L'alerte de la carte, elle,
-/// restait muette : elle comptait les etapes portant UNE ENTREE de catalogue, et
-/// les sept en portent une. Ce test echoue le jour ou l'alerte redevient
-/// sourde, ou le jour ou un commerce ajoute au catalogue coupe le trou sans
-/// qu'on l'ait decide.
+/// Cozzano et Porticcio (52,5 km) n'en ont aucune ». L'alerte de la carte,
+/// elle, restait muette : elle comptait les etapes portant UNE ENTREE de
+/// catalogue, et les sept en portent une. Ce test echoue le jour ou l'alerte
+/// redevient sourde, et le jour ou un commerce ajoute au catalogue coupe le
+/// trou sans qu'on l'ait decide.
 const trailId = 'mare-a-mare-centre';
 
 /// Le dossier de la donnee embarquee — en souligne, la ou l'identifiant du
@@ -154,7 +153,7 @@ void main() {
       expect(somme, closeTo(52.5, 0.001));
     });
 
-    test('L ALERTE SE DECLENCHE A COZZANO, et elle dit la taille du trou', () async {
+    test('L ALERTE SE DECLENCHE A COZZANO, et dit la taille du trou', () async {
       final alerte = await alerteSurEtape(2);
       expect(alerte, isNotNull, reason: 'muette, c est le defaut de la 834');
       expect(alerte!.kind, SupplyGapKind.food);
@@ -194,29 +193,32 @@ void main() {
       expect(etapesDEau, [1, 3, 4, 6]);
     });
 
-    test('DEUX TROUS D EAU DE DEUX ETAPES, et le seuil de l eau les voit', () async {
-      // Le seuil de l eau de ce sentier vaut 1 : un trou de deux etapes
-      // alerte. Avec le seuil des vivres (2), les deux seraient passes sous
-      // silence — c est precisement la demande de la tache 834.
-      expect(catalogue.waterGapThreshold, 1);
-      expect(catalogue.gapThreshold, 2);
+    test(
+      'DEUX TROUS D EAU DE DEUX ETAPES, que le seuil de l eau voit',
+      () async {
+        // Le seuil de l eau de ce sentier vaut 1 : un trou de deux etapes
+        // alerte. Avec le seuil des vivres (2), les deux seraient passes sous
+        // silence — c est precisement la demande de la tache 834.
+        expect(catalogue.waterGapThreshold, 1);
+        expect(catalogue.gapThreshold, 2);
 
-      // Depuis l etape 1 : prochain point d eau a l etape 3.
-      final apresGhisonaccia = await alerteSurEtape(1);
-      expect(apresGhisonaccia, isNotNull);
-      expect(apresGhisonaccia!.kind, SupplyGapKind.water);
-      expect(apresGhisonaccia.gap, 2);
-      // Etapes 2 et 3 : 14,9 + 13,7 = 28,6 km.
-      expect(apresGhisonaccia.km, closeTo(28.6, 0.001));
+        // Depuis l etape 1 : prochain point d eau a l etape 3.
+        final apresGhisonaccia = await alerteSurEtape(1);
+        expect(apresGhisonaccia, isNotNull);
+        expect(apresGhisonaccia!.kind, SupplyGapKind.water);
+        expect(apresGhisonaccia.gap, 2);
+        // Etapes 2 et 3 : 14,9 + 13,7 = 28,6 km.
+        expect(apresGhisonaccia.km, closeTo(28.6, 0.001));
 
-      // Depuis l etape 4 : prochain point d eau a l etape 6.
-      final apresQuasquara = await alerteSurEtape(4);
-      expect(apresQuasquara, isNotNull);
-      expect(apresQuasquara!.kind, SupplyGapKind.water);
-      expect(apresQuasquara.gap, 2);
-      // Etapes 5 et 6 : 8,1 + 9,9 = 18,0 km.
-      expect(apresQuasquara.km, closeTo(18.0, 0.001));
-    });
+        // Depuis l etape 4 : prochain point d eau a l etape 6.
+        final apresQuasquara = await alerteSurEtape(4);
+        expect(apresQuasquara, isNotNull);
+        expect(apresQuasquara!.kind, SupplyGapKind.water);
+        expect(apresQuasquara.gap, 2);
+        // Etapes 5 et 6 : 8,1 + 9,9 = 18,0 km.
+        expect(apresQuasquara.km, closeTo(18.0, 0.001));
+      },
+    );
 
     test('MOT POUR MOT, ce que le randonneur lit apres Ghisonaccia', () async {
       final alerte = await alerteSurEtape(1);
@@ -229,14 +231,17 @@ void main() {
       );
     });
 
-    test('L EAU PASSE DEVANT A L ETAPE 4, ou les deux trous s ouvrent', () async {
-      // A l etape 4 les vivres manquent AUSSI (trois etapes, 29,1 km) : une
-      // seule alerte s affiche, et c est celle de l eau.
-      expect(catalogue.isResupplyGapAlert(4), isTrue);
-      expect(catalogue.resupplyGapAfter(4), 3);
-      final alerte = await alerteSurEtape(4);
-      expect(alerte!.kind, SupplyGapKind.water);
-    });
+    test(
+      'L EAU PASSE DEVANT A L ETAPE 4, ou les deux trous s ouvrent',
+      () async {
+        // A l etape 4 les vivres manquent AUSSI (trois etapes, 29,1 km) : une
+        // seule alerte s affiche, et c est celle de l eau.
+        expect(catalogue.isResupplyGapAlert(4), isTrue);
+        expect(catalogue.resupplyGapAfter(4), 3);
+        final alerte = await alerteSurEtape(4);
+        expect(alerte!.kind, SupplyGapKind.water);
+      },
+    );
   });
 
   group('Le trou reel — la carte des sept etapes, etape par etape', () {
