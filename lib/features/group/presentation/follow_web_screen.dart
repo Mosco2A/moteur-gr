@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/analytics/screen_entry.dart';
+import '../../../core/map/offline_tile_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/attribution_osm.dart';
@@ -249,8 +250,15 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
         initialZoom: _trekkerPosition != null ? _positionZoom : _defaultZoom,
       ),
       children: [
+        // LA SEULE COUCHE EXEMPTEE DU DECIDEUR DOIT QUAND MEME SE NOMMER
+        // (tache 844). Un navigateur n ouvre pas un `.mbtiles`, donc cette vue
+        // tire ses tuiles du reseau par nature — mais la politique d usage
+        // d OSM demande un `User-Agent` qui identifie l application, et
+        // `flutter_map` envoie son defaut `unknown` quand on ne lui donne
+        // rien. C est l identite du decideur, pas un litteral de plus.
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: OfflineTileProvider.userAgentPackageName,
         ),
         if (_trekkerPosition != null)
           MarkerLayer(
