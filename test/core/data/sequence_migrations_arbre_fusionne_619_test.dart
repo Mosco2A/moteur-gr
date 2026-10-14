@@ -66,8 +66,9 @@ void main() {
         // chaque lot qui ajoute une marche — la v31 vient de la tache 641
         // (adresse, telephone et site sur les lieux, pour que le transport et le
         // ravitaillement vivent en base), la v32 du lot 671-03 (l origine d un
-        // point de trace, releve reel ou point estime).
-        expect(db.schemaVersion, 32);
+        // point de trace, releve reel ou point estime), la v33 de la tache 846
+        // (le geste a faire avant de boire sur un point d eau).
+        expect(db.schemaVersion, 33);
 
         await db.close();
         expect(
@@ -172,9 +173,10 @@ void main() {
 
       expect(
         await versionUtilisateur(db),
-        32,
+        33,
         reason:
-            'le compteur doit avoir traverse v27, v28, v29, v30, v31 et v32',
+            'le compteur doit avoir traverse v27, v28, v29, v30, v31, v32 '
+            'et v33',
       );
     });
 
@@ -204,10 +206,10 @@ void main() {
         'c est le cas de l application tuee au milieu d une marche', () async {
       final fichier = await baseEnV26AvecDonnees();
 
-      // Premier passage : la base monte de 26 a 32.
+      // Premier passage : la base monte de 26 a 33.
       final premier = AppDatabase(NativeDatabase(fichier));
       await premier.customStatement('SELECT 1');
-      expect(await versionUtilisateur(premier), 32);
+      expect(await versionUtilisateur(premier), 33);
       await premier.close();
 
       // On remet le compteur en arriere SANS defaire le schema : c est l etat
@@ -223,7 +225,7 @@ void main() {
       await second.customStatement('SELECT 1');
       expect(
         await versionUtilisateur(second),
-        32,
+        33,
         reason: 'les marches doivent etre rejouables sans echouer',
       );
     });

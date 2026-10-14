@@ -173,7 +173,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 32;
+  int get schemaVersion => 33;
 
   /// LA SEQUENCE DE MIGRATIONS N'AVAIT JAMAIS TOURNE SUR UN TELEPHONE (tache 613).
   ///
@@ -575,6 +575,21 @@ class AppDatabase extends _$AppDatabase {
           sessionTrackPoints,
           sessionTrackPoints.source,
         );
+      }
+
+      // Migration v32 -> v33 (tache 846, le geste de l'eau) :
+      // LE GESTE A FAIRE AVANT DE BOIRE sur un point d'eau — `drink_as_is`,
+      // `filter`, `treat_or_boil`, `do_not_drink`. STRICTEMENT ADDITIVE : UNE
+      // colonne texte NULLABLE sur pois, sur le motif exact de la v32.
+      //
+      // LES POINTS D'AVANT NAISSENT A NULL, ET C'EST LA BONNE VALEUR : null
+      // veut dire « la donnee n'a rien dit », ce qui est exactement l'etat des
+      // POI seedes avant cette marche. Le modele les rendra donc « a filtrer
+      // PAR PRECAUTION » (`WaterAction.parPrudence`), jamais « buvables ».
+      // Aucune colonne existante n'est touchee ni reinterpretee, et un retour
+      // a la v32 ne perd aucun point, seulement son geste.
+      if (from < 33) {
+        await _ajouterColonneSiAbsente(migrator, pois, pois.waterAction);
       }
     },
   );

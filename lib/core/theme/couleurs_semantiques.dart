@@ -56,6 +56,22 @@ class CouleursSemantiques {
   /// Point d'eau (`water` cote POI, `eau` cote waypoint).
   static const pointEau = Color(0xFF1565C0);
 
+  /// Point d'eau A FILTRER (tache 846).
+  ///
+  /// Un bleu-vert, et le choix est deliberement DANS la famille de l'eau :
+  /// c'est de l'eau utilisable, pas un danger. Il faut qu'elle se distingue
+  /// d'une fontaine sans se confondre avec un refus — la distance avec
+  /// [pointEau] se lit, la parente aussi.
+  static const pointEauAFiltrer = Color(0xFF00838F);
+
+  /// Point d'eau qui NE SE BOIT PAS (tache 846).
+  ///
+  /// Meme valeur que [pointDanger], usage distinct — et cette fois la valeur
+  /// commune est le PROPOS : une eau thermale sulfureuse bue a la gourde EST un
+  /// danger, pas une variante de point d'eau. La nommer a part permet de la
+  /// retrouver, et d'en changer sans toucher aux dangers du trace.
+  static const pointEauNonPotable = Color(0xFFC62828);
+
   /// Commerce ou ravitaillement (`shop` cote POI, `ravitaillement` cote
   /// waypoint).
   static const pointRavitaillement = Color(0xFF2E7D32);

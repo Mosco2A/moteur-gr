@@ -16,6 +16,7 @@ import '../../../core/data/daos/stages_dao.dart';
 import '../../../core/data/daos/trail_gpx_points_dao.dart';
 import '../../../core/data/daos/trail_gpx_tracks_dao.dart';
 import '../../../core/data/seed/trail_seeder.dart';
+import '../../../core/models/water_action.dart';
 import '../../../domain/track_point.dart' as trek;
 import 'gpx_parser.dart';
 import '../../../domain/tip_card.dart';
@@ -182,6 +183,14 @@ class SeedDataLoader {
         lat: Value((json['lat'] as num).toDouble()),
         lng: Value((json['lng'] as num).toDouble()),
         altitudeM: Value(json['altitudeM'] as int? ?? 0),
+        // LE GESTE A FAIRE AVANT DE BOIRE (tache 846), RECOPIE SANS ETRE
+        // INTERPRETE. Une cle absente, ou une valeur que le modele ne
+        // reconnait pas, pose `null` : la donnee n'a rien dit, et c'est le
+        // modele qui appliquera le repli de prudence — pas le semeur, qui
+        // n'a pas a connaitre la regle.
+        waterAction: Value(
+          WaterAction.depuisDonnee(json['waterAction'])?.versDonnee,
+        ),
       );
     }).toList();
     await poisDao.insertAll(poiCompanions);

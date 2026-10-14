@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter/material.dart';
 import '../../core/branding/stepways_icons.dart';
+import '../../core/models/water_action.dart';
 import '../../core/theme/couleurs_semantiques.dart';
 
 /// Style visuel associe a un type de POI.
@@ -104,6 +105,46 @@ class PoiTypeConfig {
     ),
   };
 
+  /// UN POINT D'EAU SE DESSINE PAR LE GESTE A FAIRE (tache 846).
+  ///
+  /// POURQUOI LE DESSIN DOIT CHANGER, ET PAS SEULEMENT LE TEXTE. On arrive
+  /// assoiffe devant un point d'eau, et dans cet etat on ne lit pas les
+  /// etiquettes : on reconnait une forme. Une source thermale qui portait la
+  /// goutte bleue de la fontaine etait donc une invitation a boire, quoi
+  /// qu'ecrive sa fiche.
+  ///
+  /// LES TROIS ECARTS, ET CE QU'ILS DISENT. La goutte reste la goutte dans les
+  /// trois cas — c'est de l'eau, et ca doit se voir de loin. Ce qui change est
+  /// l'interieur du dessin et la teinte :
+  ///  * A FILTRER : un tamis dans la goutte, un bleu-vert. De l'eau utilisable,
+  ///    avec un geste.
+  ///  * A TRAITER OU FAIRE BOUILLIR : la meme teinte — c'est aussi de l'eau
+  ///    utilisable avec un geste — mais le rechaud, parce que le geste n'est
+  ///    pas le meme et qu'un filtre n'y repond pas.
+  ///  * NE PAS BOIRE : la goutte barree, en rouge. Pas une nuance d'eau : un
+  ///    refus.
+  ///
+  /// BOIRE TEL QUEL N'EST PAS DANS CETTE TABLE, et c'est voulu : une fontaine
+  /// garde EXACTEMENT le dessin et la couleur qu'elle avait: rien a signaler,
+  /// rien a changer, aucune carte existante modifiee pour rien.
+  static const Map<WaterAction, PoiTypeStyle> _stylesDeLEau = {
+    WaterAction.filter: PoiTypeStyle(
+      icon: StepwaysIcons.pointEauAFiltrer,
+      color: CouleursSemantiques.pointEauAFiltrer,
+      labelKey: 'Eau a filtrer',
+    ),
+    WaterAction.treatOrBoil: PoiTypeStyle(
+      icon: StepwaysIcons.rechaud,
+      color: CouleursSemantiques.pointEauAFiltrer,
+      labelKey: 'Eau a traiter',
+    ),
+    WaterAction.doNotDrink: PoiTypeStyle(
+      icon: StepwaysIcons.pointEauInterdit,
+      color: CouleursSemantiques.pointEauNonPotable,
+      labelKey: 'Eau non potable',
+    ),
+  };
+
   /// Style par defaut pour les types inconnus
   static const _fallback = PoiTypeStyle(
     icon: StepwaysIcons.repere,
@@ -115,7 +156,17 @@ class PoiTypeConfig {
   /// Types connus: water, refuge, shelter, shop, accommodation,
   /// danger, viewpoint, info, campsite, restaurant, emergency.
   /// Types inconnus: fallback generique (location_on, gris, type brut).
-  static PoiTypeStyle getStyle(String type) {
+  ///
+  /// [waterAction] — LE GESTE A FAIRE, quand l'appelant tient le point et pas
+  /// seulement son type. Il est IGNORE hors d'un point d'eau : l'appelant peut
+  /// donc le passer sans se demander si le type s'y prete, et c'est ce registre
+  /// — seul detenteur de [waterTypes] — qui tranche. Absent, un point d'eau
+  /// garde le dessin de la fontaine, comme avant la tache 846.
+  static PoiTypeStyle getStyle(String type, {WaterAction? waterAction}) {
+    if (waterAction != null && waterTypes.contains(type)) {
+      final parLeGeste = _stylesDeLEau[waterAction];
+      if (parLeGeste != null) return parLeGeste;
+    }
     return _styles[type] ??
         PoiTypeStyle(
           icon: _fallback.icon,

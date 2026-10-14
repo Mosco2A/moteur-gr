@@ -21,7 +21,10 @@ class PoiTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = PoiTypeConfig.getStyle(poi.type);
+    final style = PoiTypeConfig.getStyle(
+      poi.type,
+      waterAction: poi.waterAction,
+    );
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),

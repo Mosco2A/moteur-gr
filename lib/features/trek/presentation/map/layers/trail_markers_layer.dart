@@ -174,7 +174,11 @@ class TrailMarkersLayer extends StatelessWidget {
             child: GestureDetector(
               onTap: onPoiTap == null ? null : () => onPoiTap!(poi),
               child: ExcludeSemantics(
-                child: PoiMarker(type: poi.type, size: poiMarkerSize),
+                child: PoiMarker(
+                  type: poi.type,
+                  size: poiMarkerSize,
+                  waterAction: poi.waterAction,
+                ),
               ),
             ),
           ),
@@ -292,20 +296,33 @@ class _MergedPin extends StatelessWidget {
                     color: stage.color,
                     size: stageCircleSize,
                   )
-                : PoiMarker(type: primary!.type, size: stageCircleSize),
+                : PoiMarker(
+                    type: primary!.type,
+                    size: stageCircleSize,
+                    waterAction: primary.waterAction,
+                  ),
           ),
 
           // La nature du lieu, en pastille dans le coin — jamais par-dessus le
-          // numero.
+          // numero. LE GESTE VOYAGE JUSQU'ICI (tache 846) : une source thermale
+          // reunie avec un depart d'etape doit se voir barree dans sa pastille,
+          // sinon le seul endroit ou le marcheur la verrait refusee serait sa
+          // fiche — qu'il n'ouvrira pas s'il croit voir une fontaine.
           if (stage != null && primary != null)
             Positioned(
               right: 0,
               bottom: 0,
               child: _PinBadge(
                 size: badgeSize,
-                color: PoiMarker.colorFor(primary.type),
+                color: PoiMarker.colorFor(
+                  primary.type,
+                  waterAction: primary.waterAction,
+                ),
                 child: StepIcon(
-                  PoiMarker.iconFor(primary.type),
+                  PoiMarker.iconFor(
+                    primary.type,
+                    waterAction: primary.waterAction,
+                  ),
                   color: Colors.white,
                   size: badgeSize * 0.6,
                 ),
@@ -520,14 +537,14 @@ class _PoiBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = PoiMarker.colorFor(poi.type);
+    final color = PoiMarker.colorFor(poi.type, waterAction: poi.waterAction);
     final hours = poi.openingHours;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            PoiMarker(type: poi.type, size: 32),
+            PoiMarker(type: poi.type, size: 32, waterAction: poi.waterAction),
             const SizedBox(width: AppTheme.spacingMd),
             Expanded(
               child: Column(

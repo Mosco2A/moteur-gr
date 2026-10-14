@@ -35,4 +35,14 @@ class Pois extends Table {
 
   /// Horaires d'ouverture (nullable)
   TextColumn get openingHours => text().nullable()();
+
+  /// LE GESTE A FAIRE AVANT DE BOIRE, tel que la donnee du sentier le DECLARE
+  /// (tache 846) : `drink_as_is`, `filter`, `treat_or_boil`, `do_not_drink`.
+  ///
+  /// NULLABLE, ET SANS VALEUR PAR DEFAUT — c'est voulu. Une colonne a
+  /// `DEFAULT 'filter'` aurait rendu un point MUET indiscernable d'un point
+  /// RELEVE a filtrer, et l'application doit dire lequel des deux elle montre.
+  /// Le repli de prudence vit dans `WaterAction.parPrudence`, cote modele, pas
+  /// dans le schema.
+  TextColumn get waterAction => text().nullable()();
 }

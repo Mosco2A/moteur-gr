@@ -7,6 +7,7 @@ import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/geo/stage_detector.dart';
 import 'package:moteur_gr/core/models/poi.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
+import 'package:moteur_gr/core/models/water_action.dart';
 import 'package:moteur_gr/core/utils/nombre_en_clair.dart';
 import 'package:moteur_gr/features/map/providers/supply_alert_provider.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
@@ -61,6 +62,11 @@ List<StageModel> etapesReelles() {
 }
 
 /// Les points d'interet reels, lus dans la donnee embarquee du sentier.
+///
+/// LE GESTE DE L'EAU EN FAIT PARTIE DEPUIS LA TACHE 846, et il est lu par la
+/// meme fonction que le semeur ([WaterAction.depuisDonnee]) : si ce banc
+/// d'essai le lisait autrement, il prouverait quelque chose que le telephone
+/// ne fait pas.
 List<PoiModel> poisReels() {
   final fichier = File('$dossierDonnees/pois.json');
   final brut = jsonDecode(fichier.readAsStringSync()) as List<dynamic>;
@@ -73,6 +79,7 @@ List<PoiModel> poisReels() {
       type: m['type'] as String,
       lat: (m['lat'] as num).toDouble(),
       lng: (m['lng'] as num).toDouble(),
+      declaredWaterAction: WaterAction.depuisDonnee(m['waterAction']),
     );
   }).toList();
 }

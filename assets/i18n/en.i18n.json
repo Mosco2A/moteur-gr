@@ -221,6 +221,8 @@
     "waterGapTitle": "Limited water points",
     "waterGapRange": "Last water point before $n stages and $km km. Fill up!",
     "waterGapStages": "Last water point before $n stages. Fill up!",
+    "waterGapTitleFilter": "Water to filter",
+    "waterGapTitleTreat": "Water to treat",
     "pinMergedTitle": "Several markers at the same place",
     "attribution": {
       "licence": "Map data under ODbL licence — view the licence",
@@ -289,7 +291,14 @@
     "info": "Information",
     "filter": "Filter points of interest",
     "altitude": "Altitude",
-    "hours": "Opening hours"
+    "hours": "Opening hours",
+    "waterAction": {
+      "drinkAsIs": "Drinkable: drink as is",
+      "filter": "Filter before drinking",
+      "treatOrBoil": "Treat or boil before drinking",
+      "doNotDrink": "Do not drink",
+      "precaution": "As a precaution: the data says nothing about this water. This is not a survey."
+    }
   },
   "accommodation": {
     "types": {
@@ -466,6 +475,7 @@
       "driedFruits": "Dried fruits",
       "freezeDriedMeal": "Freeze-dried meal",
       "waterPurification": "Water purification tablets",
+      "waterFilter": "Water filter",
       "electrolytes": "Electrolytes",
       "carriedWater": "Carried water (1L = 1000g)",
       "soap": "Biodegradable soap",

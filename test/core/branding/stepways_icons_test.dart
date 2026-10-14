@@ -21,11 +21,20 @@ void main() {
       .toList();
 
   group('Le depot porte bien les quatre jeux', () {
-    test('les 157 traces monochromes sont la', () {
+    test('les 159 traces monochromes sont la', () {
       // 157 ET NON 156 DEPUIS LA TACHE 772 : le RESUME a recu son propre
       // dessin. Il portait celui du Programme, et les deux cartes du cockpit
       // sortaient le meme trace pointille.
-      expect(plats.length, 157);
+      //
+      // 159 DEPUIS LA TACHE 846 : la goutte a deux variantes, parce que l'eau
+      // ne se dit plus potable ou non mais par le GESTE a faire —
+      // `point-eau-a-filtrer.svg` (la goutte au tamis) et
+      // `point-eau-interdit.svg` (la goutte barree). Elles restent sur la
+      // grille de la famille : 24 px, trait 2 px, extremites arrondies,
+      // `stroke="currentColor"`. Pas de variante duo : comme `point-eau.svg`
+      // dont elles derivent, ce sont des icones de POINT, et la carte les pose
+      // en blanc sur un disque de couleur semantique.
+      expect(plats.length, 159);
     });
 
     test('les 21 rubriques, 43 ICO et 38 MAT ont leurs TROIS traces', () {
@@ -80,7 +89,7 @@ void main() {
   });
 
   group('Elles se rendent vraiment dans Flutter', () {
-    testWidgets('les 157 traces monochromes passent dans flutter_svg', (
+    testWidgets('les 159 traces monochromes passent dans flutter_svg', (
       tester,
     ) async {
       for (final chemin in plats) {
