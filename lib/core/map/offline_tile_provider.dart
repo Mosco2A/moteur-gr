@@ -111,6 +111,23 @@ class OfflineTileProvider {
   static const defaultTileUrl =
       'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
+  /// QUI DEMANDE LA TUILE — EXIGE PAR LA POLITIQUE D'USAGE D'OSM, PAS PAR LE
+  /// GOUT DU DETAIL (tache 844).
+  ///
+  /// La « Tile Usage Policy » d'OpenStreetMap demande un en-tete `User-Agent`
+  /// ou `Referer` qui IDENTIFIE l'application, et se reserve de bloquer le
+  /// trafic anonyme. `flutter_map` ne pose cet en-tete que si on lui donne
+  /// [TileLayer.userAgentPackageName] : sans lui, il envoie son defaut
+  /// `unknown`, c'est-a-dire exactement le trafic non identifie que la
+  /// politique refuse.
+  ///
+  /// POURQUOI LA CONSTANTE VIT ICI, AVEC L'URL. Elle etait ecrite en prive
+  /// dans `fond_de_carte.dart`, donc la vue de suivi web — la seule couche
+  /// exemptee du decideur — n'en avait aucune et tirait sur les tuiles d'OSM
+  /// sans se nommer. L'identite voyage desormais avec l'adresse qu'elle
+  /// accompagne : un appelant qui trouve l'une trouve l'autre.
+  static const userAgentPackageName = 'com.moteur-gr.app';
+
   /// Choisit le fond pour [trailId]. NE LEVE JAMAIS : toute panne rend
   /// [FondDuReseau], parce qu'une carte sans fond hors ligne vaut mieux
   /// qu'un ecran de navigation en erreur.

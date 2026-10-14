@@ -11,7 +11,13 @@ import '../engine/trail_engine.dart';
 import 'offline_tile_provider.dart';
 
 /// Identifiant envoye a OpenStreetMap avec chaque tuile demandee au reseau.
-const _userAgent = 'com.moteur-gr.app';
+///
+/// IL A DEMENAGE CHEZ LE DECIDEUR (tache 844). Ecrit en prive ici, il ne
+/// servait qu'a la couche de ce fichier : la vue de suivi web, exemptee du
+/// decideur, tirait sur les tuiles d'OSM SANS se nommer, ce que la politique
+/// d'usage d'OSM refuse. La constante vit desormais a cote de l'URL qu'elle
+/// accompagne, et les deux couches la lisent.
+const _userAgent = OfflineTileProvider.userAgentPackageName;
 
 /// Le fond de carte d'un sentier, a poser comme premier enfant d'une
 /// `FlutterMap`.
