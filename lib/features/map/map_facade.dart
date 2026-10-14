@@ -72,7 +72,8 @@ export 'providers/perimetre_de_la_barre_provider.dart'
 export 'providers/relief_de_l_etape_provider.dart' show reliefDeLEtapeProvider;
 export 'providers/simplified_track_provider.dart' show simplifiedTrackProvider;
 export 'providers/stage_poi_check_provider.dart' show stagePoiChecksProvider;
-export 'providers/supply_alert_provider.dart' show supplyGapAlertProvider;
+export 'providers/supply_alert_provider.dart'
+    show SupplyGapAlert, SupplyGapKind, supplyGapAlertProvider;
 export 'providers/track_position_provider.dart'
     show
         jalonsDesEtapesProvider,

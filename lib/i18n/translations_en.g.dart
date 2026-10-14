@@ -266,6 +266,10 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get etapeFinie => 'Well done, stage complete!';
 	@override late final _Translations$map$guide$en guide = _Translations$map$guide$en._(_root);
 	@override String get supplyDismiss => 'Dismiss alert';
+	@override String supplyGapRange({required Object n, required Object km}) => 'Last resupply before ${n} stages and ${km} km. Stock up!';
+	@override String get waterGapTitle => 'Limited water points';
+	@override String waterGapRange({required Object n, required Object km}) => 'Last water point before ${n} stages and ${km} km. Fill up!';
+	@override String waterGapStages({required Object n}) => 'Last water point before ${n} stages. Fill up!';
 	@override String get pinMergedTitle => 'Several markers at the same place';
 	@override late final _Translations$map$attribution$en attribution = _Translations$map$attribution$en._(_root);
 }
@@ -4462,6 +4466,10 @@ extension on TranslationsEn {
 			'map.guide.poi.emergency' => 'An emergency point: post, helipad or emergency call point.',
 			'map.guide.poi.info' => 'A trail information sign or point.',
 			'map.supplyDismiss' => 'Dismiss alert',
+			'map.supplyGapRange' => ({required Object n, required Object km}) => 'Last resupply before ${n} stages and ${km} km. Stock up!',
+			'map.waterGapTitle' => 'Limited water points',
+			'map.waterGapRange' => ({required Object n, required Object km}) => 'Last water point before ${n} stages and ${km} km. Fill up!',
+			'map.waterGapStages' => ({required Object n}) => 'Last water point before ${n} stages. Fill up!',
 			'map.pinMergedTitle' => 'Several markers at the same place',
 			'map.attribution.licence' => 'Map data under ODbL licence — view the licence',
 			'map.attribution.traces' => 'Trail tracks surveyed in OpenStreetMap',
@@ -4779,12 +4787,12 @@ extension on TranslationsEn {
 			'checklist.ui.shoppingListTitle' => 'Shopping list',
 			'checklist.ui.shoppingListEmpty' => 'Your shopping list is empty. Add items with the cart button.',
 			'checklist.ui.shoppingToBuy' => 'To buy',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.shoppingPurchased' => 'Already bought',
 			'checklist.ui.share' => 'SHARE',
 			'checklist.ui.infoTitle' => 'Gear & Pack',
 			'checklist.ui.infoCheckTitle' => 'Check items',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.infoCheckBody' => 'Check what you take — the weight recalculates at the top.',
 			'checklist.ui.infoRequiredTitle' => 'Required',
 			'checklist.ui.infoRequiredBody' => 'Items with a lock = regulation (whistle, lamp, emergency blanket).',
@@ -5293,12 +5301,12 @@ extension on TranslationsEn {
 			'demo.sortieFaite' => 'You have left the demo.',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
+			_ => null,
+		} ?? switch (path) {
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
 			'follow.title' => 'Live tracking',
 			'follow.connecting' => 'Connecting…',
 			'follow.live' => 'Live',
-			_ => null,
-		} ?? switch (path) {
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Invalid link',
 			'follow.invalidLinkHint' => 'This tracking link does not exist or has expired.',
@@ -5807,12 +5815,12 @@ extension on TranslationsEn {
 			'moderation.complaintSent' => 'Challenge recorded. It will be reviewed.',
 			'moderation.complaintEmpty' => 'Explain your challenge.',
 			'moderation.a11y.reportForm' => 'Content reporting form',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.a11y.reasonSelector' => 'Report reason selector',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
 			'moderation.a11y.submitReport' => 'Send report',
 			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.a11y.complaintForm' => 'Decision challenge form',
 			'bootstrap.loading' => 'Preparing your hike…',
 			'recap.title' => 'My adventure',
@@ -6321,12 +6329,12 @@ extension on TranslationsEn {
 			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => 'Open ${name} in the maps app',
 			'lieu.a11y.telephoner' => ({required Object name}) => 'Call ${name}',
 			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Open the official website of ${name}',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.rafraichir' => 'Refresh from the database',
 			'lieu.rafraichirFait' => ({required Object n}) => '${n} item(s) updated from the database.',
 			'lieu.rafraichirDejaAJour' => 'Already up to date: the database holds nothing newer.',
 			'lieu.rafraichirHorsLigne' => 'No network: what you see is what is on the phone.',
-			_ => null,
-		} ?? switch (path) {
 			'lieu.rafraichirEchec' => 'The update failed. The data on the phone is intact.',
 			_ => null,
 		};
