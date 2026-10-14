@@ -429,6 +429,23 @@ void main() {
       ]);
     }
 
+    test(
+      'SUR LE MARE A MARE CENTRE, le filtre est exige — et voici par qui',
+      () {
+        // LA PREUVE SUR LA DONNEE REELLE, pas sur un sentier fabrique : les
+        // vingt POI embarques entrent, le filtre sort.
+        expect(articlesExigesParLeSentier(pois), [filtreAEau]);
+
+        // ET C'EST LA FUNTANA DI CROCE QUI L'IMPOSE, elle seule : c'est le
+        // point dont la donnee ne dit rien. Sans elle, ce sentier n'aurait que
+        // des fontaines potables et une source thermale — aucun filtre.
+        final sansFuntana = pois
+            .where((p) => p.name != 'Funtana di Croce')
+            .toList();
+        expect(articlesExigesParLeSentier(sansFuntana), isEmpty);
+      },
+    );
+
     test('la regle elle-meme : UN SEUL point filtrable suffit', () {
       PoiModel point(WaterAction? geste) => PoiModel(
         trailId: 'x',
