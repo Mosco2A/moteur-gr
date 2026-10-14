@@ -217,6 +217,10 @@
       }
     },
     "supplyDismiss": "Hinweis ausblenden",
+    "supplyGapRange": "Letzte Versorgung vor $n Etappen und $km km. Deck dich ein!",
+    "waterGapTitle": "Begrenzte Wasserstellen",
+    "waterGapRange": "Letzte Wasserstelle vor $n Etappen und $km km. Füll deine Flaschen!",
+    "waterGapStages": "Letzte Wasserstelle vor $n Etappen. Füll deine Flaschen!",
     "pinMergedTitle": "Mehrere Markierungen am selben Ort",
     "attribution": {
       "licence": "Kartendaten unter ODbL-Lizenz — Lizenz ansehen",

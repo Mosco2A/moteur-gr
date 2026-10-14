@@ -217,6 +217,10 @@
       }
     },
     "supplyDismiss": "Ocultar el aviso",
+    "supplyGapRange": "Último avituallamiento antes de $n etapas y $km km. ¡Abastécete!",
+    "waterGapTitle": "Puntos de agua limitados",
+    "waterGapRange": "Último punto de agua antes de $n etapas y $km km. ¡Llena tus botellas!",
+    "waterGapStages": "Último punto de agua antes de $n etapas. ¡Llena tus botellas!",
     "pinMergedTitle": "Varios puntos en el mismo lugar",
     "attribution": {
       "licence": "Datos cartograficos con licencia ODbL — ver la licencia",

@@ -459,6 +459,18 @@ class Translations$map$fr {
 	/// fr: 'Masquer l'alerte'
 	String get supplyDismiss => 'Masquer l\'alerte';
 
+	/// fr: 'Dernier ravitaillement avant $n étapes et $km km. Prévois tes réserves !'
+	String supplyGapRange({required Object n, required Object km}) => 'Dernier ravitaillement avant ${n} étapes et ${km} km. Prévois tes réserves !';
+
+	/// fr: 'Points d'eau limités'
+	String get waterGapTitle => 'Points d\'eau limités';
+
+	/// fr: 'Dernier point d'eau avant $n étapes et $km km. Fais le plein !'
+	String waterGapRange({required Object n, required Object km}) => 'Dernier point d\'eau avant ${n} étapes et ${km} km. Fais le plein !';
+
+	/// fr: 'Dernier point d'eau avant $n étapes. Fais le plein !'
+	String waterGapStages({required Object n}) => 'Dernier point d\'eau avant ${n} étapes. Fais le plein !';
+
 	/// fr: 'Plusieurs repères au même endroit'
 	String get pinMergedTitle => 'Plusieurs repères au même endroit';
 
@@ -8623,6 +8635,10 @@ extension on Translations {
 			'map.guide.poi.emergency' => 'Point de secours : poste, héliport ou borne d\'appel d\'urgence.',
 			'map.guide.poi.info' => 'Panneau ou point d\'information du sentier.',
 			'map.supplyDismiss' => 'Masquer l\'alerte',
+			'map.supplyGapRange' => ({required Object n, required Object km}) => 'Dernier ravitaillement avant ${n} étapes et ${km} km. Prévois tes réserves !',
+			'map.waterGapTitle' => 'Points d\'eau limités',
+			'map.waterGapRange' => ({required Object n, required Object km}) => 'Dernier point d\'eau avant ${n} étapes et ${km} km. Fais le plein !',
+			'map.waterGapStages' => ({required Object n}) => 'Dernier point d\'eau avant ${n} étapes. Fais le plein !',
 			'map.pinMergedTitle' => 'Plusieurs repères au même endroit',
 			'map.attribution.licence' => 'Donnees cartographiques sous licence ODbL — voir la licence',
 			'map.attribution.traces' => 'Traces des sentiers relevees dans OpenStreetMap',
@@ -8940,12 +8956,12 @@ extension on Translations {
 			'checklist.ui.shoppingListTitle' => 'Liste de courses',
 			'checklist.ui.shoppingListEmpty' => 'Ta liste de courses est vide. Ajoute des items avec le bouton panier.',
 			'checklist.ui.shoppingToBuy' => 'À acheter',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.shoppingPurchased' => 'Déjà acheté',
 			'checklist.ui.share' => 'PARTAGER',
 			'checklist.ui.infoTitle' => 'Matériel & Sac',
 			'checklist.ui.infoCheckTitle' => 'Cocher les items',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.infoCheckBody' => 'Coche ce que tu emportes — le poids se recalcule en haut.',
 			'checklist.ui.infoRequiredTitle' => 'Obligatoires',
 			'checklist.ui.infoRequiredBody' => 'Items avec cadenas = réglementation (sifflet, lampe, couverture survie).',
@@ -9454,12 +9470,12 @@ extension on Translations {
 			'demo.sortieFaite' => 'Tu as quitté la démo.',
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
+			_ => null,
+		} ?? switch (path) {
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
 			'follow.title' => 'Suivi en direct',
 			'follow.connecting' => 'Connexion…',
 			'follow.live' => 'En direct',
-			_ => null,
-		} ?? switch (path) {
 			'follow.offline' => 'Hors ligne',
 			'follow.invalidLink' => 'Lien invalide',
 			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
@@ -9968,12 +9984,12 @@ extension on Translations {
 			'moderation.complaintSent' => 'Contestation enregistrée. Elle sera examinée.',
 			'moderation.complaintEmpty' => 'Explique ta contestation.',
 			'moderation.a11y.reportForm' => 'Formulaire de signalement de contenu',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.a11y.reasonSelector' => 'Sélecteur de motif de signalement',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Déclaration de bonne foi, ${state}',
 			'moderation.a11y.submitReport' => 'Envoyer le signalement',
 			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
 			'bootstrap.loading' => 'Préparation de ta randonnée…',
 			'recap.title' => 'Mon aventure',
@@ -10482,12 +10498,12 @@ extension on Translations {
 			'lieu.rafraichir' => 'Rafraîchir depuis la base',
 			'lieu.rafraichirFait' => ({required Object n}) => '${n} information(s) mise(s) à jour depuis la base.',
 			'lieu.rafraichirDejaAJour' => 'Déjà à jour : la base ne contient rien de plus récent.',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.rafraichirHorsLigne' => 'Pas de réseau : les données affichées sont celles du téléphone.',
 			'lieu.rafraichirEchec' => 'La mise à jour a échoué. Les données du téléphone sont intactes.',
 			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => 'Ouvrir ${name} dans l\'application de cartes',
 			'lieu.a11y.telephoner' => ({required Object name}) => 'Appeler ${name}',
-			_ => null,
-		} ?? switch (path) {
 			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Ouvrir le site officiel de ${name}',
 			_ => null,
 		};

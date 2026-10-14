@@ -26,6 +26,7 @@ import '../../data/calibration_du_pas.dart';
 import '../../providers/tracking_providers.dart';
 import 'centre_de_la_moitie_haute.dart';
 import 'controls/map_controls.dart';
+import 'libelle_de_l_alerte.dart';
 import '../../../../core/branding/stepways_icons.dart';
 import 'map_controller.dart';
 import 'map_photo_button.dart';
@@ -408,17 +409,17 @@ class _SupplyAlertBannerState extends ConsumerState<_SupplyAlertBanner> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        t.shop.limitedTitle,
+                        titreDeLAlerte(alert),
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: AppTheme.orangeDifficile,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: 2),
-                      // Libelle TRADUIT (jamais en dur) : le nombre d'etapes
-                      // sans commerce est injecte en parametre.
+                      // Libelle TRADUIT (jamais en dur) : le sujet, le nombre
+                      // d'etapes et la portee en kilometres sont injectes.
                       Text(
-                        t.shop.gapLong(n: alert.gap),
+                        texteDeLAlerte(alert),
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: AppTheme.orangeDifficile,
                         ),

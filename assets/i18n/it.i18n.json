@@ -217,6 +217,10 @@
       }
     },
     "supplyDismiss": "Nascondi l'avviso",
+    "supplyGapRange": "Ultimo rifornimento prima di $n tappe e $km km. Fai scorta!",
+    "waterGapTitle": "Punti d'acqua limitati",
+    "waterGapRange": "Ultimo punto d'acqua prima di $n tappe e $km km. Fai il pieno!",
+    "waterGapStages": "Ultimo punto d'acqua prima di $n tappe. Fai il pieno!",
     "pinMergedTitle": "Più segnaposti nello stesso punto",
     "attribution": {
       "licence": "Dati cartografici con licenza ODbL — vedi la licenza",

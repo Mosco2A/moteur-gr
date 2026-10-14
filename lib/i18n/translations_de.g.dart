@@ -266,6 +266,10 @@ class _Translations$map$de extends Translations$map$fr {
 	@override String get etapeFinie => 'Stark, Etappe geschafft!';
 	@override late final _Translations$map$guide$de guide = _Translations$map$guide$de._(_root);
 	@override String get supplyDismiss => 'Hinweis ausblenden';
+	@override String supplyGapRange({required Object n, required Object km}) => 'Letzte Versorgung vor ${n} Etappen und ${km} km. Deck dich ein!';
+	@override String get waterGapTitle => 'Begrenzte Wasserstellen';
+	@override String waterGapRange({required Object n, required Object km}) => 'Letzte Wasserstelle vor ${n} Etappen und ${km} km. Füll deine Flaschen!';
+	@override String waterGapStages({required Object n}) => 'Letzte Wasserstelle vor ${n} Etappen. Füll deine Flaschen!';
 	@override String get pinMergedTitle => 'Mehrere Markierungen am selben Ort';
 	@override late final _Translations$map$attribution$de attribution = _Translations$map$attribution$de._(_root);
 }
@@ -4462,6 +4466,10 @@ extension on TranslationsDe {
 			'map.guide.poi.emergency' => 'Notfallpunkt: Station, Landeplatz oder Notrufsäule.',
 			'map.guide.poi.info' => 'Informationstafel oder Infopunkt am Weg.',
 			'map.supplyDismiss' => 'Hinweis ausblenden',
+			'map.supplyGapRange' => ({required Object n, required Object km}) => 'Letzte Versorgung vor ${n} Etappen und ${km} km. Deck dich ein!',
+			'map.waterGapTitle' => 'Begrenzte Wasserstellen',
+			'map.waterGapRange' => ({required Object n, required Object km}) => 'Letzte Wasserstelle vor ${n} Etappen und ${km} km. Füll deine Flaschen!',
+			'map.waterGapStages' => ({required Object n}) => 'Letzte Wasserstelle vor ${n} Etappen. Füll deine Flaschen!',
 			'map.pinMergedTitle' => 'Mehrere Markierungen am selben Ort',
 			'map.attribution.licence' => 'Kartendaten unter ODbL-Lizenz — Lizenz ansehen',
 			'map.attribution.traces' => 'Wegverlaufe aus OpenStreetMap erfasst',
@@ -4779,12 +4787,12 @@ extension on TranslationsDe {
 			'checklist.ui.shoppingListTitle' => 'Einkaufsliste',
 			'checklist.ui.shoppingListEmpty' => 'Deine Einkaufsliste ist leer. Füge Artikel mit dem Warenkorb-Button hinzu.',
 			'checklist.ui.shoppingToBuy' => 'Zu kaufen',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.shoppingPurchased' => 'Bereits gekauft',
 			'checklist.ui.share' => 'TEILEN',
 			'checklist.ui.infoTitle' => 'Ausrüstung & Rucksack',
 			'checklist.ui.infoCheckTitle' => 'Artikel anhaken',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.infoCheckBody' => 'Hake an, was du mitnimmst — das Gewicht wird oben neu berechnet.',
 			'checklist.ui.infoRequiredTitle' => 'Pflicht',
 			'checklist.ui.infoRequiredBody' => 'Artikel mit Schloss = Vorschrift (Pfeife, Lampe, Rettungsdecke).',
@@ -5293,12 +5301,12 @@ extension on TranslationsDe {
 			'demo.sortieFaite' => 'Du hast die Demo verlassen.',
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
+			_ => null,
+		} ?? switch (path) {
 			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
 			'follow.title' => 'Live-Verfolgung',
 			'follow.connecting' => 'Verbinden…',
 			'follow.live' => 'Live',
-			_ => null,
-		} ?? switch (path) {
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Ungültiger Link',
 			'follow.invalidLinkHint' => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.',
@@ -5807,12 +5815,12 @@ extension on TranslationsDe {
 			'moderation.complaintSent' => 'Anfechtung erfasst. Sie wird geprüft.',
 			'moderation.complaintEmpty' => 'Erkläre deine Anfechtung.',
 			'moderation.a11y.reportForm' => 'Formular zur Inhaltsmeldung',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.a11y.reasonSelector' => 'Auswahl des Meldegrunds',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Erklärung in gutem Glauben, ${state}',
 			'moderation.a11y.submitReport' => 'Meldung senden',
 			'moderation.a11y.statementCard' => 'Begründung der Moderationsentscheidung',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.a11y.complaintForm' => 'Formular zur Anfechtung der Entscheidung',
 			'bootstrap.loading' => 'Deine Wanderung wird vorbereitet…',
 			'recap.title' => 'Mein Abenteuer',
@@ -6321,12 +6329,12 @@ extension on TranslationsDe {
 			'lieu.rafraichir' => 'Aus der Datenbank aktualisieren',
 			'lieu.rafraichirFait' => ({required Object n}) => '${n} Angabe(n) aus der Datenbank aktualisiert.',
 			'lieu.rafraichirDejaAJour' => 'Bereits aktuell: die Datenbank hat nichts Neueres.',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.rafraichirHorsLigne' => 'Kein Netz: angezeigt wird, was auf dem Telefon liegt.',
 			'lieu.rafraichirEchec' => 'Die Aktualisierung ist fehlgeschlagen. Die Daten auf dem Telefon sind unversehrt.',
 			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => '${name} in der Karten-App öffnen',
 			'lieu.a11y.telephoner' => ({required Object name}) => '${name} anrufen',
-			_ => null,
-		} ?? switch (path) {
 			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Offizielle Website von ${name} öffnen',
 			_ => null,
 		};
