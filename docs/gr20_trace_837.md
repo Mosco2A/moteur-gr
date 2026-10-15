@@ -48,6 +48,31 @@ n avait ete garde ; il l est maintenant.
 Avant : 8 854 points, **29 altitudes (0,33 %)**. Apres : 9 128 points,
 **9 128 altitudes (100 %)**.
 
+### L ancienne trace n etait pas FAUSSE, elle etait AVEUGLE
+
+Il faut le dire, parce que la conclusion inverse serait facile a tirer. J ai
+compare les deux traces point par point : **l ecart maximal est de 46 m, et
+AUCUN point de l ancienne trace n est a plus de 100 m de la nouvelle.** Les
+deux suivent le meme chemin, parce qu elles viennent de la meme relation OSM.
+
+| | Ancienne (`GR20/app`) | Nouvelle (StepWays) |
+|---|---|---|
+| Points | 8 854 | 9 128 |
+| Longueur | 182,759 km | **183,585 km** |
+| Espacement median | 15,2 m | 14,9 m |
+| Altitudes | **29** (0,33 %) | **9 128** (100 %) |
+
+Les 826 m de difference viennent des 274 points qu OpenStreetMap a gagnes
+depuis l extraction d origine : plus de detail, donc plus de longueur. Le
+defaut de l ancienne trace n etait donc **ni son trace ni sa densite** —
+c etait de n avoir **aucune altitude**, et que **personne n ait jamais lu les
+longueurs d etape dessus**. Le point haut mesure est d ailleurs une preuve que
+la geometrie est a jour : **2 578 m a 42,37650 / 8,93783**, soit la pointe des
+Eboulis, l itineraire d apres 2015 — et non le cirque de la Solitude, ferme
+cette annee-la. Le modele EU-DEM rend 2 578 m la ou le terrain fait environ
+2 607 m : −29 m sur une arete, ce qui est l ordre d erreur attendu d un
+modele a 25 m.
+
 ## 2. Le denivele : trois chiffres, pas un
 
 Un modele a 25 m de resolution echantillonne tous les 15 m tremble. La somme
