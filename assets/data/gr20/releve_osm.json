@@ -1,0 +1,44 @@
+{
+  "relation": 12484370,
+  "chemins_membres_total": 161,
+  "chemins_retenus": 161,
+  "roles": {
+    "(sans role)": 161
+  },
+  "roles_ignores": [],
+  "chemins_absents": [],
+  "inversions": 98,
+  "ruptures": [],
+  "tags": {
+    "description": "20",
+    "description:fr": "Traversée de la Corse",
+    "name": "GR 20 Principale",
+    "network": "nwn",
+    "osmc:symbol": "red::white_upper:red_lower:20:black",
+    "ref": "GR 20",
+    "route": "hiking",
+    "type": "route",
+    "wikidata": "Q262374",
+    "wikipedia": "en:GR 20"
+  },
+  "points": 9128,
+  "noeuds_uniques": 9128,
+  "premier_point": [
+    42.5081535,
+    8.8548477
+  ],
+  "dernier_point": [
+    41.7347805,
+    9.3339968
+  ],
+  "depart_voulu": [
+    42.5081535,
+    8.8548477
+  ],
+  "depart_ecart_m": 0.0,
+  "retournee": false,
+  "longueur_km": 183.585,
+  "espacement_median_m": 14.9,
+  "altitudes_obtenues": 9128,
+  "altitudes_manquantes": []
+}
