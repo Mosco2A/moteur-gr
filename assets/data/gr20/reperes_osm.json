@@ -1,0 +1,1354 @@
+[
+  {
+    "nom": "A Santa",
+    "type_osm": "node/7229772737",
+    "lat": 41.7363545,
+    "lon": 9.3309323,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Aire de bivouac La Halte Du Prince",
+    "type_osm": "way/446641114",
+    "lat": 42.1144842,
+    "lon": 9.122274,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Alzitedda",
+    "type_osm": "node/7229772740",
+    "lat": 41.732484,
+    "lon": 9.3248491,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Auberge du col de la Bavella",
+    "type_osm": "way/354652886",
+    "lat": 41.7948972,
+    "lon": 9.2290182,
+    "genre": "hotel",
+    "ele": "1275"
+  },
+  {
+    "nom": "Bavella",
+    "type_osm": "node/2721372014",
+    "lat": 41.7965451,
+    "lon": 9.2264422,
+    "genre": "village",
+    "ele": null
+  },
+  {
+    "nom": "Bel horizon",
+    "type_osm": "node/7139293435",
+    "lat": 42.5084292,
+    "lon": 8.8548879,
+    "genre": "hotel",
+    "ele": null
+  },
+  {
+    "nom": "Bergerie I Croci",
+    "type_osm": "way/263889051",
+    "lat": 41.8552222,
+    "lon": 9.1658995,
+    "genre": "alpine_hut",
+    "ele": null
+  },
+  {
+    "nom": "Bergerie d'Asinau",
+    "type_osm": "way/353640451",
+    "lat": 41.8396542,
+    "lon": 9.2153045,
+    "genre": "alpine_hut",
+    "ele": "1462"
+  },
+  {
+    "nom": "Bergerie de Ballone",
+    "type_osm": "way/631221944",
+    "lat": 42.3529047,
+    "lon": 8.9078329,
+    "genre": "alpine_hut",
+    "ele": null
+  },
+  {
+    "nom": "Bergerie de Gialgone",
+    "type_osm": "node/4394676189",
+    "lat": 42.034111,
+    "lon": 9.1646271,
+    "genre": "alpine_hut",
+    "ele": null
+  },
+  {
+    "nom": "Bergerie de Tolla",
+    "type_osm": "node/4438888372",
+    "lat": 42.1711892,
+    "lon": 9.0980364,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bergerie de Tolla",
+    "type_osm": "way/120874153",
+    "lat": 42.1715284,
+    "lon": 9.0978974,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bergeries d'Alzeta",
+    "type_osm": "node/8871451503",
+    "lat": 42.1093434,
+    "lon": 9.1568946,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bergeries de Basseta",
+    "type_osm": "way/353421104",
+    "lat": 41.885221,
+    "lon": 9.1458003,
+    "genre": "alpine_hut",
+    "ele": "1360"
+  },
+  {
+    "nom": "Bergeries de Pezzo",
+    "type_osm": "node/8871451494",
+    "lat": 42.1169534,
+    "lon": 9.1912946,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Bergeries de Radule",
+    "type_osm": "node/1935629269",
+    "lat": 42.3036056,
+    "lon": 8.8756641,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bergeries de Scarpaccedié",
+    "type_osm": "node/5911859788",
+    "lat": 42.0896832,
+    "lon": 9.1533592,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bergeries de Vaccaghia",
+    "type_osm": "way/297487399",
+    "lat": 42.2367955,
+    "lon": 8.9741769,
+    "genre": "alpine_hut",
+    "ele": "1621"
+  },
+  {
+    "nom": "Bivouac Col de Verde",
+    "type_osm": "way/437562771",
+    "lat": 42.0279268,
+    "lon": 9.193702,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac Haut-Asco",
+    "type_osm": "way/437755712",
+    "lat": 42.4033273,
+    "lon": 8.9224191,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac d'Asinau",
+    "type_osm": "way/437545324",
+    "lat": 41.8414829,
+    "lon": 9.2147494,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac d'Usciolu",
+    "type_osm": "way/437549979",
+    "lat": 41.9346963,
+    "lon": 9.2055628,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de Bocca Palmente",
+    "type_osm": "way/1344508783",
+    "lat": 42.1139946,
+    "lon": 9.1572731,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de Capanelle",
+    "type_osm": "node/6545047285",
+    "lat": 42.0777041,
+    "lon": 9.1500439,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de Carozzu",
+    "type_osm": "way/237852708",
+    "lat": 42.4259793,
+    "lon": 8.900982,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de Ciottulu di i Mori",
+    "type_osm": "way/437752735",
+    "lat": 42.3352041,
+    "lon": 8.8690507,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de Paliri",
+    "type_osm": "way/437544876",
+    "lat": 41.7943344,
+    "lon": 9.2601894,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de Petra Piana",
+    "type_osm": "way/437735563",
+    "lat": 42.1981253,
+    "lon": 9.0519595,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de Prati",
+    "type_osm": "way/437551969",
+    "lat": 42.0082816,
+    "lon": 9.2182345,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de Tighiettu",
+    "type_osm": "way/437755707",
+    "lat": 42.3621058,
+    "lon": 8.9090213,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de Vaccaghja",
+    "type_osm": "way/437737341",
+    "lat": 42.2365819,
+    "lon": 8.973259,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de l'Onda",
+    "type_osm": "way/437735560",
+    "lat": 42.1533483,
+    "lon": 9.0743576,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bivouac de l'Ortu di u Piobbu",
+    "type_osm": "way/237852713",
+    "lat": 42.4649613,
+    "lon": 8.9059553,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Bocca Borba",
+    "type_osm": "node/6311680514",
+    "lat": 42.3848267,
+    "lon": 8.9411198,
+    "genre": "col",
+    "ele": "2207"
+  },
+  {
+    "nom": "Bocca Crucetta",
+    "type_osm": "node/4348329403",
+    "lat": 42.371388,
+    "lon": 8.9295276,
+    "genre": "col",
+    "ele": "2452"
+  },
+  {
+    "nom": "Bocca Culaghia",
+    "type_osm": "node/6497394730",
+    "lat": 42.4036723,
+    "lon": 8.9094916,
+    "genre": "col",
+    "ele": "1957"
+  },
+  {
+    "nom": "Bocca Muzzella",
+    "type_osm": "node/4438809185",
+    "lat": 42.2066474,
+    "lon": 9.0379599,
+    "genre": "col",
+    "ele": "2206"
+  },
+  {
+    "nom": "Bocca Palmente",
+    "type_osm": "node/292072017",
+    "lat": 42.1140663,
+    "lon": 9.1573123,
+    "genre": "col",
+    "ele": "1642"
+  },
+  {
+    "nom": "Bocca Pampanosa",
+    "type_osm": "node/8518307650",
+    "lat": 42.3738968,
+    "lon": 8.9203526,
+    "genre": "col",
+    "ele": "2400"
+  },
+  {
+    "nom": "Bocca San Pedru",
+    "type_osm": "node/4988586324",
+    "lat": 42.2633808,
+    "lon": 8.8927761,
+    "genre": "col",
+    "ele": "1452"
+  },
+  {
+    "nom": "Bocca Stazzunara",
+    "type_osm": "node/292065248",
+    "lat": 41.8460034,
+    "lon": 9.2036586,
+    "genre": "col",
+    "ele": "2021"
+  },
+  {
+    "nom": "Bocca Villaghello",
+    "type_osm": "node/7246957872",
+    "lat": 41.7802205,
+    "lon": 9.2810821,
+    "genre": "col",
+    "ele": "1065"
+  },
+  {
+    "nom": "Bocca a Manuella",
+    "type_osm": "node/12059354324",
+    "lat": 42.2797994,
+    "lon": 8.8843671,
+    "genre": "col",
+    "ele": "1475"
+  },
+  {
+    "nom": "Bocca a Soglia",
+    "type_osm": "node/297540684",
+    "lat": 42.2032657,
+    "lon": 9.0220109,
+    "genre": "col",
+    "ele": "2052"
+  },
+  {
+    "nom": "Bocca alle Porte",
+    "type_osm": "node/292072676",
+    "lat": 42.2115949,
+    "lon": 9.0059046,
+    "genre": "col",
+    "ele": "2225"
+  },
+  {
+    "nom": "Bocca d'Acqua Ciarnente",
+    "type_osm": "node/4988574550",
+    "lat": 42.2262358,
+    "lon": 8.9785503,
+    "genre": "col",
+    "ele": "1568"
+  },
+  {
+    "nom": "Bocca d'Oreccia",
+    "type_osm": "node/6166966034",
+    "lat": 42.1557007,
+    "lon": 9.0699131,
+    "genre": "col",
+    "ele": "1421"
+  },
+  {
+    "nom": "Bocca d'Usciolu",
+    "type_osm": "node/1450923829",
+    "lat": 41.7473564,
+    "lon": 9.3260482,
+    "genre": "col",
+    "ele": "587"
+  },
+  {
+    "nom": "Bocca di Agnone",
+    "type_osm": "node/292065351",
+    "lat": 41.9056263,
+    "lon": 9.1772768,
+    "genre": "col",
+    "ele": "1571"
+  },
+  {
+    "nom": "Bocca di Campitellu",
+    "type_osm": "node/6703670094",
+    "lat": 41.9912533,
+    "lon": 9.2186075,
+    "genre": "col",
+    "ele": "1899"
+  },
+  {
+    "nom": "Bocca di Chiralba",
+    "type_osm": "node/3024216032",
+    "lat": 41.8399588,
+    "lon": 9.1828782,
+    "genre": "col",
+    "ele": "1743"
+  },
+  {
+    "nom": "Bocca di Foggialle",
+    "type_osm": "node/309323664",
+    "lat": 42.332585,
+    "lon": 8.876541,
+    "genre": "col",
+    "ele": "1963"
+  },
+  {
+    "nom": "Bocca di Guagnarola",
+    "type_osm": "node/440460465",
+    "lat": 42.3119519,
+    "lon": 8.8614602,
+    "genre": "col",
+    "ele": "1833"
+  },
+  {
+    "nom": "Bocca di L'Innominata",
+    "type_osm": "node/309322690",
+    "lat": 42.4328873,
+    "lon": 8.9127202,
+    "genre": "col",
+    "ele": null
+  },
+  {
+    "nom": "Bocca di Laparo",
+    "type_osm": "node/778113917",
+    "lat": 41.9653014,
+    "lon": 9.2238732,
+    "genre": "col",
+    "ele": "1525"
+  },
+  {
+    "nom": "Bocca di Maghine",
+    "type_osm": "node/11174393740",
+    "lat": 42.4129388,
+    "lon": 8.8985191,
+    "genre": "col",
+    "ele": "1798"
+  },
+  {
+    "nom": "Bocca di Maro",
+    "type_osm": "node/9410877342",
+    "lat": 41.8252656,
+    "lon": 9.2169546,
+    "genre": "col",
+    "ele": "1634"
+  },
+  {
+    "nom": "Bocca di Monte Bracciutu",
+    "type_osm": "node/8785654083",
+    "lat": 41.7865121,
+    "lon": 9.2739674,
+    "genre": "col",
+    "ele": "954"
+  },
+  {
+    "nom": "Bocca di Pisciaghja",
+    "type_osm": "node/309322619",
+    "lat": 42.4458488,
+    "lon": 8.9061803,
+    "genre": "col",
+    "ele": null
+  },
+  {
+    "nom": "Bocca di Porco",
+    "type_osm": "node/6167018904",
+    "lat": 42.1394465,
+    "lon": 9.0903321,
+    "genre": "col",
+    "ele": "2160"
+  },
+  {
+    "nom": "Bocca di Punta Mozza",
+    "type_osm": "node/9562059820",
+    "lat": 41.9537923,
+    "lon": 9.2232313,
+    "genre": "col",
+    "ele": "1807"
+  },
+  {
+    "nom": "Bocca di Stagnu",
+    "type_osm": "node/309322838",
+    "lat": 42.4076521,
+    "lon": 8.9104358,
+    "genre": "col",
+    "ele": "2003"
+  },
+  {
+    "nom": "Bocca di Suargheddu",
+    "type_osm": "node/1450023649",
+    "lat": 41.9344298,
+    "lon": 9.2033692,
+    "genre": "col",
+    "ele": "1805"
+  },
+  {
+    "nom": "Bocca di Tartagine",
+    "type_osm": "node/440402664",
+    "lat": 42.4675981,
+    "lon": 8.9167295,
+    "genre": "col",
+    "ele": "1852"
+  },
+  {
+    "nom": "Bocca di U Ravalente",
+    "type_osm": "node/6431585695",
+    "lat": 42.4942436,
+    "lon": 8.8500161,
+    "genre": "col",
+    "ele": null
+  },
+  {
+    "nom": "Bocca di a Furmicula",
+    "type_osm": "node/1450023929",
+    "lat": 41.9484586,
+    "lon": 9.2224008,
+    "genre": "col",
+    "ele": "1918"
+  },
+  {
+    "nom": "Bocca di a Muvrella",
+    "type_osm": "node/309322825",
+    "lat": 42.4106024,
+    "lon": 8.9075766,
+    "genre": "col",
+    "ele": "1987"
+  },
+  {
+    "nom": "Bocca di l'Agnone",
+    "type_osm": "node/9577786129",
+    "lat": 41.9105917,
+    "lon": 9.1775324,
+    "genre": "col",
+    "ele": "1571"
+  },
+  {
+    "nom": "Bocca di l´Usciolu",
+    "type_osm": "node/440255055",
+    "lat": 41.9319036,
+    "lon": 9.2009932,
+    "genre": "col",
+    "ele": "1805"
+  },
+  {
+    "nom": "Bocca di u Truvone",
+    "type_osm": "node/440254339",
+    "lat": 41.8003721,
+    "lon": 9.2175241,
+    "genre": "col",
+    "ele": "1434"
+  },
+  {
+    "nom": "Bocca d´Oru",
+    "type_osm": "node/440255104",
+    "lat": 42.0180176,
+    "lon": 9.2204896,
+    "genre": "col",
+    "ele": "1846"
+  },
+  {
+    "nom": "Bocca u Corsu",
+    "type_osm": "node/3336897396",
+    "lat": 42.4962678,
+    "lon": 8.8476027,
+    "genre": "col",
+    "ele": "586"
+  },
+  {
+    "nom": "Bocca à Manganellu",
+    "type_osm": "node/417655121",
+    "lat": 42.1929402,
+    "lon": 9.0490191,
+    "genre": "col",
+    "ele": "1800"
+  },
+  {
+    "nom": "Bocca à Stazzone",
+    "type_osm": "node/6016493047",
+    "lat": 42.2579358,
+    "lon": 8.9334099,
+    "genre": "col",
+    "ele": "1762"
+  },
+  {
+    "nom": "Bocca à U Bassiguellu",
+    "type_osm": "node/439773953",
+    "lat": 42.4731999,
+    "lon": 8.8882587,
+    "genre": "col",
+    "ele": "1486"
+  },
+  {
+    "nom": "Bocca à U Saltu",
+    "type_osm": "node/309322507",
+    "lat": 42.4816452,
+    "lon": 8.875826,
+    "genre": "col",
+    "ele": null
+  },
+  {
+    "nom": "Bocca à a Reta",
+    "type_osm": "node/2485081809",
+    "lat": 42.2543277,
+    "lon": 8.9264446,
+    "genre": "col",
+    "ele": "1883"
+  },
+  {
+    "nom": "Brèche de Capitello",
+    "type_osm": "node/439653768",
+    "lat": 42.2082087,
+    "lon": 9.011729,
+    "genre": "col",
+    "ele": "2073"
+  },
+  {
+    "nom": "Brèche de Sorbo",
+    "type_osm": "node/9074215643",
+    "lat": 42.2127783,
+    "lon": 9.0061844,
+    "genre": "col",
+    "ele": null
+  },
+  {
+    "nom": "Brèche des Genevois",
+    "type_osm": "node/11960816101",
+    "lat": 41.7996333,
+    "lon": 9.21449,
+    "genre": "col",
+    "ele": null
+  },
+  {
+    "nom": "Calenzana",
+    "type_osm": "node/3736498610",
+    "lat": 42.5083711,
+    "lon": 8.8552855,
+    "genre": "village",
+    "ele": null
+  },
+  {
+    "nom": "Calenzana Camping/Gite d'étape",
+    "type_osm": "way/236843104",
+    "lat": 42.5104606,
+    "lon": 8.85082,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Canniccio",
+    "type_osm": "node/7223034847",
+    "lat": 41.7319344,
+    "lon": 9.3296767,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Casa Alta",
+    "type_osm": "way/222198640",
+    "lat": 42.1311188,
+    "lon": 9.1378541,
+    "genre": "guest_house",
+    "ele": null
+  },
+  {
+    "nom": "Casamozza",
+    "type_osm": "node/7229772738",
+    "lat": 41.7360953,
+    "lon": 9.3270267,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Castel De Vergio",
+    "type_osm": "way/89697304",
+    "lat": 42.2867908,
+    "lon": 8.8935799,
+    "genre": "alpine_hut",
+    "ele": null
+  },
+  {
+    "nom": "Castel de Vergio",
+    "type_osm": "way/122022686",
+    "lat": 42.2868786,
+    "lon": 8.8948582,
+    "genre": "camp_site",
+    "ele": "1400"
+  },
+  {
+    "nom": "Castello",
+    "type_osm": "node/7222143292",
+    "lat": 41.7338949,
+    "lon": 9.3318356,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Col d'Avartoli",
+    "type_osm": "node/5955433330",
+    "lat": 42.4375217,
+    "lon": 8.9166917,
+    "genre": "col",
+    "ele": "1898"
+  },
+  {
+    "nom": "Col de Bavella",
+    "type_osm": "node/440254292",
+    "lat": 41.7958688,
+    "lon": 9.2249566,
+    "genre": "col",
+    "ele": "1218"
+  },
+  {
+    "nom": "Col de Rinoso",
+    "type_osm": "node/439773399",
+    "lat": 42.2081895,
+    "lon": 9.0309166,
+    "genre": "col",
+    "ele": "2170"
+  },
+  {
+    "nom": "Col de Verde",
+    "type_osm": "node/82577036",
+    "lat": 42.028197,
+    "lon": 9.1948086,
+    "genre": "col",
+    "ele": "1289"
+  },
+  {
+    "nom": "Col de Vergio",
+    "type_osm": "node/3564262874",
+    "lat": 42.2903223,
+    "lon": 8.8783989,
+    "genre": "col",
+    "ele": "1467"
+  },
+  {
+    "nom": "Col de Vizzavona",
+    "type_osm": "node/21103257",
+    "lat": 42.1118935,
+    "lon": 9.1121487,
+    "genre": "col",
+    "ele": "1183"
+  },
+  {
+    "nom": "Col des Maures",
+    "type_osm": "node/4988629825",
+    "lat": 42.3399283,
+    "lon": 8.8692404,
+    "genre": "col",
+    "ele": "2155"
+  },
+  {
+    "nom": "Colli Longa",
+    "type_osm": "node/7222148536",
+    "lat": 41.7375713,
+    "lon": 9.3223727,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Conca",
+    "type_osm": "node/274064520",
+    "lat": 41.7343259,
+    "lon": 9.3358428,
+    "genre": "village",
+    "ele": null
+  },
+  {
+    "nom": "Contramurata",
+    "type_osm": "node/7229772736",
+    "lat": 41.7374353,
+    "lon": 9.3329118,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Contramurata",
+    "type_osm": "node/7229772743",
+    "lat": 41.7362669,
+    "lon": 9.3338014,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Contre Larghi",
+    "type_osm": "node/7229772750",
+    "lat": 41.7298929,
+    "lon": 9.3510116,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Erbajolo",
+    "type_osm": "node/7223034848",
+    "lat": 41.730287,
+    "lon": 9.3395124,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Erbajolo",
+    "type_osm": "node/7239242993",
+    "lat": 41.7262326,
+    "lon": 9.3425106,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Foce Finosa",
+    "type_osm": "node/5722602936",
+    "lat": 41.7909047,
+    "lon": 9.248199,
+    "genre": "col",
+    "ele": "1206"
+  },
+  {
+    "nom": "Foce di Prati",
+    "type_osm": "node/9442624401",
+    "lat": 42.0124769,
+    "lon": 9.2217038,
+    "genre": "col",
+    "ele": "1869"
+  },
+  {
+    "nom": "Foce di Vizzavona",
+    "type_osm": "node/9273432738",
+    "lat": 42.1138326,
+    "lon": 9.1198818,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Foce di u Bracciu",
+    "type_osm": "node/8785688978",
+    "lat": 41.7910352,
+    "lon": 9.2801961,
+    "genre": "col",
+    "ele": null
+  },
+  {
+    "nom": "Fontanella",
+    "type_osm": "node/7222143308",
+    "lat": 41.7316042,
+    "lon": 9.3243002,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Gite U Fugone",
+    "type_osm": "way/305567810",
+    "lat": 42.0773625,
+    "lon": 9.150317,
+    "genre": "hostel",
+    "ele": null
+  },
+  {
+    "nom": "Gite d'Étape La Tonnelle",
+    "type_osm": "node/8829309175",
+    "lat": 41.733138,
+    "lon": 9.338078,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "Gite d'Étape La Tonnelle",
+    "type_osm": "way/222119845",
+    "lat": 41.7332262,
+    "lon": 9.3376936,
+    "genre": "hostel",
+    "ele": null
+  },
+  {
+    "nom": "Gite d'Étape Monte d'Oro",
+    "type_osm": "way/130854308",
+    "lat": 42.113541,
+    "lon": 9.1185444,
+    "genre": "hostel",
+    "ele": null
+  },
+  {
+    "nom": "Gîte d'Étape municipal",
+    "type_osm": "node/2409034852",
+    "lat": 42.5103189,
+    "lon": 8.8510395,
+    "genre": "hostel",
+    "ele": null
+  },
+  {
+    "nom": "Haut-Asco",
+    "type_osm": "node/301175682",
+    "lat": 42.4032858,
+    "lon": 8.9235583,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Hôtel - Restaurant de la Gare",
+    "type_osm": "way/692948715",
+    "lat": 42.1283842,
+    "lon": 9.134088,
+    "genre": "hotel",
+    "ele": null
+  },
+  {
+    "nom": "Hôtel Castel De Vergio",
+    "type_osm": "way/89697301",
+    "lat": 42.2867662,
+    "lon": 8.8925787,
+    "genre": "hotel",
+    "ele": null
+  },
+  {
+    "nom": "Hôtel Monte d'Oro",
+    "type_osm": "way/130854309",
+    "lat": 42.1135273,
+    "lon": 9.1192078,
+    "genre": "hotel",
+    "ele": null
+  },
+  {
+    "nom": "Hôtel Restaurant le Chalet",
+    "type_osm": "way/118908103",
+    "lat": 42.4034536,
+    "lon": 8.9232062,
+    "genre": "hotel",
+    "ele": null
+  },
+  {
+    "nom": "Impartu",
+    "type_osm": "node/9330873222",
+    "lat": 41.7361687,
+    "lon": 9.3292138,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "L'Alzarella",
+    "type_osm": "node/6506235954",
+    "lat": 42.1280682,
+    "lon": 9.1323504,
+    "genre": "hostel",
+    "ele": null
+  },
+  {
+    "nom": "L'Alzarella",
+    "type_osm": "way/352050543",
+    "lat": 42.1281595,
+    "lon": 9.1326457,
+    "genre": "camp_site",
+    "ele": null
+  },
+  {
+    "nom": "La Halte du Prince",
+    "type_osm": "node/4438941956",
+    "lat": 42.1143176,
+    "lon": 9.1215458,
+    "genre": "hostel",
+    "ele": null
+  },
+  {
+    "nom": "Le Vizzavona",
+    "type_osm": "way/692948737",
+    "lat": 42.1278573,
+    "lon": 9.1338582,
+    "genre": "hotel",
+    "ele": null
+  },
+  {
+    "nom": "Les Aiguilles de Bavella",
+    "type_osm": "way/129769113",
+    "lat": 41.7960533,
+    "lon": 9.2259903,
+    "genre": "hotel",
+    "ele": null
+  },
+  {
+    "nom": "Livanedda",
+    "type_osm": "node/7229772741",
+    "lat": 41.7300599,
+    "lon": 9.3244466,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Livesani",
+    "type_osm": "node/7229772748",
+    "lat": 41.7322695,
+    "lon": 9.3462536,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Livisani",
+    "type_osm": "node/7222951776",
+    "lat": 41.7314666,
+    "lon": 9.346743,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Moncale",
+    "type_osm": "node/4307625274",
+    "lat": 42.5095874,
+    "lon": 8.8366558,
+    "genre": "village",
+    "ele": null
+  },
+  {
+    "nom": "Monticello",
+    "type_osm": "node/7223034851",
+    "lat": 41.7354292,
+    "lon": 9.3415251,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Mormontaja",
+    "type_osm": "node/7350361288",
+    "lat": 41.733949,
+    "lon": 9.3280953,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Munticedda",
+    "type_osm": "node/7229772746",
+    "lat": 41.7349495,
+    "lon": 9.340715,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Nivalella",
+    "type_osm": "node/7223034846",
+    "lat": 41.7306553,
+    "lon": 9.3258841,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Pacialedda",
+    "type_osm": "node/7229772744",
+    "lat": 41.737016,
+    "lon": 9.3346813,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Peseto",
+    "type_osm": "node/7223034849",
+    "lat": 41.7347787,
+    "lon": 9.3433721,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Pesotto",
+    "type_osm": "node/7223034850",
+    "lat": 41.7335903,
+    "lon": 9.3462871,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Pianiccia",
+    "type_osm": "node/7229772742",
+    "lat": 41.7347265,
+    "lon": 9.3345926,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Pizettu",
+    "type_osm": "node/7229772747",
+    "lat": 41.7337402,
+    "lon": 9.3453476,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Prugna",
+    "type_osm": "node/299588896",
+    "lat": 41.7859587,
+    "lon": 9.1792252,
+    "genre": "village",
+    "ele": null
+  },
+  {
+    "nom": "Radicale",
+    "type_osm": "node/7223034830",
+    "lat": 41.7397933,
+    "lon": 9.3305757,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Refuge",
+    "type_osm": "node/12955341201",
+    "lat": 42.4651722,
+    "lon": 8.9067958,
+    "genre": "alpine_hut",
+    "ele": null
+  },
+  {
+    "nom": "Refuge",
+    "type_osm": "node/12955341301",
+    "lat": 42.3621498,
+    "lon": 8.9090349,
+    "genre": "alpine_hut",
+    "ele": null
+  },
+  {
+    "nom": "Refuge Laparo",
+    "type_osm": "way/907378832",
+    "lat": 41.9672272,
+    "lon": 9.2285949,
+    "genre": "wilderness_hut",
+    "ele": "1380"
+  },
+  {
+    "nom": "Refuge d'Ascu-Stagnu",
+    "type_osm": "way/118990828",
+    "lat": 42.4035114,
+    "lon": 8.9223393,
+    "genre": "alpine_hut",
+    "ele": "1422"
+  },
+  {
+    "nom": "Refuge d'Asinau",
+    "type_osm": "way/353634247",
+    "lat": 41.8414803,
+    "lon": 9.2143413,
+    "genre": "wilderness_hut",
+    "ele": "1536"
+  },
+  {
+    "nom": "Refuge d'E Capanelle",
+    "type_osm": "way/305575039",
+    "lat": 42.0779282,
+    "lon": 9.1497077,
+    "genre": "alpine_hut",
+    "ele": "1586"
+  },
+  {
+    "nom": "Refuge d'Usciolu",
+    "type_osm": "way/353265114",
+    "lat": 41.9351267,
+    "lon": 9.2059784,
+    "genre": "alpine_hut",
+    "ele": "1750"
+  },
+  {
+    "nom": "Refuge d'i Paliri",
+    "type_osm": "way/354661509",
+    "lat": 41.7941564,
+    "lon": 9.259609,
+    "genre": "alpine_hut",
+    "ele": "1054"
+  },
+  {
+    "nom": "Refuge de Carozzu",
+    "type_osm": "way/237852703",
+    "lat": 42.4262613,
+    "lon": 8.9004705,
+    "genre": "alpine_hut",
+    "ele": "1270"
+  },
+  {
+    "nom": "Refuge de Ciottulu di i Mori",
+    "type_osm": "way/437752736",
+    "lat": 42.3349547,
+    "lon": 8.8681375,
+    "genre": "alpine_hut",
+    "ele": "1991"
+  },
+  {
+    "nom": "Refuge de L'Onda",
+    "type_osm": "way/437735561",
+    "lat": 42.1521607,
+    "lon": 9.0728449,
+    "genre": "alpine_hut",
+    "ele": null
+  },
+  {
+    "nom": "Refuge de Manganu",
+    "type_osm": "way/297485752",
+    "lat": 42.2198286,
+    "lon": 8.9804618,
+    "genre": "alpine_hut",
+    "ele": "1601"
+  },
+  {
+    "nom": "Refuge de Matalza",
+    "type_osm": "way/353448449",
+    "lat": 41.8742889,
+    "lon": 9.1523966,
+    "genre": "alpine_hut",
+    "ele": null
+  },
+  {
+    "nom": "Refuge de Petra Piana",
+    "type_osm": "way/297484188",
+    "lat": 42.1980724,
+    "lon": 9.0524483,
+    "genre": "alpine_hut",
+    "ele": "1842"
+  },
+  {
+    "nom": "Refuge de Prati",
+    "type_osm": "way/96438686",
+    "lat": 42.008647,
+    "lon": 9.2182751,
+    "genre": "alpine_hut",
+    "ele": "1840"
+  },
+  {
+    "nom": "Refuge de Tighiettu",
+    "type_osm": "way/437755706",
+    "lat": 42.3622451,
+    "lon": 8.9088327,
+    "genre": "alpine_hut",
+    "ele": "1683"
+  },
+  {
+    "nom": "Refuge de l'Onda",
+    "type_osm": "way/297483737",
+    "lat": 42.1532905,
+    "lon": 9.0737434,
+    "genre": "alpine_hut",
+    "ele": null
+  },
+  {
+    "nom": "Refuge de l´Ortu di u Piobbu",
+    "type_osm": "way/237852704",
+    "lat": 42.4651958,
+    "lon": 8.9068818,
+    "genre": "alpine_hut",
+    "ele": "1520"
+  },
+  {
+    "nom": "Relais San Petru di Verde",
+    "type_osm": "way/352675138",
+    "lat": 42.0280055,
+    "lon": 9.1940877,
+    "genre": "alpine_hut",
+    "ele": "1290"
+  },
+  {
+    "nom": "Santa Maria",
+    "type_osm": "node/7223034843",
+    "lat": 41.7372281,
+    "lon": 9.3284752,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Sapareddu",
+    "type_osm": "node/7229772745",
+    "lat": 41.7363887,
+    "lon": 9.3386788,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Saparello",
+    "type_osm": "node/7223034853",
+    "lat": 41.7375524,
+    "lon": 9.3373204,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Taglio del Nido",
+    "type_osm": "node/7229772749",
+    "lat": 41.7290111,
+    "lon": 9.344135,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Tattone",
+    "type_osm": "node/9273432748",
+    "lat": 42.1485586,
+    "lon": 9.1497741,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Tozza",
+    "type_osm": "node/7229772735",
+    "lat": 41.7390444,
+    "lon": 9.3315975,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "U Castellu",
+    "type_osm": "way/692948728",
+    "lat": 42.1270359,
+    "lon": 9.1358466,
+    "genre": "hotel",
+    "ele": null
+  },
+  {
+    "nom": "Vignola",
+    "type_osm": "node/7229772739",
+    "lat": 41.7357606,
+    "lon": 9.3260732,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "Vizzavona",
+    "type_osm": "node/270887367",
+    "lat": 42.1285849,
+    "lon": 9.1337639,
+    "genre": "station",
+    "ele": null
+  },
+  {
+    "nom": "Vizzavona Gare",
+    "type_osm": "node/6286907761",
+    "lat": 42.1275089,
+    "lon": 9.1336559,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "i Francescholi",
+    "type_osm": "node/7223034852",
+    "lat": 41.7368769,
+    "lon": 9.3394405,
+    "genre": "hamlet",
+    "ele": null
+  },
+  {
+    "nom": "À l'Ombre du Clocher",
+    "type_osm": "node/6431373876",
+    "lat": 42.5087561,
+    "lon": 8.8547565,
+    "genre": "guest_house",
+    "ele": null
+  }
+]

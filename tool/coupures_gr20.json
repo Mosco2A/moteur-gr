@@ -1,0 +1,121 @@
+[
+  {
+    "etape_app": "depart",
+    "nom": "Calenzana",
+    "type_osm": "node/village",
+    "lat": 42.5083701,
+    "lon": 8.8552878
+  },
+  {
+    "etape_app": "fin E1",
+    "nom": "Refuge de l'Ortu di u Piobbu",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.4652,
+    "lon": 8.90688
+  },
+  {
+    "etape_app": "fin E2",
+    "nom": "Refuge de Carozzu",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.42626,
+    "lon": 8.90047
+  },
+  {
+    "etape_app": "fin E3",
+    "nom": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.40351,
+    "lon": 8.92234
+  },
+  {
+    "etape_app": "fin E4",
+    "nom": "Refuge de Tighjettu",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.36225,
+    "lon": 8.90883
+  },
+  {
+    "etape_app": "fin E5",
+    "nom": "Refuge de Ciottulu di i Mori",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.33495,
+    "lon": 8.86814
+  },
+  {
+    "etape_app": "fin E6",
+    "nom": "Refuge de Manganu",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.21983,
+    "lon": 8.98046
+  },
+  {
+    "etape_app": "fin E7",
+    "nom": "Refuge de Petra Piana",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.19807,
+    "lon": 9.05245
+  },
+  {
+    "etape_app": "fin E8",
+    "nom": "Refuge de l'Onda",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.15329,
+    "lon": 9.07374
+  },
+  {
+    "etape_app": "fin E9",
+    "nom": "Gare de Vizzavona",
+    "type_osm": "node/station",
+    "lat": 42.12858,
+    "lon": 9.13376
+  },
+  {
+    "etape_app": "fin E10",
+    "nom": "Refuge d'E Capanelle",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.07793,
+    "lon": 9.14971
+  },
+  {
+    "etape_app": "fin E11",
+    "nom": "Refuge de Prati",
+    "type_osm": "node/alpine_hut",
+    "lat": 42.00865,
+    "lon": 9.21828
+  },
+  {
+    "etape_app": "fin E12",
+    "nom": "Refuge d'Usciolu",
+    "type_osm": "node/alpine_hut",
+    "lat": 41.93513,
+    "lon": 9.20598
+  },
+  {
+    "etape_app": "fin E13",
+    "nom": "Refuge d'Asinau",
+    "type_osm": "node/wilderness_hut",
+    "lat": 41.84148,
+    "lon": 9.21434
+  },
+  {
+    "etape_app": "fin E14",
+    "nom": "Refuge d'i Paliri",
+    "type_osm": "node/alpine_hut",
+    "lat": 41.79416,
+    "lon": 9.25961
+  },
+  {
+    "etape_app": "fin E15",
+    "nom": "Col de Bavella",
+    "type_osm": "node/village",
+    "lat": 41.79655,
+    "lon": 9.22644
+  },
+  {
+    "etape_app": "fin E16",
+    "nom": "Conca",
+    "type_osm": "node/village",
+    "lat": 41.73433,
+    "lon": 9.33584
+  }
+]
