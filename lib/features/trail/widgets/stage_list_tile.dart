@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter/material.dart';
 
+import '../../../core/models/stage_duration.dart';
 import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -26,26 +27,33 @@ class StageListTile extends StatelessWidget {
   /// Callback au tap (navigation vers détail)
   final VoidCallback? onTap;
 
-  /// Calcule la durée estimée en heures.
+  /// LA DURÉE DE L'ÉTAPE, PAR LA SOURCE UNIQUE DU DÉPÔT (tâche 839).
   ///
-  /// Formule : distance/4 + D+/400
-  /// (vitesse moyenne 4 km/h + 1h par 400m de D+)
-  static double estimatedHours(StageModel stage) {
-    return stage.distanceKm / 4 + stage.elevationGainM / 400;
-  }
+  /// CE QUI VIVAIT ICI, ET POURQUOI C'ÉTAIT UN DÉFAUT ET PAS SEULEMENT UNE
+  /// REDITE. Cette ligne portait sa PROPRE arithmétique de temps de marche —
+  /// `distanceKm / 4 + elevationGainM / 400` — et son propre formateur. Elle
+  /// faisait donc deux choses que personne n'avait décidées :
+  ///  1. elle IGNORAIT la durée fournie par la donnée du sentier
+  ///     ([StageModel.estimatedDurationMinutes]), qui FAIT AUTORITÉ partout
+  ///     ailleurs : la liste des étapes pouvait annoncer une durée et la fiche
+  ///     de la MÊME étape une autre ;
+  ///  2. elle ne payait pas la DESCENTE, que le modèle unique paie depuis la
+  ///     tâche 839.
+  /// [stageDurationMinutes] fait les deux correctement, et il ne reste aucune
+  /// arithmétique de temps de marche dans ce fichier.
+  static int durationMinutes(StageModel stage) => stageDurationMinutes(stage);
 
-  /// Formate la durée en heures et minutes (ex: "3h45")
-  static String formatDuration(double hours) {
-    final h = hours.floor();
-    final m = ((hours - h) * 60).round();
-    if (m == 0) return '${h}h';
-    return '${h}h${m.toString().padLeft(2, '0')}';
-  }
+  /// Formate la durée en heures et minutes (ex: « 3h45 »).
+  ///
+  /// Délègue à [formatDurationMinutes], le formateur maison : « 4h » quand les
+  /// minutes sont nulles, zéro-paddé sinon — exactement comme la fiche d'étape
+  /// et l'écran d'itinéraire.
+  static String formatDuration(int minutes) => formatDurationMinutes(minutes);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final duration = estimatedHours(stage);
+    final duration = durationMinutes(stage);
 
     return AppCard(
       onTap: onTap,

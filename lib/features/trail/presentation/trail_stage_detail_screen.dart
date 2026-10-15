@@ -86,7 +86,10 @@ class TrailStageDetailScreen extends ConsumerWidget {
                   .toList() ??
               [];
 
-          final duration = StageListTile.estimatedHours(stage);
+          // TACHE 839 — LA MEME DUREE QUE LA LISTE, ET C'EST LE SUJET : les
+          // deux passent desormais par [stageDurationMinutes], donc par la
+          // donnee du sentier quand elle existe et par LE modele unique sinon.
+          final duration = StageListTile.durationMinutes(stage);
           final formattedDuration = StageListTile.formatDuration(duration);
 
           return SingleChildScrollView(

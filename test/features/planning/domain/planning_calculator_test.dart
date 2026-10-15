@@ -42,9 +42,13 @@ void main() {
     });
 
     group('estimatedHours', () {
-      test('calcule la durée comme distance/4 + D+/400', () {
-        final stage = stages[0]; // 12/4 + 800/400 = 3+2 = 5
-        expect(PlanningCalculator.estimatedHours(stage), 5.0);
+      test('calcule la duree par LE modele unique, descente comprise', () {
+        // TACHE 839 : la descente est payee 1,67 s par metre, ici 640 m.
+        // 12 km a 4 km/h = 10 800 s, + 800 m x 9 s/m = 7 200 s,
+        // + 640 m x 1,67 s/m = 1 067 s, soit 19 067 s = 318 min = 5,3 h.
+        // Le meme calcul rendait 5,0 h quand la descente etait gratuite.
+        final stage = stages[0];
+        expect(PlanningCalculator.estimatedHours(stage), closeTo(5.3, 0.01));
       });
     });
 

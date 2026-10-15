@@ -24,8 +24,10 @@ class ItineraryCalculator {
   ///
   /// Source unique [stageDurationMinutes] : privilegie la duree RICHE du sentier
   /// ([StageModel.estimatedDurationMinutes]) quand elle existe, sinon retombe sur
-  /// la regle de marche Naismith (distance / 4 km/h + D+ / 400 m/h). La
-  /// repartition en jours reste ainsi coherente avec les durees affichees.
+  /// LE modele de temps de marche du depot ([walkingSeconds]) : 4 km/h a plat,
+  /// 400 m de montee a l'heure, et depuis la tache 839 la descente PAYEE a
+  /// 1,67 s par metre. La repartition en jours reste ainsi coherente avec les
+  /// durees affichees ET avec l'heure d'arrivee annoncee en marchant.
   static double _estimatedHours(StageModel stage) =>
       stageDurationMinutes(stage) / 60.0;
 

@@ -188,8 +188,11 @@ void main() {
       await tester.pumpWidget(buildSubject(stages: [noDurationStage]));
       await tester.pumpAndSettle();
 
-      // Estimation Naismith : 14.5/4 + 850/400 h = 5.75 h = 5h45.
-      expect(find.text('5h45'), findsOneWidget);
+      // LE modele unique du depot, descente comprise (tache 839) :
+      // 14,5 km a 4 km/h = 13 050 s, + 850 m x 9 s/m = 7 650 s,
+      // + 620 m x 1,67 s/m = 1 033 s, soit 21 733 s = 362 min = 6h02.
+      // Cette meme etape annonçait 5h45 quand la descente etait gratuite.
+      expect(find.text('6h02'), findsOneWidget);
       expect(find.text('--'), findsNothing);
     });
   });

@@ -11,11 +11,14 @@ import '../../../core/models/stage_row.dart';
 import '../../../core/services/session_demo.dart';
 import '../../trail/trail_facade.dart' show stagesProvider;
 import '../../../domain/feasibility_formula.dart';
+import '../../../domain/nuit_possible.dart';
 import '../../feasibility/feasibility_facade.dart'
     show DurationSearchBounds, ProgramPlanSearch, advisedTotalDaysProvider;
 import '../data/retained_plan_store.dart';
+import '../domain/decoupage_sur_les_nuits.dart';
 import '../domain/planning_calculator.dart';
 import '../models/day_plan.dart';
+import 'nuits_possibles_provider.dart';
 
 /// Acces au stockage durable du decoupage retenu (surchargeable en test).
 final retainedPlanStoreProvider = Provider<RetainedPlanStore>(
@@ -285,9 +288,21 @@ class DurationBounds implements DurationSearchBounds {
   /// haute ne peut pas etre PLUS BASSE que le conseil, sinon l'application
   /// proposerait un programme que son propre selecteur refuserait d'atteindre —
   /// et le randonneur verrait un conseil qu'il ne peut pas appliquer.
+  /// [walkingDaysFromNights] : journees de MARCHE que les nuits RELEVEES du
+  /// sentier permettent d'atteindre (tache 839). Zero par defaut, et alors
+  /// rien ne change : un sentier sans releve garde exactement ses bornes.
+  ///
+  /// Sur le GR20 ce sont TRENTE ET UNE journees — seize fins d'etape et quinze
+  /// coupures de jour relevees dans OpenStreetMap, chacune avec son
+  /// identifiant, son temps de marche aller et retour mesure, et ses lits
+  /// quand ils sont connus. C'est ce qui permet enfin au curseur de DEPASSER
+  /// le nombre d'etapes sans empiler des jours de repos. Le grief de Christophe du 29/09
+  /// portait sur le POINT DE COUPE interpole, « il n'y a pas de refuge » : des
+  /// lieux releves y repondent, un point calcule n'y repondra jamais.
   factory DurationBounds.fromStageCount(
     int stageCount, {
     int recommendedRestDays = 0,
+    int walkingDaysFromNights = 0,
   }) {
     if (stageCount <= 0) {
       return const DurationBounds(
@@ -311,10 +326,16 @@ class DurationBounds implements DurationSearchBounds {
     final int min = (stageCount / 2).ceil().clamp(1, stageCount);
     final int restMargin = (stageCount / 3).round().clamp(1, stageCount);
     final int rest = math.max(restMargin, recommendedRestDays);
-    // Tous les jours de MARCHE atteignables (une par etape) + le repos.
+    // Jours de MARCHE atteignables : une par etape, ou une par NUIT RELEVEE
+    // quand le sentier en offre plus que d'etapes (tache 839).
+    final int marche = math.max(stageCount, walkingDaysFromNights);
     return DurationBounds(
       min: min,
-      max: stageCount + rest,
+      max: marche + rest,
+      // LA DUREE NATURELLE NE BOUGE PAS : elle reste une etape par jour plus le
+      // repos. Les nuits relevees ELARGISSENT ce que le randonneur peut
+      // choisir, elles ne changent pas ce que l'application lui propose par
+      // defaut — une coupe est sa decision, pas un defaut qu'on lui impose.
       naturalMax: stageCount + rest,
       restAllowance: rest,
     );
@@ -337,21 +358,42 @@ class DurationBounds implements DurationSearchBounds {
   int clampDefaultDuration(int duration) => duration.clamp(min, naturalMax);
 }
 
+/// LE PROGRAMME DU CURSEUR, POSE SUR DES LIEUX RELEVES (tache 839).
+///
+/// Autant de journees que le curseur en demande ([selectedDurationProvider]),
+/// chacune terminee sur une [NuitPossible] : un refuge, une bergerie, un gite
+/// ou un bivouac qui EXISTE dans OpenStreetMap, avec son identifiant, son temps
+/// de marche aller et retour mesure, et ses lits quand ils sont connus.
+///
+/// C'est ce qui manquait a la tache 634 pour que le curseur puisse depasser le
+/// nombre d'etapes autrement qu'en empilant des jours de repos. Vide pour un
+/// sentier sans releve : le programme en etapes reste alors la seule verite.
+final journeesSurLesNuitsProvider = Provider<List<JourneeSurLesNuits>>((ref) {
+  final decoupage = ref.watch(decoupageDeNuitsChargeProvider);
+  final jours = ref.watch(selectedDurationProvider);
+  return DecoupageSurLesNuits.repartir(decoupage, jours);
+});
+
 /// Bornes de duree du sentier courant (derivees du nombre d'etapes charge).
 ///
 /// Tant que les etapes ne sont pas chargees, se rabat sur les bornes de la
 /// config du sentier ([TrailConfig.availableDurations]) pour rester coherent
 /// avant l'arrivee des donnees.
+///
+/// TACHE 839 : la borne haute couvre aussi les journees que les NUITS RELEVEES
+/// du sentier permettent (trente et une sur le GR20, contre seize etapes).
 final durationBoundsProvider = Provider.family<DurationBounds, String>((
   ref,
   trailId,
 ) {
   final stagesAsync = ref.watch(stagesProvider(trailId));
   final recommendedRest = ref.watch(recommendedRestDaysProvider(trailId));
+  final nuits = ref.watch(decoupageDeNuitsChargeProvider);
   return stagesAsync.maybeWhen(
     data: (stages) => DurationBounds.fromStageCount(
       stages.length,
       recommendedRestDays: recommendedRest,
+      walkingDaysFromNights: nuits.journeesMaximales,
     ),
     orElse: () {
       final config = ref.watch(trailConfigProvider);

@@ -67,7 +67,9 @@ class PlanningCalculator {
   ///
   /// Source unique [stageDurationMinutes] : privilégie la durée RICHE du sentier
   /// ([StageModel.estimatedDurationMinutes]) quand elle est fournie, sinon
-  /// applique la règle de marche Naismith (distance / 4 km/h + D+ / 400 m/h).
+  /// applique LE modèle de temps de marche du dépôt ([walkingSeconds]) :
+  /// 4 km/h à plat, 400 m de montée à l'heure, et depuis la tâche 839 la
+  /// descente PAYÉE à 1,67 s par mètre.
   static double estimatedHours(StageModel stage) =>
       stageDurationMinutes(stage) / 60.0;
 

@@ -16,7 +16,11 @@ void main() {
       expect(eta.inSeconds, closeTo(4545, 60));
     });
 
-    test('+600 m de montee ajoute ~1 h (Naismith)', () {
+    test('+400 m de montee ajoute ~1 h — LE modele unique (tache 839)', () {
+      // CE CAS A CHANGE DE CHIFFRE, ET C'EST TOUT LE SUJET DU LOT. Il
+      // verifiait « 1 h par 600 m » : c'etait le SECOND modele du depot, celui
+      // qui annonçait l'heure d'arrivee pendant que le programme decoupait les
+      // jours a 400 m/h. Il n'en reste qu'un, et c'est le PRUDENT.
       final plat = EtaService.naismithEta(
         distanceMetres: 5000,
         ascentMetres: 0,
@@ -25,12 +29,19 @@ void main() {
       );
       final avecMontee = EtaService.naismithEta(
         distanceMetres: 5000,
+        ascentMetres: 400,
+        descentMetres: 0,
+        observedPaceMps: 1.1,
+      );
+      expect((avecMontee - plat).inSeconds, closeTo(3600, 5));
+      // Et 600 m de montee coutent desormais une heure et demie.
+      final plusHaut = EtaService.naismithEta(
+        distanceMetres: 5000,
         ascentMetres: 600,
         descentMetres: 0,
         observedPaceMps: 1.1,
       );
-      final delta = avecMontee - plat;
-      expect(delta.inSeconds, closeTo(3600, 5));
+      expect((plusHaut - plat).inSeconds, closeTo(5400, 5));
     });
 
     test('vitesse OBSERVEE plus rapide -> ETA plus courte', () {
@@ -50,13 +61,17 @@ void main() {
     });
 
     test('vitesse observee nulle -> retombe sur la vitesse par defaut', () {
+      // LA VITESSE PAR DEFAUT EST DESORMAIS 4 km/h EXACTEMENT (1,1111 m/s),
+      // derivee du modele unique. Elle valait 1,1 m/s ecrit en dur, soit
+      // 3,96 km/h : deux chiffres pour une seule vitesse.
       final eta = EtaService.naismithEta(
-        distanceMetres: 1100, // 1100 / 1.1 = 1000 s a la vitesse par defaut
+        distanceMetres: 1000, // 1000 m a 4 km/h = 900 s.
         ascentMetres: 0,
         descentMetres: 0,
         observedPaceMps: 0,
       );
-      expect(eta.inSeconds, closeTo(1000, 5));
+      expect(eta.inSeconds, closeTo(900, 5));
+      expect(EtaService.defaultFlatPaceMps, closeTo(1.1111, 0.0001));
     });
 
     test('descente raide ajoute une penalite de temps', () {

@@ -3,9 +3,10 @@
 library;
 
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
+
+import '../../../core/models/stage_duration.dart';
 
 /// Niveau de confiance d'une estimation d'ETA (F6B-01).
 enum EtaConfidence {
@@ -78,10 +79,18 @@ class EtaInput {
 ///
 /// Fusionne : vitesse GPS lissee (observee), pente issue de l'altitude
 /// barometrique (F6A-02), cadence (podometre, robustesse en zone GPS degradee)
-/// et profil GPX a venir (denivele restant). Le socle algorithmique est la
-/// regle de NAISMITH (temps a plat + 1 h par 600 m de montee, descente raide
-/// penalisee), RAFFINEE par la vitesse reelle observee de l'utilisateur plutot
-/// qu'une constante (audit A6-6).
+/// et profil GPX a venir (denivele restant).
+///
+/// IL N'Y A PLUS DE MODELE DE TEMPS DE MARCHE ICI (tache 839). Ce fichier en
+/// portait un SECOND, mesure par la tache 838 : 1,1 m/s a plat, 600 m/h de
+/// montee, descente a 1,67 s/m. Il annoncait l'heure d'arrivee pendant que
+/// `stage_duration.dart` decoupait les jours avec d'AUTRES coefficients — 29 %
+/// d'ecart sur une montee de 200 m en 1 km, entre le programme qu'on prepare et
+/// l'heure qu'on annonce. Le modele unique et prudent vit desormais dans
+/// [walkingSeconds] ; ce service ne fait plus que ce qui lui appartient : y
+/// INJECTER la vitesse a plat REELLEMENT observee du randonneur a la place de
+/// la vitesse de reference (audit A6-6). Les deux penalites de relief, elles,
+/// ne se negocient plus ici.
 ///
 /// La fonction [naismithEta] est PURE et statique -> directement testable.
 class EtaService {
@@ -90,21 +99,23 @@ class EtaService {
   final Stream<EtaInput>? _inputStream;
 
   /// Vitesse de marche a plat par defaut (m/s) si aucune observation fiable.
-  /// ~4 km/h (randonneur), coherent avec [ItineraryCalculator].
-  static const double defaultFlatPaceMps = 1.1;
+  ///
+  /// DERIVEE du modele unique ([kWalkingFlatPaceMps], soit 4 km/h). Elle valait
+  /// 1,1 m/s ecrit en dur, c'est-a-dire 3,96 km/h : deux chiffres pour une seule
+  /// vitesse, donc une divergence qui ne pouvait que grandir.
+  static const double defaultFlatPaceMps = kWalkingFlatPaceMps;
 
   /// Vitesse plancher (m/s) : evite des ETA infinies si la vitesse observee
   /// tombe a 0 (on suppose une marche lente residuelle).
-  static const double floorPaceMps = 0.5;
+  static const double floorPaceMps = kWalkingFloorPaceMps;
 
-  /// Naismith : 1 h (3600 s) ajoutee par 600 m de montee.
-  static const double ascentSecondsPerMetre = 3600.0 / 600.0; // 6 s / m
+  /// Secondes par metre de MONTEE — celles du modele unique (400 m/h, 9 s/m).
+  static const double ascentSecondsPerMetre = kWalkingAscentSecondsPerMetre;
 
-  /// Descente raide : penalite douce (Tranter/Langmuir simplifie) :
-  /// +10 s par metre de descente au-dela de la composante a plat.
-  static const double descentSecondsPerMetre = 10.0 / 6.0; // ~1.67 s / m
+  /// Secondes par metre de DESCENTE — celles du modele unique (1,67 s/m).
+  static const double descentSecondsPerMetre = kWalkingDescentSecondsPerMetre;
 
-  /// Calcule l'ETA Naismith RAFFINEE pour un segment.
+  /// Calcule l'ETA du modele unique, RAFFINEE par la vitesse observee.
   ///
   /// [distanceMetres] : distance a plat du segment.
   /// [ascentMetres]   : denivele positif du segment.
@@ -112,33 +123,21 @@ class EtaService {
   /// [observedPaceMps]: vitesse a plat observee (m/s). Si <= 0, on utilise
   ///                    [defaultFlatPaceMps] ; bornee a [floorPaceMps].
   ///
-  /// Temps = distance / vitessePlat + montee * [ascentSecondsPerMetre]
-  ///         + descente * [descentSecondsPerMetre].
-  /// Fonction PURE (sans effet de bord).
+  /// Le calcul est delegue a [walkingSeconds] : aucune arithmetique de temps de
+  /// marche ne survit dans ce fichier. Fonction PURE (sans effet de bord).
   static Duration naismithEta({
     required double distanceMetres,
     required double ascentMetres,
     required double descentMetres,
     required double observedPaceMps,
   }) {
-    final pace = observedPaceMps.isFinite && observedPaceMps > 0
-        ? math.max(observedPaceMps, floorPaceMps)
-        : defaultFlatPaceMps;
-    final distance = distanceMetres.isFinite && distanceMetres > 0
-        ? distanceMetres
-        : 0.0;
-    final ascent = ascentMetres.isFinite && ascentMetres > 0
-        ? ascentMetres
-        : 0.0;
-    final descent = descentMetres.isFinite && descentMetres > 0
-        ? descentMetres
-        : 0.0;
-
-    final flatSeconds = distance / pace;
-    final ascentSeconds = ascent * ascentSecondsPerMetre;
-    final descentSeconds = descent * descentSecondsPerMetre;
-    final total = flatSeconds + ascentSeconds + descentSeconds;
-    return Duration(seconds: total.round());
+    final seconds = walkingSeconds(
+      distanceMetres: distanceMetres,
+      ascentMetres: ascentMetres,
+      descentMetres: descentMetres,
+      flatPaceMps: observedPaceMps,
+    );
+    return Duration(seconds: seconds.round());
   }
 
   /// Construit une estimation complete (waypoint + fin d'etape + confiance) a
