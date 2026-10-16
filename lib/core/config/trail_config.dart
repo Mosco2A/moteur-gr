@@ -39,6 +39,8 @@ class TrailConfig {
     this.offlineFirst = true,
     this.hasPremium = false,
     this.isFictional = false,
+    this.parentTrailId,
+    this.chapterIds = const [],
     this.priceStages,
     this.firebaseProjectId,
     this.emergencyNumbers = const [],
@@ -127,6 +129,51 @@ class TrailConfig {
   /// outil légitime — 66 fichiers de test s'en servent de décor. Ce drapeau ne
   /// le supprime pas : il l'empêche d'arriver chez le randonneur.
   final bool isFictional;
+
+  /// Le sentier dont CELUI-CI est un CHAPITRE — `null` s'il n'en est pas un.
+  ///
+  /// UN CHAPITRE EST UN SENTIER COMPLET, PAS UN MORCEAU (règle CH-11 du design
+  /// #101920) : son nom, sa trace, ses étapes, ses lieux, son prix. Il est donc
+  /// une [TrailConfig] comme les autres, avec son identifiant, son dossier de
+  /// données et son entrée au catalogue. Ce champ ne le rend pas dépendant de
+  /// son sentier mère : il sert à le RANGER, et c'est tout ce qu'il fait.
+  ///
+  /// CE QUE LE SENTIER MÈRE DEVIENT, ET C'EST UNE DÉCISION DE CHRISTOPHE DU
+  /// 15/10 17:45, verbatim : « on achete le sentier seulement si il n y a pas
+  /// de chapitres. Sinon par exemple pour le GR20 on peut acheter chapitre 1,
+  /// chapitre 2, chapitre 1 and 2 ». Un sentier qui a des chapitres n'est PLUS
+  /// un produit : il est une numérotation de référence. Voir [chapterIds].
+  final String? parentTrailId;
+
+  /// Les CHAPITRES de ce sentier — vide quand il n'en a pas.
+  ///
+  /// DÉCLARER UN CHAPITRE RETIRE LE SENTIER DE LA VENTE, et c'est le fond de la
+  /// règle de Christophe du 15/10 : on achète le sentier SEULEMENT s'il n'a pas
+  /// de chapitres. Dès que cette liste n'est pas vide, [estVendable] est faux,
+  /// [TrailCatalog.all] ne montre plus ce sentier, et [TrailPurchases.buyTrail]
+  /// le refuse nommément — trois verrous pour une seule règle, parce qu'un
+  /// sentier vendu en bloc alors qu'il a des chapitres vendrait deux fois les
+  /// mêmes étapes.
+  ///
+  /// IL RESTE RÉSOLVABLE PAR SON IDENTIFIANT, ET C'EST LA DIFFÉRENCE AVEC
+  /// [isFictional]. Un sentier fictif est un MENSONGE : il devient introuvable.
+  /// Un sentier mère est une VÉRITÉ qui n'est pas un produit : ses données, sa
+  /// trace et sa numérotation de référence restent lisibles — c'est ce qui
+  /// permet aux chapitres d'en être découpés et à la numérotation de ne jamais
+  /// bouger (règle CH-10).
+  final List<String> chapterIds;
+
+  /// Vrai si ce sentier est un CHAPITRE d'un autre.
+  bool get estChapitre => parentTrailId != null;
+
+  /// Vrai si ce sentier A des chapitres — donc s'il ne se vend plus en bloc.
+  bool get aDesChapitres => chapterIds.isNotEmpty;
+
+  /// Vrai si ce sentier peut être ACHETÉ tel quel.
+  ///
+  /// Faux pour un sentier qui a des chapitres : ce sont ses chapitres qui se
+  /// vendent, et le randonneur qui veut tout le sentier les prend tous.
+  bool get estVendable => !aDesChapitres;
 
   /// PRIX du sentier, EN ÉTAPES. `null` = le prix vaut [totalStages].
   ///

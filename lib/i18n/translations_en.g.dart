@@ -1065,6 +1065,7 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get buyOutcomeFailed => 'The payment did not go through. Nothing was charged.';
 	@override String get buyOutcomeUnknownPrice => 'This trail is not on sale right now. Nothing was charged.';
 	@override String get buyOutcomeDemo => 'You are in demo mode: no purchase is possible, and nothing was charged.';
+	@override String get buyOutcomeSentierAChapitres => 'This trail is sold by chapters: pick the chapter you want. Nothing was charged.';
 	@override String subscriptionPrice({required Object price}) => '${price} per month';
 	@override String get subscriptionAllowanceForLife => 'Credited steps are yours for life, even if you stop the subscription.';
 	@override String get cancelCta => 'Stop my subscription';
@@ -5403,6 +5404,7 @@ extension on TranslationsEn {
 			'monetization.buyOutcomeFailed' => 'The payment did not go through. Nothing was charged.',
 			'monetization.buyOutcomeUnknownPrice' => 'This trail is not on sale right now. Nothing was charged.',
 			'monetization.buyOutcomeDemo' => 'You are in demo mode: no purchase is possible, and nothing was charged.',
+			'monetization.buyOutcomeSentierAChapitres' => 'This trail is sold by chapters: pick the chapter you want. Nothing was charged.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} per month',
 			'monetization.subscriptionAllowanceForLife' => 'Credited steps are yours for life, even if you stop the subscription.',
 			'monetization.cancelCta' => 'Stop my subscription',
@@ -5832,9 +5834,9 @@ extension on TranslationsEn {
 			'moderation.decisions.restrict' => 'Content restricted',
 			'moderation.decisions.remove' => 'Content removed',
 			'moderation.noStatement' => 'No restriction has been applied to your content.',
-			'moderation.complaintAction' => 'Challenge this decision',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintAction' => 'Challenge this decision',
 			'moderation.complaintTitle' => 'Challenge a decision',
 			'moderation.complaintIntro' => 'You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).',
 			'moderation.complaintExposeLabel' => 'Your challenge',
@@ -6346,9 +6348,9 @@ extension on TranslationsEn {
 			'systemBackup.confirm' => 'Got it',
 			'systemBackup.a11yCheckbox' => 'Refuse the backup of all my data by the system of the phone',
 			'lieu.ouvrirDansLesCartes' => 'Open in maps',
-			'lieu.cartesIndisponibles' => 'No maps app could be opened on this device.',
 			_ => null,
 		} ?? switch (path) {
+			'lieu.cartesIndisponibles' => 'No maps app could be opened on this device.',
 			'lieu.adresse' => 'Address',
 			'lieu.telephoner' => 'Call',
 			'lieu.siteOfficiel' => 'Official website',

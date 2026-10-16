@@ -366,6 +366,14 @@ class _LesDeuxPortes extends ConsumerWidget {
 /// taire : un sentier absent du catalogue n'a pas de prix, donc l'achat est
 /// refuse. Le refus silencieux aurait ete un bouton qui ne produit rien — et
 /// l'alternative, vendre a zero, aurait offert le sentier.
+///
+/// LA SEPTIEME EST NEE DE LA TACHE 841, ET ELLE NE POUVAIT PAS SE REPLIER SUR
+/// UNE AUTRE. Un sentier qui a des chapitres n'est PAS « pas en vente » : il
+/// est en vente, par chapitres. Lui donner le libelle du prix introuvable
+/// aurait dit au randonneur de renoncer la ou il faut lui dire de choisir un
+/// chapitre — et c'est exactement le point reste ouvert quand Christophe a pose
+/// la regle le 15/10 : afficher clairement qu'un sentier a chapitres ne se vend
+/// pas en bloc.
 String _messagePour(PurchaseOutcome outcome) {
   final m = t.monetization;
   return switch (outcome.status) {
@@ -380,6 +388,9 @@ String _messagePour(PurchaseOutcome outcome) {
     // n est debite. Le refus se DIT, la ou un echec muet aurait ressemble a une
     // panne de la vitrine.
     PurchaseStatusResult.refuseEnDemo => m.buyOutcomeDemo,
+    // LA SEPTIEME, TACHE 841 : le sentier a des chapitres, donc il ne se vend
+    // pas en bloc. On n'annonce pas un echec, on renvoie vers le choix.
+    PurchaseStatusResult.sentierAChapitres => m.buyOutcomeSentierAChapitres,
   };
 }
 

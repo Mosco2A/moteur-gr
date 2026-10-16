@@ -18212,6 +18212,18 @@ class $TrekEntitlementsTable extends TrekEntitlements
         requiredDuringInsert: false,
         defaultValue: const Constant(0),
       );
+  static const VerificationMeta _periplesAchetesMeta = const VerificationMeta(
+    'periplesAchetes',
+  );
+  @override
+  late final GeneratedColumn<int> periplesAchetes = GeneratedColumn<int>(
+    'periples_achetes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _purchaseSourceMeta = const VerificationMeta(
     'purchaseSource',
   );
@@ -18253,6 +18265,7 @@ class $TrekEntitlementsTable extends TrekEntitlements
     acquiredStages,
     totalStages,
     consumedComplementSteps,
+    periplesAchetes,
     purchaseSource,
     purchasedAt,
     updatedAt,
@@ -18307,6 +18320,15 @@ class $TrekEntitlementsTable extends TrekEntitlements
         consumedComplementSteps.isAcceptableOrUnknown(
           data['consumed_complement_steps']!,
           _consumedComplementStepsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('periples_achetes')) {
+      context.handle(
+        _periplesAchetesMeta,
+        periplesAchetes.isAcceptableOrUnknown(
+          data['periples_achetes']!,
+          _periplesAchetesMeta,
         ),
       );
     }
@@ -18365,6 +18387,10 @@ class $TrekEntitlementsTable extends TrekEntitlements
         DriftSqlType.int,
         data['${effectivePrefix}consumed_complement_steps'],
       )!,
+      periplesAchetes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}periples_achetes'],
+      )!,
       purchaseSource: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}purchase_source'],
@@ -18403,6 +18429,28 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
   /// (abandon/reprise, quoteResume). Defaut 0.
   final int consumedComplementSteps;
 
+  /// NOMBRE DE PERIPLES PAYES sur ce sentier (tache 841). Defaut 0.
+  ///
+  /// UN ACHAT EGALE UN PERIPLE, et un periple est une marche DATEE. Decision de
+  /// Christophe du 16/10 10:09, verbatim : « OUI IL REPAYE ! », qui tranche le
+  /// point T1 du design #101920 et confirme le 11/10 : « il est marche une
+  /// fois, le refaire c est un autre achat et il faudra le stocker comme un
+  /// nouveau periple ».
+  ///
+  /// POURQUOI UN COMPTEUR A COTE DE [owned], ET PAS A LA PLACE. Les deux droits
+  /// ne sont PAS le meme droit, et c'est tout l'equilibre entre les deux paroles
+  /// de Christophe. [owned] est le droit sur le CONTENU — la trace, les etapes,
+  /// les lieux, les cartes hors ligne — et il est acquis A VIE : decision du
+  /// 27/09 (#100698), la propriete n'a aucune echeance. Ce compteur est le droit
+  /// de MARCHER une fois de plus, et il se repaie. Refaire un chapitre dans
+  /// trois ans n'a donc rien a reverrouiller : on ne rachete pas le contenu, on
+  /// achete une marche.
+  ///
+  /// IL NE REDESCEND JAMAIS, ET AUCUN CODE NE LE DECREMENTE. Un compteur de
+  /// periples qui baisse serait un droit retire, c'est-a-dire exactement la
+  /// chose que la decision du 27/09 interdit.
+  final int periplesAchetes;
+
   /// Origine de l'achat ('none' par defaut, puis 'wallet' / 'store' / ...).
   final String purchaseSource;
 
@@ -18417,6 +18465,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
     required this.acquiredStages,
     required this.totalStages,
     required this.consumedComplementSteps,
+    required this.periplesAchetes,
     required this.purchaseSource,
     this.purchasedAt,
     required this.updatedAt,
@@ -18429,6 +18478,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
     map['acquired_stages'] = Variable<int>(acquiredStages);
     map['total_stages'] = Variable<int>(totalStages);
     map['consumed_complement_steps'] = Variable<int>(consumedComplementSteps);
+    map['periples_achetes'] = Variable<int>(periplesAchetes);
     map['purchase_source'] = Variable<String>(purchaseSource);
     if (!nullToAbsent || purchasedAt != null) {
       map['purchased_at'] = Variable<DateTime>(purchasedAt);
@@ -18444,6 +18494,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
       acquiredStages: Value(acquiredStages),
       totalStages: Value(totalStages),
       consumedComplementSteps: Value(consumedComplementSteps),
+      periplesAchetes: Value(periplesAchetes),
       purchaseSource: Value(purchaseSource),
       purchasedAt: purchasedAt == null && nullToAbsent
           ? const Value.absent()
@@ -18465,6 +18516,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
       consumedComplementSteps: serializer.fromJson<int>(
         json['consumedComplementSteps'],
       ),
+      periplesAchetes: serializer.fromJson<int>(json['periplesAchetes']),
       purchaseSource: serializer.fromJson<String>(json['purchaseSource']),
       purchasedAt: serializer.fromJson<DateTime?>(json['purchasedAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -18481,6 +18533,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
       'consumedComplementSteps': serializer.toJson<int>(
         consumedComplementSteps,
       ),
+      'periplesAchetes': serializer.toJson<int>(periplesAchetes),
       'purchaseSource': serializer.toJson<String>(purchaseSource),
       'purchasedAt': serializer.toJson<DateTime?>(purchasedAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -18493,6 +18546,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
     int? acquiredStages,
     int? totalStages,
     int? consumedComplementSteps,
+    int? periplesAchetes,
     String? purchaseSource,
     Value<DateTime?> purchasedAt = const Value.absent(),
     DateTime? updatedAt,
@@ -18503,6 +18557,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
     totalStages: totalStages ?? this.totalStages,
     consumedComplementSteps:
         consumedComplementSteps ?? this.consumedComplementSteps,
+    periplesAchetes: periplesAchetes ?? this.periplesAchetes,
     purchaseSource: purchaseSource ?? this.purchaseSource,
     purchasedAt: purchasedAt.present ? purchasedAt.value : this.purchasedAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -18520,6 +18575,9 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
       consumedComplementSteps: data.consumedComplementSteps.present
           ? data.consumedComplementSteps.value
           : this.consumedComplementSteps,
+      periplesAchetes: data.periplesAchetes.present
+          ? data.periplesAchetes.value
+          : this.periplesAchetes,
       purchaseSource: data.purchaseSource.present
           ? data.purchaseSource.value
           : this.purchaseSource,
@@ -18538,6 +18596,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
           ..write('acquiredStages: $acquiredStages, ')
           ..write('totalStages: $totalStages, ')
           ..write('consumedComplementSteps: $consumedComplementSteps, ')
+          ..write('periplesAchetes: $periplesAchetes, ')
           ..write('purchaseSource: $purchaseSource, ')
           ..write('purchasedAt: $purchasedAt, ')
           ..write('updatedAt: $updatedAt')
@@ -18552,6 +18611,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
     acquiredStages,
     totalStages,
     consumedComplementSteps,
+    periplesAchetes,
     purchaseSource,
     purchasedAt,
     updatedAt,
@@ -18565,6 +18625,7 @@ class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
           other.acquiredStages == this.acquiredStages &&
           other.totalStages == this.totalStages &&
           other.consumedComplementSteps == this.consumedComplementSteps &&
+          other.periplesAchetes == this.periplesAchetes &&
           other.purchaseSource == this.purchaseSource &&
           other.purchasedAt == this.purchasedAt &&
           other.updatedAt == this.updatedAt);
@@ -18576,6 +18637,7 @@ class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
   final Value<int> acquiredStages;
   final Value<int> totalStages;
   final Value<int> consumedComplementSteps;
+  final Value<int> periplesAchetes;
   final Value<String> purchaseSource;
   final Value<DateTime?> purchasedAt;
   final Value<DateTime> updatedAt;
@@ -18586,6 +18648,7 @@ class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
     this.acquiredStages = const Value.absent(),
     this.totalStages = const Value.absent(),
     this.consumedComplementSteps = const Value.absent(),
+    this.periplesAchetes = const Value.absent(),
     this.purchaseSource = const Value.absent(),
     this.purchasedAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -18597,6 +18660,7 @@ class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
     this.acquiredStages = const Value.absent(),
     this.totalStages = const Value.absent(),
     this.consumedComplementSteps = const Value.absent(),
+    this.periplesAchetes = const Value.absent(),
     this.purchaseSource = const Value.absent(),
     this.purchasedAt = const Value.absent(),
     required DateTime updatedAt,
@@ -18609,6 +18673,7 @@ class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
     Expression<int>? acquiredStages,
     Expression<int>? totalStages,
     Expression<int>? consumedComplementSteps,
+    Expression<int>? periplesAchetes,
     Expression<String>? purchaseSource,
     Expression<DateTime>? purchasedAt,
     Expression<DateTime>? updatedAt,
@@ -18621,6 +18686,7 @@ class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
       if (totalStages != null) 'total_stages': totalStages,
       if (consumedComplementSteps != null)
         'consumed_complement_steps': consumedComplementSteps,
+      if (periplesAchetes != null) 'periples_achetes': periplesAchetes,
       if (purchaseSource != null) 'purchase_source': purchaseSource,
       if (purchasedAt != null) 'purchased_at': purchasedAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -18634,6 +18700,7 @@ class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
     Value<int>? acquiredStages,
     Value<int>? totalStages,
     Value<int>? consumedComplementSteps,
+    Value<int>? periplesAchetes,
     Value<String>? purchaseSource,
     Value<DateTime?>? purchasedAt,
     Value<DateTime>? updatedAt,
@@ -18646,6 +18713,7 @@ class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
       totalStages: totalStages ?? this.totalStages,
       consumedComplementSteps:
           consumedComplementSteps ?? this.consumedComplementSteps,
+      periplesAchetes: periplesAchetes ?? this.periplesAchetes,
       purchaseSource: purchaseSource ?? this.purchaseSource,
       purchasedAt: purchasedAt ?? this.purchasedAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -18673,6 +18741,9 @@ class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
         consumedComplementSteps.value,
       );
     }
+    if (periplesAchetes.present) {
+      map['periples_achetes'] = Variable<int>(periplesAchetes.value);
+    }
     if (purchaseSource.present) {
       map['purchase_source'] = Variable<String>(purchaseSource.value);
     }
@@ -18696,6 +18767,7 @@ class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
           ..write('acquiredStages: $acquiredStages, ')
           ..write('totalStages: $totalStages, ')
           ..write('consumedComplementSteps: $consumedComplementSteps, ')
+          ..write('periplesAchetes: $periplesAchetes, ')
           ..write('purchaseSource: $purchaseSource, ')
           ..write('purchasedAt: $purchasedAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -29268,6 +29340,7 @@ typedef $$TrekEntitlementsTableCreateCompanionBuilder =
       Value<int> acquiredStages,
       Value<int> totalStages,
       Value<int> consumedComplementSteps,
+      Value<int> periplesAchetes,
       Value<String> purchaseSource,
       Value<DateTime?> purchasedAt,
       required DateTime updatedAt,
@@ -29280,6 +29353,7 @@ typedef $$TrekEntitlementsTableUpdateCompanionBuilder =
       Value<int> acquiredStages,
       Value<int> totalStages,
       Value<int> consumedComplementSteps,
+      Value<int> periplesAchetes,
       Value<String> purchaseSource,
       Value<DateTime?> purchasedAt,
       Value<DateTime> updatedAt,
@@ -29317,6 +29391,11 @@ class $$TrekEntitlementsTableFilterComposer
 
   ColumnFilters<int> get consumedComplementSteps => $composableBuilder(
     column: $table.consumedComplementSteps,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get periplesAchetes => $composableBuilder(
+    column: $table.periplesAchetes,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -29370,6 +29449,11 @@ class $$TrekEntitlementsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get periplesAchetes => $composableBuilder(
+    column: $table.periplesAchetes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get purchaseSource => $composableBuilder(
     column: $table.purchaseSource,
     builder: (column) => ColumnOrderings(column),
@@ -29413,6 +29497,11 @@ class $$TrekEntitlementsTableAnnotationComposer
 
   GeneratedColumn<int> get consumedComplementSteps => $composableBuilder(
     column: $table.consumedComplementSteps,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get periplesAchetes => $composableBuilder(
+    column: $table.periplesAchetes,
     builder: (column) => column,
   );
 
@@ -29472,6 +29561,7 @@ class $$TrekEntitlementsTableTableManager
                 Value<int> acquiredStages = const Value.absent(),
                 Value<int> totalStages = const Value.absent(),
                 Value<int> consumedComplementSteps = const Value.absent(),
+                Value<int> periplesAchetes = const Value.absent(),
                 Value<String> purchaseSource = const Value.absent(),
                 Value<DateTime?> purchasedAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -29482,6 +29572,7 @@ class $$TrekEntitlementsTableTableManager
                 acquiredStages: acquiredStages,
                 totalStages: totalStages,
                 consumedComplementSteps: consumedComplementSteps,
+                periplesAchetes: periplesAchetes,
                 purchaseSource: purchaseSource,
                 purchasedAt: purchasedAt,
                 updatedAt: updatedAt,
@@ -29494,6 +29585,7 @@ class $$TrekEntitlementsTableTableManager
                 Value<int> acquiredStages = const Value.absent(),
                 Value<int> totalStages = const Value.absent(),
                 Value<int> consumedComplementSteps = const Value.absent(),
+                Value<int> periplesAchetes = const Value.absent(),
                 Value<String> purchaseSource = const Value.absent(),
                 Value<DateTime?> purchasedAt = const Value.absent(),
                 required DateTime updatedAt,
@@ -29504,6 +29596,7 @@ class $$TrekEntitlementsTableTableManager
                 acquiredStages: acquiredStages,
                 totalStages: totalStages,
                 consumedComplementSteps: consumedComplementSteps,
+                periplesAchetes: periplesAchetes,
                 purchaseSource: purchaseSource,
                 purchasedAt: purchasedAt,
                 updatedAt: updatedAt,

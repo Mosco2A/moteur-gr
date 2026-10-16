@@ -86,10 +86,21 @@ void main() {
       prefs: prefs,
       freeTrailIds: gratuits ?? const {},
       // LE PRIX VIENT DU CATALOGUE (avenant 614). Ces tests utilisent des
-      // identifiants fictifs ('gr20', 'gratuit') : ils declarent donc le
-      // catalogue, exactement comme ils declarent la gratuite au-dessus.
+      // identifiants fictifs ('sentier-de-test', 'gratuit') : ils declarent
+      // donc le catalogue, exactement comme ils declarent la gratuite
+      // au-dessus.
+      //
+      // ET L IDENTIFIANT FICTIF NE DOIT JAMAIS ETRE CELUI D UN VRAI PRODUIT
+      // (tache 841). Ce decor s appelait 'gr20' du temps ou aucun sentier de ce
+      // nom n existait. La tache 839 a fait entrer le vrai GR20 au catalogue,
+      // la 841 en a fait un sentier A CHAPITRES — donc invendable — et ces
+      // tests se sont mis a mesurer une regle qu ils ne voulaient pas
+      // mesurer : sept
+      // cas sont tombes d un coup sur un refus de vente parfaitement
+      // legitime. Un decor qui emprunte l identifiant d un produit reel finit
+      // toujours par heriter de ses regles.
       stagesOf: (id) => switch (id) {
-        'gr20' => 10,
+        'sentier-de-test' => 10,
         'gratuit' => 3,
         _ => 0,
       },
@@ -102,11 +113,11 @@ void main() {
   group('ST4 access / ownership', () {
     test('trek non achete = free (demo + pub)', () async {
       final svc = await makeService();
-      expect(await svc.ownsTrail('gr20'), isFalse);
-      expect(await svc.accessFor('gr20'), TrailAccess.free);
-      expect(await svc.isDemoMode('gr20'), isTrue);
+      expect(await svc.ownsTrail('sentier-de-test'), isFalse);
+      expect(await svc.accessFor('sentier-de-test'), TrailAccess.free);
+      expect(await svc.isDemoMode('sentier-de-test'), isTrue);
       expect(TrailAccess.free.showAds, isTrue);
-      expect(await svc.isNoAdsActive('gr20'), isFalse);
+      expect(await svc.isNoAdsActive('sentier-de-test'), isFalse);
     });
 
     // CORRIGE PAR LA TACHE 594 (A2a). Ce test affirmait « abo actif =
@@ -123,24 +134,24 @@ void main() {
         await svc.onSubscriptionValidated();
 
         expect(await svc.isSubscriberActive(), isTrue);
-        expect(await svc.accessFor('gr20'), TrailAccess.subscriber);
+        expect(await svc.accessFor('sentier-de-test'), TrailAccess.subscriber);
         expect(TrailAccess.subscriber.showAds, isFalse);
-        expect(await svc.isDemoMode('gr20'), isTrue);
-        expect(await svc.isNoAdsActive('gr20'), isTrue);
+        expect(await svc.isDemoMode('sentier-de-test'), isTrue);
+        expect(await svc.isNoAdsActive('sentier-de-test'), isTrue);
       },
     );
 
     test('trek possede = owned (prioritaire sur l abo)', () async {
       final svc = await makeService(walletSteps: 10);
-      final outcome = await svc.buyTrail('gr20');
+      final outcome = await svc.buyTrail('sentier-de-test');
 
       expect(outcome.isOwned, isTrue);
-      expect(await svc.ownsTrail('gr20'), isTrue);
-      expect(await svc.accessFor('gr20'), TrailAccess.owned);
+      expect(await svc.ownsTrail('sentier-de-test'), isTrue);
+      expect(await svc.accessFor('sentier-de-test'), TrailAccess.owned);
       expect(TrailAccess.owned.showAds, isFalse);
-      expect(await svc.isNoAdsActive('gr20'), isTrue);
+      expect(await svc.isNoAdsActive('sentier-de-test'), isTrue);
       // Le cache synchrone FeatureFlags est aligne (gardes de routes).
-      expect(FeatureFlags.isPremiumEnabled('gr20'), isTrue);
+      expect(FeatureFlags.isPremiumEnabled('sentier-de-test'), isTrue);
     });
   });
 
@@ -196,26 +207,26 @@ void main() {
       () async {
         final svc = await makeService(walletSteps: 12);
 
-        final quote = await svc.quoteTrail('gr20');
+        final quote = await svc.quoteTrail('sentier-de-test');
         expect(quote.stepsNeeded, 10);
         expect(quote.stepsFromWallet, 10);
         expect(quote.complementSteps, 0);
         expect(quote.complementPack, isNull);
 
-        final outcome = await svc.buyTrail('gr20');
+        final outcome = await svc.buyTrail('sentier-de-test');
         expect(outcome.status, PurchaseStatusResult.owned);
         expect(outcome.stepsFromWallet, 10);
         expect(svc.walletSteps, 2, reason: '12 - 10 debitees');
-        expect(await svc.ownsTrail('gr20'), isTrue);
+        expect(await svc.ownsTrail('sentier-de-test'), isTrue);
       },
     );
 
     test('deja possede : idempotent, rien debite', () async {
       final svc = await makeService(walletSteps: 20);
-      await svc.buyTrail('gr20');
+      await svc.buyTrail('sentier-de-test');
       final before = svc.walletSteps;
 
-      final again = await svc.buyTrail('gr20');
+      final again = await svc.buyTrail('sentier-de-test');
       expect(again.status, PurchaseStatusResult.alreadyOwned);
       expect(svc.walletSteps, before, reason: 'aucun re-debit');
     });
@@ -227,17 +238,17 @@ void main() {
       () async {
         final svc = await makeService(walletSteps: 4, online: false);
 
-        final quote = await svc.quoteTrail('gr20');
+        final quote = await svc.quoteTrail('sentier-de-test');
         expect(quote.stepsFromWallet, 4);
         expect(quote.complementSteps, 6);
         expect(quote.complementPack!.steps, 11);
 
-        final outcome = await svc.buyTrail('gr20');
+        final outcome = await svc.buyTrail('sentier-de-test');
         expect(outcome.status, PurchaseStatusResult.offlineComplementRequired);
         expect(outcome.complementSteps, 6);
         // Jamais de wallet debite sans contrepartie : le debit est annule.
         expect(svc.walletSteps, 4, reason: 'rollback du debit wallet');
-        expect(await svc.ownsTrail('gr20'), isFalse);
+        expect(await svc.ownsTrail('sentier-de-test'), isFalse);
       },
     );
 
@@ -246,13 +257,13 @@ void main() {
       () async {
         final svc = await makeService(walletSteps: 4, online: true);
 
-        final outcome = await svc.buyTrail('gr20');
+        final outcome = await svc.buyTrail('sentier-de-test');
         // Le complement store est asynchrone (boucle completion) : pas de
         // confirmation synchrone en stub -> rollback + echec, owned NON pose.
         expect(outcome.status, PurchaseStatusResult.complementFailed);
         expect(outcome.complementSteps, 6);
         expect(svc.walletSteps, 4, reason: 'rollback du debit wallet');
-        expect(await svc.ownsTrail('gr20'), isFalse);
+        expect(await svc.ownsTrail('sentier-de-test'), isFalse);
       },
     );
   });
@@ -265,7 +276,7 @@ void main() {
       await svc.grantRewardNoAds();
       expect(await svc.isRewardNoAdsActive(), isTrue);
       expect(
-        await svc.isNoAdsActive('gr20'),
+        await svc.isNoAdsActive('sentier-de-test'),
         isTrue,
         reason: 'reward couvre le sans-pub meme sans achat',
       );
@@ -273,7 +284,7 @@ void main() {
       // Avance l'horloge de 25 h : le reward a expire.
       now = now.add(const Duration(hours: 25));
       expect(await svc.isRewardNoAdsActive(), isFalse);
-      expect(await svc.isNoAdsActive('gr20'), isFalse);
+      expect(await svc.isNoAdsActive('sentier-de-test'), isFalse);
     });
 
     test('reward encore actif juste avant 24 h', () async {
@@ -309,17 +320,17 @@ void main() {
       () async {
         // Achat initial couvert par le wallet : 10/10 acquis, owned.
         final svc = await makeService(walletSteps: 30);
-        await svc.buyTrail('gr20');
-        expect(await svc.acquiredStagesFor('gr20'), 10);
+        await svc.buyTrail('sentier-de-test');
+        expect(await svc.acquiredStagesFor('sentier-de-test'), 10);
 
         // Abandon : owned retombe a false, acquis conserves comme base de rachat.
-        await svc.onTrailAbandoned('gr20');
-        expect(await svc.ownsTrail('gr20'), isFalse);
-        expect(await svc.acquiredStagesFor('gr20'), 10);
-        expect(FeatureFlags.isPremiumEnabled('gr20'), isFalse);
+        await svc.onTrailAbandoned('sentier-de-test');
+        expect(await svc.ownsTrail('sentier-de-test'), isFalse);
+        expect(await svc.acquiredStagesFor('sentier-de-test'), 10);
+        expect(FeatureFlags.isPremiumEnabled('sentier-de-test'), isFalse);
 
         // Devis de reprise : plus rien a payer (tout deja acquis).
-        final resumeQuote = await svc.quoteResume('gr20');
+        final resumeQuote = await svc.quoteResume('sentier-de-test');
         expect(
           resumeQuote.stepsNeeded,
           0,
@@ -328,7 +339,7 @@ void main() {
         expect(resumeQuote.complementSteps, 0);
 
         final walletBefore = svc.walletSteps;
-        final outcome = await svc.resumeTrail('gr20');
+        final outcome = await svc.resumeTrail('sentier-de-test');
         expect(outcome.status, PurchaseStatusResult.owned);
         expect(
           outcome.stepsFromWallet,
@@ -336,7 +347,7 @@ void main() {
           reason: 'rien re-debite a la reprise',
         );
         expect(svc.walletSteps, walletBefore);
-        expect(await svc.ownsTrail('gr20'), isTrue);
+        expect(await svc.ownsTrail('sentier-de-test'), isTrue);
       },
     );
 
@@ -349,7 +360,7 @@ void main() {
         final now2 = now;
         await db.trekEntitlementsDao.upsert(
           TrekEntitlementsCompanion.insert(
-            trailId: 'gr20',
+            trailId: 'sentier-de-test',
             owned: const Value(false),
             acquiredStages: const Value(4),
             totalStages: const Value(10),
@@ -357,7 +368,7 @@ void main() {
           ),
         );
 
-        final quote = await svc.quoteResume('gr20');
+        final quote = await svc.quoteResume('sentier-de-test');
         expect(quote.acquiredStages, 4);
         expect(quote.stepsNeeded, 6, reason: '10 - 4 acquises');
       },
@@ -367,20 +378,20 @@ void main() {
   group('ST4 migration legacy (idempotente)', () {
     test('migre les 2 cles prefs legacy vers owned=true', () async {
       SharedPreferences.setMockInitialValues({
-        kPurchasedTrailsPrefsKey: ['gr20'],
-        kDemoModePurchasedTrailsPrefsKey: ['gr20', 'volcans'],
+        kPurchasedTrailsPrefsKey: ['sentier-de-test'],
+        kDemoModePurchasedTrailsPrefsKey: ['sentier-de-test', 'volcans'],
       });
       final svc = await makeService(); // load() -> migrateLegacyPurchases()
 
-      expect(await svc.ownsTrail('gr20'), isTrue);
+      expect(await svc.ownsTrail('sentier-de-test'), isTrue);
       expect(await svc.ownsTrail('volcans'), isTrue);
-      expect(FeatureFlags.isPremiumEnabled('gr20'), isTrue);
+      expect(FeatureFlags.isPremiumEnabled('sentier-de-test'), isTrue);
 
       // Idempotent : relancer ne casse rien, reste owned.
       await svc.migrateLegacyPurchases();
-      expect(await svc.ownsTrail('gr20'), isTrue);
+      expect(await svc.ownsTrail('sentier-de-test'), isTrue);
       final all = await db.trekEntitlementsDao.getAll();
-      expect(all.where((e) => e.trailId == 'gr20'), hasLength(1));
+      expect(all.where((e) => e.trailId == 'sentier-de-test'), hasLength(1));
     });
   });
 
@@ -446,16 +457,16 @@ void main() {
   group('ST4 reset', () {
     test('reset efface droits + sans-pub + cache FeatureFlags', () async {
       final svc = await makeService(walletSteps: 30);
-      await svc.buyTrail('gr20');
+      await svc.buyTrail('sentier-de-test');
       await svc.onSubscriptionValidated();
       await svc.grantRewardNoAds();
 
       await svc.reset();
 
-      expect(await svc.ownsTrail('gr20'), isFalse);
+      expect(await svc.ownsTrail('sentier-de-test'), isFalse);
       expect(await svc.isSubscriberActive(), isFalse);
       expect(await svc.isRewardNoAdsActive(), isFalse);
-      expect(FeatureFlags.isPremiumEnabled('gr20'), isFalse);
+      expect(FeatureFlags.isPremiumEnabled('sentier-de-test'), isFalse);
     });
   });
 
@@ -475,10 +486,13 @@ void main() {
 
     test('featuresForTrail suit accessFor (owned -> premium)', () async {
       final svc = await makeService(walletSteps: 10);
-      expect((await svc.featuresForTrail('gr20')).isDemo, isTrue);
-      await svc.buyTrail('gr20');
-      expect((await svc.featuresForTrail('gr20')).isDemo, isFalse);
-      expect((await svc.featuresForTrail('gr20')).hasGpsTracking, isTrue);
+      expect((await svc.featuresForTrail('sentier-de-test')).isDemo, isTrue);
+      await svc.buyTrail('sentier-de-test');
+      expect((await svc.featuresForTrail('sentier-de-test')).isDemo, isFalse);
+      expect(
+        (await svc.featuresForTrail('sentier-de-test')).hasGpsTracking,
+        isTrue,
+      );
     });
   });
 }

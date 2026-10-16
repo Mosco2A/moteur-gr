@@ -65,6 +65,29 @@ class TrailPurchases {
     );
   }
 
+  /// DEVIS AU PRIX PLEIN : les étapes déjà acquises NE sont PAS escomptées.
+  ///
+  /// C'est le devis d'un NOUVEAU PÉRIPLE (tâche 841), et il n'a qu'un seul
+  /// appelant : [VenteParChapitres.ouvrirUnNouveauPeriple]. Décision de
+  /// Christophe du 16/10 10:09, verbatim : « OUI IL REPAYE ! ».
+  ///
+  /// POURQUOI IL EXISTE AU LIEU D'UN BOOLÉEN DE PLUS SUR [quoteTrail]. Tous les
+  /// autres devis du service escomptent l'acquis — c'est la règle « on ne paie
+  /// que les étapes qu'on n'a pas » du modèle éco. Celui-ci est l'exception, et
+  /// une exception se NOMME : avec l'escompte, le besoin tomberait à ZÉRO sur
+  /// un chapitre soldé et un second périple serait gratuit, c'est-à-dire
+  /// l'option que Christophe a écartée. Un paramètre `useAcquired: false`
+  /// passé depuis l'extérieur serait exactement le motif de l'avenant 614 : un
+  /// appelant qui décide du prix.
+  ///
+  /// L'ARITHMÉTIQUE RESTE CELLE DE [_quote] : part cagnotte, complément, plus
+  /// petit pack couvrant. Rien n'est recalculé ailleurs.
+  Future<TrailQuote> devisAuPrixPlein(String trailId) => _quote(
+    trailId,
+    totalStages: _pricing.stagesOfTrail(trailId),
+    useAcquired: false,
+  );
+
   Future<TrailQuote> _quote(
     String trailId, {
     required int totalStages,
@@ -147,8 +170,8 @@ class TrailPurchases {
     return _settle(trailId, totalStages);
   }
 
-  /// Les refus d'AVANT tout debit : demo, deja possede, sentier gratuit.
-  /// `null` quand l'achat peut continuer.
+  /// Les refus d'AVANT tout debit : demo, sentier a chapitres, deja possede,
+  /// sentier gratuit. `null` quand l'achat peut continuer.
   Future<PurchaseOutcome?> _refusal(String trailId) async {
     // DEMO : AUCUN DEBIT, AUCUN DROIT (tache 634, DEM-260929-1123). C'est le
     // refus le plus important des cinq : c'est ici qu'un sentier payant
@@ -161,10 +184,49 @@ class TrailPurchases {
         trailId: trailId,
       );
     }
+    // UN SENTIER QUI A DES CHAPITRES NE SE VEND PAS EN BLOC (tache 841).
+    //
+    // Regle de Christophe du 15/10 17:45, verbatim : « on achete le sentier
+    // seulement si il n y a pas de chapitres. Sinon par exemple pour le GR20 on
+    // peut acheter chapitre 1, chapitre 2, chapitre 1 and 2 ».
+    //
+    // AVANT « DEJA POSSEDE », ET L'ORDRE COMPTE. Un randonneur qui possedait le
+    // GR20 entier avant qu'il ait des chapitres garde son droit — c'est la
+    // propriete sans echeance du 27/09 — mais ce droit ne doit plus pouvoir
+    // etre RE-ACHETE ni ouvrir un nouveau periple sur un produit qui n'existe
+    // plus. Placer ce refus apres « deja possede » l'aurait laisse passer pour
+    // ce cas precis, qui est justement le seul ou il peut arriver.
+    //
+    // POURQUOI CE REFUS EXISTE ALORS QUE LE SENTIER MERE A DEJA QUITTE LE
+    // CATALOGUE. Le filtre d'[TrailCatalog.all] empeche de le PROPOSER ;
+    // celui-ci empeche de le VENDRE a qui l'appellerait quand meme. La lecon du
+    // lot 601 et de l'avenant 614 est exactement celle-la : une regle qui ne
+    // vit que dans ce qu'on affiche est contournable par un appel.
+    if (_pricing.aDesChapitres(trailId)) {
+      _log.w(
+        '[Monetization] $trailId : sentier a chapitres -> vente en bloc '
+        'REFUSEE (rien debite, aucun droit pose). Ses chapitres se vendent '
+        'separement.',
+      );
+      return PurchaseOutcome(
+        status: PurchaseStatusResult.sentierAChapitres,
+        trailId: trailId,
+      );
+    }
     if (await _entitlements.ownsTrail(trailId)) {
+      // DEJA POSSEDE : RIEN N'EST DEBITE ET RIEN N'EST REVERROUILLE.
+      //
+      // CE N'EST PAS LE REFUS DU SECOND PERIPLE, et la nuance est tout le point
+      // T1 tranche par Christophe le 16/10 (« OUI IL REPAYE ! »). Refaire le
+      // chapitre plus tard est bien un NOUVEL ACHAT — mais c'est un geste
+      // EXPLICITE du randonneur, [ouvrirUnNouveauPeriple], jamais la
+      // consequence d'un second appui sur « Acheter ». Cette idempotence reste
+      // donc ce qu'elle a toujours ete : le filet contre le double appui, qui
+      // ne doit jamais couter une seconde fois le prix du chapitre.
       return PurchaseOutcome(
         status: PurchaseStatusResult.alreadyOwned,
         trailId: trailId,
+        peripleNumero: await _entitlements.periplesAchetes(trailId),
       );
     }
 
@@ -203,21 +265,28 @@ class TrailPurchases {
     if (quote.complementSteps > 0) return _complement(trailId, quote);
 
     // 3) Complément nul : le wallet couvre tout -> achat confirmé, owned posé.
+    //
+    // ET LE PÉRIPLE EST OUVERT (tâche 841) : un achat ÉGALE un périple. Le
+    // numéro est celui qui suit ce que la base compte déjà — un achat sur un
+    // droit abandonné puis repris n'efface pas les périples d'avant.
+    final numero = await _entitlements.periplesAchetes(trailId) + 1;
     await _entitlements.markOwned(
       trailId,
       totalStages: totalStages,
       acquiredStages: totalStages,
       consumedComplementSteps: 0,
       source: 'wallet',
+      peripleNumero: numero,
     );
     _log.i(
       '[Monetization] $trailId acheté (wallet: '
-      '${quote.stepsFromWallet} étapes)',
+      '${quote.stepsFromWallet} étapes), périple nº $numero',
     );
     return PurchaseOutcome(
       status: PurchaseStatusResult.owned,
       trailId: trailId,
       stepsFromWallet: quote.stepsFromWallet,
+      peripleNumero: numero,
     );
   }
 

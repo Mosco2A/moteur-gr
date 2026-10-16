@@ -215,7 +215,7 @@ void main() {
       prefs: prefs,
       freeTrailIds: sentiersGratuits,
       // Catalogue declare : `buyTrail` lit le prix au lieu de le recevoir
-      // (avenant 614), et 'gr20' est un identifiant de test.
+      // (avenant 614), et 'sentier-de-test' est un identifiant de test.
       stagesOf: (_) => 10,
     );
     await monetisation.load();
@@ -282,7 +282,9 @@ void main() {
       'un trek libre, la pub consentie : une banniere est DEMANDEE et rendue',
       () async {
         final (c, _) = await monterLeMonde();
-        final banniere = await c.read(bannerAdProvider('gr20').future);
+        final banniere = await c.read(
+          bannerAdProvider('sentier-de-test').future,
+        );
 
         expect(
           banniere,
@@ -313,7 +315,9 @@ void main() {
         UncontrolledProviderScope(
           container: c,
           child: const MaterialApp(
-            home: Scaffold(bottomNavigationBar: BannerAdSlot(trailId: 'gr20')),
+            home: Scaffold(
+              bottomNavigationBar: BannerAdSlot(trailId: 'sentier-de-test'),
+            ),
           ),
         ),
       );
@@ -331,7 +335,9 @@ void main() {
         UncontrolledProviderScope(
           container: c,
           child: const MaterialApp(
-            home: Scaffold(bottomNavigationBar: BannerAdSlot(trailId: 'gr20')),
+            home: Scaffold(
+              bottomNavigationBar: BannerAdSlot(trailId: 'sentier-de-test'),
+            ),
           ),
         ),
       );
@@ -358,7 +364,10 @@ void main() {
         final (c, monetisation) = await monterLeMonde();
         await monetisation.onSubscriptionValidated();
 
-        expect(await c.read(bannerAdProvider('gr20').future), isNull);
+        expect(
+          await c.read(bannerAdProvider('sentier-de-test').future),
+          isNull,
+        );
         expect(
           await c.read(bannerAdProvider('mare-a-mare').future),
           isNull,
@@ -380,13 +389,16 @@ void main() {
         final (c, _) = await monterLeMonde();
         await db.trekEntitlementsDao.upsert(
           TrekEntitlementsCompanion.insert(
-            trailId: 'gr20',
+            trailId: 'sentier-de-test',
             owned: const Value(true),
             updatedAt: maintenant,
           ),
         );
 
-        expect(await c.read(bannerAdProvider('gr20').future), isNull);
+        expect(
+          await c.read(bannerAdProvider('sentier-de-test').future),
+          isNull,
+        );
         expect(
           await c.read(bannerAdProvider('mare-a-mare').future),
           isNotNull,
@@ -400,7 +412,7 @@ void main() {
       await monetisation.grantRewardNoAds();
 
       expect(
-        await c.read(bannerAdProvider('gr20').future),
+        await c.read(bannerAdProvider('sentier-de-test').future),
         isNull,
         reason: 'la recompense vient d etre accordee',
       );
@@ -416,7 +428,7 @@ void main() {
       maintenant = maintenant.add(const Duration(hours: 24, minutes: 1));
       c.invalidate(shouldShowBannerProvider);
       expect(
-        await c.read(bannerAdProvider('gr20').future),
+        await c.read(bannerAdProvider('sentier-de-test').future),
         isNotNull,
         reason: 'le sans-pub de la recompense est TEMPORAIRE — jamais a vie',
       );
@@ -428,7 +440,7 @@ void main() {
       await portefeuille.credit(50);
 
       expect(
-        await c.read(bannerAdProvider('gr20').future),
+        await c.read(bannerAdProvider('sentier-de-test').future),
         isNotNull,
         reason:
             'les credits sont acquis A VIE et SEPARES du sans-pub : ils '
@@ -443,7 +455,9 @@ void main() {
         UncontrolledProviderScope(
           container: c,
           child: const MaterialApp(
-            home: Scaffold(bottomNavigationBar: BannerAdSlot(trailId: 'gr20')),
+            home: Scaffold(
+              bottomNavigationBar: BannerAdSlot(trailId: 'sentier-de-test'),
+            ),
           ),
         ),
       );
@@ -457,7 +471,7 @@ void main() {
       // gentiment poussee.
       await db.trekEntitlementsDao.upsert(
         TrekEntitlementsCompanion.insert(
-          trailId: 'gr20',
+          trailId: 'sentier-de-test',
           owned: const Value(true),
           updatedAt: maintenant,
         ),
@@ -483,7 +497,10 @@ void main() {
       'la pub NON consentie (CMP) coupe tout, meme sur un trek libre',
       () async {
         final (c, _) = await monterLeMonde(pubAutorisee: false);
-        expect(await c.read(bannerAdProvider('gr20').future), isNull);
+        expect(
+          await c.read(bannerAdProvider('sentier-de-test').future),
+          isNull,
+        );
         expect(regie.demandes, isEmpty);
       },
     );
@@ -704,7 +721,7 @@ void main() {
     test('REFUSER produit un effet MESURABLE : la demande part NON '
         'personnalisee', () async {
       final (c, _) = await monterLeMonde(pubPersonnalisee: false);
-      await c.read(bannerAdProvider('gr20').future);
+      await c.read(bannerAdProvider('sentier-de-test').future);
 
       expect(regie.demandes, hasLength(1));
       expect(
@@ -719,7 +736,7 @@ void main() {
 
     test('ACCORDER laisse la demande personnalisee', () async {
       final (c, _) = await monterLeMonde(pubPersonnalisee: true);
-      await c.read(bannerAdProvider('gr20').future);
+      await c.read(bannerAdProvider('sentier-de-test').future);
 
       expect(regie.demandes.single.personalized, isTrue);
     });
@@ -728,7 +745,7 @@ void main() {
       'SANS DECISION, la demande part non personnalisee (ferme par defaut)',
       () async {
         final (c, _) = await monterLeMonde();
-        await c.read(bannerAdProvider('gr20').future);
+        await c.read(bannerAdProvider('sentier-de-test').future);
 
         expect(
           regie.demandes.single.personalized,
@@ -1016,10 +1033,10 @@ void main() {
         tracking: TrackingSessionStatus.recording,
       );
       await portefeuille.credit(10);
-      expect((await monetisation.buyTrail('gr20')).isOwned, isTrue);
+      expect((await monetisation.buyTrail('sentier-de-test')).isOwned, isTrue);
 
       expect(
-        await c.read(bannerAdProvider('gr20').future),
+        await c.read(bannerAdProvider('sentier-de-test').future),
         isNull,
         reason:
             'VOILA POURQUOI LA GARDE ETAIT REDONDANTE SUR LES SENTIERS '
@@ -1058,10 +1075,13 @@ void main() {
           sentiersGratuits: {gratuit},
         );
         await portefeuille.credit(10);
-        expect((await monetisation.buyTrail('gr20')).isOwned, isTrue);
+        expect(
+          (await monetisation.buyTrail('sentier-de-test')).isOwned,
+          isTrue,
+        );
 
         expect(
-          await c.read(bannerAdProvider('gr20').future),
+          await c.read(bannerAdProvider('sentier-de-test').future),
           isNull,
           reason: 'le sentier ACHETE est sans pub, et le reste',
         );

@@ -1,0 +1,438 @@
+{
+  "quoi": "Les nuits ou une journee du chapitre GR20 Nord peut se terminer. Elles sont celles du GR20 entier, mesurees en tache 839, restreintes a la portion de trace de ce chapitre et dont le point kilometrique est remis a zero a son depart. Aucune nuit n est ajoutee ici, aucune n est remesuree.",
+  "attribution": "Trace et couchages : OpenStreetMap, relation 12484370 (GR 20 Principale), licence ODbL. Altitudes : modele de terrain EU-DEM 25 m via opentopodata.",
+  "trailId": "gr20-nord",
+  "trace": "assets/data/gr20-nord/track.gpx",
+  "longueur_km": 91.797,
+  "modele_de_temps_de_marche": "4,0 km/h a plat, 400 m de montee par heure, descente payee 1.67 s par metre — lib/core/models/stage_duration.dart",
+  "nuits": 15,
+  "dont_fins_d_etape": 9,
+  "dont_coupures_relevees": 6,
+  "tete_de_sentier": "Calenzana",
+  "segments": 15,
+  "liste": [
+    {
+      "nom": "Refuge de l'Ortu di u Piobbu",
+      "osm": [
+        "node/12955341201",
+        "way/1083328604",
+        "way/237852713"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 11.349,
+      "altitude_m": 1538,
+      "lat": 42.4652,
+      "lon": 8.90688,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": null,
+      "origine": "fin d etape",
+      "fin_d_etape": 1
+    },
+    {
+      "nom": "Refuge de Carozzu",
+      "osm": [
+        "node/4460382850",
+        "way/237852703",
+        "way/237852708"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 18.689,
+      "altitude_m": 1262,
+      "lat": 42.42626,
+      "lon": 8.90047,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 36,
+      "origine": "fin d etape",
+      "fin_d_etape": 2
+    },
+    {
+      "nom": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+      "osm": [
+        "way/118908103",
+        "way/118990828",
+        "way/437755712"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 23.594,
+      "altitude_m": 1441,
+      "lat": 42.40351,
+      "lon": 8.92234,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 32,
+      "origine": "fin d etape",
+      "fin_d_etape": 3
+    },
+    {
+      "nom": "Refuge de Tighjettu",
+      "osm": [
+        "node/12955341301",
+        "way/437755706",
+        "way/437755707"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 32.004,
+      "altitude_m": 1685,
+      "lat": 42.36225,
+      "lon": 8.90883,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 36,
+      "origine": "fin d etape",
+      "fin_d_etape": 4
+    },
+    {
+      "nom": "Bergerie de Ballone",
+      "osm": [
+        "way/631221944"
+      ],
+      "osm_type": "alpine_hut",
+      "pk_km": 33.169,
+      "altitude_m": 1455,
+      "lat": 42.3529047,
+      "lon": 8.9078329,
+      "minutes_aller": 0,
+      "minutes_retour": 1,
+      "lits": null,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Refuge de Ciottulu di i Mori",
+      "osm": [
+        "way/437752735",
+        "way/437752736"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 38.369,
+      "altitude_m": 1992,
+      "lat": 42.33495,
+      "lon": 8.86814,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 30,
+      "origine": "fin d etape",
+      "fin_d_etape": 5
+    },
+    {
+      "nom": "Bergeries de Radule",
+      "osm": [
+        "node/1935629269"
+      ],
+      "osm_type": "camp_site",
+      "pk_km": 43.49,
+      "altitude_m": 1404,
+      "lat": 42.3036056,
+      "lon": 8.8756641,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 150,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Castel De Vergio",
+      "osm": [
+        "way/89697304"
+      ],
+      "osm_type": "alpine_hut",
+      "pk_km": 46.768,
+      "altitude_m": 1408,
+      "lat": 42.2867908,
+      "lon": 8.8935799,
+      "minutes_aller": 1,
+      "minutes_retour": 1,
+      "lits": 29,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Bergeries de Vaccaghia",
+      "osm": [
+        "way/297487399"
+      ],
+      "osm_type": "alpine_hut",
+      "pk_km": 61.339,
+      "altitude_m": 1591,
+      "lat": 42.2367955,
+      "lon": 8.9741769,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": null,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Refuge de Manganu",
+      "osm": [
+        "node/11028460199",
+        "way/297485752"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 63.389,
+      "altitude_m": 1587,
+      "lat": 42.21983,
+      "lon": 8.98046,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 31,
+      "origine": "fin d etape",
+      "fin_d_etape": 6
+    },
+    {
+      "nom": "Refuge de Petra Piana",
+      "osm": [
+        "way/297484188",
+        "way/437735563"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 71.761,
+      "altitude_m": 1857,
+      "lat": 42.19807,
+      "lon": 9.05245,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 25,
+      "origine": "fin d etape",
+      "fin_d_etape": 7
+    },
+    {
+      "nom": "Bergerie de Tolla",
+      "osm": [
+        "way/120874153"
+      ],
+      "osm_type": "camp_site",
+      "pk_km": 77.903,
+      "altitude_m": 1014,
+      "lat": 42.1715284,
+      "lon": 9.0978974,
+      "minutes_aller": 1,
+      "minutes_retour": 1,
+      "lits": 20,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Refuge de l'Onda",
+      "osm": [
+        "way/297483737",
+        "way/437735560",
+        "way/437735561"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 81.593,
+      "altitude_m": 1395,
+      "lat": 42.15329,
+      "lon": 9.07374,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 16,
+      "origine": "fin d etape",
+      "fin_d_etape": 8
+    },
+    {
+      "nom": "Aire de bivouac La Halte Du Prince",
+      "osm": [
+        "way/446641114"
+      ],
+      "osm_type": "camp_site",
+      "pk_km": 89.162,
+      "altitude_m": 1108,
+      "lat": 42.1144842,
+      "lon": 9.122274,
+      "minutes_aller": 22,
+      "minutes_retour": 16,
+      "lits": 40,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Gare de Vizzavona",
+      "osm": [
+        "node/6506235954",
+        "way/352050543",
+        "way/692948715",
+        "way/692948737"
+      ],
+      "osm_type": "node/station",
+      "pk_km": 91.797,
+      "altitude_m": 938,
+      "lat": 42.12858,
+      "lon": 9.13376,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 16,
+      "origine": "fin d etape",
+      "fin_d_etape": 9
+    }
+  ],
+  "entre_les_nuits": [
+    {
+      "rang": 1,
+      "depart": "Calenzana",
+      "arrivee": "Refuge de l'Ortu di u Piobbu",
+      "pk_depart_km": 0.0,
+      "pk_arrivee_km": 11.349,
+      "km": 11.349,
+      "dplus_m": 1455,
+      "dmoins_m": 194,
+      "minutes": 394
+    },
+    {
+      "rang": 2,
+      "depart": "Refuge de l'Ortu di u Piobbu",
+      "arrivee": "Refuge de Carozzu",
+      "pk_depart_km": 11.349,
+      "pk_arrivee_km": 18.689,
+      "km": 7.34,
+      "dplus_m": 633,
+      "dmoins_m": 910,
+      "minutes": 230
+    },
+    {
+      "rang": 3,
+      "depart": "Refuge de Carozzu",
+      "arrivee": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+      "pk_depart_km": 18.689,
+      "pk_arrivee_km": 23.594,
+      "km": 4.905,
+      "dplus_m": 768,
+      "dmoins_m": 589,
+      "minutes": 205
+    },
+    {
+      "rang": 4,
+      "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+      "arrivee": "Refuge de Tighjettu",
+      "pk_depart_km": 23.594,
+      "pk_arrivee_km": 32.004,
+      "km": 8.41,
+      "dplus_m": 1162,
+      "dmoins_m": 927,
+      "minutes": 326
+    },
+    {
+      "rang": 5,
+      "depart": "Refuge de Tighjettu",
+      "arrivee": "Bergerie de Ballone",
+      "pk_depart_km": 32.004,
+      "pk_arrivee_km": 33.169,
+      "km": 1.165,
+      "dplus_m": 0,
+      "dmoins_m": 221,
+      "minutes": 24
+    },
+    {
+      "rang": 6,
+      "depart": "Bergerie de Ballone",
+      "arrivee": "Refuge de Ciottulu di i Mori",
+      "pk_depart_km": 33.169,
+      "pk_arrivee_km": 38.369,
+      "km": 5.2,
+      "dplus_m": 656,
+      "dmoins_m": 118,
+      "minutes": 180
+    },
+    {
+      "rang": 7,
+      "depart": "Refuge de Ciottulu di i Mori",
+      "arrivee": "Bergeries de Radule",
+      "pk_depart_km": 38.369,
+      "pk_arrivee_km": 43.49,
+      "km": 5.121,
+      "dplus_m": 21,
+      "dmoins_m": 609,
+      "minutes": 97
+    },
+    {
+      "rang": 8,
+      "depart": "Bergeries de Radule",
+      "arrivee": "Castel De Vergio",
+      "pk_depart_km": 43.49,
+      "pk_arrivee_km": 46.768,
+      "km": 3.278,
+      "dplus_m": 72,
+      "dmoins_m": 69,
+      "minutes": 62
+    },
+    {
+      "rang": 9,
+      "depart": "Castel De Vergio",
+      "arrivee": "Bergeries de Vaccaghia",
+      "pk_depart_km": 46.768,
+      "pk_arrivee_km": 61.339,
+      "km": 14.571,
+      "dplus_m": 633,
+      "dmoins_m": 450,
+      "minutes": 326
+    },
+    {
+      "rang": 10,
+      "depart": "Bergeries de Vaccaghia",
+      "arrivee": "Refuge de Manganu",
+      "pk_depart_km": 61.339,
+      "pk_arrivee_km": 63.389,
+      "km": 2.05,
+      "dplus_m": 48,
+      "dmoins_m": 50,
+      "minutes": 39
+    },
+    {
+      "rang": 11,
+      "depart": "Refuge de Manganu",
+      "arrivee": "Refuge de Petra Piana",
+      "pk_depart_km": 63.389,
+      "pk_arrivee_km": 71.761,
+      "km": 8.372,
+      "dplus_m": 813,
+      "dmoins_m": 547,
+      "minutes": 263
+    },
+    {
+      "rang": 12,
+      "depart": "Refuge de Petra Piana",
+      "arrivee": "Bergerie de Tolla",
+      "pk_depart_km": 71.761,
+      "pk_arrivee_km": 77.903,
+      "km": 6.142,
+      "dplus_m": 5,
+      "dmoins_m": 847,
+      "minutes": 116
+    },
+    {
+      "rang": 13,
+      "depart": "Bergerie de Tolla",
+      "arrivee": "Refuge de l'Onda",
+      "pk_depart_km": 77.903,
+      "pk_arrivee_km": 81.593,
+      "km": 3.69,
+      "dplus_m": 436,
+      "dmoins_m": 54,
+      "minutes": 122
+    },
+    {
+      "rang": 14,
+      "depart": "Refuge de l'Onda",
+      "arrivee": "Aire de bivouac La Halte Du Prince",
+      "pk_depart_km": 81.593,
+      "pk_arrivee_km": 89.162,
+      "km": 7.569,
+      "dplus_m": 664,
+      "dmoins_m": 951,
+      "minutes": 240
+    },
+    {
+      "rang": 15,
+      "depart": "Aire de bivouac La Halte Du Prince",
+      "arrivee": "Gare de Vizzavona",
+      "pk_depart_km": 89.162,
+      "pk_arrivee_km": 91.797,
+      "km": 2.635,
+      "dplus_m": 4,
+      "dmoins_m": 174,
+      "minutes": 45
+    }
+  ]
+}

@@ -103,6 +103,24 @@ class TrailPricing {
       TrailCatalog.byId(trailId)?.totalStages ??
       0;
 
+  /// Vrai si [trailId] a des CHAPITRES — donc s'il ne se vend plus en bloc.
+  ///
+  /// RÈGLE DE CHRISTOPHE DU 15/10 17:45, verbatim : « on achete le sentier
+  /// seulement si il n y a pas de chapitres. Sinon par exemple pour le GR20 on
+  /// peut acheter chapitre 1, chapitre 2, chapitre 1 and 2 ».
+  ///
+  /// ELLE SE LIT AU CATALOGUE, COMME LE PRIX ET COMME LA GRATUITÉ, et pour la
+  /// même raison : c'est une propriété de la DONNÉE du sentier
+  /// ([TrailConfig.chapterIds]). Aucun appelant ne la déclare, donc aucun ne
+  /// peut se tromper — c'est la leçon de l'avenant 614 appliquée telle quelle.
+  ///
+  /// ELLE INTERROGE LE RÉFÉRENTIEL ET NON LE CATALOGUE DE VENTE, et c'est
+  /// nécessaire : un sentier mère a précisément quitté le catalogue de vente,
+  /// et une garde qui ne le trouverait plus répondrait « il n'a pas de
+  /// chapitres » — l'exact contraire de la vérité, et un trou par lequel la
+  /// vente en bloc repasserait.
+  bool aDesChapitres(String trailId) => TrailCatalog.aDesChapitres(trailId);
+
   // `eurPriceForTrail` A ÉTÉ RETIRÉE (tâche 806), ET C'EST LE FOND DU LOT.
   //
   // Elle rendait le prix d'un SENTIER en euros, et elle était le « point

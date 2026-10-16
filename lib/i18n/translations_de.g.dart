@@ -1065,6 +1065,7 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get buyOutcomeFailed => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.';
 	@override String get buyOutcomeUnknownPrice => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.';
 	@override String get buyOutcomeDemo => 'Du bist im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.';
+	@override String get buyOutcomeSentierAChapitres => 'Diese Wanderung wird in Kapiteln verkauft: wähle das Kapitel, das du willst. Es wurde nichts abgebucht.';
 	@override String subscriptionPrice({required Object price}) => '${price} pro Monat';
 	@override String get subscriptionAllowanceForLife => 'Gutgeschriebene Etappen bleiben dauerhaft dir, auch wenn du das Abo beendest.';
 	@override String get cancelCta => 'Abo beenden';
@@ -5403,6 +5404,7 @@ extension on TranslationsDe {
 			'monetization.buyOutcomeFailed' => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.',
 			'monetization.buyOutcomeUnknownPrice' => 'Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.',
 			'monetization.buyOutcomeDemo' => 'Du bist im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.',
+			'monetization.buyOutcomeSentierAChapitres' => 'Diese Wanderung wird in Kapiteln verkauft: wähle das Kapitel, das du willst. Es wurde nichts abgebucht.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} pro Monat',
 			'monetization.subscriptionAllowanceForLife' => 'Gutgeschriebene Etappen bleiben dauerhaft dir, auch wenn du das Abo beendest.',
 			'monetization.cancelCta' => 'Abo beenden',
@@ -5832,9 +5834,9 @@ extension on TranslationsDe {
 			'moderation.decisions.restrict' => 'Inhalt eingeschränkt',
 			'moderation.decisions.remove' => 'Inhalt entfernt',
 			'moderation.noStatement' => 'Auf deine Inhalte wurde keine Einschränkung angewendet.',
-			'moderation.complaintAction' => 'Diese Entscheidung anfechten',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintAction' => 'Diese Entscheidung anfechten',
 			'moderation.complaintTitle' => 'Eine Entscheidung anfechten',
 			'moderation.complaintIntro' => 'Du kannst eine Moderationsentscheidung anfechten. Erkläre, warum die Entscheidung deiner Meinung nach ungerechtfertigt ist (Artikel 20).',
 			'moderation.complaintExposeLabel' => 'Deine Anfechtung',
@@ -6346,9 +6348,9 @@ extension on TranslationsDe {
 			'systemBackup.confirm' => 'Verstanden',
 			'systemBackup.a11yCheckbox' => 'Die Sicherung aller meiner Daten durch das System des Telefons ablehnen',
 			'lieu.ouvrirDansLesCartes' => 'In Karten öffnen',
-			'lieu.cartesIndisponibles' => 'Auf diesem Gerät konnte keine Karten-App geöffnet werden.',
 			_ => null,
 		} ?? switch (path) {
+			'lieu.cartesIndisponibles' => 'Auf diesem Gerät konnte keine Karten-App geöffnet werden.',
 			'lieu.adresse' => 'Adresse',
 			'lieu.telephoner' => 'Anrufen',
 			'lieu.siteOfficiel' => 'Offizielle Website',
