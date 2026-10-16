@@ -3,6 +3,7 @@
 /// qui se declare invente est ecarte du catalogue (tache 793).
 library;
 
+import 'gr20_trail_config.dart';
 import 'mare_a_mare_centre_trail_config.dart';
 import 'pyrenees_trail_config.dart';
 import 'test_trail_config.dart';
@@ -45,6 +46,25 @@ abstract final class TrailCatalog {
     // [defaultTrail] : l'app demarre dessus. Reste une DONNEE (TrailConfig), le
     // moteur ne hardcode aucune localite.
     mareAMareCentreTrailConfig,
+    // LE GR20, DEUXIEME SENTIER REEL (tache 839). Il entre comme TOUS les
+    // autres : une [TrailConfig], une entree de donnee, aucune modification du
+    // moteur. Son prix se deduit de ses seize etapes, comme pour chaque sentier
+    // (`priceStages` nul = le prix vaut `totalStages`) : AUCUN modele de vente
+    // nouveau n'est introduit ici.
+    //
+    // CE QUI N'EST PAS FAIT ICI, ET QUI ATTEND UN ARBITRAGE DE CHRISTOPHE : le
+    // CHAPITRE comme unite de vente (#101920), c'est-a-dire vendre le nord et
+    // le sud separement. Les deux moities existent dans la DONNEE du sentier
+    // (`assets/data/gr20.json`, parcours NORD et SUD, mesures a 91,80 km et
+    // 91,79 km), parce que les mesurer etait justement l'objet de la tache 839.
+    // Elles n'existent pas comme PRODUITS, et ce fichier ne les y fait pas
+    // entrer.
+    //
+    // EN DEUXIEME POSITION, ET C'EST VOULU : [defaultTrail] est le PREMIER du
+    // catalogue, donc l'application continue de demarrer sur le Mare a Mare
+    // Centre. Mettre le GR20 en tete aurait change le sentier de demarrage sans
+    // que personne l'ait decide.
+    gr20TrailConfig,
     // IL N'Y A PLUS DE SENTIER « MARE A MARE CENTRE DEMO » (tache 638, bugs 1 et
     // 8 — DEM-260930-1005 et DEM-260930-1014). Le lot 601 avait ajoute ici un
     // SECOND Mare a Mare, gratuit et ampute a deux etapes, sur la decision de

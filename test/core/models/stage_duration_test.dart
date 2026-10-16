@@ -53,9 +53,13 @@ void main() {
       expect(hasProvidedDuration(stageAvecDuree), isTrue);
     });
 
-    test('retombe sur l estimation Naismith quand la duree est nulle', () {
-      // 12/4 + 400/400 = 3 + 1 = 4 h = 240 min.
-      expect(stageDurationMinutes(stageSansDuree), 240);
+    test('retombe sur le modele unique quand la duree est nulle', () {
+      // LA DESCENTE EST PAYEE DEPUIS LA TACHE 839, et ce cas le prouve sur une
+      // etape qui la connait : 12 km a 4 km/h = 10 800 s, plus 400 m de montee
+      // a 9 s/m = 3 600 s, plus 300 m de descente a 1,67 s/m = 500 s, soit
+      // 14 900 s = 248 min. La MEME etape annonçait 240 min avant ce lot : ses
+      // 300 m de descente ne coutaient rien.
+      expect(stageDurationMinutes(stageSansDuree), 248);
       expect(hasProvidedDuration(stageSansDuree), isFalse);
     });
 
@@ -79,7 +83,7 @@ void main() {
     });
   });
 
-  group('estimatedStageDurationMinutes — regle de marche Naismith', () {
+  group('estimatedStageDurationMinutes — LE modele de marche du depot', () {
     test('15 min/km a plat + 15 min/100 m de montee', () {
       expect(
         estimatedStageDurationMinutes(distanceKm: 4.0, elevationGainM: 0),
@@ -92,6 +96,92 @@ void main() {
       expect(
         estimatedStageDurationMinutes(distanceKm: 10.0, elevationGainM: 200),
         180,
+      );
+    });
+
+    test('la descente coute 1,67 s par metre (tache 839)', () {
+      // 600 m de descente = 1 000 s = 16,67 min, arrondies a 17.
+      expect(
+        estimatedStageDurationMinutes(
+          distanceKm: 0.0,
+          elevationGainM: 0,
+          elevationLossM: 600,
+        ),
+        17,
+      );
+      // Une descente non fournie ne coute rien : c'est la seule reponse
+      // honnete quand la source ne la connait pas.
+      expect(
+        estimatedStageDurationMinutes(distanceKm: 0.0, elevationGainM: 0),
+        0,
+      );
+    });
+  });
+
+  group('walkingSeconds — IL N EXISTE QU UN MODELE (tache 839)', () {
+    test('les constantes sont DERIVEES, jamais ecrites deux fois', () {
+      // La vitesse en m/s se deduit des km/h : c'est la garde contre la
+      // divergence qui existait (4,0 km/h d'un cote, 1,1 m/s de l'autre).
+      expect(kWalkingFlatPaceMps, closeTo(1.1111, 0.0001));
+      expect(kWalkingAscentSecondsPerMetre, 9.0);
+      expect(kWalkingDescentSecondsPerMetre, closeTo(1.6667, 0.0001));
+    });
+
+    test('LE MODELE RETENU EST LE PRUDENT, et ce cas le chiffre', () {
+      // Le cas mesure par la tache 838 : 200 m de montee en 1 km.
+      // L'ancien modele d'etape rendait 45 min (descente gratuite, 400 m/h) ;
+      // l'ancien modele d'ETA rendait 35 min (600 m/h). Le modele unique rend
+      // le PRUDENT : 1 000 / 1,1111 + 200 x 9 = 900 + 1 800 = 2 700 s = 45 min.
+      final secondes = walkingSeconds(
+        distanceMetres: 1000,
+        ascentMetres: 200,
+        descentMetres: 0,
+      );
+      expect(secondes, closeTo(2700, 1));
+    });
+
+    test('une vitesse observee remplace la vitesse de reference', () {
+      final reference = walkingSeconds(
+        distanceMetres: 1000,
+        ascentMetres: 0,
+        descentMetres: 0,
+      );
+      final rapide = walkingSeconds(
+        distanceMetres: 1000,
+        ascentMetres: 0,
+        descentMetres: 0,
+        flatPaceMps: 2.0,
+      );
+      expect(rapide, lessThan(reference));
+      // Mais le RELIEF ne se negocie pas : la penalite de montee est la meme.
+      final avecMontee = walkingSeconds(
+        distanceMetres: 1000,
+        ascentMetres: 100,
+        descentMetres: 0,
+        flatPaceMps: 2.0,
+      );
+      expect(avecMontee - rapide, closeTo(900, 1));
+    });
+
+    test('une mesure absente ou aberrante compte pour zero', () {
+      expect(
+        walkingSeconds(
+          distanceMetres: double.nan,
+          ascentMetres: -100,
+          descentMetres: double.infinity,
+        ),
+        0,
+      );
+      // Vitesse observee nulle -> vitesse de reference, jamais une division
+      // par zero.
+      expect(
+        walkingSeconds(
+          distanceMetres: 1000,
+          ascentMetres: 0,
+          descentMetres: 0,
+          flatPaceMps: 0,
+        ),
+        closeTo(900, 1),
       );
     });
   });
@@ -107,8 +197,8 @@ void main() {
 
   group('totalStagesDurationMinutes — agregat par etape', () {
     test('somme en respectant la donnee ou l estimation de chaque etape', () {
-      // 350 (fournie) + 240 (estimee) = 590.
-      expect(totalStagesDurationMinutes([stageAvecDuree, stageSansDuree]), 590);
+      // 350 (fournie) + 248 (modele unique, descente payee) = 598.
+      expect(totalStagesDurationMinutes([stageAvecDuree, stageSansDuree]), 598);
     });
   });
 
@@ -125,9 +215,11 @@ void main() {
 
         // La colonne est bien NULL en base (aucune valeur forcee).
         expect(restored.estimatedDurationMinutes, isNull);
-        // ... et l'affichage retombe proprement sur l'estimation.
-        expect(stageDurationMinutes(restored), 240);
-        expect(formatDurationMinutes(stageDurationMinutes(restored)), '4h');
+        // ... et l'affichage retombe proprement sur le modele unique, DESCENTE
+        // COMPRISE (tache 839) : 248 min et non 240, parce que les 300 m de
+        // descente de cette etape coutent desormais 500 secondes.
+        expect(stageDurationMinutes(restored), 248);
+        expect(formatDurationMinutes(stageDurationMinutes(restored)), '4h08');
 
         await db.close();
       },

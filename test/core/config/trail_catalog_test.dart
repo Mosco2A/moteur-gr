@@ -86,12 +86,20 @@ void main() {
         'mare-a-mare',
         'mam',
       ];
-      final sentiersMareAMare = <String>{
-        TrailCatalog.defaultTrail.id,
-        ...TrailCatalog.freeIds,
-      };
+      //
+      // TACHE 839 : LE GR20 ENTRE AU CATALOGUE, ET IL EST CORSE. La regle ne
+      // pouvait plus etre « tout sauf le Mare a Mare reste neutre » : elle
+      // aurait interdit a un sentier REEL de Corse de dire sa region, donc
+      // interdit une donnee vraie.
+      //
+      // LA REGLE JUSTE EST PLUS FORTE QUE L'ANCIENNE : un sentier a le droit de
+      // nommer SA region, jamais celle d'un AUTRE. Un sentier qui declare la
+      // Corse peut donc ecrire « Corse » ; un sentier des Pyrenees ou un decor
+      // de test qui l'ecrirait trahirait un cablage — et c'est precisement ce
+      // qu'on cherche a attraper. La genericite du MOTEUR, elle, se prouve
+      // toujours par le test dedie plus bas : aucune localite dans le moteur.
       final autres = TrailCatalog.all.where(
-        (c) => !sentiersMareAMare.contains(c.id),
+        (c) => c.region.toLowerCase() != 'corse',
       );
       for (final c in autres) {
         final blob = [

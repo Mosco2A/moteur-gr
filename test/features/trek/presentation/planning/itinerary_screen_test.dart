@@ -125,17 +125,20 @@ void main() {
       expect(find.text(t.stage.difficulty.moderate), findsOneWidget);
 
       // DUREE par etape (parite GR20, residuel leve). Aucune duree fournie sur
-      // ces etapes de test -> repli sur l estimation Naismith :
-      //   A : 14.5/4 + 850/400 = 5h45 ; B : 12/4 + 600/400 = 4h30.
-      expect(find.text('5h45'), findsOneWidget);
-      expect(find.text('4h30'), findsOneWidget);
+      // ces etapes de test -> repli sur LE modele unique du depot, DESCENTE
+      // COMPRISE depuis la tache 839 :
+      //   A : 14,5 km + 850 m de montee + 620 m de descente = 6h02
+      //       (c etait 5h45 quand la descente ne coutait rien) ;
+      //   B : 12 km + 600 m + 500 m = 4h44 (c etait 4h30).
+      expect(find.text('6h02'), findsOneWidget);
+      expect(find.text('4h44'), findsOneWidget);
     });
 
     testWidgets('affiche la duree RICHE du sentier quand elle est fournie', (
       tester,
     ) async {
       // Etape avec duree fournie (donnee du sentier) DIFFERENTE de l estimation
-      // (l estimation donnerait 5h45) : c est la DONNEE (6h30) qui s affiche.
+      // (l estimation donnerait 6h02) : c est la DONNEE (6h30) qui s affiche.
       const stageRiche = StageModel(
         trailId: 'rich-trail',
         stageNumber: 1,

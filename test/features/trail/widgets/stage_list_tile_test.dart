@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/models/stage_duration.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/features/trail/widgets/stage_list_tile.dart';
 
@@ -84,8 +85,12 @@ void main() {
         ),
       );
 
-      // 12.5/4 + 800/400 = 3.125 + 2 = 5.125 → 5h08
-      expect(find.text('5h08'), findsOneWidget);
+      // TACHE 839 — LA DESCENTE EST PAYEE, ET LA DUREE VIENT DE LA SOURCE
+      // UNIQUE. 12,5 km a 4 km/h = 11 250 s, + 800 m x 9 s/m = 7 200 s,
+      // + 450 m x 1,67 s/m = 750 s, soit 19 200 s = 320 min = 5h20.
+      // Cette etape affichait 5h08 : ses 450 m de descente ne coutaient
+      // rien, et cette ligne de liste portait sa PROPRE arithmetique.
+      expect(find.text('5h20'), findsOneWidget);
     });
 
     testWidgets('appelle onTap quand on tape', (tester) async {
@@ -104,7 +109,7 @@ void main() {
   });
 
   group('StageListTile calculs', () {
-    test('estimatedHours calcule distance/4 + D+/400', () {
+    test('la duree vient de la SOURCE UNIQUE, descente comprise', () {
       const stage = StageModel(
         trailId: 't',
         stageNumber: 1,
@@ -118,20 +123,38 @@ void main() {
         endLng: 0,
       );
 
-      // 8/4 + 400/400 = 2 + 1 = 3
-      expect(StageListTile.estimatedHours(stage), 3.0);
+      // TACHE 839 : 8 km a 4 km/h = 7 200 s, + 400 m x 9 s/m = 3 600 s,
+      // + 200 m x 1,67 s/m = 333 s, soit 11 133 s = 186 min = 3h06.
+      // Ce fichier verifiait 3,0 h : la descente etait gratuite ici.
+      expect(StageListTile.durationMinutes(stage), 186);
+      expect(StageListTile.durationMinutes(stage), stageDurationMinutes(stage));
     });
 
-    test('formatDuration retourne "3h" pour 3.0', () {
-      expect(StageListTile.formatDuration(3.0), '3h');
+    test('UNE DUREE FOURNIE PAR LE SENTIER FAIT AUTORITE', () {
+      // C'EST LE SECOND DEFAUT CORRIGE PAR LA TACHE 839, et il se voyait a
+      // l'ecran : cette ligne de liste IGNORAIT la duree de la donnee du
+      // sentier, que la fiche de la MEME etape affichait pourtant. Deux
+      // durees pour une etape, selon l'ecran ou on la regardait.
+      const stage = StageModel(
+        trailId: 't',
+        stageNumber: 1,
+        name: 'Test',
+        distanceKm: 8.0,
+        elevationGainM: 400,
+        elevationLossM: 200,
+        startLat: 0,
+        startLng: 0,
+        endLat: 0,
+        endLng: 0,
+        estimatedDurationMinutes: 300,
+      );
+      expect(StageListTile.durationMinutes(stage), 300);
     });
 
-    test('formatDuration retourne "2h30" pour 2.5', () {
-      expect(StageListTile.formatDuration(2.5), '2h30');
-    });
-
-    test('formatDuration retourne "1h05" pour 1.083', () {
-      expect(StageListTile.formatDuration(1.083), '1h05');
+    test('formatDuration delegue au formateur maison', () {
+      expect(StageListTile.formatDuration(180), '3h');
+      expect(StageListTile.formatDuration(150), '2h30');
+      expect(StageListTile.formatDuration(65), '1h05');
     });
   });
 }

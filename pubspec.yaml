@@ -249,6 +249,15 @@ flutter:
     # Sentier de demonstration GRATUIT (tache 601) : ses donnees sont
     # celles du Mare a Mare limitees aux deux premieres etapes, reversees
     # sous SON identifiant. Un dossier a lui, comme tout sentier du catalogue.
+    #
+    # LE GR20 (tache 839). Un dossier a lui, comme tout sentier du catalogue :
+    # sa trace relevee et altimetrisee (9 128 points, 9 128 altitudes, zero
+    # manquante), ses seize etapes MESUREES dessus, ses reperes, et ses trente
+    # et une nuits ouvertes au decoupage. Les fichiers de releve brut
+    # (`releve_osm.json`, `reperes_osm.json`, `mesure_etapes.json`,
+    # `couchages_hors_etape.json`) sont embarques eux aussi : ils sont la preuve
+    # de l'origine de chaque chiffre, dans le binaire, a cote des chiffres.
+    - assets/data/gr20/
     - assets/i18n/
     - assets/tips/
     # IDENTITE VISUELLE (tache 632) — les TROIS familles livrees par Christophe

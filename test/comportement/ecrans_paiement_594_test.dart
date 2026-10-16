@@ -204,7 +204,19 @@ void main() {
             builder: (context, ref, _) => Scaffold(
               body: Center(
                 child: ElevatedButton(
-                  onPressed: () => buyTrail(context, ref, trailId: 'gr20'),
+                  // TACHE 839 — CET IDENTIFIANT ETAIT 'gr20', ET IL ETAIT
+                  // INCONNU DU CATALOGUE : c'est ce qui faisait echouer
+                  // l'achat et declencher le message. Le GR20 est entre au
+                  // catalogue, donc 'gr20' designe un sentier REEL de seize
+                  // etapes, et la vitrine montre alors les deux portes du
+                  // manque d'etapes (tache 806) au lieu d'un echec. Ce cas
+                  // teste l'ECHEC : il lui faut donc un sentier qui n'existe
+                  // pas, et il le DIT desormais au lieu de le supposer.
+                  onPressed: () => buyTrail(
+                    context,
+                    ref,
+                    trailId: 'sentier-inconnu-du-catalogue',
+                  ),
                   child: const Text('ouvrir'),
                 ),
               ),

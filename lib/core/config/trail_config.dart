@@ -45,6 +45,7 @@ class TrailConfig {
     this.seedAssetsBase,
     this.accommodationsAssetPath,
     this.tipAssetPaths = const [],
+    this.possibleNightsAssetPath,
     this.privacyPolicyUrl,
   });
 
@@ -201,6 +202,19 @@ class TrailConfig {
 
   /// Fichiers JSON de fiches conseils a charger au seed.
   final List<String> tipAssetPaths;
+
+  /// Fichier JSON des NUITS POSSIBLES du sentier (tache 839).
+  ///
+  /// Les endroits ou une journee peut se terminer — fins d'etape ET couchages
+  /// releves qui n'en sont pas — avec, pour chacun, son identifiant
+  /// OpenStreetMap, son temps de marche aller ET retour depuis la trace, et ses
+  /// lits quand ils sont connus ; plus les segments MESURES entre nuits
+  /// consecutives (cf. [DecoupageDeNuits]).
+  ///
+  /// Null = le sentier n'offre aucune nuit au decoupage, et le curseur de duree
+  /// se comporte exactement comme avant. Aucun sentier n'est penalise de ne pas
+  /// avoir ce releve : c'est un enrichissement, pas un prerequis.
+  final String? possibleNightsAssetPath;
 
   /// URL de la politique de confidentialite du produit/sentier.
   ///
