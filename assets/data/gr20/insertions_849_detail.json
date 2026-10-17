@@ -1,0 +1,151 @@
+{
+  "quoi": "Ce que devient la journee la plus dure du premier segment du GR20 si l on dort a chacune des trouvailles de la tache 849.",
+  "tache": 849,
+  "segment_entier": {
+    "km": 11.349,
+    "dplus_m": 1455,
+    "dmoins_m": 194
+  },
+  "candidats": [
+    {
+      "nom": "Bergerie De Frassigne",
+      "osm": "node/13121207757",
+      "classe": "nomme",
+      "genre_en_clair": "bergerie",
+      "lat": 42.4514067,
+      "lon": 8.8310641,
+      "lits": null,
+      "pk_km": 3.981,
+      "minutes_aller": 148,
+      "minutes_retour": 191,
+      "trace_avant": {
+        "km": 3.981,
+        "dplus_m": 451,
+        "dmoins_m": 32
+      },
+      "trace_apres": {
+        "km": 7.368,
+        "dplus_m": 1000,
+        "dmoins_m": 159
+      },
+      "ecart_de_coupe_m": -4,
+      "journee_1": {
+        "dplus_m": 574,
+        "dmoins_m": 514,
+        "minutes": 276
+      },
+      "journee_2": {
+        "dplus_m": 1482,
+        "dmoins_m": 282,
+        "minutes": 456
+      },
+      "pire_des_deux_dplus_m": 1482,
+      "gain_sur_le_plancher_m": -27
+    },
+    {
+      "nom": "Auberge de la Forêt",
+      "osm": "node/6431758926",
+      "classe": "declare",
+      "genre_en_clair": "hotel",
+      "lat": 42.4422048,
+      "lon": 8.8541758,
+      "lits": null,
+      "pk_km": 8.748,
+      "minutes_aller": 126,
+      "minutes_retour": 240,
+      "trace_avant": {
+        "km": 8.748,
+        "dplus_m": 1277,
+        "dmoins_m": 90
+      },
+      "trace_apres": {
+        "km": 2.601,
+        "dplus_m": 178,
+        "dmoins_m": 104
+      },
+      "ecart_de_coupe_m": 0,
+      "journee_1": {
+        "dplus_m": 1315,
+        "dmoins_m": 1063,
+        "minutes": 451
+      },
+      "journee_2": {
+        "dplus_m": 1151,
+        "dmoins_m": 142,
+        "minutes": 309
+      },
+      "pire_des_deux_dplus_m": 1315,
+      "gain_sur_le_plancher_m": 140
+    },
+    {
+      "nom": "(sans nom dans OpenStreetMap)",
+      "osm": "node/13069104652",
+      "classe": "declare",
+      "genre_en_clair": "abri",
+      "lat": 42.4398415,
+      "lon": 8.852234,
+      "lits": null,
+      "pk_km": 8.748,
+      "minutes_aller": 148,
+      "minutes_retour": 251,
+      "trace_avant": {
+        "km": 8.748,
+        "dplus_m": 1277,
+        "dmoins_m": 90
+      },
+      "trace_apres": {
+        "km": 2.601,
+        "dplus_m": 178,
+        "dmoins_m": 104
+      },
+      "ecart_de_coupe_m": 0,
+      "journee_1": {
+        "dplus_m": 1409,
+        "dmoins_m": 1063,
+        "minutes": 473
+      },
+      "journee_2": {
+        "dplus_m": 1151,
+        "dmoins_m": 236,
+        "minutes": 320
+      },
+      "pire_des_deux_dplus_m": 1409,
+      "gain_sur_le_plancher_m": 46
+    },
+    {
+      "nom": "Auberge U Pasturellu",
+      "osm": "node/14041221061",
+      "classe": "declare",
+      "genre_en_clair": "chambre d hotes",
+      "lat": 42.5296112,
+      "lon": 9.0010549,
+      "lits": null,
+      "pk_km": 6.898,
+      "minutes_aller": 538,
+      "minutes_retour": 591,
+      "trace_avant": {
+        "km": 6.898,
+        "dplus_m": 989,
+        "dmoins_m": 32
+      },
+      "trace_apres": {
+        "km": 4.451,
+        "dplus_m": 446,
+        "dmoins_m": 143
+      },
+      "ecart_de_coupe_m": -20,
+      "journee_1": {
+        "dplus_m": 2391,
+        "dmoins_m": 1866,
+        "minutes": 791
+      },
+      "journee_2": {
+        "dplus_m": 2280,
+        "dmoins_m": 1545,
+        "minutes": 729
+      },
+      "pire_des_deux_dplus_m": 2391,
+      "gain_sur_le_plancher_m": -936
+    }
+  ]
+}

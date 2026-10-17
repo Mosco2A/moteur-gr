@@ -1,0 +1,74 @@
+{
+  "quoi": "La variante par Bonifatu mesuree comme un ITINERAIRE (deux troncons du reseau pieton), et non comme un detour depuis la trace du GR20. Corrige la lecture de la partie UN, qui cherchait le plus court chemin DEPUIS LA TRACE et descendait donc 973 m depuis le PK 8,748 km.",
+  "tache": 849,
+  "source": "OpenStreetMap, licence ODbL",
+  "modele_terrain": "EU-DEM (resolution 25 m)",
+  "limites": [
+    "le plus court chemin est minimise en METRES, pas en minutes",
+    "access=private et foot=no ne sont pas filtres",
+    "le reseau est celui du couloir de 8 km de la partie UN"
+  ],
+  "points": {
+    "calenzana": {
+      "lat": 42.5081535,
+      "lon": 8.8548477,
+      "raccord_m": 0.0
+    },
+    "auberge_de_la_foret": {
+      "lat": 42.442205,
+      "lon": 8.854176,
+      "raccord_m": 11.9,
+      "osm": "node/6431758926"
+    },
+    "ortu_di_u_piobbu": {
+      "lat": 42.4652,
+      "lon": 8.90688,
+      "raccord_m": 11.6
+    }
+  },
+  "troncons": [
+    {
+      "nom": "Calenzana vers l Auberge de la Foret (Bonifatu)",
+      "chemin": true,
+      "metres": 11738.4,
+      "noeuds": 523,
+      "dplus_m": 632,
+      "dmoins_m": 384,
+      "minutes": 282,
+      "altitudes_manquantes": 0,
+      "altitude_depart_m": 279,
+      "altitude_arrivee_m": 527
+    },
+    {
+      "nom": "Auberge de la Foret vers le refuge de l Ortu di u Piobbu",
+      "chemin": true,
+      "metres": 7952.1,
+      "noeuds": 366,
+      "dplus_m": 1056,
+      "dmoins_m": 38,
+      "minutes": 279,
+      "altitudes_manquantes": 0,
+      "altitude_depart_m": 527,
+      "altitude_arrivee_m": 1546
+    },
+    {
+      "nom": "Calenzana vers l Ortu di u Piobbu par le reseau (controle)",
+      "chemin": true,
+      "metres": 10848.8,
+      "noeuds": 558,
+      "dplus_m": 1458,
+      "dmoins_m": 191,
+      "minutes": 387,
+      "altitudes_manquantes": 0,
+      "altitude_depart_m": 279,
+      "altitude_arrivee_m": 1546
+    }
+  ],
+  "pire_journee_de_la_variante_dplus_m": 1056,
+  "verdict_de_la_variante": "tres difficile",
+  "segment_du_gr20_remplace": {
+    "km": 11.349,
+    "dplus_m": 1455,
+    "dmoins_m": 194
+  }
+}
