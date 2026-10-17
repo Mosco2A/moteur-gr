@@ -8,18 +8,22 @@ import '../../../domain/repartition_equilibree.dart';
 /// UNE JOURNEE DE MARCHE DONT L'ARRIVEE EST UN LIEU QUI EXISTE.
 ///
 /// Elle reunit un ou plusieurs [SegmentEntreNuits] consecutifs ; ses chiffres
-/// sont la SOMME de segments mesures sur la trace, et son arrivee est une
-/// [NuitPossible] relevee dans OpenStreetMap.
+/// sont la SOMME de segments mesures sur la trace, et son arrivee est un lieu
+/// releve dans OpenStreetMap — une [NuitPossible] quand on y dort, la tete de
+/// sentier quand la journee y revient.
 class JourneeSurLesNuits {
   /// Construit une journee a partir de ses segments (deja consecutifs).
   const JourneeSurLesNuits({
     required this.numero,
     required this.depart,
+    required this.arriveeNom,
     required this.arrivee,
     required this.km,
     required this.deniveleM,
     required this.descenteM,
     required this.minutes,
+    required this.deniveleDuDetourM,
+    required this.descenteDuDetourM,
     required this.segments,
   });
 
@@ -29,8 +33,27 @@ class JourneeSurLesNuits {
   /// Nom du lieu de depart de la journee.
   final String depart;
 
-  /// La nuit ou la journee se termine.
-  final NuitPossible arrivee;
+  /// LE NOM DU LIEU OU LA JOURNEE SE TERMINE — toujours connu (tache 853).
+  ///
+  /// Il vient du segment, qui le porte toujours. [arrivee] peut etre nulle (le
+  /// lieu n'est pas une nuit RELEVEE), le nom jamais : une journee s'arrete
+  /// quelque part, et ce quelque part a un nom.
+  final String arriveeNom;
+
+  /// LA NUIT RELEVEE OU LA JOURNEE SE TERMINE, ou `null` quand le lieu
+  /// d'arrivee n'en est pas une.
+  ///
+  /// LE CAS REEL, ET IL ETAIT UN DEFAUT LIVRE : LA TETE DE SENTIER. En sens
+  /// inverse, la derniere journee du GR20 arrive a Calenzana — qui n'est pas
+  /// une nuit relevee, parce qu'on y dort AVANT de partir et pas pendant. Le
+  /// repartiteur laissait alors tomber cette journee EN SILENCE et rendait
+  /// QUINZE journees pour SEIZE demandees, en contredisant la garantie ecrite
+  /// deux lignes au-dessus de lui.
+  ///
+  /// Nulle veut dire « pas de nuit relevee ici, donc aucun detour a compter »,
+  /// et c'est exact : la tete de sentier est SUR la trace, au point
+  /// kilometrique zero.
+  final NuitPossible? arrivee;
 
   /// Longueur de la journee, en km (somme des segments).
   final double km;
@@ -48,6 +71,17 @@ class JourneeSurLesNuits {
   /// lendemain matin. Les taire ferait passer une journee pour plus courte
   /// qu'elle n'est, ce qui est exactement ce qu'on ne veut pas annoncer.
   final int minutes;
+
+  /// Montee du DETOUR seul, en metres : y descendre le soir, en remonter le
+  /// matin. Zero quand les deux nuits concernees sont sur la trace.
+  ///
+  /// Elle est deja COMPRISE dans [deniveleM] ; elle est exposee a part pour
+  /// qu'on puisse dire au marcheur d'ou viennent ses metres, et pour qu'un test
+  /// puisse la mesurer sans refaire la somme.
+  final int deniveleDuDetourM;
+
+  /// Descente du DETOUR seul, en metres. Deja comprise dans [descenteM].
+  final int descenteDuDetourM;
 
   /// Les segments mesures que cette journee reunit.
   final List<SegmentEntreNuits> segments;
@@ -92,6 +126,12 @@ abstract final class DecoupageSurLesNuits {
   /// point d'arret, et ce calcul n'en invente aucun.
   ///
   /// Les segments gardent leur ordre : on ne marche pas l'etape 6 avant la 5.
+  ///
+  /// LA GARANTIE DE COMPTE TIENT DESORMAIS POUR DE BON (tache 853) : la liste
+  /// rendue porte EXACTEMENT `min(journees, nombre de segments)` journees. Elle
+  /// etait annoncee et elle ne tenait pas — une journee dont l'arrivee n'etait
+  /// pas une nuit relevee disparaissait en silence, et c'est le cas de la
+  /// derniere journee du sens inverse, qui revient a la tete de sentier.
   static List<JourneeSurLesNuits> repartir(
     DecoupageDeNuits decoupage,
     int journees,
@@ -110,45 +150,63 @@ abstract final class DecoupageSurLesNuits {
       final debut = coupes[j];
       final fin = j + 1 < coupes.length ? coupes[j + 1] : segments.length;
       final tranche = segments.sublist(debut, fin);
+
+      // L'ARRIVEE N'EST PAS TOUJOURS UNE NUIT RELEVEE, ET CE N'EST PAS UNE
+      // DONNEE INCOHERENTE (tache 853). Ce code laissait tomber la journee
+      // quand il ne retrouvait pas son arrivee dans la table des nuits, au nom
+      // de « ne pas inventer un lieu ». Or le lieu n'est jamais invente : il
+      // est ECRIT dans le segment. Le seul cas reel est la TETE DE SENTIER, ou
+      // la derniere journee du sens inverse revient — Calenzana, qui n'est pas
+      // une nuit relevee parce qu'on y dort avant de partir. Le repartiteur
+      // rendait donc QUINZE journees pour SEIZE demandees, sans un mot, en
+      // contredisant la garantie que `_coupesEquilibrees` annonce juste en
+      // dessous : « AUTANT de journees que demande ».
+      //
+      // ON GARDE LA JOURNEE ET ON NE DEVINE RIEN : le nom vient du segment, et
+      // l'absence de nuit relevee vaut DETOUR NUL — ce qui est exact pour une
+      // tete de sentier, qui est sur la trace au kilometre zero.
       final arrivee = nuitsParNom[tranche.last.arrivee];
-      // Une arrivee introuvable signifierait une donnee incoherente (un segment
-      // qui finit ailleurs que sur une nuit declaree) : on ne devine pas, on
-      // laisse tomber la journee plutot que d'inventer un lieu.
-      if (arrivee == null) continue;
+      final veille = debut == 0
+          ? null
+          : nuitsParNom[segments[debut - 1].arrivee];
+
+      // LE DETOUR COMPTE AUSSI EN METRES, PLUS SEULEMENT EN MINUTES
+      // (tache 853). Les minutes du detour entraient dans la journee depuis la
+      // tache 838 ; ses metres, mesures par le meme releve, n'entraient dans
+      // rien. Une journee qui finit au refuge Laparo descend 126 m le soir et
+      // les remonte le lendemain matin avant d'avoir avance d'un metre sur la
+      // trace. On ajoute donc, exactement comme pour le temps : le detour
+      // ALLER de l'arrivee du jour, et le detour RETOUR de la nuit de la
+      // veille.
+      final deniveleDuDetour =
+          (arrivee?.deniveleAllerM ?? 0) + (veille?.deniveleRetourM ?? 0);
+      final descenteDuDetour =
+          (arrivee?.descenteAllerM ?? 0) + (veille?.descenteRetourM ?? 0);
+
       jours.add(
         JourneeSurLesNuits(
           numero: jours.length + 1,
           depart: tranche.first.depart,
+          arriveeNom: tranche.last.arrivee,
           arrivee: arrivee,
           km: tranche.fold<double>(0, (s, x) => s + x.km),
-          deniveleM: tranche.fold<int>(0, (s, x) => s + x.deniveleM),
-          descenteM: tranche.fold<int>(0, (s, x) => s + x.descenteM),
+          deniveleM:
+              tranche.fold<int>(0, (s, x) => s + x.deniveleM) +
+              deniveleDuDetour,
+          descenteM:
+              tranche.fold<int>(0, (s, x) => s + x.descenteM) +
+              descenteDuDetour,
           minutes:
               tranche.fold<int>(0, (s, x) => s + x.minutes) +
-              arrivee.minutesAller +
-              _retourDeLaVeille(segments, nuitsParNom, debut),
+              (arrivee?.minutesAller ?? 0) +
+              (veille?.minutesRetour ?? 0),
+          deniveleDuDetourM: deniveleDuDetour,
+          descenteDuDetourM: descenteDuDetour,
           segments: tranche,
         ),
       );
     }
     return jours;
-  }
-
-  /// Minutes pour REVENIR sur la trace depuis la nuit de la veille.
-  ///
-  /// Zero le premier jour (on part de la tete de sentier). Les autres jours
-  /// commencent par remonter la ou l'on a quitte le sentier la veille — et
-  /// c'est precisement le chiffre que la tache 838 a mesure separement, parce
-  /// qu'il n'est pas symetrique (refuge Laparo : 10 minutes a l'aller,
-  /// 28 minutes au retour).
-  static int _retourDeLaVeille(
-    List<SegmentEntreNuits> segments,
-    Map<String, NuitPossible> nuits,
-    int debut,
-  ) {
-    if (debut == 0) return 0;
-    final veille = nuits[segments[debut - 1].arrivee];
-    return veille?.minutesRetour ?? 0;
   }
 
   /// Les index de DEBUT de chaque journee, equilibres sur le temps de marche.

@@ -16,6 +16,7 @@
 library;
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/core/models/fiche_de_sentier.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/domain/echelle_de_difficulte.dart';
 import 'package:moteur_gr/domain/nuit_possible.dart';
@@ -562,6 +564,117 @@ void main() {
         0,
         reason: 'une couverture absente ne reserve aucune hauteur',
       );
+    });
+  });
+
+  group('853 — LA FICHE D UN CHAPITRE, QUI EST LE PRODUIT EN VENTE', () {
+    // CE GROUPE SERT LES VRAIS FICHIERS LIVRES, pas un manifeste de decor, et
+    // c'est voulu : le trou que la 853 ferme n'etait pas un trou de widget —
+    // les quatre widgets de la fiche marchaient deja — mais un trou de
+    // CABLAGE. Les deux chapitres du GR20 sont les seuls produits en vente
+    // depuis la 841, et aucun des deux ne declarait de fiche : le lecteur
+    // rendait `null`, et leur page n'avait ni texte ni photo. Un decor
+    // prouverait que le widget sait afficher ; seul le fichier reel prouve que
+    // le PRODUIT affiche.
+    Future<void> poserLeChapitre(WidgetTester tester, String id) async {
+      final config = TrailCatalog.byId(id)!;
+      final chemin = config.ficheAssetPath!;
+      await tester.pumpWidget(
+        fiche(
+          trailId: id,
+          overrides: [
+            trailConfigProvider.overrideWithValue(config),
+            stagesProvider(
+              id,
+            ).overrideWith((ref) => Future.value(const <StageModel>[])),
+            paquetDAssetsProvider.overrideWithValue(
+              PaquetDeTest({chemin: File(chemin).readAsStringSync()}),
+            ),
+            decoupageDuSentierProvider(
+              id,
+            ).overrideWithValue(DecoupageDeNuits.aucun),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('LE NORD MONTRE SES PHOTOS ET SON TEXTE', (tester) async {
+      await poserLeChapitre(tester, 'gr20-nord');
+
+      expect(find.byType(BandeDePhotos), findsOneWidget);
+      expect(find.byKey(const ValueKey('bande-de-photos')), findsOneWidget);
+      expect(find.byType(DescriptionDuSentier), findsOneWidget);
+      expect(find.text('Ou c\'est'), findsOneWidget);
+      expect(
+        find.text('A quoi s\'attendre', skipOffstage: false),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('LE SUD AUSSI, ET AVEC SA PROPRE COUVERTURE', (tester) async {
+      await poserLeChapitre(tester, 'gr20-sud');
+
+      expect(find.byKey(const ValueKey('bande-de-photos')), findsOneWidget);
+      expect(find.byType(DescriptionDuSentier), findsOneWidget);
+      // LA MENTION DE LA COUVERTURE DU SUD EST A L'ECRAN — celle du col de
+      // Bavella, pas celle du lac de Capitello qui est dans le NORD. C'est le
+      // defaut le plus visible que ce lot corrige : faute de fiche propre, le
+      // sud se vendait avec une photo de l'autre moitie.
+      final sud = lireFicheDeSentier(
+        File(TrailCatalog.byId('gr20-sud')!.ficheAssetPath!).readAsStringSync(),
+        'gr20-sud',
+      )!;
+      expect(sud.couverture!.fichier, contains('col-de-bavella'));
+      expect(
+        find.text(sud.couverture!.mention, skipOffstage: false),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('LES CREDITS DU CHAPITRE SONT A L ECRAN, EN DEFILANT LA '
+        'BANDE', (tester) async {
+      // LA CONDITION DE LICENCE, VERIFIEE A L'ECRAN ET PAS DANS UN JSON. Une
+      // CC-BY respectee dans un fichier et nulle part ailleurs n'est pas
+      // respectee, et l'application est PAYANTE.
+      //
+      // ON DEFILE LA BANDE, PARCE QU'ELLE CONSTRUIT A LA DEMANDE. La bande est
+      // une liste horizontale : ses enfants hors champ ne sont pas construits,
+      // donc `skipOffstage: false` ne les trouve pas — ils n'existent pas
+      // encore. On fait donc ce que le randonneur fait, on fait glisser la
+      // bande, et on releve les credits au passage. C'est plus fidele qu'un
+      // test de donnees, qui prouverait seulement que la mention est ECRITE
+      // (c'est le role de `fiches_des_chapitres_853_test`) : ici on prouve
+      // qu'elle se VOIT.
+      await poserLeChapitre(tester, 'gr20-nord');
+      final nord = lireFicheDeSentier(
+        File(
+          TrailCatalog.byId('gr20-nord')!.ficheAssetPath!,
+        ).readAsStringSync(),
+        'gr20-nord',
+      )!;
+      expect(nord.photos.length, 6);
+
+      final vus = <String>{};
+      final bande = find.byKey(const ValueKey('bande-de-photos'));
+      for (var glissement = 0; glissement < 12; glissement++) {
+        for (final photo in nord.photos) {
+          if (find.text(photo.mention).evaluate().isNotEmpty) {
+            vus.add(photo.mention);
+          }
+        }
+        if (vus.length == nord.photos.length) break;
+        await tester.drag(bande, const Offset(-300, 0));
+        await tester.pumpAndSettle();
+      }
+
+      for (final photo in nord.photos) {
+        expect(
+          vus,
+          contains(photo.mention),
+          reason: '${photo.fichier} : son credit ne se voit jamais',
+        );
+      }
     });
   });
 }

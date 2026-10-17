@@ -106,5 +106,30 @@ const gr20NordTrailConfig = TrailConfig(
   seedAssetsBase: 'assets/data/gr20-nord',
   accommodationsAssetPath: 'assets/data/gr20-nord.json',
   possibleNightsAssetPath: 'assets/data/gr20-nord/nuits_possibles.json',
+  // LA FICHE DU CHAPITRE (tache 853) — ET SON ABSENCE ETAIT UN TROU DE PRODUIT.
+  //
+  // Le lot 841 a fait du chapitre l'unite de vente et a retire le GR20 entier
+  // du catalogue ; la fiche, elle, est restee sur le sentier mere. Resultat
+  // mesure a la jonction des deux lots : les DEUX produits reellement en vente
+  // n'avaient ni texte, ni bande de photos, ni meme de photo de couverture sur
+  // leur carte du catalogue — `ficheDeSentierProvider` rendait `null` faute de
+  // ce champ. La garde `photos_du_produit_848_test` le nommait noir sur blanc
+  // comme « un TROU DE PRODUIT ouvert par la jonction des deux lots ».
+  //
+  // LES SIX PHOTOS DE CE CHAPITRE SONT CELLES DU FONDS, pas une selection
+  // refaite ici : chaque image du fonds de la tache 845 porte son chapitre
+  // (`chapitre_du_fonds`) et son role (`role_dans_le_fonds`) dans
+  // `assets/data/gr20/photos/PROVENANCE.json`. Six au nord, six au sud, une
+  // couverture chacun — le lac de Capitello ici, le col de Bavella au sud.
+  // Les images restent dans le dossier du sentier mere AVEC LEUR PREUVE
+  // UNIQUE : les recopier par chapitre dedoublerait la preuve, donc les
+  // occasions de se contredire.
+  ficheAssetPath: 'assets/data/gr20-nord/fiche.json',
+  // 2 578 m — LE POINT CULMINANT DU GR20 ENTIER EST DANS CE CHAPITRE, mesure
+  // sur les 4 463 points de sa trace. Il tombe dans sa quatrieme etape, entre
+  // Ascu-Stagnu et Tighjettu. Le sud plafonne 557 m plus bas (2 021 m) : c'est
+  // l'une des deux mesures qui separent vraiment les deux moities, l'autre
+  // etant la montee totale (7 401 m contre 4 243 m pour la meme distance).
+  maxAltitudeM: 2578,
   privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );

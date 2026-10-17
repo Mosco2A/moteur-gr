@@ -1,0 +1,64 @@
+{
+  "quoi": "La fiche du chapitre GR20 Nord telle que le randonneur la lit AVANT d'acheter (tache 853). Le chapitre est l'unite de vente depuis la tache 841 : c'est CETTE fiche que le client voit, et elle n'existait pas. La description repond aux trois questions de la demande du 17/10 09:22 - ou c'est, ce qu'on y voit, a quoi s'attendre - et chaque chiffre qu'elle cite est mesure sur la trace du chapitre, jamais repris d'un topo. La difficulte n'est PAS ici : elle se calcule a l'ecran sur les chiffres mesures et l'allure choisie (lib/domain/difficulte_du_sentier.dart). Les photos sont ecrites par tool/photos_dans_stepways.py - ne pas les editer a la main.",
+  "schema": 1,
+  "trailId": "gr20-nord",
+  "attribution": "Trace et couchages : OpenStreetMap, relation 12484370 (GR 20 Principale), licence ODbL. Altitudes : modele de terrain EU-DEM 25 m via opentopodata.",
+  "description": {
+    "ou_c_est": "La moitie nord du GR20, de Calenzana au-dessus de Calvi jusqu'a la gare de Vizzavona : 91,80 km de chemin et 7 401 m de montee, decoupes en neuf etapes mesurees sur la trace. Vizzavona est le seul point du GR20 desservi par le train, et c'est l'arrivee de ce chapitre : on en repart donc sans voiture.",
+    "ce_qu_on_y_voit": "La haute montagne corse, celle des cirques et des breches. Le chemin monte a 2 578 m a son point le plus haut, dans la quatrieme etape entre Ascu-Stagnu et Tighjettu : c'est le point culminant du GR20 entier, et il est dans ce chapitre. Il redescend a 279 m a son point le plus bas. Le lac de Capitello et ses aiguilles, les pozzines du lac de Nino et ses chevaux en liberte, la crete entre Ascu Stagnu et Tighjettu : le nord est rocheux, et il est haut.",
+    "a_quoi_s_attendre": "Le nord est tres difficile, et aucune allure ne le rend plus facile : de cinq a quinze jours, le verdict ne bouge pas. La raison tient en une seule journee - de Calenzana au refuge de l'Ortu di u Piobbu, 11,3 km et 1 455 m de montee, autant d'effort que 26,5 km de plat - et cette journee ne peut pas etre coupee : il n'y a aucun hebergement sur la montee, et le bivouac est interdit hors des aires de refuge. Serrez l'allure a cinq jours et la journee la plus dure passe a 43,1 km-effort, soit 1,6 fois celle-la. C'EST LE PLUS DUR DES DEUX CHAPITRES, et l'ecart est mesure : pour la meme distance au metre pres, le nord monte 7 401 m quand le sud en monte 4 243. Comptez 44 h 34 de marche. Quinze endroits releves sont ouverts a un decoupage different du decoupage federal : chaque fin de journee est un refuge, une bergerie ou une aire de bivouac qui existe dans OpenStreetMap."
+  },
+  "photos": [
+    {
+      "fichier": "assets/data/gr20/photos/couverture-lac-de-capitello.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Lac_de_Capitello_-_Corse.jpg",
+      "auteur": "Benjamin GW",
+      "licence": "CC BY-SA 4.0",
+      "mention": "Benjamin GW, « Lac de Capitello - Corse », CC BY-SA 4.0, via Wikimedia Commons",
+      "lat": 42.21285,
+      "lon": 9.013511,
+      "couverture": true
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-4-depart-calenzana.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Gr-20-calvi-to-ortu-di-u-piobbu-06.jpg",
+      "auteur": "MartinThoma",
+      "licence": "CC0 1.0",
+      "mention": "MartinThoma, « Gr-20-calvi-to-ortu-di-u-piobbu-06 », CC0 1.0, via Wikimedia Commons",
+      "lat": 42.494928,
+      "lon": 8.850469
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-2-crete-asco-tighjettu.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Gr-20-asco-tighiettu-11.jpg",
+      "auteur": "MartinThoma",
+      "licence": "CC0 1.0",
+      "mention": "MartinThoma, « Gr-20-asco-tighiettu-11 », CC0 1.0, via Wikimedia Commons",
+      "lat": 42.376281,
+      "lon": 8.937444
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-5-ciottulu-di-i-mori.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Ciottulu-di-i-mori-05.jpg",
+      "auteur": "MartinThoma",
+      "licence": "CC0 1.0",
+      "mention": "MartinThoma, « Ciottulu-di-i-mori-05 », CC0 1.0, via Wikimedia Commons",
+      "lat": 42.336703,
+      "lon": 8.872367
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-3-pozzines-de-nino.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Gr-20-castel-de-vergio-to-manganu-12.jpg",
+      "auteur": "MartinThoma",
+      "licence": "CC0 1.0",
+      "mention": "MartinThoma, « Gr-20-castel-de-vergio-to-manganu-12 », CC0 1.0, via Wikimedia Commons"
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-1-lac-de-nino-chevaux.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Lac_de_Nino_with_horses.JPG",
+      "auteur": "Hg6996",
+      "licence": "CC0 1.0",
+      "mention": "Hg6996, « Lac de Nino with horses », CC0 1.0, via Wikimedia Commons"
+    }
+  ]
+}

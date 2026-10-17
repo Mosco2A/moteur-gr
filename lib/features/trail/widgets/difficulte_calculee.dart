@@ -110,6 +110,14 @@ class _DifficulteCalculeeState extends State<DifficulteCalculee> {
     return maximum > 0 ? maximum : widget.allureParDefaut;
   }
 
+  /// L'EFFORT DE LA PIRE JOURNEE, ALLURE PAR ALLURE — calcule une seule fois.
+  ///
+  /// Les etapes et les nuits ne changent pas pendant la vie de cet ecran : le
+  /// decoupage d'une allure donnee rend toujours le meme resultat. On le garde
+  /// donc, parce que la ligne des allures redemande les QUATRE a chaque image
+  /// alors que seule la selection a bouge.
+  final _effortParAllure = <int, double>{};
+
   /// Les allures offertes, triees, sans doublon, et sans celles qui n'ont pas
   /// de sens pour ce sentier.
   List<int> get _alluresUtiles {
@@ -155,6 +163,40 @@ class _DifficulteCalculeeState extends State<DifficulteCalculee> {
         .toList(growable: false);
   }
 
+  /// CE QUE CHAQUE ALLURE COUTE, EN KILOMETRES-EFFORT DE SA PIRE JOURNEE.
+  ///
+  /// POURQUOI UN CHIFFRE ET PLUS UN MOT. Christophe presentait une echelle de
+  /// mots le 17/10 11:05, verbatim : « 7 jours= experts, 9jours = tres
+  /// difficile, 12 jours Difficile, 16 jours = Difficile ». La mesure de la
+  /// tache 852 l'a tuee : la bande expert n'existe plus, et les QUATRE allures
+  /// sortent TRES DIFFICILE — ecrire quatre fois le meme mot a cote de quatre
+  /// nombres de jours differents ne dit RIEN au lecteur, et pire, lui laisse
+  /// croire que les quatre se valent.
+  ///
+  /// LE MOT NE BOUGE PAS, LE CHIFFRE SI, et c'est le chiffre qui porte
+  /// l'information de vente : 55,3 km-effort a sept jours contre 26,5 a seize,
+  /// soit DEUX FOIS la journee la plus dure. Voila ce que serrer l'allure
+  /// coute, et aucun mot de l'echelle a quatre bandes ne sait le dire.
+  ///
+  /// C'est la pire journee et non la moyenne, pour la meme raison que le
+  /// verdict ([DifficulteDuSentier.pireJournee]) : c'est elle qui decide si le
+  /// marcheur arrive au bout.
+  ///
+  /// `null` pour une allure dont aucune journee n'est mesurable — la ligne
+  /// affiche alors le nombre de jours seul, jamais un zero qui passerait pour
+  /// une journee facile.
+  double? _effortDeLaPireJournee(int jours) {
+    final deja = _effortParAllure[jours];
+    if (deja != null) return deja;
+    final difficulte = DifficulteDuSentier.calculer(
+      jours: jours,
+      journees: _journeesDuSentier(jours),
+    );
+    final pire = difficulte?.pireJournee;
+    if (pire == null) return null;
+    return _effortParAllure[jours] = pire.kmEffort;
+  }
+
   @override
   Widget build(BuildContext context) {
     final nuits = widget.nuits;
@@ -195,6 +237,7 @@ class _DifficulteCalculeeState extends State<DifficulteCalculee> {
             allures: _alluresUtiles,
             choisie: _jours,
             conseillee: widget.allureParDefaut,
+            effortDeLaPireJournee: _effortDeLaPireJournee,
             onChoisi: (jours) => setState(() => _jours = jours),
           ),
           const SizedBox(height: AppTheme.spacingSm),

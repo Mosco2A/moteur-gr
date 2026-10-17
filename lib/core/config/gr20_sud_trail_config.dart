@@ -46,7 +46,22 @@ const gr20SudTrailConfig = TrailConfig(
   secondaryColorValue: 0xFFEF6C00,
   gpxAssetPath: 'assets/data/gr20-sud/track.gpx',
   directions: ['NS', 'SN'],
-  availableDurations: [5, 7],
+  // HUIT JOURS EST AJOUTE, ET CE N'EST PAS UN REGLAGE DE CONFORT (tache 853).
+  //
+  // CE CHAPITRE EST LE SEUL ENDROIT DU GR20 OU L'ALLURE CHANGE LE VERDICT, et
+  // la frontiere tombe exactement entre sept et huit jours. A SEPT il est tres
+  // difficile, et c'est l'ENCHAINEMENT qui le monte, pas une journee qui
+  // casse : sa plus dure ne vaut que 23,4 km-effort, donc « difficile », mais
+  // journees dures se suivent sans un jour pour respirer. A HUIT il est
+  // difficile — la suite tombe a trois — et il le reste jusqu'a seize.
+  //
+  // LE SELECTEUR N'OFFRAIT QUE 5 ET 7, soit les deux seules allures tres
+  // difficiles. Le client ne pouvait donc ni voir ni choisir la seule allure
+  // qui change ce qu'on lui vend, alors que la fiche de ce chapitre le lui
+  // annonce noir sur blanc. Un texte qui promet un cran que le selecteur
+  // n'atteint pas est pire qu'un texte muet. Douze ferme la serie du cote
+  // etale, pour que l'ecart de km-effort entre les allures se lise d'un coup.
+  availableDurations: [5, 7, 8, 12],
   defaultDuration: 7,
   offlineFirst: true,
   hasPremium: false,
@@ -55,5 +70,16 @@ const gr20SudTrailConfig = TrailConfig(
   seedAssetsBase: 'assets/data/gr20-sud',
   accommodationsAssetPath: 'assets/data/gr20-sud.json',
   possibleNightsAssetPath: 'assets/data/gr20-sud/nuits_possibles.json',
+  // LA FICHE DU CHAPITRE (tache 853) — le raisonnement est dans
+  // [gr20NordTrailConfig], il n'est pas recopie. Ce qui est PROPRE au sud :
+  // SA COUVERTURE EST LA SIENNE, le col de Bavella et ses aiguilles. Sans fiche
+  // propre, la carte du catalogue du sud s'ouvrait sur la couverture du sentier
+  // mere — c'est-a-dire sur le lac de Capitello, qui est dans le NORD : on
+  // vendait le sud avec une photo de l'autre moitie.
+  ficheAssetPath: 'assets/data/gr20-sud/fiche.json',
+  // 2 021 m — mesure sur les 4 666 points de la trace de ce chapitre, contre
+  // 2 578 m au nord. Le sud plafonne 557 m plus bas, et c'est l'une des deux
+  // mesures qui separent vraiment les deux moities.
+  maxAltitudeM: 2021,
   privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );

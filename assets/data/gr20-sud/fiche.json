@@ -1,0 +1,68 @@
+{
+  "quoi": "La fiche du chapitre GR20 Sud telle que le randonneur la lit AVANT d'acheter (tache 853). Le chapitre est l'unite de vente depuis la tache 841 : c'est CETTE fiche que le client voit, et elle n'existait pas. La description repond aux trois questions de la demande du 17/10 09:22 - ou c'est, ce qu'on y voit, a quoi s'attendre - et chaque chiffre qu'elle cite est mesure sur la trace du chapitre, jamais repris d'un topo. La difficulte n'est PAS ici : elle se calcule a l'ecran sur les chiffres mesures et l'allure choisie (lib/domain/difficulte_du_sentier.dart). Les photos sont ecrites par tool/photos_dans_stepways.py - ne pas les editer a la main.",
+  "schema": 1,
+  "trailId": "gr20-sud",
+  "attribution": "Trace et couchages : OpenStreetMap, relation 12484370 (GR 20 Principale), licence ODbL. Altitudes : modele de terrain EU-DEM 25 m via opentopodata.",
+  "description": {
+    "ou_c_est": "La moitie sud du GR20, de la gare de Vizzavona jusqu'a Conca a l'arriere de Porto-Vecchio : 91,79 km de chemin et 4 243 m de montee, decoupes en sept etapes mesurees sur la trace. Vizzavona est le seul point du GR20 desservi par le train : ce chapitre commence donc la ou l'on peut arriver sans voiture.",
+    "ce_qu_on_y_voit": "La montagne qui s'ouvre sur la mer. Le chemin monte a 2 021 m a son point le plus haut, soit 557 m plus bas que le nord, et redescend a 254 m en arrivant a Conca. Les aiguilles de Bavella et leurs bergeries, le lac de Bastani sous le Monte Renoso, la marque blanche et rouge sur la Punta di l'Usciolu, le refuge de Prati avec la mer au fond : le sud est plus vert, plus large, et il regarde l'eau.",
+    "a_quoi_s_attendre": "LE SUD EST LE SEUL DES DEUX CHAPITRES OU L'ALLURE CHANGE LE VERDICT, et c'est la vraie difference entre les deux moities. Marche en sept jours il est tres difficile - non pas a cause d'une journee qui casse, puisque sa plus dure ne vaut que 23,4 km-effort, mais parce que SEPT journees dures se suivent sans un jour pour respirer. Donnez-lui huit jours et il devient difficile : l'enchainement tombe a trois journees dures d'affilee, et il reste difficile jusqu'a seize jours. Sa journee la plus dure ne descend jamais sous 19,5 km-effort - c'est la derniere, du refuge d'i Paliri a Conca. C'est donc par ce chapitre qu'on commence quand on n'a jamais marche en haute montagne, a condition de lui laisser huit jours. Comptez 35 h 49 de marche. Seize endroits releves sont ouverts a un decoupage different du decoupage federal : chaque fin de journee est un refuge, une bergerie ou une aire de bivouac qui existe dans OpenStreetMap."
+  },
+  "photos": [
+    {
+      "fichier": "assets/data/gr20/photos/couverture-col-de-bavella.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Corsica_Col_de_Bavella_Aiguilles_de_Bavella.jpg",
+      "auteur": "Isiwal",
+      "licence": "CC BY-SA 3.0",
+      "mention": "Isiwal, « Corsica Col de Bavella Aiguilles de Bavella », CC BY-SA 3.0, via Wikimedia Commons",
+      "lat": 41.79620604,
+      "lon": 9.22588706,
+      "couverture": true
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-4-refuge-de-prati.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Refuge_de_Prati1.jpg",
+      "auteur": "Rémih",
+      "licence": "CC BY-SA 4.0",
+      "mention": "Rémih, « Refuge de Prati1 », CC BY-SA 4.0, via Wikimedia Commons",
+      "lat": 42.008389,
+      "lon": 9.21777
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-1-lac-de-bastani.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Lac_de_Bastani_-_Monte_Renoso,_Ghisoni,_France_(Unsplash).jpg",
+      "auteur": "Maarten Deckers maartendeckers",
+      "licence": "CC0 1.0",
+      "mention": "Maarten Deckers maartendeckers, « Lac de Bastani - Monte Renoso, Ghisoni, France (Unsplash) », CC0 1.0, via Wikimedia Commons",
+      "lat": 42.0635996,
+      "lon": 9.1300249
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-2-marche-vers-bavella.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:0_Aiguilles_de_Bavella_JPG1.jpg",
+      "auteur": "Jean-Pol GRANDMONT",
+      "licence": "CC BY 3.0",
+      "mention": "Jean-Pol GRANDMONT, « 0 Aiguilles de Bavella JPG1 », CC BY 3.0, via Wikimedia Commons",
+      "lat": 41.79333333,
+      "lon": 9.22333333
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-3-sentier-punta-usciolu.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:GR20_Punta_di_l%27Usciolu2.jpg",
+      "auteur": "Rémih",
+      "licence": "CC BY-SA 4.0",
+      "mention": "Rémih, « GR20 Punta di l'Usciolu2 », CC BY-SA 4.0, via Wikimedia Commons",
+      "lat": 41.926712,
+      "lon": 9.195862
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-5-refuge-e-capanelle.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Refuge_d%27E_Capannelle.jpg",
+      "auteur": "Rémih",
+      "licence": "CC BY-SA 4.0",
+      "mention": "Rémih, « Refuge d'E Capannelle », CC BY-SA 4.0, via Wikimedia Commons",
+      "lat": 42.077888,
+      "lon": 9.14979
+    }
+  ]
+}
