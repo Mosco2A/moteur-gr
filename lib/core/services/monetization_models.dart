@@ -217,6 +217,7 @@ class PurchaseOutcome {
     this.stepsFromWallet = 0,
     this.complementSteps = 0,
     this.complementPack,
+    this.peripleNumero = 0,
   });
 
   /// Résultat global de la tentative.
@@ -237,10 +238,21 @@ class PurchaseOutcome {
   /// Vrai si le trek est possédé à l'issue (achat abouti).
   bool get isOwned => status == PurchaseStatusResult.owned;
 
+  /// LE NUMÉRO DU PÉRIPLE OUVERT PAR CET ACHAT (tâche 841) — 0 si aucun.
+  ///
+  /// Un achat ÉGALE un périple : la première acquisition ouvre le périple nº 1,
+  /// et chaque périple suivant est un nouvel achat. Décision de Christophe du
+  /// 16/10 10:09, verbatim : « OUI IL REPAYE ! », qui tranche le point T1 du
+  /// design #101920 et confirme ce qu'il disait déjà le 11/10 : « il est marche
+  /// une fois, le refaire c est un autre achat et il faudra le stocker comme un
+  /// nouveau périple ».
+  final int peripleNumero;
+
   @override
   String toString() =>
       'PurchaseOutcome($status, $trailId, '
-      'wallet=$stepsFromWallet, complément=$complementSteps)';
+      'wallet=$stepsFromWallet, complément=$complementSteps, '
+      'périple=$peripleNumero)';
 }
 
 /// Statut détaillé d'une tentative d'achat.
@@ -285,6 +297,90 @@ enum PurchaseStatusResult {
   /// recoit et peut le dire, la ou un `false` muet aurait ressemble a une
   /// panne.
   refuseEnDemo,
+
+  /// REFUSÉ PARCE QUE CE SENTIER A DES CHAPITRES (tâche 841).
+  ///
+  /// Règle de Christophe du 15/10 17:45, verbatim : « on achete le sentier
+  /// seulement si il n y a pas de chapitres. Sinon par exemple pour le GR20 on
+  /// peut acheter chapitre 1, chapitre 2, chapitre 1 and 2 ». Un sentier qui a
+  /// des chapitres n'est plus un produit : ce sont ses chapitres qui se
+  /// vendent, et celui qui veut tout le sentier les prend tous.
+  ///
+  /// POURQUOI UN STATUT À LUI, ALORS QUE LE SENTIER MÈRE A DÉJÀ QUITTÉ LE
+  /// CATALOGUE. Parce que les deux verrous ne couvrent pas la même chose. Le
+  /// filtre d'[TrailCatalog.all] empêche de le PROPOSER ; ce statut empêche de
+  /// le VENDRE à qui l'appellerait quand même — un lien profond, un écran qui
+  /// garderait un identifiant en mémoire, un droit descendu du serveur. Et il
+  /// ne pouvait pas se replier sur [unknownPrice] : le sentier mère a un prix
+  /// parfaitement connu (seize étapes pour le GR20), il reste résolvable par
+  /// identifiant, et dire « prix introuvable » serait faux. Il n'est pas
+  /// inconnu, il n'est pas à vendre.
+  ///
+  /// CE QUE L'ÉCRAN DOIT EN FAIRE : proposer les chapitres
+  /// ([TrailCatalog.chapitresDe]), jamais afficher une panne.
+  sentierAChapitres,
+}
+
+/// DEVIS D'ACHAT SUR PLUSIEURS CHAPITRES (tâche 841) — un chapitre, l'autre,
+/// ou les deux d'un coup.
+///
+/// LE PRIX EST LA SOMME DES ÉTAPES, ET IL N'Y A RIEN D'AUTRE À SAVOIR. Règle de
+/// Christophe du 15/10 17:45 : « on peut acheter chapitre 1, chapitre 2,
+/// chapitre 1 and 2 ». Prendre les deux chapitres du GR20 coûte neuf plus sept,
+/// soit seize étapes — exactement ce que coûtait le sentier entier. Aucune
+/// remise pour le lot, aucune majoration pour le détail.
+///
+/// AUCUN LOT N'EST À CONSTRUIRE EN BOUTIQUE, et c'est la conséquence qui compte
+/// pour la fabrication. Le prix étant prélevé sur la CAGNOTTE, en étapes, un
+/// achat groupé n'a pas de référence store à lui : il n'y a rien à déclarer
+/// chez Google ni chez Apple, rien qui puisse être refusé.
+/// Le seul endroit où l'euro apparaît reste le comptoir de recharge, et sa
+/// grille de paliers ne change pas (`kStepPacks`).
+class DevisDeChapitres {
+  /// Le devis d'un lot de chapitres : chacun le sien, puis le total.
+  const DevisDeChapitres({
+    required this.devis,
+    required this.stepsNeeded,
+    required this.stepsFromWallet,
+    required this.complementSteps,
+    this.complementPack,
+  });
+
+  /// Le devis de CHAQUE chapitre, dans l'ordre demandé.
+  final List<TrailQuote> devis;
+
+  /// Total des étapes à acquérir — la SOMME des besoins de chaque chapitre.
+  final int stepsNeeded;
+
+  /// Part du total couverte par la cagnotte (`min(cagnotte, stepsNeeded)`).
+  final int stepsFromWallet;
+
+  /// Ce qui manque dans la cagnotte pour couvrir le total.
+  final int complementSteps;
+
+  /// Le plus petit pack de recharge couvrant le manque (null si rien ne
+  /// manque).
+  final StepPack? complementPack;
+
+  /// Les identifiants des chapitres de ce devis, dans l'ordre.
+  List<String> get trailIds =>
+      devis.map((d) => d.trailId).toList(growable: false);
+
+  /// Prix CATALOGUE du lot en étapes — la somme des prix, acquis compris.
+  ///
+  /// Différent de [stepsNeeded] dès qu'une étape est déjà acquise : c'est le
+  /// prix AFFICHÉ, là où [stepsNeeded] est ce qui sera réellement prélevé.
+  int get totalStages => devis.fold(0, (s, d) => s + d.totalStages);
+
+  /// Vrai si la cagnotte couvre tout le lot — donc si l'achat peut aboutir
+  /// hors ligne, sans passer par le magasin.
+  bool get couvertParLaCagnotte => complementSteps == 0;
+
+  @override
+  String toString() =>
+      'DevisDeChapitres(${trailIds.join('+')}, prix=$totalStages, '
+      'besoin=$stepsNeeded, cagnotte=$stepsFromWallet, '
+      'complément=$complementSteps)';
 }
 
 /// Devis d'achat/reprise d'un trek (spec §2.4/§2.5).

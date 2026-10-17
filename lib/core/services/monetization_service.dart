@@ -15,7 +15,9 @@
 ///   - `monetization_access.dart` : niveau d'acces et regle sans-pub
 ///     ([TrailAccessPolicy]) ;
 ///   - `monetization_purchases.dart` : devis, achat, reprise, restauration
-///     ([TrailPurchases]).
+///     ([TrailPurchases]) ;
+///   - `monetization_chapitres.dart` : la vente par CHAPITRES et le nouveau
+///     periple ([VenteParChapitres], tache 841).
 /// Il re-exporte `monetization_models.dart` (les types),
 /// `monetization_providers.dart` (les fournisseurs Riverpod) et les constantes
 /// de la grille et des cles legacy : les appelants n'importent que lui.
@@ -29,6 +31,7 @@ import '../data/daos/trek_entitlements_dao.dart';
 import '../data/database.dart';
 import '../network/connectivity_monitor.dart';
 import 'monetization_access.dart';
+import 'monetization_chapitres.dart';
 import 'monetization_dependencies.dart';
 import 'monetization_entitlements.dart';
 import 'monetization_models.dart';
@@ -122,6 +125,12 @@ class MonetizationService {
     _deps,
     _pricing,
     _entitlements,
+  );
+  late final VenteParChapitres _chapitres = VenteParChapitres(
+    _deps,
+    _pricing,
+    _entitlements,
+    _purchases,
   );
 
   /// Vrai quand une demo volontaire est en cours : AUCUNE ecriture d'argent,
@@ -250,6 +259,35 @@ class MonetizationService {
   /// Achète le trek [trailId] (algo spec §2.5 — wallet d'abord, complément store).
   Future<PurchaseOutcome> buyTrail(String trailId) =>
       _purchases.buyTrail(trailId);
+
+  // --- Le CHAPITRE, unité de vente (tâche 841) ------------------------------
+
+  /// Vrai si [trailId] a des CHAPITRES — donc s'il ne se vend plus en bloc.
+  ///
+  /// Règle de Christophe du 15/10 17:45 : « on achete le sentier seulement si
+  /// il n y a pas de chapitres ». Un écran qui veut proposer un sentier mère
+  /// doit proposer ses chapitres ([TrailCatalog.chapitresDe]).
+  bool aDesChapitres(String trailId) => _pricing.aDesChapitres(trailId);
+
+  /// Devis sur PLUSIEURS chapitres — le prix est la SOMME de leurs étapes.
+  Future<DevisDeChapitres> devisDesChapitres(List<String> trailIds) =>
+      _chapitres.devisDesChapitres(trailIds);
+
+  /// Achète plusieurs chapitres d'un seul geste, ou aucun si la cagnotte ne
+  /// couvre pas le lot entier.
+  Future<List<PurchaseOutcome>> acheterLesChapitres(List<String> trailIds) =>
+      _chapitres.acheterLesChapitres(trailIds);
+
+  /// Nombre de PÉRIPLES payés sur [trailId] — un achat égale un périple.
+  Future<int> periplesAchetes(String trailId) =>
+      _entitlements.periplesAchetes(trailId);
+
+  /// OUVRE UN NOUVEAU PÉRIPLE sur [trailId] : une nouvelle marche, REPAYÉE au
+  /// prix plein, sans que le contenu déjà acquis soit jamais reverrouillé.
+  ///
+  /// Décision de Christophe du 16/10 10:09 : « OUI IL REPAYE ! ».
+  Future<PurchaseOutcome> ouvrirUnNouveauPeriple(String trailId) =>
+      _chapitres.ouvrirUnNouveauPeriple(trailId);
 
   // --- Abonnement : [SubscriptionLedger] ------------------------------------
 

@@ -67,8 +67,16 @@ void main() {
         // (adresse, telephone et site sur les lieux, pour que le transport et le
         // ravitaillement vivent en base), la v32 du lot 671-03 (l origine d un
         // point de trace, releve reel ou point estime), la v33 de la tache 846
-        // (le geste a faire avant de boire sur un point d eau).
-        expect(db.schemaVersion, 33);
+        // (le geste a faire avant de boire sur un point d eau), la v34 de la
+        // tache 841 (le nombre de PERIPLES payes sur un sentier : refaire un
+        // chapitre plus tard est un autre achat).
+        //
+        // C EST LE SEUL ENDROIT DU DEPOT QUI PORTE CE NOMBRE EN DUR, et c est
+        // delibere : les autres cas de ce fichier et celui du lot 671-03
+        // comparent desormais le compteur a `db.schemaVersion`, parce qu ils
+        // verifient qu une migration ATTERRIT a la version courante — pas
+        // laquelle elle est. Un seul cliquet a lever par marche, pas quatre.
+        expect(db.schemaVersion, 34);
 
         await db.close();
         expect(
@@ -173,10 +181,10 @@ void main() {
 
       expect(
         await versionUtilisateur(db),
-        33,
+        db.schemaVersion,
         reason:
-            'le compteur doit avoir traverse v27, v28, v29, v30, v31, v32 '
-            'et v33',
+            'le compteur doit avoir traverse TOUTES les marches, de la v27 a '
+            'la version courante, et atterrir dessus',
       );
     });
 
@@ -206,10 +214,10 @@ void main() {
         'c est le cas de l application tuee au milieu d une marche', () async {
       final fichier = await baseEnV26AvecDonnees();
 
-      // Premier passage : la base monte de 26 a 33.
+      // Premier passage : la base monte de 26 a la version courante.
       final premier = AppDatabase(NativeDatabase(fichier));
       await premier.customStatement('SELECT 1');
-      expect(await versionUtilisateur(premier), 33);
+      expect(await versionUtilisateur(premier), premier.schemaVersion);
       await premier.close();
 
       // On remet le compteur en arriere SANS defaire le schema : c est l etat
@@ -225,7 +233,7 @@ void main() {
       await second.customStatement('SELECT 1');
       expect(
         await versionUtilisateur(second),
-        33,
+        second.schemaVersion,
         reason: 'les marches doivent etre rejouables sans echouer',
       );
     });

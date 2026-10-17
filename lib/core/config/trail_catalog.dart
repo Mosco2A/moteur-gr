@@ -3,6 +3,8 @@
 /// qui se declare invente est ecarte du catalogue (tache 793).
 library;
 
+import 'gr20_nord_trail_config.dart';
+import 'gr20_sud_trail_config.dart';
 import 'gr20_trail_config.dart';
 import 'mare_a_mare_centre_trail_config.dart';
 import 'pyrenees_trail_config.dart';
@@ -46,25 +48,33 @@ abstract final class TrailCatalog {
     // [defaultTrail] : l'app demarre dessus. Reste une DONNEE (TrailConfig), le
     // moteur ne hardcode aucune localite.
     mareAMareCentreTrailConfig,
-    // LE GR20, DEUXIEME SENTIER REEL (tache 839). Il entre comme TOUS les
-    // autres : une [TrailConfig], une entree de donnee, aucune modification du
-    // moteur. Son prix se deduit de ses seize etapes, comme pour chaque sentier
-    // (`priceStages` nul = le prix vaut `totalStages`) : AUCUN modele de vente
-    // nouveau n'est introduit ici.
+    // LE GR20, DEUXIEME SENTIER REEL (tache 839), DEVENU UNE NUMEROTATION DE
+    // REFERENCE (tache 841). Il reste au REGISTRE — ses seize etapes, sa trace
+    // et ses trente et une nuits sont la donnee d'ou ses deux chapitres sont
+    // decoupes, et la regle CH-10 veut que cette numerotation ne bouge jamais —
+    // mais il ne passe plus [all] : il declare des chapitres, donc il n'est
+    // plus un produit. Decision de Christophe du 15/10 17:45.
     //
-    // CE QUI N'EST PAS FAIT ICI, ET QUI ATTEND UN ARBITRAGE DE CHRISTOPHE : le
-    // CHAPITRE comme unite de vente (#101920), c'est-a-dire vendre le nord et
-    // le sud separement. Les deux moities existent dans la DONNEE du sentier
-    // (`assets/data/gr20.json`, parcours NORD et SUD, mesures a 91,80 km et
-    // 91,79 km), parce que les mesurer etait justement l'objet de la tache 839.
-    // Elles n'existent pas comme PRODUITS, et ce fichier ne les y fait pas
-    // entrer.
-    //
-    // EN DEUXIEME POSITION, ET C'EST VOULU : [defaultTrail] est le PREMIER du
-    // catalogue, donc l'application continue de demarrer sur le Mare a Mare
-    // Centre. Mettre le GR20 en tete aurait change le sentier de demarrage sans
-    // que personne l'ait decide.
+    // CE QUI A CHANGE DEPUIS LA TACHE 839, EN UNE PHRASE : les deux moities
+    // etaient de la DONNEE (`assets/data/gr20.json`, parcours NORD et SUD,
+    // mesures a 91,80 et 91,79 km) ; ce sont desormais des PRODUITS, et c'est
+    // le sentier entier qui n'en est plus un.
     gr20TrailConfig,
+    // LES DEUX CHAPITRES DU GR20 (tache 841) — DEUX PRODUITS, PAS DEUX
+    // MORCEAUX. Chacun est un sentier COMPLET au sens de la regle CH-11 du
+    // design #101920 : son nom, sa trace decoupee, ses etapes renumerotees, ses
+    // reperes, ses couchages, ses nuits, son prix en etapes. Ils entrent au
+    // catalogue comme tous les autres, c'est-a-dire comme une ENTREE DE DONNEE.
+    //
+    // NEUF ETAPES AU NORD, SEPT AU SUD, SEIZE EN TOUT : le prix du sentier
+    // entier est exactement la somme de ses deux chapitres. Qui veut tout
+    // prend les deux, et paie ce qu'il aurait paye avant.
+    //
+    // APRES LE SENTIER MERE DANS LA LISTE, ET SANS CONSEQUENCE SUR LE DEMARRAGE
+    // : [defaultTrail] est le premier d'[all], et le Mare a Mare Centre y reste
+    // en tete.
+    gr20NordTrailConfig,
+    gr20SudTrailConfig,
     // IL N'Y A PLUS DE SENTIER « MARE A MARE CENTRE DEMO » (tache 638, bugs 1 et
     // 8 — DEM-260930-1005 et DEM-260930-1014). Le lot 601 avait ajoute ici un
     // SECOND Mare a Mare, gratuit et ampute a deux etapes, sur la decision de
@@ -130,9 +140,54 @@ abstract final class TrailCatalog {
   ///
   /// `final` et non `const` : le filtre est evalue UNE fois, au premier acces.
   /// Les donnees restent compilees — c'est la selection qui ne peut plus l'etre.
+  ///
+  /// LA SECONDE GARDE EST ARRIVEE AVEC LE CHAPITRE (tache 841), ET ELLE NE
+  /// RESSEMBLE PAS A LA PREMIERE. Un sentier qui a des CHAPITRES
+  /// ([TrailConfig.aDesChapitres]) est ecarte lui aussi, sur la decision de
+  /// Christophe du 15/10 17:45 : « on achete le sentier seulement si il n y a
+  /// pas de chapitres ». Mais la raison est opposee a celle du sentier fictif.
+  /// Le fictif est un MENSONGE : on le rend introuvable, et c'est pour cela que
+  /// [byId] ne le voit pas. Le sentier mere est une VERITE qui n'est pas un
+  /// produit : il doit rester resolvable (voir [byId] et [referentiel]), parce
+  /// que ses donnees sont celles d'ou ses chapitres sont decoupes et que sa
+  /// numerotation de reference ne doit JAMAIS bouger (regle CH-10). Les deux
+  /// gardes vivent donc ensemble, et elles ne se confondent pas.
   static final List<TrailConfig> all = _registre
+      .where((c) => !c.isFictional && !c.aDesChapitres)
+      .toList(growable: false);
+
+  /// LE REFERENTIEL — tout ce qui existe VRAIMENT, produits et sentiers meres.
+  ///
+  /// C'est [all] plus les sentiers meres : ce qui doit rester RESOLVABLE par
+  /// identifiant sans pour autant etre a vendre. Les sentiers fictifs n'y sont
+  /// pas — eux n'existent pas.
+  ///
+  /// A QUOI IL SERT, CONCRETEMENT. Le decoupage d'un chapitre lit les donnees
+  /// de son sentier mere ; la numerotation de reference de la regle CH-10 doit
+  /// pouvoir etre interrogee ; et un droit vendu hier sur un sentier devenu
+  /// mere aujourd'hui doit encore pouvoir etre LU, meme si plus personne ne
+  /// peut l'acheter. C'est la liste que [byId] consulte.
+  static final List<TrailConfig> referentiel = _registre
       .where((c) => !c.isFictional)
       .toList(growable: false);
+
+  /// Les sentiers du referentiel qui ne sont PLUS a vendre parce qu'ils ont des
+  /// chapitres — l'absence est NOMMEE, jamais silencieuse.
+  static List<TrailConfig> get sentiersMeres =>
+      referentiel.where((c) => c.aDesChapitres).toList(growable: false);
+
+  /// Les CHAPITRES du sentier [id], dans l'ordre de sa declaration.
+  ///
+  /// Vide quand ce sentier n'a pas de chapitres. L'ordre vient de
+  /// [TrailConfig.chapterIds] et il ne se renumerote jamais (regle CH-10).
+  static List<TrailConfig> chapitresDe(String id) {
+    final mere = byId(id);
+    if (mere == null) return const [];
+    return mere.chapterIds
+        .map(byId)
+        .whereType<TrailConfig>()
+        .toList(growable: false);
+  }
 
   /// Les sentiers du registre ECARTES du catalogue parce qu'ils se declarent
   /// fictifs — l'absence est NOMMEE, jamais silencieuse.
@@ -171,15 +226,30 @@ abstract final class TrailCatalog {
   static bool isFree(String? id) => id != null && freeIds.contains(id);
 
   /// Retourne la config du sentier [id], ou null si inconnu.
+  ///
+  /// IL CHERCHE DANS LE [referentiel], PAS DANS [all] (tache 841). Un sentier
+  /// mere n'est plus a vendre mais il existe : ses donnees portent la
+  /// numerotation de reference d'ou ses chapitres sont decoupes, et un droit
+  /// vendu avant qu'il ait des chapitres doit encore pouvoir etre lu. Un
+  /// sentier FICTIF, lui, reste introuvable — c'est tout l'objet de la tache
+  /// 793 et rien n'y change.
+  ///
+  /// CE QU'IL FAUT EN DEDUIRE, ET C'EST LE PIEGE A CONNAITRE : trouver un
+  /// sentier par cette methode ne dit PAS qu'il est a vendre. La vente se
+  /// demande a [TrailConfig.estVendable], et [TrailPurchases] la refuse
+  /// nommement.
   static TrailConfig? byId(String id) {
-    for (final config in all) {
+    for (final config in referentiel) {
       if (config.id == id) return config;
     }
     return null;
   }
 
-  /// Vrai si [id] correspond a un sentier connu du catalogue.
+  /// Vrai si [id] correspond a un sentier connu — produit OU sentier mere.
   static bool contains(String id) => byId(id) != null;
+
+  /// Vrai si [id] a des CHAPITRES, donc s'il ne se vend plus en bloc.
+  static bool aDesChapitres(String id) => byId(id)?.aDesChapitres ?? false;
 
   /// Resout [id] vers une config connue, ou retombe sur [defaultTrail].
   ///

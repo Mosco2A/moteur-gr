@@ -1065,6 +1065,7 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get buyOutcomeFailed => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.';
 	@override String get buyOutcomeUnknownPrice => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.';
 	@override String get buyOutcomeDemo => 'Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.';
+	@override String get buyOutcomeSentierAChapitres => 'Questo sentiero si vende a capitoli: scegli il capitolo che vuoi. Non è stato addebitato nulla.';
 	@override String subscriptionPrice({required Object price}) => '${price} al mese';
 	@override String get subscriptionAllowanceForLife => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.';
 	@override String get cancelCta => 'Interrompere l’abbonamento';
@@ -5403,6 +5404,7 @@ extension on TranslationsIt {
 			'monetization.buyOutcomeFailed' => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.',
 			'monetization.buyOutcomeUnknownPrice' => 'Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.',
 			'monetization.buyOutcomeDemo' => 'Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.',
+			'monetization.buyOutcomeSentierAChapitres' => 'Questo sentiero si vende a capitoli: scegli il capitolo che vuoi. Non è stato addebitato nulla.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mese',
 			'monetization.subscriptionAllowanceForLife' => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.',
 			'monetization.cancelCta' => 'Interrompere l’abbonamento',
@@ -5832,9 +5834,9 @@ extension on TranslationsIt {
 			'moderation.decisions.restrict' => 'Contenuto limitato',
 			'moderation.decisions.remove' => 'Contenuto rimosso',
 			'moderation.noStatement' => 'Nessuna restrizione è stata applicata ai tuoi contenuti.',
-			'moderation.complaintAction' => 'Contestare questa decisione',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintAction' => 'Contestare questa decisione',
 			'moderation.complaintTitle' => 'Contestare una decisione',
 			'moderation.complaintIntro' => 'Puoi contestare una decisione di moderazione. Spiega perché ritieni la decisione ingiustificata (articolo 20).',
 			'moderation.complaintExposeLabel' => 'La tua contestazione',
@@ -6346,9 +6348,9 @@ extension on TranslationsIt {
 			'systemBackup.confirm' => 'Ho capito',
 			'systemBackup.a11yCheckbox' => 'Rifiutare il backup di tutti i miei dati da parte del sistema del telefono',
 			'lieu.ouvrirDansLesCartes' => 'Apri nelle mappe',
-			'lieu.cartesIndisponibles' => 'Nessuna app di mappe si è potuta aprire su questo dispositivo.',
 			_ => null,
 		} ?? switch (path) {
+			'lieu.cartesIndisponibles' => 'Nessuna app di mappe si è potuta aprire su questo dispositivo.',
 			'lieu.adresse' => 'Indirizzo',
 			'lieu.telephoner' => 'Chiama',
 			'lieu.siteOfficiel' => 'Sito ufficiale',

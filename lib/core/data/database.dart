@@ -173,7 +173,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 33;
+  int get schemaVersion => 34;
 
   /// LA SEQUENCE DE MIGRATIONS N'AVAIT JAMAIS TOURNE SUR UN TELEPHONE (tache 613).
   ///
@@ -590,6 +590,30 @@ class AppDatabase extends _$AppDatabase {
       // a la v32 ne perd aucun point, seulement son geste.
       if (from < 33) {
         await _ajouterColonneSiAbsente(migrator, pois, pois.waterAction);
+      }
+
+      // Migration v33 -> v34 (tache 841, le chapitre unite de vente) :
+      // LE NOMBRE DE PERIPLES PAYES sur un sentier. Decision de Christophe du
+      // 16/10 10:09, verbatim : « OUI IL REPAYE ! » — refaire un chapitre plus
+      // tard est un autre achat, et il faut savoir combien de fois il a ete
+      // paye. STRICTEMENT ADDITIVE : UNE colonne entiere a zero par defaut,
+      // sur le motif exact des v32 et v33.
+      //
+      // ZERO EST LA BONNE VALEUR POUR LES DROITS D'AVANT, ET IL FAUT LE DIRE
+      // PRECISEMENT : ce n'est pas « aucune marche », c'est « cette base n'a
+      // jamais compte les periples ». Le droit sur le CONTENU, lui, est porte
+      // par `owned` et il n'est PAS touche ici : personne ne perd rien, aucun
+      // sentier n'est reverrouille, et un retour a la v33 ne perd que le
+      // compteur. La pose du premier periple est rattrapee a l'achat suivant
+      // (`markOwned`) et, pour un sentier deja possede, par la lecture qui
+      // compte un droit acquis comme AU MOINS un periple
+      // (`TrekEntitlementLedger.periplesAchetes`).
+      if (from < 34) {
+        await _ajouterColonneSiAbsente(
+          migrator,
+          trekEntitlements,
+          trekEntitlements.periplesAchetes,
+        );
       }
     },
   );

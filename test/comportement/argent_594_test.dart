@@ -96,7 +96,7 @@ void main() {
       // recoit plus en argument, il le LIT. Ce test travaille sur un
       // identifiant fictif, il declare donc son catalogue ici — meme
       // forme d injection que `freeTrailIds`, et meme raison.
-      stagesOf: (id) => id == 'gr20' ? 16 : 0,
+      stagesOf: (id) => id == 'sentier-de-test' ? 16 : 0,
     );
     await svc.load();
     if (walletSteps > 0) await wallet.credit(walletSteps);
@@ -111,7 +111,7 @@ void main() {
     test('un trek non achete ne peut PAS etre realise', () async {
       final svc = await makeService();
       expect(
-        await svc.canRealizeTrail('gr20'),
+        await svc.canRealizeTrail('sentier-de-test'),
         isFalse,
         reason:
             'le modele reserve la REALISATION au trek achete ; sans ce '
@@ -121,16 +121,16 @@ void main() {
 
     test('un trek achete peut etre realise', () async {
       final svc = await makeService(walletSteps: 16);
-      final outcome = await svc.buyTrail('gr20');
+      final outcome = await svc.buyTrail('sentier-de-test');
       expect(outcome.isOwned, isTrue);
-      expect(await svc.canRealizeTrail('gr20'), isTrue);
+      expect(await svc.canRealizeTrail('sentier-de-test'), isTrue);
     });
 
     test(
       'un sentier VITRINE reste realisable sans achat (parite GR20)',
       () async {
-        final svc = await makeService(showcase: {'gr20'});
-        expect(await svc.canRealizeTrail('gr20'), isTrue);
+        final svc = await makeService(showcase: {'sentier-de-test'});
+        expect(await svc.canRealizeTrail('sentier-de-test'), isTrue);
       },
     );
 
@@ -141,7 +141,7 @@ void main() {
         await svc.onSubscriptionValidated();
         expect(await svc.isSubscriberActive(), isTrue);
         expect(
-          await svc.canRealizeTrail('gr20'),
+          await svc.canRealizeTrail('sentier-de-test'),
           isFalse,
           reason:
               'arbitrage du 08/09, qui prime sur #99405 : l abo light ne '
@@ -164,7 +164,7 @@ void main() {
 
         final notifier = container.read(trekSessionManagerProvider.notifier);
         final outcome = await notifier.ensureSingleActiveThenStart(
-          'gr20',
+          'sentier-de-test',
           resolve: (_) async => ActiveTrekConflictChoice.cancel,
         );
 
@@ -199,9 +199,9 @@ void main() {
     test('l abonne reste en mode demo sur un trek non achete', () async {
       final svc = await makeService();
       await svc.onSubscriptionValidated();
-      expect(await svc.accessFor('gr20'), TrailAccess.subscriber);
+      expect(await svc.accessFor('sentier-de-test'), TrailAccess.subscriber);
       expect(
-        await svc.isDemoMode('gr20'),
+        await svc.isDemoMode('sentier-de-test'),
         isTrue,
         reason:
             'pour les outils complets d un trek, il faut l ACHETER '
@@ -214,7 +214,7 @@ void main() {
       () async {
         final svc = await makeService();
         await svc.onSubscriptionValidated();
-        final f = await svc.featuresForTrail('gr20');
+        final f = await svc.featuresForTrail('sentier-de-test');
         expect(f.hasGpsTracking, isFalse);
         expect(f.hasJournal, isFalse);
         expect(f.hasDiploma, isFalse);
@@ -230,7 +230,7 @@ void main() {
               'l abo light donne le SANS-PUB PARTOUT — c est tout ce qu il '
               'donne, mais il le donne vraiment',
         );
-        expect(await svc.isNoAdsActive('gr20'), isTrue);
+        expect(await svc.isNoAdsActive('sentier-de-test'), isTrue);
       },
     );
   });
@@ -253,7 +253,7 @@ void main() {
             'rien n expirait jamais l abo : une fois pose, le sans-pub '
             'etait acquis A VIE, ce que la regle d or interdit',
       );
-      expect(await svc.isNoAdsActive('gr20'), isFalse);
+      expect(await svc.isNoAdsActive('sentier-de-test'), isFalse);
     });
 
     test(

@@ -258,6 +258,20 @@ flutter:
     # `couchages_hors_etape.json`) sont embarques eux aussi : ils sont la preuve
     # de l'origine de chaque chiffre, dans le binaire, a cote des chiffres.
     - assets/data/gr20/
+    # LES DEUX CHAPITRES DU GR20 (tache 841) — DEUX SENTIERS COMPLETS, donc
+    # deux dossiers, comme tout sentier du catalogue (regle CH-11 du design
+    # #101920). Chacun porte SA trace decoupee (4 463 et 4 666 points pris dans
+    # les 9 128 de la trace mere), ses etapes renumerotees, ses reperes et ses
+    # nuits. Ils ne partagent RIEN avec le sentier mere : un randonneur qui
+    # achete le nord ne telecharge pas le sud et ne le voit pas sur sa carte.
+    #
+    # LE SENTIER MERE RESTE EMBARQUE, ET CE N'EST PAS UN DOUBLON : il porte la
+    # numerotation de reference d'ou les chapitres sont decoupes (regle CH-10,
+    # elle ne bouge jamais) et il est la preuve de l'origine de chaque chiffre.
+    # Le prix de cette honnetete est mesure : 944 Ko pour le mere, 352 et 360 Ko
+    # pour les chapitres.
+    - assets/data/gr20-nord/
+    - assets/data/gr20-sud/
     - assets/i18n/
     - assets/tips/
     # IDENTITE VISUELLE (tache 632) — les TROIS familles livrees par Christophe

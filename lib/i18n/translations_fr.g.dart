@@ -2240,6 +2240,9 @@ class Translations$monetization$fr {
 	/// fr: 'Tu es en démo : aucun achat n'est possible, et rien n'a été débité.'
 	String get buyOutcomeDemo => 'Tu es en démo : aucun achat n\'est possible, et rien n\'a été débité.';
 
+	/// fr: 'Ce sentier se vend par chapitres : choisis le chapitre qui t'intéresse. Rien n'a été débité.'
+	String get buyOutcomeSentierAChapitres => 'Ce sentier se vend par chapitres : choisis le chapitre qui t\'intéresse. Rien n\'a été débité.';
+
 	/// fr: '$price par mois'
 	String subscriptionPrice({required Object price}) => '${price} par mois';
 
@@ -9589,6 +9592,7 @@ extension on Translations {
 			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
 			'monetization.buyOutcomeUnknownPrice' => 'Ce sentier n\'est pas en vente pour le moment. Rien n\'a été débité.',
 			'monetization.buyOutcomeDemo' => 'Tu es en démo : aucun achat n\'est possible, et rien n\'a été débité.',
+			'monetization.buyOutcomeSentierAChapitres' => 'Ce sentier se vend par chapitres : choisis le chapitre qui t\'intéresse. Rien n\'a été débité.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} par mois',
 			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si tu arrêtes l’abonnement.',
 			'monetization.cancelCta' => 'Arrêter mon abonnement',
@@ -10018,9 +10022,9 @@ extension on Translations {
 			'moderation.decisions.restrict' => 'Contenu restreint',
 			'moderation.decisions.remove' => 'Contenu retiré',
 			'moderation.noStatement' => 'Aucune restriction n\'a été appliquée à tes contenus.',
-			'moderation.complaintAction' => 'Contester cette décision',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintAction' => 'Contester cette décision',
 			'moderation.complaintTitle' => 'Contester une décision',
 			'moderation.complaintIntro' => 'Tu peux contester une décision de modération. Explique pourquoi tu estimes la décision injustifiée (article 20).',
 			'moderation.complaintExposeLabel' => 'Ta contestation',
@@ -10532,9 +10536,9 @@ extension on Translations {
 			'systemBackup.confirm' => 'C\'est noté',
 			'systemBackup.a11yCheckbox' => 'Refuser la sauvegarde de toutes mes données par le système du téléphone',
 			'lieu.ouvrirDansLesCartes' => 'Ouvrir dans les cartes',
-			'lieu.cartesIndisponibles' => 'Aucune application de cartes n\'a pu s\'ouvrir sur cet appareil.',
 			_ => null,
 		} ?? switch (path) {
+			'lieu.cartesIndisponibles' => 'Aucune application de cartes n\'a pu s\'ouvrir sur cet appareil.',
 			'lieu.adresse' => 'Adresse',
 			'lieu.telephoner' => 'Appeler',
 			'lieu.siteOfficiel' => 'Site officiel',

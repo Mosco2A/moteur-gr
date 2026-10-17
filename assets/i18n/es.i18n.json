@@ -1291,6 +1291,7 @@
     "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada.",
     "buyOutcomeUnknownPrice": "Esta ruta no está en venta ahora mismo. No se ha cobrado nada.",
     "buyOutcomeDemo": "Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.",
+    "buyOutcomeSentierAChapitres": "Esta ruta se vende por capítulos: elige el capítulo que quieras. No se ha cobrado nada.",
     "subscriptionPrice": "$price al mes",
     "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.",
     "cancelCta": "Cancelar mi suscripción",

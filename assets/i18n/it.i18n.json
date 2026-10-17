@@ -1291,6 +1291,7 @@
     "buyOutcomeFailed": "Il pagamento non è andato a buon fine. Non è stato addebitato nulla.",
     "buyOutcomeUnknownPrice": "Questo sentiero non è in vendita in questo momento. Non è stato addebitato nulla.",
     "buyOutcomeDemo": "Sei in modalità demo: nessun acquisto è possibile, e nulla è stato addebitato.",
+    "buyOutcomeSentierAChapitres": "Questo sentiero si vende a capitoli: scegli il capitolo che vuoi. Non è stato addebitato nulla.",
     "subscriptionPrice": "$price al mese",
     "subscriptionAllowanceForLife": "Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.",
     "cancelCta": "Interrompere l’abbonamento",

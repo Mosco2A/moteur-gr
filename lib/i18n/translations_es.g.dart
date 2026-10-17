@@ -1065,6 +1065,7 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get buyOutcomeFailed => 'El pago no se ha completado. No se ha cobrado nada.';
 	@override String get buyOutcomeUnknownPrice => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.';
 	@override String get buyOutcomeDemo => 'Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.';
+	@override String get buyOutcomeSentierAChapitres => 'Esta ruta se vende por capítulos: elige el capítulo que quieras. No se ha cobrado nada.';
 	@override String subscriptionPrice({required Object price}) => '${price} al mes';
 	@override String get subscriptionAllowanceForLife => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.';
 	@override String get cancelCta => 'Cancelar mi suscripción';
@@ -5403,6 +5404,7 @@ extension on TranslationsEs {
 			'monetization.buyOutcomeFailed' => 'El pago no se ha completado. No se ha cobrado nada.',
 			'monetization.buyOutcomeUnknownPrice' => 'Esta ruta no está en venta ahora mismo. No se ha cobrado nada.',
 			'monetization.buyOutcomeDemo' => 'Estás en modo demo: no se puede comprar nada, y no se ha cobrado nada.',
+			'monetization.buyOutcomeSentierAChapitres' => 'Esta ruta se vende por capítulos: elige el capítulo que quieras. No se ha cobrado nada.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mes',
 			'monetization.subscriptionAllowanceForLife' => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.',
 			'monetization.cancelCta' => 'Cancelar mi suscripción',
@@ -5832,9 +5834,9 @@ extension on TranslationsEs {
 			'moderation.decisions.restrict' => 'Contenido restringido',
 			'moderation.decisions.remove' => 'Contenido retirado',
 			'moderation.noStatement' => 'No se ha aplicado ninguna restricción a tu contenido.',
-			'moderation.complaintAction' => 'Impugnar esta decisión',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintAction' => 'Impugnar esta decisión',
 			'moderation.complaintTitle' => 'Impugnar una decisión',
 			'moderation.complaintIntro' => 'Puedes impugnar una decisión de moderación. Explica por qué consideras la decisión injustificada (artículo 20).',
 			'moderation.complaintExposeLabel' => 'Tu impugnación',
@@ -6346,9 +6348,9 @@ extension on TranslationsEs {
 			'systemBackup.confirm' => 'Entendido',
 			'systemBackup.a11yCheckbox' => 'Rechazar la copia de seguridad de todos mis datos por el sistema del teléfono',
 			'lieu.ouvrirDansLesCartes' => 'Abrir en mapas',
-			'lieu.cartesIndisponibles' => 'Ninguna aplicación de mapas pudo abrirse en este dispositivo.',
 			_ => null,
 		} ?? switch (path) {
+			'lieu.cartesIndisponibles' => 'Ninguna aplicación de mapas pudo abrirse en este dispositivo.',
 			'lieu.adresse' => 'Dirección',
 			'lieu.telephoner' => 'Llamar',
 			'lieu.siteOfficiel' => 'Sitio oficial',

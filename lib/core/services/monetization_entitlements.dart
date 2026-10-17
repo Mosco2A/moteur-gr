@@ -95,15 +95,39 @@ class TrekEntitlementLedger {
     return e?.acquiredStages ?? 0;
   }
 
+  /// NOMBRE DE PERIPLES PAYES sur [trailId] (tache 841).
+  ///
+  /// UN DROIT ACQUIS COMPTE POUR AU MOINS UN PERIPLE, et ce plancher n'est pas
+  /// une commodite : il repare les droits nes avant que la colonne existe. Un
+  /// sentier achete sous la v33 de la base porte `owned` et un compteur a zero
+  /// — dire de lui « zero periple paye » serait faux, puisqu'il a ete paye. La
+  /// migration ne pouvait pas deviner la valeur ; la lecture, elle, la deduit
+  /// du seul fait qui compte : il est possede, donc il a ete achete au moins
+  /// une fois.
+  Future<int> periplesAchetes(String trailId) async {
+    final e = await _deps.entitlementsDao.getByTrailId(trailId);
+    if (e == null) return 0;
+    final comptes = e.periplesAchetes;
+    if (comptes > 0) return comptes;
+    return e.owned ? 1 : 0;
+  }
+
   /// Pose `owned` sur [trailId] (achat confirme) et le reflete en premium.
+  ///
+  /// [peripleNumero] est le numero du periple que cet achat ouvre (tache 841) :
+  /// 1 au premier achat, puis 2, 3... Il ne redescend JAMAIS — un compteur de
+  /// periples qui baisse serait un droit retire, et la propriete d'un sentier
+  /// n'a aucune echeance (decision du 27/09, #100698).
   Future<void> markOwned(
     String trailId, {
     required int totalStages,
     required int acquiredStages,
     required int consumedComplementSteps,
     required String source,
+    int peripleNumero = 1,
   }) async {
     final now = _deps.now();
+    final deja = await periplesAchetes(trailId);
     await _deps.entitlementsDao.upsert(
       TrekEntitlementsCompanion.insert(
         trailId: trailId,
@@ -111,6 +135,9 @@ class TrekEntitlementLedger {
         acquiredStages: Value(acquiredStages),
         totalStages: Value(totalStages),
         consumedComplementSteps: Value(consumedComplementSteps),
+        // LE MAXIMUM, JAMAIS LA VALEUR PASSEE TELLE QUELLE. Un appelant qui se
+        // tromperait de numero ne peut pas faire reculer le compteur.
+        periplesAchetes: Value(peripleNumero > deja ? peripleNumero : deja),
         purchaseSource: Value(source),
         purchasedAt: Value(now),
         updatedAt: now,

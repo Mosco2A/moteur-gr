@@ -235,20 +235,37 @@ void main() {
     });
   });
 
-  group('LE SENTIER EST AU CATALOGUE, SANS MODELE DE VENTE NOUVEAU', () {
+  group('LE SENTIER EST AU REFERENTIEL, SES CHAPITRES AU CATALOGUE', () {
     test(
       'le GR20 est connu, et il ne prend pas la place du sentier de depart',
       () {
-        expect(TrailCatalog.ids, contains('gr20'));
+        // CE CAS A CHANGE AVEC LA TACHE 841, ET C EST LA REGLE QUI A CHANGE,
+        // PAS LA MESURE. Il verifiait que le GR20 figure au CATALOGUE. Depuis
+        // la decision de Christophe du 15/10 17:45 — « on achete le sentier
+        // seulement si il n y a pas de chapitres » — un sentier qui a des
+        // chapitres n est plus un produit : il quitte le catalogue de vente et
+        // reste au REFERENTIEL, parce que ses seize etapes portent la
+        // numerotation de reference d ou ses chapitres sont decoupes et que
+        // cette numerotation ne doit jamais bouger (regle CH-10).
+        //
+        // TOUS LES CHIFFRES DE CE FICHIER RESTENT CEUX-LA, ET C EST L ESSENTIEL
+        // : le decoupage en chapitres ne remesure rien (cf.
+        // `gr20_chapitres_mesures_841_test.dart`).
         expect(TrailCatalog.byId('gr20'), isNotNull);
+        expect(TrailCatalog.referentiel.map((c) => c.id), contains('gr20'));
+        expect(TrailCatalog.ids, isNot(contains('gr20')));
+        expect(TrailCatalog.ids, containsAll(['gr20-nord', 'gr20-sud']));
         // L'application demarre toujours sur le meme sentier : le defaut est le
-        // PREMIER du catalogue, et le GR20 est en deuxieme position.
+        // PREMIER du catalogue.
         expect(TrailCatalog.defaultTrail.id, 'mare-a-mare-centre');
-        // Son prix se deduit de ses etapes, comme pour tout sentier. Aucun
-        // chapitre, aucun achat par moitie : cela attend un arbitrage.
+        // Son prix reste deduit de ses etapes — le modele de vente n a pas
+        // change, c est l UNITE de vente qui a change : seize etapes au
+        // sentier, neuf plus sept a ses deux chapitres.
         expect(gr20TrailConfig.priceInStages, gr20TrailConfig.totalStages);
         expect(gr20TrailConfig.isFreeTrail, isFalse);
         expect(gr20TrailConfig.isFictional, isFalse);
+        expect(gr20TrailConfig.aDesChapitres, isTrue);
+        expect(gr20TrailConfig.estVendable, isFalse);
       },
     );
 

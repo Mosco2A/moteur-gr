@@ -1291,6 +1291,7 @@
     "buyOutcomeFailed": "Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.",
     "buyOutcomeUnknownPrice": "Diese Wanderung ist derzeit nicht käuflich. Es wurde nichts abgebucht.",
     "buyOutcomeDemo": "Du bist im Demo-Modus: kein Kauf möglich, es wurde nichts abgebucht.",
+    "buyOutcomeSentierAChapitres": "Diese Wanderung wird in Kapiteln verkauft: wähle das Kapitel, das du willst. Es wurde nichts abgebucht.",
     "subscriptionPrice": "$price pro Monat",
     "subscriptionAllowanceForLife": "Gutgeschriebene Etappen bleiben dauerhaft dir, auch wenn du das Abo beendest.",
     "cancelCta": "Abo beenden",

@@ -1,0 +1,457 @@
+{
+  "quoi": "Les nuits ou une journee du chapitre GR20 Sud peut se terminer. Elles sont celles du GR20 entier, mesurees en tache 839, restreintes a la portion de trace de ce chapitre et dont le point kilometrique est remis a zero a son depart. Aucune nuit n est ajoutee ici, aucune n est remesuree.",
+  "attribution": "Trace et couchages : OpenStreetMap, relation 12484370 (GR 20 Principale), licence ODbL. Altitudes : modele de terrain EU-DEM 25 m via opentopodata.",
+  "trailId": "gr20-sud",
+  "trace": "assets/data/gr20-sud/track.gpx",
+  "longueur_km": 91.788,
+  "modele_de_temps_de_marche": "4,0 km/h a plat, 400 m de montee par heure, descente payee 1.67 s par metre — lib/core/models/stage_duration.dart",
+  "nuits": 16,
+  "dont_fins_d_etape": 7,
+  "dont_coupures_relevees": 9,
+  "tete_de_sentier": "Gare de Vizzavona",
+  "segments": 16,
+  "liste": [
+    {
+      "nom": "Bivouac de Bocca Palmente",
+      "osm": [
+        "way/1344508783"
+      ],
+      "osm_type": "camp_site",
+      "pk_km": 6.071,
+      "altitude_m": 1632,
+      "lat": 42.1139946,
+      "lon": 9.1572731,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": null,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Bergeries d'Alzeta",
+      "osm": [
+        "node/8871451503"
+      ],
+      "osm_type": "camp_site",
+      "pk_km": 6.646,
+      "altitude_m": 1583,
+      "lat": 42.1093434,
+      "lon": 9.1568946,
+      "minutes_aller": 1,
+      "minutes_retour": 0,
+      "lits": null,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Bergeries de Scarpaccedié",
+      "osm": [
+        "node/5911859788"
+      ],
+      "osm_type": "camp_site",
+      "pk_km": 12.076,
+      "altitude_m": 1451,
+      "lat": 42.0896832,
+      "lon": 9.1533592,
+      "minutes_aller": 2,
+      "minutes_retour": 1,
+      "lits": null,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Refuge d'E Capanelle",
+      "osm": [
+        "node/6545047285",
+        "way/305567810",
+        "way/305575039"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 13.955,
+      "altitude_m": 1611,
+      "lat": 42.07793,
+      "lon": 9.14971,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 16,
+      "origine": "fin d etape",
+      "fin_d_etape": 1
+    },
+    {
+      "nom": "Bergerie de Gialgone",
+      "osm": [
+        "node/4394676189"
+      ],
+      "osm_type": "alpine_hut",
+      "pk_km": 22.197,
+      "altitude_m": 1574,
+      "lat": 42.034111,
+      "lon": 9.1646271,
+      "minutes_aller": 4,
+      "minutes_retour": 2,
+      "lits": null,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Bivouac Col de Verde",
+      "osm": [
+        "way/437562771"
+      ],
+      "osm_type": "camp_site",
+      "pk_km": 26.867,
+      "altitude_m": 1283,
+      "lat": 42.0279268,
+      "lon": 9.193702,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 50,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Refuge de Prati",
+      "osm": [
+        "way/437551969",
+        "way/96438686"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 31.673,
+      "altitude_m": 1810,
+      "lat": 42.00865,
+      "lon": 9.21828,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 32,
+      "origine": "fin d etape",
+      "fin_d_etape": 2
+    },
+    {
+      "nom": "Refuge Laparo",
+      "osm": [
+        "way/907378832"
+      ],
+      "osm_type": "wilderness_hut",
+      "pk_km": 37.46,
+      "altitude_m": 1504,
+      "lat": 41.9672272,
+      "lon": 9.2285949,
+      "minutes_aller": 10,
+      "minutes_retour": 28,
+      "lits": 6,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Refuge d'Usciolu",
+      "osm": [
+        "way/353265114",
+        "way/437549979"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 42.57,
+      "altitude_m": 1750,
+      "lat": 41.93513,
+      "lon": 9.20598,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 31,
+      "origine": "fin d etape",
+      "fin_d_etape": 3
+    },
+    {
+      "nom": "Bergeries de Basseta",
+      "osm": [
+        "way/353421104"
+      ],
+      "osm_type": "alpine_hut",
+      "pk_km": 51.723,
+      "altitude_m": 1314,
+      "lat": 41.885221,
+      "lon": 9.1458003,
+      "minutes_aller": 1,
+      "minutes_retour": 1,
+      "lits": null,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Refuge de Matalza",
+      "osm": [
+        "way/353448449"
+      ],
+      "osm_type": "alpine_hut",
+      "pk_km": 53.447,
+      "altitude_m": 1414,
+      "lat": 41.8742889,
+      "lon": 9.1523966,
+      "minutes_aller": 1,
+      "minutes_retour": 1,
+      "lits": null,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Bergerie I Croci",
+      "osm": [
+        "way/263889051"
+      ],
+      "osm_type": "alpine_hut",
+      "pk_km": 56.438,
+      "altitude_m": 1538,
+      "lat": 41.8552222,
+      "lon": 9.1658995,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": null,
+      "origine": "coupure de jour relevee",
+      "fin_d_etape": null
+    },
+    {
+      "nom": "Refuge d'Asinau",
+      "osm": [
+        "way/353634247",
+        "way/437545324"
+      ],
+      "osm_type": "node/wilderness_hut",
+      "pk_km": 63.299,
+      "altitude_m": 1552,
+      "lat": 41.84148,
+      "lon": 9.21434,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": null,
+      "origine": "fin d etape",
+      "fin_d_etape": 4
+    },
+    {
+      "nom": "Col de Bavella",
+      "osm": [
+        "way/129769113"
+      ],
+      "osm_type": "node/village",
+      "pk_km": 74.047,
+      "altitude_m": 1212,
+      "lat": 41.79655,
+      "lon": 9.22644,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": null,
+      "origine": "fin d etape",
+      "fin_d_etape": 5
+    },
+    {
+      "nom": "Refuge d'i Paliri",
+      "osm": [
+        "way/354661509",
+        "way/437544876"
+      ],
+      "osm_type": "node/alpine_hut",
+      "pk_km": 78.579,
+      "altitude_m": 1051,
+      "lat": 41.79416,
+      "lon": 9.25961,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": 22,
+      "origine": "fin d etape",
+      "fin_d_etape": 6
+    },
+    {
+      "nom": "Conca",
+      "osm": [
+        "node/14070227101",
+        "node/8829309175",
+        "way/222119845"
+      ],
+      "osm_type": "node/village",
+      "pk_km": 91.788,
+      "altitude_m": 257,
+      "lat": 41.73433,
+      "lon": 9.33584,
+      "minutes_aller": 0,
+      "minutes_retour": 0,
+      "lits": null,
+      "origine": "fin d etape",
+      "fin_d_etape": 7
+    }
+  ],
+  "entre_les_nuits": [
+    {
+      "rang": 1,
+      "depart": "Gare de Vizzavona",
+      "arrivee": "Bivouac de Bocca Palmente",
+      "pk_depart_km": 0.0,
+      "pk_arrivee_km": 6.071,
+      "km": 6.071,
+      "dplus_m": 702,
+      "dmoins_m": 8,
+      "minutes": 197
+    },
+    {
+      "rang": 2,
+      "depart": "Bivouac de Bocca Palmente",
+      "arrivee": "Bergeries d'Alzeta",
+      "pk_depart_km": 6.071,
+      "pk_arrivee_km": 6.646,
+      "km": 0.575,
+      "dplus_m": 0,
+      "dmoins_m": 50,
+      "minutes": 10
+    },
+    {
+      "rang": 3,
+      "depart": "Bergeries d'Alzeta",
+      "arrivee": "Bergeries de Scarpaccedié",
+      "pk_depart_km": 6.646,
+      "pk_arrivee_km": 12.076,
+      "km": 5.43,
+      "dplus_m": 95,
+      "dmoins_m": 226,
+      "minutes": 102
+    },
+    {
+      "rang": 4,
+      "depart": "Bergeries de Scarpaccedié",
+      "arrivee": "Refuge d'E Capanelle",
+      "pk_depart_km": 12.076,
+      "pk_arrivee_km": 13.955,
+      "km": 1.879,
+      "dplus_m": 182,
+      "dmoins_m": 22,
+      "minutes": 56
+    },
+    {
+      "rang": 5,
+      "depart": "Refuge d'E Capanelle",
+      "arrivee": "Bergerie de Gialgone",
+      "pk_depart_km": 13.955,
+      "pk_arrivee_km": 22.197,
+      "km": 8.242,
+      "dplus_m": 293,
+      "dmoins_m": 331,
+      "minutes": 177
+    },
+    {
+      "rang": 6,
+      "depart": "Bergerie de Gialgone",
+      "arrivee": "Bivouac Col de Verde",
+      "pk_depart_km": 22.197,
+      "pk_arrivee_km": 26.867,
+      "km": 4.67,
+      "dplus_m": 28,
+      "dmoins_m": 319,
+      "minutes": 83
+    },
+    {
+      "rang": 7,
+      "depart": "Bivouac Col de Verde",
+      "arrivee": "Refuge de Prati",
+      "pk_depart_km": 26.867,
+      "pk_arrivee_km": 31.673,
+      "km": 4.806,
+      "dplus_m": 578,
+      "dmoins_m": 50,
+      "minutes": 160
+    },
+    {
+      "rang": 8,
+      "depart": "Refuge de Prati",
+      "arrivee": "Refuge Laparo",
+      "pk_depart_km": 31.673,
+      "pk_arrivee_km": 37.46,
+      "km": 5.787,
+      "dplus_m": 199,
+      "dmoins_m": 506,
+      "minutes": 131
+    },
+    {
+      "rang": 9,
+      "depart": "Refuge Laparo",
+      "arrivee": "Refuge d'Usciolu",
+      "pk_depart_km": 37.46,
+      "pk_arrivee_km": 42.57,
+      "km": 5.11,
+      "dplus_m": 455,
+      "dmoins_m": 208,
+      "minutes": 151
+    },
+    {
+      "rang": 10,
+      "depart": "Refuge d'Usciolu",
+      "arrivee": "Bergeries de Basseta",
+      "pk_depart_km": 42.57,
+      "pk_arrivee_km": 51.723,
+      "km": 9.153,
+      "dplus_m": 189,
+      "dmoins_m": 626,
+      "minutes": 183
+    },
+    {
+      "rang": 11,
+      "depart": "Bergeries de Basseta",
+      "arrivee": "Refuge de Matalza",
+      "pk_depart_km": 51.723,
+      "pk_arrivee_km": 53.447,
+      "km": 1.724,
+      "dplus_m": 108,
+      "dmoins_m": 7,
+      "minutes": 42
+    },
+    {
+      "rang": 12,
+      "depart": "Refuge de Matalza",
+      "arrivee": "Bergerie I Croci",
+      "pk_depart_km": 53.447,
+      "pk_arrivee_km": 56.438,
+      "km": 2.991,
+      "dplus_m": 125,
+      "dmoins_m": 1,
+      "minutes": 64
+    },
+    {
+      "rang": 13,
+      "depart": "Bergerie I Croci",
+      "arrivee": "Refuge d'Asinau",
+      "pk_depart_km": 56.438,
+      "pk_arrivee_km": 63.299,
+      "km": 6.861,
+      "dplus_m": 495,
+      "dmoins_m": 484,
+      "minutes": 191
+    },
+    {
+      "rang": 14,
+      "depart": "Refuge d'Asinau",
+      "arrivee": "Col de Bavella",
+      "pk_depart_km": 63.299,
+      "pk_arrivee_km": 74.047,
+      "km": 10.748,
+      "dplus_m": 317,
+      "dmoins_m": 655,
+      "minutes": 227
+    },
+    {
+      "rang": 15,
+      "depart": "Col de Bavella",
+      "arrivee": "Refuge d'i Paliri",
+      "pk_depart_km": 74.047,
+      "pk_arrivee_km": 78.579,
+      "km": 4.532,
+      "dplus_m": 189,
+      "dmoins_m": 350,
+      "minutes": 106
+    },
+    {
+      "rang": 16,
+      "depart": "Refuge d'i Paliri",
+      "arrivee": "Conca",
+      "pk_depart_km": 78.579,
+      "pk_arrivee_km": 91.788,
+      "km": 13.209,
+      "dplus_m": 300,
+      "dmoins_m": 1097,
+      "minutes": 274
+    }
+  ]
+}

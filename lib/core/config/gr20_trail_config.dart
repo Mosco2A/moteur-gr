@@ -5,6 +5,36 @@ library;
 import '../branding/stepways_legal.dart';
 import 'trail_config.dart';
 
+/// Les secours regionaux du GR20, PARTAGES PAR LE SENTIER ET SES CHAPITRES.
+///
+/// Secours regionaux fournis par la config (jamais hardcodes dans le moteur).
+/// Le 112 est UNIVERSEL et vit dans le moteur
+/// (`kUniversalEmergencyContacts`) : il n'est pas duplique ici.
+///
+/// CES DEUX NUMEROS SONT CEUX DU MARE A MARE CENTRE, et ils valent pour le GR20
+/// POUR UNE RAISON VERIFIABLE : le PGHM de Corte couvre le secours en montagne
+/// de toute la Corse, et le Parc naturel regional de Corse gere les refuges des
+/// deux sentiers. Aucun numero non source n'est ajoute — la tache 647 a retire
+/// un numero de secours dont la source n'avait jamais pu etre etablie, et un
+/// numero faux coute le temps qu'on met a comprendre qu'il est faux, au pire
+/// moment.
+///
+/// POURQUOI UNE CONSTANTE NOMMEE PLUTOT QUE TROIS LISTES (tache 841). Les deux
+/// chapitres traversent exactement le meme terrain et relevent exactement des
+/// memes secours. Les recopier en ferait TROIS endroits a corriger le jour ou
+/// un numero change — et un numero de secours perime est de loin le pire
+/// chiffre faux de l'application. Une constante ne peut pas divergier.
+const kSecoursDuGr20 = <TrailEmergencyNumber>[
+  TrailEmergencyNumber(
+    name: 'PGHM Corte (secours en montagne)',
+    phone: '+33495477146',
+  ),
+  TrailEmergencyNumber(
+    name: 'Parc naturel regional de Corse',
+    phone: '+33495345480',
+  ),
+];
+
 /// Configuration du sentier GR20 (Corse).
 ///
 /// TOUS LES CHIFFRES DE CE FICHIER SONT LUS SUR LA TRACE (tache 839), et c'est
@@ -46,6 +76,24 @@ import 'trail_config.dart';
 /// 91,79 km au sud. Le denivele, lui, n'est pas partage — le nord porte
 /// 1,74 fois le D+ du sud pour la meme distance. Les deux moities se marchent
 /// donc tres differemment, et c'est la que se lit la difficulte.
+///
+/// CE SENTIER N'EST PLUS UN PRODUIT (tache 841), ET C'EST LA SEULE CHOSE QUI A
+/// CHANGE DEPUIS LA TACHE 839. Il declare ses deux chapitres
+/// ([TrailConfig.chapterIds]), donc [TrailConfig.estVendable] est faux, donc il
+/// quitte le catalogue de vente ([TrailCatalog.all]) et l'achat le refuse
+/// nommement ([PurchaseStatusResult.sentierAChapitres]). Decision de Christophe
+/// du 15/10 17:45, verbatim : « on achete le sentier seulement si il n y a pas
+/// de chapitres. Sinon par exemple pour le GR20 on peut acheter chapitre 1,
+/// chapitre 2, chapitre 1 and 2 ».
+///
+/// IL RESTE RESOLVABLE PAR SON IDENTIFIANT, ET CE N'EST PAS UNE DEMI-MESURE. Un
+/// sentier mere est une NUMEROTATION DE REFERENCE (design #101920, 4.4) : ses
+/// seize etapes, sa trace de 9 128 points, ses trente et une nuits et ses
+/// soixante-quatorze couchages restent la donnee d'ou les chapitres sont
+/// decoupes, et la regle CH-10 veut que cette numerotation ne bouge JAMAIS —
+/// sinon les droits deja vendus designeraient les mauvaises journees. Le rendre
+/// introuvable, comme l'est un sentier fictif, casserait le decoupage lui-meme.
+/// Ce qui disparait est le PRODUIT, pas la reference.
 const gr20TrailConfig = TrailConfig(
   id: 'gr20',
   name: 'GR20',
@@ -83,27 +131,14 @@ const gr20TrailConfig = TrailConfig(
   defaultDuration: 16,
   offlineFirst: true,
   hasPremium: false,
-  emergencyNumbers: [
-    // Secours regionaux fournis par la config (jamais hardcodes dans le
-    // moteur). Le 112 est UNIVERSEL et vit dans le moteur
-    // (`kUniversalEmergencyContacts`) : il n'est pas duplique ici.
-    //
-    // CES DEUX NUMEROS SONT CEUX DU MARE A MARE CENTRE, et ils valent pour le
-    // GR20 POUR UNE RAISON VERIFIABLE : le PGHM de Corte couvre le secours en
-    // montagne de toute la Corse, et le Parc naturel regional de Corse gere les
-    // refuges des deux sentiers. Aucun numero non source n'est ajoute — la
-    // tache 647 a retire un numero de secours dont la source n'avait jamais pu
-    // etre etablie, et un numero faux coute le temps qu'on met a comprendre
-    // qu'il est faux, au pire moment.
-    TrailEmergencyNumber(
-      name: 'PGHM Corte (secours en montagne)',
-      phone: '+33495477146',
-    ),
-    TrailEmergencyNumber(
-      name: 'Parc naturel regional de Corse',
-      phone: '+33495345480',
-    ),
-  ],
+  // LES DEUX CHAPITRES, ET CETTE SEULE LIGNE RETIRE LE SENTIER DE LA VENTE.
+  //
+  // L'ORDRE EST CELUI DE LA TRACE, et il ne se renumerote jamais (regle CH-10
+  // du design #101920) : on ajoute a la fin, on archive un membre, on ne
+  // renumerote pas — sinon les droits deja vendus designent les mauvaises
+  // journees.
+  chapterIds: ['gr20-nord', 'gr20-sud'],
+  emergencyNumbers: kSecoursDuGr20,
   // Dossier de donnees du sentier : etapes, points d'interet et trace.
   seedAssetsBase: 'assets/data/gr20',
   // Fichier monolithique : les trois parcours (integral, nord, sud), les seize
