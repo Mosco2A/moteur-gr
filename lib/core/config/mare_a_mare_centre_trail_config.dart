@@ -97,5 +97,15 @@ const mareAMareCentreTrailConfig = TrailConfig(
   accommodationsAssetPath: 'assets/data/mare_a_mare_centre.json',
   // Fiches conseils rattachees au sentier (chargees au seed).
   tipAssetPaths: ['assets/tips/mare_a_mare_tips.json'],
+  // LA FICHE DU SENTIER (tache 846). Le sentier sur lequel l'application
+  // DEMARRE en a une, comme le GR20 : c'est le premier que le randonneur voit,
+  // et il n'y avait aucune raison de le laisser sans description le temps qu'un
+  // autre en ait une.
+  ficheAssetPath: 'assets/data/mare_a_mare_centre/fiche.json',
+  // 1 513 m — l'altitude la plus haute de la trace (1 512,5 m au metre
+  // arrondi), mesuree sur ses 3 590 points : la meme trace relevee dans
+  // OpenStreetMap que les totaux ci-dessus. A comparer aux 2 578 m du GR20 :
+  // deux sentiers corses de longueur voisine, 1 065 m d'ecart au point haut.
+  maxAltitudeM: 1513,
   privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );

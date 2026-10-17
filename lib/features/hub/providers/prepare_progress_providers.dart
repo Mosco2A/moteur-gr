@@ -20,7 +20,7 @@ import '../../planning/planning_facade.dart'
 import '../../safety/safety_facade.dart'
     show healthPrepareDoneProvider, healthPrepareStepsProvider;
 import '../../training/training_facade.dart'
-    show trainingPlanProvider, trainingProgressProvider;
+    show trainingPlanForTrailProvider, trainingProgressProvider;
 import 'cockpit_start_providers.dart';
 
 /// LA QUESTION DE CHRISTOPHE, LE 07/10 A 08:37, VERBATIM : « avant sur
@@ -228,7 +228,27 @@ final statutDePreparationProvider =
           final faites = ref
               .watch(trainingProgressProvider(trailId))
               .doneSessionIds;
-          final plan = ref.watch(trainingPlanProvider).value;
+          // LE PLAN DU SENTIER DEMANDE, PAS CELUI DU SENTIER ACTIF (tache 851,
+          // diagnostic de la 796, memoire #101735). Cette ligne lisait
+          // `trainingPlanProvider`, donc le plan du sentier OUVERT — alors que
+          // cette coche existe par sentier et que son element SURVIT a la
+          // bascule (famille non `autoDispose`). L'element du sentier precedent
+          // ecoutait donc une source qui ne le concernait plus et s'invalidait
+          // au moment meme de la bascule, c'est-a-dire pendant le build de
+          // `HubPrepareSection` : « setState() called during build ».
+          //
+          // C'EST AUSSI UN FAUX CHIFFRE, ET IL SE VOIT SANS PLANTER : la coche
+          // d'un sentier comptait ses seances faites CONTRE LE PLAN D'UN AUTRE.
+          // Deux sentiers n'ont ni le meme nombre de seances ni les memes
+          // identifiants — « 3 sur 12 » pouvait donc s'afficher sur un plan qui
+          // n'en compte que 8. C'est un defaut DISTINCT du plantage, et il se
+          // voit sans planter.
+          //
+          // Les sources VRAIMENT communes au randonneur — sa fiche, sa fiche
+          // medicale, la duree retenue — restent lues sans `trailId` dans les
+          // autres branches, et c'est correct : elles sont a LA PERSONNE.
+          // Le plan d'entrainement, lui, est a UN SENTIER.
+          final plan = ref.watch(trainingPlanForTrailProvider(trailId)).value;
           // Plan pas encore lu : on ne peut pas dire « fait » sans savoir sur
           // combien de seances, mais une seance cochee prouve « entame ».
           if (plan == null) {

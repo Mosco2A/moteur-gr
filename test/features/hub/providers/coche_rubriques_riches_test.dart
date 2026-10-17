@@ -293,8 +293,17 @@ void main() {
       ],
     );
 
+    // LE PLAN EST SERVI POUR CE SENTIER-CI, PAS POUR « LE SENTIER ACTIF »
+    // (tache 851). Ce decor remplacait `trainingPlanProvider`, le plan du
+    // sentier ACTIF — ce que la coche lisait alors, et qui etait le defaut :
+    // la coche d'un sentier comptait ses seances contre le plan d'un autre.
+    // Elle lit desormais `trainingPlanForTrailProvider(trailId)`, donc le
+    // decor le remplace sur LA MEME cle. Le test verifie toujours la meme
+    // chose ; il la verifie sur le bon sentier.
     ProviderContainer avecPlan() => conteneur(
-      plus: [trainingPlanProvider.overrideWith((ref) async => plan)],
+      plus: [
+        trainingPlanForTrailProvider(trailId).overrideWith((ref) async => plan),
+      ],
     );
 
     void fait(List<String> seances) => SharedPreferences.setMockInitialValues({

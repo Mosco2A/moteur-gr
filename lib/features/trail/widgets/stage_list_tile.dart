@@ -4,14 +4,15 @@ library;
 
 import 'package:flutter/material.dart';
 
+import '../../../core/branding/stepways_icons.dart';
 import '../../../core/models/stage_duration.dart';
 import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/difficulte_du_sentier.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/stage_number_badge.dart';
 import 'difficulty_badge.dart';
 import 'elevation_indicator.dart';
-import '../../../core/branding/stepways_icons.dart';
 
 /// Carte d'étape pour la liste scrollable.
 ///
@@ -19,6 +20,7 @@ import '../../../core/branding/stepways_icons.dart';
 /// durée estimée (calculée), badge de difficulté coloré.
 /// Un tap déclenche [onTap] pour naviguer vers le détail.
 class StageListTile extends StatelessWidget {
+  /// Une etape a afficher, et le geste qui ouvre son detail.
   const StageListTile({super.key, required this.stage, this.onTap});
 
   /// Modèle de l'étape à afficher
@@ -81,7 +83,17 @@ class StageListTile extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: AppTheme.spacingSm),
-                    DifficultyBadge(difficulty: stage.difficulty),
+                    // LA PASTILLE SUIT LE DENIVELE MESURE, PAS L'ETIQUETTE
+                    // STOCKEE (tache 848). Les seuils classent l'etape
+                    // (decision de Christophe du 17/10) ; l'etiquette de
+                    // `stages.json` a ete calculee sur les anciens seuils et
+                    // dirait « Modere » pour une journee de 967 m que la
+                    // nouvelle echelle classe difficile.
+                    DifficultyBadge(
+                      niveau: SeuilsDeDifficulte.pourDenivele(
+                        stage.elevationGainM,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: AppTheme.spacingXs),

@@ -27,10 +27,45 @@ import '../models/training_plan.dart';
 /// cle par sentier) — aucune donnee envoyee a un serveur (minimisation RGPD). Le
 /// coche est indexe par l'ID STABLE de seance (survit a un changement de plan).
 
+/// PLAN D'ENTRAINEMENT D'UN SENTIER DESIGNE — indexe par son identifiant.
+///
+/// POURQUOI CETTE PORTE EXISTE (tache 851, diagnostic de la 796, memoire
+/// #101735). [trainingPlanProvider] rend le plan du sentier ACTIF : il lit
+/// `resolvedTrailConfigProvider`, donc il CHANGE a chaque bascule de sentier.
+/// C'est le bon contrat pour l'ecran Entrainement, qui ne parle que du sentier
+/// ouvert. Ce n'est PAS le bon contrat pour qui doit parler d'UN sentier PRECIS
+/// — typiquement la coche « preparation physique » du cockpit, qui existe par
+/// sentier et doit rester vraie pour le sien.
+///
+/// CE QUE LE MELANGE COUTAIT, MESURE. `statutDePreparationProvider` est une
+/// famille NON `autoDispose` keyee par `(trailId,sujet)` : son element survit a
+/// la bascule de sentier. Sa branche « preparation physique » lisait le plan
+/// ACTIF. L'element du sentier PRECEDENT restait donc vivant en ecoutant une
+/// source qui ne le concernait plus, et il s'invalidait tout seul au moment ou
+/// le sentier changeait — c'est-a-dire PENDANT le build de `HubPrepareSection`,
+/// l'ecran d'arrivee. Riverpod demandait alors au `ProviderScope` de se
+/// reconstruire en pleine phase de build : « setState() or markNeedsBuild()
+/// called during build ».
+///
+/// LE PLAN NE DEPEND QUE DE SON IDENTIFIANT, et c'est ce qui rend cette porte
+/// gratuite : [TrainingPlanLoader.loadForTrail] est une fonction du seul
+/// `trailId`. Il n'y avait aucune raison de passer par l'etat global pour
+/// l'obtenir — seulement l'habitude de l'ecran qui l'a introduit.
+final trainingPlanForTrailProvider =
+    FutureProvider.family<TrainingPlan, String>((ref, trailId) async {
+      return TrainingPlanLoader.loadForTrail(trailId);
+    });
+
 /// Plan d'entrainement du sentier ACTIF (externalise, repli `default`).
+///
+/// IL DELEGUE, IL NE RECHARGE PAS : le plan d'un sentier est lu a UN seul
+/// endroit ([trainingPlanForTrailProvider]), et ce provider-ci n'ajoute que la
+/// question « quel est le sentier actif ». Deux chargements separes du meme
+/// fichier auraient pu diverger entre eux, et c'est exactement le genre d'ecart
+/// que la tache 851 a paye.
 final trainingPlanProvider = FutureProvider<TrainingPlan>((ref) async {
   final trailId = ref.watch(resolvedTrailConfigProvider).id;
-  return TrainingPlanLoader.loadForTrail(trailId);
+  return ref.watch(trainingPlanForTrailProvider(trailId).future);
 });
 
 /// Vrai si un plan SPECIFIQUE (non generique) existe pour le sentier actif.

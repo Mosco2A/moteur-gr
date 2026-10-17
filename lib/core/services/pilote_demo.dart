@@ -42,10 +42,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/checklist/providers/checklist_provider.dart';
+import '../../features/feasibility/feasibility_facade.dart'
+    show hikerProfileProvider;
 import '../../features/hub/providers/cockpit_start_providers.dart';
 import '../../features/notifications/providers/download_reminder_provider.dart';
-import '../../features/planning/providers/planned_days_provider.dart';
-import '../../features/planning/providers/planning_provider.dart';
+// LE PLANNING SORT PAR SA PORTE, ET CA PAIE L'ENTREE DU PROFIL (tache 851).
+// Ce fichier visait DEUX fichiers internes de `planning` : 2 fleches du socle
+// vers une feature, pour une feature qui offre une facade qui exporte les deux
+// symboles. Les reunir en UNE fleche respecte la regle 10 (on lit une feature
+// par sa facade) ET libere la place de l'import de `feasibility` ci-dessus, que
+// la correction du double appui demande. Le plafond de
+// `couches_respectees_645_test.dart` est serre contre la mesure : il reste donc
+// a 21, et aucune dette nouvelle n'est ouverte.
+import '../../features/planning/planning_facade.dart'
+    show plannedDaysProvider, selectedDurationProvider;
 import '../../features/trek/providers/tracking_providers.dart';
 import '../config/trail_selection.dart';
 import '../engine/trail_engine.dart';
@@ -86,13 +96,94 @@ import 'session_demo.dart';
 /// seconde entree n'a de sens que si l'on n'y est pas. Entrer en demo
 /// quand on y est deja n'est pas une erreur a signaler — c'est un geste
 /// sans objet, et il ne fait donc rien.
-void entrerEnDemo(WidgetRef ref) {
-  if (ref.read(sessionDemoProvider).active) return;
+///
+/// LE DEPART FAIT PARTIE DU GESTE (tache 851). La garde ci-dessus couvrait
+/// l'ETAT, pas le GESTE : les deux portes d'entree ecrivaient
+/// `entrerEnDemo(ref)` PUIS `go('/home')` sur la ligne suivante, donc le depart
+/// partait AUSSI au second appui, celui qui n'a rien a faire. Le bouton reste
+/// sous le doigt pendant les ~300 ms de la transition : ce second appui le
+/// touche pour de vrai, et il relancait une navigation qui remontait le cockpit
+/// pour rien. C'est du gaspillage ferme, et c'est ce que la garde promettait
+/// deja — « elle les couvre ensemble, par construction ».
+///
+/// CE N'EST PAS CE QUI PLANTAIT, ET IL FAUT LE DIRE SANS SE FLATTER. Mesure
+/// faite en neutralisant chaque correction a tour de role : le persona LE
+/// MALADROIT (test 573) reste ROUGE avec cette idempotence seule, et il devient
+/// VERT avec la seule ligne `ref.read(hikerProfileProvider)` ci-dessous.
+/// L'exception ne vient donc PAS de la repetition du geste — elle vient de
+/// l'entree en demo elle-meme, des le PREMIER appui, quand un cockpit a deja
+/// vecu dans la session. Le detail est dans le corps, a l'endroit qui corrige.
+/// La tache 796 avait deja etabli la meme chose : « l'idempotence du
+/// geste Preparer NE FAIT PAS TOMBER LE ROUGE » (memoire #101735).
+///
+/// [context] est la porte de sortie du geste, et il est optionnel : un test
+/// unitaire qui n'a pas d'arbre route appelle sans, et l'entree en demo se fait
+/// quand meme — c'est l'etat qui fait la demo, pas l'ecran (comme dans
+/// [quitterLaDemo]).
+///
+/// Rend `true` quand le geste a VRAIMENT eu lieu, `false` quand il etait sans
+/// objet. L'appelant n'a rien a en faire aujourd'hui ; les tests, eux, peuvent
+/// dire laquelle des deux choses s'est passee.
+bool entrerEnDemo(WidgetRef ref, {BuildContext? context}) {
+  if (ref.read(sessionDemoProvider).active) return false;
   final sentierAvant = ref.read(selectedTrailIdProvider);
   ref.read(sessionDemoProvider.notifier).entrer(sentierAvant: sentierAvant);
   // On entre en demo AVANT de basculer de sentier : la barriere d'ecriture est
   // donc deja posee quand le moteur resout le nouveau sentier.
   chooseTrail(ref, kSentierDeDemo);
+  // LA CHAINE DU PROFIL EST RESOLUE ICI, HORS DE TOUTE PHASE DE BUILD — et
+  // cette ligne est LA correction du double appui (tache 851).
+  //
+  // CE QU'ELLE EMPECHE, MESURE. `hikerProfileRepositoryProvider` CHOISIT son
+  // magasin d'apres le drapeau de demo (`HikerProfileRepository.enDemo` ou le
+  // vrai). Lever le drapeau juste au-dessus le rend donc SALE. Or Riverpod est
+  // paresseux : un provider sale que personne ne lit RESTE sale, longtemps
+  // qu'on veut. Personne ne le lit depuis le catalogue — et le premier a le
+  // faire est le cockpit, pendant SON BUILD, par la coche « faisabilite » de
+  // `HubPrepareSection`.
+  //
+  // Ce premier abonnement resout alors le magasin EN PLEINE PHASE DE BUILD ; le
+  // magasin change de valeur et previent ses auditeurs ; parmi eux se trouve
+  // [hikerProfileProvider] LUI-MEME, abonne depuis un cockpit precedent, qui
+  // s'invalide ; et Riverpod demande a `ProviderScope` de se reconstruire alors
+  // qu'il construit : « setState() or markNeedsBuild() called during build ».
+  // Le randonneur voit l'ecran rouge de Flutter pour avoir appuye deux fois.
+  //
+  // POURQUOI « DEUX FOIS », ET POURQUOI 841 L'A REVELE. Le premier appui lance
+  // la transition ; le bouton reste sous le doigt pendant ses ~300 ms, donc le
+  // second appui le touche VRAIMENT. C'est ce passage qui fait construire
+  // le cockpit sur la chaine encore sale. La condition complete, deja mesuree a
+  // la tache 796 (memoire #101735), est « une vraie bascule de sentier APRES
+  // qu'un cockpit a deja ete construit » : il faut un abonnement laisse par
+  // un cockpit precedent. Le lot 841 fait passer le catalogue de 4 sentiers
+  // a six, ce qui amene le bouton de demo dans les gestes balayes apres qu'un
+  // cockpit a vecu. Il n'a touche ni ce fichier, ni le cockpit, ni la demo : il
+  // a REVELE un defaut latent, il ne l'a pas introduit.
+  //
+  // POURQUOI UNE LECTURE SUFFIT, ET POURQUOI ELLE EST AU BON ENDROIT. Hors
+  // build, la meme cascade est LEGALE : le magasin se resout, le profil
+  // s'invalide, le rafraichissement est programme normalement — et le cockpit
+  // trouve une chaine propre quand il arrive. C'est le remede de la
+  // tache 601, celui que [chooseTrail] applique a la chaine de CONFIGURATION :
+  // « on resout ICI, dans le gestionnaire de geste, donc HORS de toute phase de
+  // build ». `chooseTrail` ne connait que le sentier ; le drapeau de demo a ses
+  // propres dependants, et celui-ci est le seul que le cockpit resout pendant
+  // son build.
+  //
+  // CE QUI GARDE CETTE LIGNE : le persona LE MALADROIT,
+  // `test/personas/persona_le_maladroit_573_test.dart`. Neutraliser cette ligne
+  // le fait ROUGIR, la remettre VERDIR — verifie dans les deux sens. Une
+  // garde dediee a ete tentee et JETEE : hors du balayage du persona, le decor
+  // minimal (un cockpit, la faisabilite visitee, une vraie bascule) ne suffit
+  // pas a reveiller la cascade, et un test vert dans les deux cas aurait promis
+  // une protection qu'il n'offre pas. Le persona, lui, mord.
+  ref.read(hikerProfileProvider);
+  // LE DEPART EST LA DERNIERE CHOSE DU GESTE, et il est DANS la garde : on
+  // change de sentier, PUIS on change d'ecran, et jamais deux fois.
+  if (context != null) {
+    GoRouter.maybeOf(context)?.go(HomeLocations.terrain);
+  }
+  return true;
 }
 
 /// QUITTE LA DEMO : sortie COMPLETE et ATOMIQUE (bug 19), puis retour a
@@ -184,7 +275,13 @@ Future<void> quitterLaDemo(
 /// « on pourra la retrouver dans Mon compte » : ce geste est l'autre porte
 /// d'entree de la demo, celle qui reste quand le bouton du catalogue a ete
 /// cache. Il n'y en a pas une troisieme, et les deux passent par [entrerEnDemo].
+///
+/// LE DEPART N'EST PLUS ECRIT ICI (tache 851) : il est passe DANS
+/// [entrerEnDemo], derriere la garde de re-entree. Cette porte-la portait le
+/// meme defaut que celle du catalogue — un second appui ne refaisait pas l'etat
+/// mais refaisait le `go('/home')`. Les deux sont fermees d'un coup, et c'est
+/// exactement ce que la garde promettait deja : « une garde sur l'une des deux
+/// aurait laisse l'autre ouverte ».
 void restartDemoFromAccount(WidgetRef ref, BuildContext context) {
-  entrerEnDemo(ref);
-  GoRouter.maybeOf(context)?.go('/home');
+  entrerEnDemo(ref, context: context);
 }

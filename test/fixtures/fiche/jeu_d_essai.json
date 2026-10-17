@@ -1,0 +1,59 @@
+{
+  "quoi": "LE JEU D'ESSAI DU MANIFESTE DE FICHE (tache 846). Il n'y a AUCUNE image a cote de ce fichier, et c'est voulu : ce qu'il met a l'epreuve est la LECTURE du manifeste et le REFUS des photos sans provenance, pas le decodage d'un JPEG. Six entrees : DEUX publiables (l'une avec coordonnees et marquee couverture, l'autre sans coordonnees sous CC0) et QUATRE qui doivent etre REFUSEES - auteur manquant, licence CC BY-NC, licence remplie « libre de droit », adresse d'origine manquante. Le fonds documente reel est constitue par la tache 845 ; ce fichier reste le decor qui prouve les regles.",
+  "schema": 1,
+  "trailId": "sentier-d-essai",
+  "description": {
+    "ou_c_est": "Un sentier d'essai, nulle part, pour eprouver la lecture.",
+    "ce_qu_on_y_voit": "Rien : ce sentier n'existe pas.",
+    "a_quoi_s_attendre": "A ce que les trois parties s'affichent separement."
+  },
+  "photos": [
+    {
+      "fichier": "test/fixtures/fiche/un_col.jpg",
+      "adresse_d_origine": "https://exemple.invalid/un_col",
+      "auteur": "Autrice d'Essai",
+      "licence": "CC BY-SA 4.0",
+      "mention": "Autrice d'Essai — CC BY-SA 4.0",
+      "lat": 42.4652,
+      "lon": 8.90688,
+      "couverture": true
+    },
+    {
+      "fichier": "test/fixtures/fiche/une_crete.jpg",
+      "adresse_d_origine": "https://exemple.invalid/une_crete",
+      "auteur": "Auteur d'Essai",
+      "licence": "CC0",
+      "mention": "Auteur d'Essai — CC0, domaine public"
+    },
+    {
+      "fichier": "test/fixtures/fiche/un_refuge.jpg",
+      "adresse_d_origine": "https://exemple.invalid/un_refuge",
+      "auteur": "",
+      "licence": "CC BY 4.0",
+      "mention": "CC BY 4.0",
+      "lat": 42.0,
+      "lon": 9.0
+    },
+    {
+      "fichier": "test/fixtures/fiche/un_lac.jpg",
+      "adresse_d_origine": "https://exemple.invalid/un_lac",
+      "auteur": "Auteur d'Essai",
+      "licence": "CC BY-NC 4.0",
+      "mention": "Auteur d'Essai — CC BY-NC 4.0"
+    },
+    {
+      "fichier": "test/fixtures/fiche/une_vallee.jpg",
+      "adresse_d_origine": "https://exemple.invalid/une_vallee",
+      "auteur": "Auteur d'Essai",
+      "licence": "libre de droit",
+      "mention": "Trouve sur internet"
+    },
+    {
+      "fichier": "test/fixtures/fiche/un_sommet.jpg",
+      "adresse_d_origine": "",
+      "auteur": "Auteur d'Essai",
+      "licence": "CC BY 4.0",
+      "mention": "Auteur d'Essai — CC BY 4.0"
+    }
+  ]
+}

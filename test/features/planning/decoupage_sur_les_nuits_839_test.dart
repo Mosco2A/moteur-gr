@@ -110,17 +110,46 @@ void main() {
       expect(programme.any((j) => j.minutes > _marcheSeule(j)), isTrue);
     });
 
-    test('la journee la plus longue retrecit quand le curseur monte', () {
+    test('la journee la plus longue retrecit, PUIS BUTE SUR SON PLANCHER', () {
       final gr20 = lireGr20();
       int pireJournee(int jours) => DecoupageSurLesNuits.repartir(
         gr20,
         jours,
       ).fold<int>(0, (m, j) => j.minutes > m ? j.minutes : m);
+
       // C'est tout l'interet du decoupage pour le randonneur : le verdict vaut
       // la PIRE journee (GO-61), et le repos n'y change rien. Une coupure
-      // relevee, elle, l'allege vraiment.
-      expect(pireJournee(31), lessThan(pireJournee(16)));
+      // relevee, elle, l'allege vraiment — jusqu'a un point.
       expect(pireJournee(16), lessThan(pireJournee(7)));
+
+      // CE CAS ATTENDAIT `pireJournee(31) < pireJournee(16)`, ET IL A CESSE
+      // D'ETRE VRAI PARCE QUE LE CALCUL S'EST AMELIORE (tache 848).
+      //
+      // L'ancien decoupage equilibrait mal : a seize journees il en laissait
+      // une plus longue que necessaire, si bien que passer a trente et une
+      // l'allegeait encore. Depuis que la repartition est OPTIMALE
+      // (`RepartitionEquilibree`), seize journees atteignent DEJA le plancher,
+      // et aucun nombre de jours ne peut descendre en dessous.
+      //
+      // LE PLANCHER N'EST PAS UN REGLAGE : c'est le plus long segment
+      // INDIVISIBLE du sentier. Sur le GR20, c'est Calenzana vers l'Ortu di u
+      // Piobbu — 394 minutes de marche, et aucune nuit relevee a l'interieur.
+      // On ne peut pas alleger une journee qu'on ne peut pas couper, et c'est
+      // exactement ce que Christophe disait le 29/09 : « couper une journer
+      // c est dormir ou? ».
+      final plancher = gr20.segments
+          .map((s) => s.minutes)
+          .reduce((a, b) => a > b ? a : b);
+      expect(plancher, 394);
+      expect(pireJournee(16), plancher);
+      expect(pireJournee(31), plancher);
+      for (var jours = 1; jours <= 31; jours++) {
+        expect(
+          pireJournee(jours),
+          greaterThanOrEqualTo(plancher),
+          reason: 'a $jours jours : le plancher ne se franchit pas',
+        );
+      }
     });
 
     test('un sentier sans releve ne change pas de comportement', () {

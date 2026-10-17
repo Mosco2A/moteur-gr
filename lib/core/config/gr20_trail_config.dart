@@ -127,7 +127,14 @@ const gr20TrailConfig = TrailConfig(
   // marcheur : ces valeurs ne sont donc que des reperes du selecteur, et les
   // bornes reelles du curseur sont derivees des donnees chargees
   // (`durationBoundsProvider`). 16 est l'allure federale (une etape par jour).
-  availableDurations: [7, 10, 12, 16],
+  //
+  // TACHE 848 — 10 DEVIENT 9, PARCE QUE C'EST L'ECHELLE QUE CHRISTOPHE
+  // PRESENTE. Le 17/10 11:05, verbatim : « Et quand tu presente tu mets 7
+  // jours= experts, 9jours = tres difficile, 12 jours Difficile, 16 jours =
+  // Difficile ». Les quatre reperes du selecteur sont donc les quatre allures
+  // qu'il annonce : une fiche qui propose 10 jours quand le discours parle de 9
+  // oblige le lecteur a faire la conversion lui-meme.
+  availableDurations: [7, 9, 12, 16],
   defaultDuration: 16,
   offlineFirst: true,
   hasPremium: false,
@@ -149,5 +156,15 @@ const gr20TrailConfig = TrailConfig(
   // d'etape et quinze coupures de jour relevees en tache 838, plus les trente
   // et un segments mesures entre nuits consecutives.
   possibleNightsAssetPath: 'assets/data/gr20/nuits_possibles.json',
+  // LA FICHE DU SENTIER (tache 846) : sa description en trois questions — ou
+  // c'est, ce qu'on y voit, a quoi s'attendre — et son manifeste de photos.
+  // AUCUN de ces textes ne vit dans le code, et aucune photo n'est choisie ici.
+  ficheAssetPath: 'assets/data/gr20/fiche.json',
+  // 2 578 m — L'ALTITUDE LA PLUS HAUTE DE LA TRACE, MESUREE SUR SES 9 128
+  // POINTS. Elle tombe dans l'etape 4 (Ascu-Stagnu vers Tighjettu), celle qui
+  // franchit le point le plus haut du chemin. C'est le plus haut du catalogue,
+  // et 1 066 m au-dessus de celui du Mare a Mare Centre : voila pourquoi
+  // l'altitude est un critere a part et non une consequence du denivele.
+  maxAltitudeM: 2578,
   privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );

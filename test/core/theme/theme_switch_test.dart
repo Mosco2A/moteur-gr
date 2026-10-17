@@ -114,10 +114,22 @@ void main() {
 
         // Pas d'exception de rendu (overflow, etc.).
         expect(tester.takeException(), isNull);
-        // En-tete + section etapes presents.
+        // En-tete present des l'ouverture.
         expect(find.text(testTrailConfig.displayName), findsWidgets);
+
+        // LA SECTION DES ETAPES SE TROUVE PLUS BAS DEPUIS LA TACHE 846, et il
+        // faut donc defiler pour la voir. La fiche porte desormais, au-dessus
+        // d'elle, la description du sentier et sa difficulte deduite ; elle
+        // defile d'un seul mouvement, et un `Finder` ordinaire ne voit que ce
+        // qui est peint. On fait ce que le randonneur fait.
+        await tester.scrollUntilVisible(
+          find.text('Étapes', skipOffstage: false),
+          300,
+        );
+        await tester.pumpAndSettle();
         expect(find.text('Étapes'), findsOneWidget);
         expect(find.text('Premiere etape'), findsOneWidget);
+        expect(tester.takeException(), isNull);
       });
     }
 

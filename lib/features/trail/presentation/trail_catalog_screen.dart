@@ -25,6 +25,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/paywall_sheet.dart';
 import '../../../core/branding/stepways_icons.dart';
+import '../widgets/photo_de_couverture.dart';
 
 /// Ecran catalogue des sentiers disponibles.
 ///
@@ -268,8 +269,18 @@ class _BoutonDemo extends ConsumerWidget {
             // pour etre restaure a la sortie (bug 19, DEM-260930-1028). Sans
             // cela, quitter la demo laissait le sentier de demo actif — « on
             // est toujours en mode demo sans le savoir ».
-            entrerEnDemo(ref);
-            context.go('/home');
+            // LE DEPART EST PASSE DANS [entrerEnDemo] (tache 851). Il etait
+            // ecrit ici, sur la ligne suivante, DONC HORS DE LA GARDE DE
+            // RE-ENTREE : un second appui — le bouton reste sous le doigt
+            // pendant toute la transition — ne refaisait pas l'etat, mais
+            // relancait le depart et remontait le cockpit pour rien. Le geste
+            // est maintenant d'un seul bloc, et sans objet la seconde fois.
+            //
+            // L'EXCEPTION « setState during build » QUE LE PERSONA MALADROIT
+            // ATTRAPAIT N'ETAIT PAS CA : elle vient de la chaine de providers
+            // que le drapeau de demo salit, et elle est corrigee dans
+            // [entrerEnDemo] — mesure a l'appui, voir sa documentation.
+            entrerEnDemo(ref, context: context);
           },
           child: Padding(
             padding: const EdgeInsets.all(AppTheme.spacingBase),
@@ -392,9 +403,27 @@ class _AvailableTrailCard extends ConsumerWidget {
         vertical: AppTheme.spacingSm,
       ),
       padding: const EdgeInsets.all(AppTheme.spacingBase),
+      // LA CARTE OUVRE LA FICHE DU SENTIER (tache 846). C'est la PORTE qui
+      // manquait : la fiche (`/trail/:id`) existait, se peignait, et AUCUN
+      // geste de l'application n'y menait — elle etait inscrite au registre
+      // des routes dormantes avec la mention « l'ecran n'a plus de lecteur ».
+      // Christophe demande, le 17/10, de voir les infos du trek AVANT que la
+      // preparation s'ouvre : il demandait donc cette porte.
+      //
+      // CE GESTE S'AJOUTE, IL NE REMPLACE RIEN. « Preparer » ouvre toujours le
+      // cockpit directement, et c'etait une decision de Christophe du 30/09
+      // (tache 639, bug 2) : changer ce bouton-la aurait ete remplacer sa
+      // decision par ma lecture de sa phrase. Appuyer sur la CARTE ouvre la
+      // fiche ; appuyer sur le BOUTON prepare. Le relief de la carte change
+      // tout seul, la brique [AppCard] le deduit du geste (tache 639, bug 4).
+      onTap: () => context.push('/trail/${trail.id}'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // LA PHOTO DU TREK SUR LE CATALOGUE (demande du 17/10, verbatim :
+          // « Il faut aussi une photo du trek sur le catalogue »). Absente du
+          // manifeste, elle n'occupe RIEN — pas de hauteur reservee.
+          PhotoDeCouverture(trailId: trail.id),
           // Titre + icone.
           Row(
             children: [
