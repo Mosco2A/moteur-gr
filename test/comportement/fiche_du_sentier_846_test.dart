@@ -228,11 +228,25 @@ void main() {
       expect(fiche.description.ceQuOnYVoit, contains('2 578'));
       expect(fiche.description.aQuoiSAttendre, isNotEmpty);
       expect(fiche.estVide, isFalse);
-      // AUCUNE PHOTO AUJOURD'HUI, ET C'EST L'ETAT ATTENDU : le fonds documente
-      // est constitue par la tache 845. Le manifeste existe, son contrat est
-      // ecrit, et la fiche se comporte proprement sans image.
-      expect(fiche.photos, isEmpty);
-      expect(fiche.couverture, isNull);
+      // TACHE 848 — LES PHOTOS SONT ENTREES, ET C'EST CE CAS QUI LE DIT.
+      //
+      // IL ATTENDAIT L'INVERSE, ET IL AVAIT RAISON DE L'ATTENDRE. La tache 846
+      // a livre le LECTEUR, le CONTRAT et le JEU D'ESSAI avec des manifestes
+      // VIDES : a ce moment-la, une photo dans le produit aurait ete une photo
+      // sans preuve de licence, dans une application PAYANTE. Le fonds
+      // documente de la tache 845 existe depuis — dix-huit images de Wikimedia
+      // Commons, licence verifiee a l'adresse, mention a afficher, empreinte
+      // mesuree — et la tache 848 les a fait entrer avec leur preuve a cote
+      // (`assets/data/<sentier>/photos/PROVENANCE.json`).
+      //
+      // LA REGLE VERIFIEE ICI NE CHANGE PAS, SEUL SON ETAT CHANGE : aucune
+      // image n'entre sans ses cinq champs. Le detail est garde par
+      // `test/assets/photos_du_produit_848_test.dart`.
+      expect(fiche.photos.length, 12, reason: 'six vues du nord, six du sud');
+      expect(fiche.photosRefusees, isEmpty);
+      expect(fiche.couverture, isNotNull);
+      expect(fiche.couverture!.auteur, isNotEmpty);
+      expect(fiche.couverture!.mention, contains(fiche.couverture!.auteur));
     });
 
     test('le Mare a Mare Centre declare la sienne', () {

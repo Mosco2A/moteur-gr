@@ -7,19 +7,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/analytics/screen_entry.dart';
+import '../../../core/branding/stepways_icons.dart';
+import '../../../core/config/trail_catalog.dart';
+import '../../../core/config/trail_config.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
+import '../../planning/planning_facade.dart';
 import '../providers/fiche_de_sentier_provider.dart';
 import '../providers/stages_provider.dart';
 import '../widgets/bande_de_photos.dart';
 import '../widgets/description_du_sentier.dart';
 import '../widgets/difficulte_calculee.dart';
 import '../widgets/stage_list_tile.dart';
-import '../../../core/branding/stepways_icons.dart';
 
 /// Écran détail d'un sentier — LA FICHE, entre le catalogue et la preparation.
 ///
@@ -28,8 +31,9 @@ import '../../../core/branding/stepways_icons.dart';
 /// demarrage de la preparation ce sont les infos sur le trek selectionne »).
 /// Il portait le nom, la region, la distance, le denivele et la liste des
 /// etapes. Il porte desormais, dans cet ordre : les PHOTOS du sentier avec leur
-/// mention, sa DESCRIPTION en trois questions, sa DIFFICULTE DEDUITE de trois
-/// mesures a l'allure que le randonneur choisit ici meme, puis ses etapes.
+/// mention, sa DESCRIPTION en trois questions, sa DIFFICULTE en DEUX JAUGES —
+/// la repartition de ses journees et le verdict de la pire — a l'allure
+/// CONSEILLEE que le randonneur peut changer ici meme, puis ses etapes.
 ///
 /// TROIS BLOCS SUR QUATRE PEUVENT ETRE ABSENTS, ET ALORS ILS N'OCCUPENT RIEN.
 /// Un sentier sans manifeste n'affiche ni photo ni description — pas un cadre
@@ -39,6 +43,8 @@ import '../../../core/branding/stepways_icons.dart';
 ///
 /// LES ETATS DES ETAPES SONT INCHANGES : chargement, erreur, donnee et vide.
 class TrailDetailScreen extends ConsumerWidget {
+  /// La fiche du sentier [trailId] — l'identifiant du catalogue, pas celui du
+  /// sentier actif : voir l'en-tete de [build].
   const TrailDetailScreen({super.key, required this.trailId});
 
   /// Identifiant du sentier à afficher
@@ -50,7 +56,18 @@ class TrailDetailScreen extends ConsumerWidget {
     // d etat : le service deduplique, donc une miette part par
     // ENTREE et non par reconstruction. Rien n est attendu ici.
     observeScreenEntry(ref, ScreenBreadcrumb.trailDetail, trail: trailId);
-    final config = ref.watch(trailConfigProvider);
+    // LA FICHE DECRIT LE SENTIER QU'ELLE NOMME, PAS LE SENTIER ACTIF
+    // (tache 848). Elle lisait `trailConfigProvider`, c'est-a-dire la
+    // configuration du sentier SELECTIONNE — or la carte du catalogue ouvre
+    // cette fiche par `push('/trail/:id')` SANS ecrire la selection : seul le
+    // bouton « Preparer » l'ecrit. Resultat mesure sur un catalogue a deux
+    // produits : toucher la carte du GR20 affichait ses photos, sa description
+    // et ses etapes sous le nom, la region, la distance et le denivele du Mare
+    // a Mare Centre. Le catalogue est statique, donc la resolution par
+    // identifiant ne coute rien et ne depend d'aucun provider — meme
+    // discipline que `ficheDeSentierProvider` (lecon des taches 796 et 841).
+    final TrailConfig config =
+        TrailCatalog.byId(trailId) ?? ref.watch(trailConfigProvider);
     final stagesAsync = ref.watch(stagesProvider(trailId));
     final fiche = ref.watch(ficheDeSentierProvider(trailId)).value;
     final theme = Theme.of(context);
@@ -90,15 +107,15 @@ class TrailDetailScreen extends ConsumerWidget {
               child: DescriptionDuSentier(description: fiche.description),
             ),
           ],
-          // LA DIFFICULTE, DEDUITE DES ETAPES MESUREES. Elle attend les etapes
-          // — sans elles il n'y a pas de journees, donc rien a deduire — et
-          // elle disparait proprement quand il n'y en a pas.
+          // LA DIFFICULTE, DEDUITE DES JOURNEES REELLES. Elle attend de quoi
+          // faire des journees — les nuits relevees du sentier, ou ses etapes
+          // — et elle disparait proprement quand il n'y a ni l'un ni l'autre.
           SliverToBoxAdapter(
             child: DifficulteCalculee(
               stages: stages,
               allures: config.availableDurations,
               allureParDefaut: config.defaultDuration,
-              altitudeMaxM: config.maxAltitudeM,
+              nuits: ref.watch(decoupageDuSentierProvider(trailId)),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: AppTheme.spacingSm)),
@@ -236,7 +253,11 @@ class TrailDetailScreen extends ConsumerWidget {
 class _TrailHeader extends StatelessWidget {
   const _TrailHeader({required this.config, required this.theme});
 
-  final dynamic config;
+  /// LA CONFIGURATION DU SENTIER, TYPEE (tache 848). Elle etait `dynamic` :
+  /// l'en-tete pouvait donc lire n'importe quel champ sans que rien ne le
+  /// verifie avant l'execution, et c'est precisement l'en-tete qui affichait le
+  /// nom du mauvais sentier.
+  final TrailConfig config;
   final ThemeData theme;
 
   @override
@@ -255,7 +276,7 @@ class _TrailHeader extends StatelessWidget {
         children: [
           // Nom d'affichage
           Text(config.displayName, style: theme.textTheme.headlineMedium),
-          if ((config.tagline as String).isNotEmpty) ...[
+          if (config.tagline.isNotEmpty) ...[
             const SizedBox(height: AppTheme.spacingXs),
             Text(
               config.tagline,

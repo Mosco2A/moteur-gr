@@ -35,5 +35,29 @@ LA MENTION EST VISIBLE A L'ECRAN, comme le credit de la carte. Une licence
 CC-BY respectee dans un fichier JSON et nulle part ailleurs n'est pas
 respectee : elle exige que le nom soit LU par celui qui regarde l'image.
 
-Contrat ecrit par la tache 846. Le fonds documente est constitue par la tache
-845.
+DEUX FICHIERS VOYAGENT A COTE DES IMAGES (tache 848), et ils sont dans le
+binaire comme elles :
+
+  PROVENANCE.json     la preuve, image par image : adresse de la page qui porte
+                      la licence, adresse du fichier d'origine, auteur, licence
+                      exacte, adresse de la licence, mention, conditions
+                      d'usage, coordonnees quand la source les donne, pixels,
+                      octets et empreinte SHA-256 MESUREE du fichier embarque.
+  CHOIX_ET_REFUS.csv  les images EXAMINEES PUIS ECARTEES, avec leur motif
+                      (filigrane du photographe, marque d'un tiers, personne
+                      identifiable au premier plan, lieu hors itineraire...).
+
+POURQUOI LA PREUVE EST ICI ET PAS AILLEURS. Le fonds d'ou viennent ces images
+vit HORS du depot de l'application, dans un dossier que git ignore. Si la preuve
+y restait, le binaire embarquerait des images dont plus rien, dans le depot, ne
+dirait d'ou elles viennent. C'est la meme raison qui fait voyager les fichiers
+de releve brut a cote des chiffres du sentier (tache 839) : la preuve est la ou
+est ce qu'elle prouve. Un test le verifie, empreintes recalculees comprises
+(test/assets/photos_du_produit_848_test.dart).
+
+NE PAS EDITER PROVENANCE.json NI CHOIX_ET_REFUS.csv A LA MAIN : les deux sont
+ecrits par `python tool/photos_dans_stepways.py`, qui recalcule les empreintes
+et refuse toute image dont la licence sort de la liste blanche.
+
+Contrat ecrit par la tache 846, complete par la tache 848. Le fonds documente
+est constitue par la tache 845.

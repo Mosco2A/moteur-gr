@@ -26,6 +26,8 @@ import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
 import 'package:moteur_gr/domain/difficulte_du_sentier.dart';
+import 'package:moteur_gr/domain/nuit_possible.dart';
+import 'package:moteur_gr/features/planning/planning_facade.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_detail_screen.dart';
 import 'package:moteur_gr/features/trail/providers/fiche_de_sentier_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
@@ -138,6 +140,58 @@ const etapesDeDecor = <StageModel>[
   ),
 ];
 
+/// DEUX NUITS RELEVEES DE DECOR, et les deux segments qui les relient.
+///
+/// La pire journee y pese 800 m de montee, contre 1 453 m pour les etapes de
+/// decor : c'est ce qui rend l'ecart visible a l'ecran.
+DecoupageDeNuits deuxNuits() => DecoupageDeNuits.fromJson(<String, dynamic>{
+  'trailId': 'gr20',
+  'tete_de_sentier': 'Depart de decor',
+  'liste': <Map<String, dynamic>>[
+    <String, dynamic>{
+      'nom': 'Premiere nuit de decor',
+      'pk_km': 9.0,
+      'altitude_m': 1200,
+      'lat': 42.0,
+      'lon': 9.0,
+      'minutes_aller': 0,
+      'minutes_retour': 0,
+      'origine': 'coupure de jour relevee',
+    },
+    <String, dynamic>{
+      'nom': 'Seconde nuit de decor',
+      'pk_km': 18.0,
+      'altitude_m': 1400,
+      'lat': 42.1,
+      'lon': 9.1,
+      'minutes_aller': 0,
+      'minutes_retour': 0,
+      'origine': 'fin d etape',
+      'fin_d_etape': 1,
+    },
+  ],
+  'entre_les_nuits': <Map<String, dynamic>>[
+    <String, dynamic>{
+      'rang': 1,
+      'depart': 'Depart de decor',
+      'arrivee': 'Premiere nuit de decor',
+      'km': 9.0,
+      'dplus_m': 600,
+      'dmoins_m': 100,
+      'minutes': 240,
+    },
+    <String, dynamic>{
+      'rang': 2,
+      'depart': 'Premiere nuit de decor',
+      'arrivee': 'Seconde nuit de decor',
+      'km': 9.0,
+      'dplus_m': 800,
+      'dmoins_m': 200,
+      'minutes': 260,
+    },
+  ],
+});
+
 void main() {
   Widget fiche({required String trailId, required List<dynamic> overrides}) =>
       ProviderScope(
@@ -183,6 +237,16 @@ void main() {
             paquetDAssetsProvider.overrideWithValue(
               PaquetDeTest({'assets/data/gr20/fiche.json': manifesteDuGr20()}),
             ),
+            // LES NUITS SONT NEUTRALISEES ICI, ET C'EST VOLONTAIRE (tache
+            // 848). La fiche pose desormais ses journees sur les NUITS
+            // RELEVEES du sentier quand il en a, et `flutter test` sert les
+            // vrais assets : sans cette surcharge, les trente et une nuits du
+            // GR20 remplaceraient les trois etapes de decor et ces cas ne
+            // mesureraient plus ce qu'ils annoncent. Le chemin « avec nuits »
+            // a son propre cas, plus bas.
+            decoupageDuSentierProvider(
+              'gr20',
+            ).overrideWithValue(DecoupageDeNuits.aucun),
           ],
         ),
       );
@@ -226,15 +290,23 @@ void main() {
       expect(find.byKey(const ValueKey('difficulte-calculee')), findsOneWidget);
       // LA REGLE EST AFFICHEE, mot pour mot celle que le socle applique.
       expect(find.text(SeuilsDeDifficulte.regleAffichee), findsOneWidget);
-      // ET LES MESURES SONT A COTE DU MOT : 2 578 m d'altitude (la mesure du
-      // GR20) et la pire journee de decor, 1 453 m.
+      // LES DEUX JAUGES SONT LA (tache 848) : le verdict et la repartition.
+      expect(find.byKey(const ValueKey('jauge-du-verdict')), findsOneWidget);
       expect(
-        find.textContaining('2578 m au point le plus haut'),
+        find.byKey(const ValueKey('jauge-de-repartition')),
         findsOneWidget,
       );
+      // LA MESURE EST A COTE DU MOT : la pire journee du decor, 1 453 m.
+      // L'ALTITUDE N'Y EST PLUS — Christophe l'a sortie du calcul le 17/10
+      // (« non la difficulte c'est surtout base sur l'etape la plus
+      // compliquee et le denivele le plus fort »), donc le critere qui
+      // affichait « 2 578 m au point le plus haut » n'existe plus. La fiche
+      // cite toujours ce chiffre, mais dans sa DESCRIPTION, pas comme un
+      // niveau.
+      expect(find.textContaining('1453 m de montee'), findsOneWidget);
       expect(
-        find.textContaining('1453 m de montee en une seule journee'),
-        findsOneWidget,
+        find.textContaining('au point le plus haut', skipOffstage: false),
+        findsNothing,
       );
     });
 
@@ -249,7 +321,7 @@ void main() {
       // Au-dela de trois jours, les jours de plus sont du repos et ne changent
       // plus aucune journee de marche — offrir le choix serait offrir un
       // bouton sans effet.
-      for (final jours in <int>[7, 10, 12, 16]) {
+      for (final jours in <int>[7, 9, 12, 16]) {
         expect(
           find.byKey(ValueKey('allure-$jours'), skipOffstage: false),
           findsNothing,
@@ -257,16 +329,66 @@ void main() {
         );
       }
 
-      // LE NOMBRE AFFICHE EST CELUI DU DECOUPAGE, PAS CELUI DE LA DEMANDE :
-      // seize jours demandes, trois journees de marche reelles. Il apparait
-      // deux fois — a cote de la pastille, et dans la mesure du premier
-      // critere — et les deux disent la meme chose.
-      expect(find.text('sur 3 journees de marche'), findsOneWidget);
+      // LE NOMBRE AFFICHE EST CELUI DU DECOUPAGE : seize jours CONSEILLES,
+      // trois journees de marche reelles, parce que le decor n'a que trois
+      // etapes et qu'aucune n'est jamais coupee. Les deux nombres sont a
+      // l'ecran et ils ne se contredisent pas.
+      expect(find.text('Nombre de jours CONSEILLE : 16 jours'), findsOneWidget);
+      expect(find.text('Repartition des 3 journees de marche'), findsOneWidget);
       expect(
-        find.textContaining('953 m de montee par jour, sur 3 journees'),
+        find.textContaining('journee 1 sur 3'),
         findsOneWidget,
+        reason: 'la pire journee du decor est la premiere, 1 453 m',
+      );
+      // LA MOYENNE N'EST PLUS AFFICHEE NULLE PART : elle noyait la journee qui
+      // decide. 953 m par jour etait le chiffre de la 846 sur ce decor.
+      expect(
+        find.textContaining('de montee par jour', skipOffstage: false),
+        findsNothing,
       );
     });
+
+    testWidgets(
+      'AVEC DES NUITS RELEVEES, CE SONT ELLES QUI FONT LES JOURNEES',
+      (tester) async {
+        // LE CHEMIN NEUF DE LA TACHE 848. Les trois etapes de decor restent
+        // chargees ; ce sont pourtant les nuits qui decident, parce qu'elles
+        // coupent plus fin et sur des lieux RELEVES. Deux segments ici, donc
+        // deux journees, et la pire pese 800 m — alors que les etapes de decor
+        // en donnaient 1 453. L'ecran annonce ce que la preparation posera.
+        await tester.pumpWidget(
+          fiche(
+            trailId: 'gr20',
+            overrides: [
+              trailConfigProvider.overrideWithValue(TrailCatalog.byId('gr20')!),
+              stagesProvider(
+                'gr20',
+              ).overrideWith((ref) => Future.value(etapesDeDecor)),
+              paquetDAssetsProvider.overrideWithValue(
+                PaquetDeTest({
+                  'assets/data/gr20/fiche.json': manifesteDuGr20(),
+                }),
+              ),
+              decoupageDuSentierProvider('gr20').overrideWithValue(deuxNuits()),
+            ],
+          ),
+        );
+        await tester.pumpAndSettle();
+        await amener(tester, blocDeDifficulte());
+
+        expect(
+          find.text('Repartition des 2 journees de marche'),
+          findsOneWidget,
+        );
+        expect(find.textContaining('800 m de montee'), findsOneWidget);
+        expect(find.textContaining('journee 2 sur 2'), findsOneWidget);
+        expect(
+          find.text(NiveauDeDifficulte.difficile.libelle),
+          findsOneWidget,
+          reason: '800 m de montee dans la journee : difficile (700 a 1 000)',
+        );
+      },
+    );
   });
 
   group('846 — un sentier sans fiche n a pas l air casse', () {
@@ -282,6 +404,9 @@ void main() {
               'test-trail',
             ).overrideWith((ref) => Future.value(etapesDeDecor)),
             paquetDAssetsProvider.overrideWithValue(PaquetDeTest(const {})),
+            decoupageDuSentierProvider(
+              'test-trail',
+            ).overrideWithValue(DecoupageDeNuits.aucun),
           ],
         ),
       );
@@ -329,6 +454,9 @@ void main() {
               'test-trail',
             ).overrideWith((ref) => Future.value(etapesDeDecor)),
             paquetDAssetsProvider.overrideWithValue(PaquetDeTest(const {})),
+            decoupageDuSentierProvider(
+              'test-trail',
+            ).overrideWithValue(DecoupageDeNuits.aucun),
           ],
         ),
       );
@@ -341,15 +469,30 @@ void main() {
         find.textContaining('au point le plus haut', skipOffstage: false),
         findsNothing,
       );
-      // DEUX FOIS, ET LES DEUX SONT VOULUES : la ligne qui NOMME la mesure
-      // manquante, et la regle affichee, qui dit de quelles trois mesures le
-      // niveau se deduit. Le randonneur lit donc ce qui manque ET par rapport
-      // a quoi il manque.
+      // PLUS RIEN NE MANQUE A CE SENTIER (tache 848), ET C'EST LE CHANGEMENT.
+      // Sous la regle de la 846, le sentier de test n'avait pas d'altitude
+      // mesuree : un critere disparaissait et la fiche le DISAIT, deux fois —
+      // la ligne du manque, et la regle qui nommait les trois mesures.
+      // Christophe a sorti l'altitude du calcul le 17/10 : la difficulte ne
+      // demande plus que le DENIVELE des journees, que ce sentier fournit.
+      // Il n'y a donc plus rien a declarer manquant, et aucune ligne de manque
+      // ne s'affiche — meme discipline, a l'etat neuf : on ne nomme un manque
+      // que s'il y en a un.
       expect(
-        find.textContaining("l'altitude maximale de la trace"),
-        findsNWidgets(2),
+        find.textContaining('l\'altitude', skipOffstage: false),
+        findsNothing,
       );
-      expect(find.textContaining('Non mesure sur ce sentier'), findsOneWidget);
+      expect(
+        find.textContaining('Non mesure sur ce sentier', skipOffstage: false),
+        findsNothing,
+      );
+      // ET LA DIFFICULTE EST BIEN LA, deduite des seules etapes : la pire
+      // journee du decor pese 1 453 m, donc TRES DIFFICILE.
+      expect(find.byKey(const ValueKey('jauge-du-verdict')), findsOneWidget);
+      expect(
+        find.text(NiveauDeDifficulte.tresDifficile.libelle),
+        findsOneWidget,
+      );
     });
 
     testWidgets('sans etape, pas de difficulte inventee', (tester) async {
@@ -362,6 +505,9 @@ void main() {
               'test-trail',
             ).overrideWith((ref) => Future.value(<StageModel>[])),
             paquetDAssetsProvider.overrideWithValue(PaquetDeTest(const {})),
+            decoupageDuSentierProvider(
+              'test-trail',
+            ).overrideWithValue(DecoupageDeNuits.aucun),
           ],
         ),
       );
@@ -398,6 +544,9 @@ void main() {
         ProviderScope(
           overrides: [
             paquetDAssetsProvider.overrideWithValue(PaquetDeTest(const {})),
+            decoupageDuSentierProvider(
+              'test-trail',
+            ).overrideWithValue(DecoupageDeNuits.aucun),
           ],
           child: const MaterialApp(
             home: Scaffold(body: PhotoDeCouverture(trailId: 'gr20')),

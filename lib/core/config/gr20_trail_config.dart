@@ -79,7 +79,14 @@ const gr20TrailConfig = TrailConfig(
   // marcheur : ces valeurs ne sont donc que des reperes du selecteur, et les
   // bornes reelles du curseur sont derivees des donnees chargees
   // (`durationBoundsProvider`). 16 est l'allure federale (une etape par jour).
-  availableDurations: [7, 10, 12, 16],
+  //
+  // TACHE 848 — 10 DEVIENT 9, PARCE QUE C'EST L'ECHELLE QUE CHRISTOPHE
+  // PRESENTE. Le 17/10 11:05, verbatim : « Et quand tu presente tu mets 7
+  // jours= experts, 9jours = tres difficile, 12 jours Difficile, 16 jours =
+  // Difficile ». Les quatre reperes du selecteur sont donc les quatre allures
+  // qu'il annonce : une fiche qui propose 10 jours quand le discours parle de 9
+  // oblige le lecteur a faire la conversion lui-meme.
+  availableDurations: [7, 9, 12, 16],
   defaultDuration: 16,
   offlineFirst: true,
   hasPremium: false,
