@@ -1,0 +1,22 @@
+LES PHOTOS DU PRODUIT, ET LES CINQ CHAMPS SANS LESQUELS ELLES N'ENTRENT PAS
+===========================================================================
+
+Memes regles que pour le GR20, sans exception : voir
+assets/data/gr20/photos/LISEZ-MOI.txt pour le contrat complet.
+
+En resume : chaque photo de ce dossier se declare dans ../fiche.json sous
+"photos", avec les memes champs fixes :
+
+  fichier            chemin de l'image dans les assets
+  adresse_d_origine  la PAGE d'ou elle vient (c'est elle qui porte la licence)
+  auteur             tel qu'il faut le citer
+  licence            telle qu'elle est ecrite a la source
+  mention            le texte AFFICHE sous la photo dans l'application
+  lat, lon           le lieu, SI et seulement si la source le donne
+  couverture         true pour celle qui va sur la carte du catalogue
+
+Le lecteur REFUSE toute photo incomplete et toute licence hors liste blanche
+(domaine public, CC0, CC-BY, CC-BY-SA). La mention est affichee sous la photo.
+
+Contrat ecrit par la tache 846. Le fonds documente est constitue par la tache
+845.

@@ -1,0 +1,39 @@
+LES PHOTOS DU PRODUIT, ET LES CINQ CHAMPS SANS LESQUELS ELLES N'ENTRENT PAS
+===========================================================================
+
+Ce dossier porte les photos du GR20 qui s'affichent dans l'application : la
+bande de photos de la fiche du sentier, et la photo de couverture de sa carte
+au catalogue.
+
+CE DOSSIER N'EST PAS LE FONDS DES CARROUSELS. Les 271 photos de
+data/instagram_photos restent au service des carrousels, ou elles sont deja
+publiees. Elles n'entrent PAS ici : leur seul fichier de suivi enregistre le
+sujet de chaque image, ni sa source ni sa licence. « Libre de droit » recouvre
+quatre realites tres differentes - domaine public, CC0, CC-BY qui EXIGE de
+citer l'auteur, et CC-BY-NC qui INTERDIT l'usage commercial. Dans une
+application PAYANTE, deux de ces quatre cas sont des infractions, et sans trace
+on ne peut pas prouver dans lequel on est, photo par photo.
+
+CHAQUE PHOTO SE DECLARE DANS ../fiche.json, SOUS "photos", AVEC :
+
+  fichier            chemin de l'image dans les assets
+  adresse_d_origine  la PAGE d'ou elle vient (c'est elle qui porte la licence)
+  auteur             tel qu'il faut le citer
+  licence            telle qu'elle est ecrite a la source
+  mention            le texte AFFICHE sous la photo dans l'application
+  lat, lon           le lieu, SI et seulement si la source le donne
+  couverture         true pour celle qui va sur la carte du catalogue
+
+LE LECTEUR REFUSE, IL NE SIGNALE PAS. Une photo dont l'un des cinq premiers
+champs manque n'est pas affichee, et la raison du refus est lisible par un test
+(FicheDeSentier.photosRefusees). Les licences acceptees sont une LISTE BLANCHE :
+domaine public, CC0, CC-BY et CC-BY-SA toutes versions. Tout le reste est
+refuse, y compris ce que la liste n'a pas prevu - un champ rempli « libre de
+droit » ne passe pas.
+
+LA MENTION EST VISIBLE A L'ECRAN, comme le credit de la carte. Une licence
+CC-BY respectee dans un fichier JSON et nulle part ailleurs n'est pas
+respectee : elle exige que le nom soit LU par celui qui regarde l'image.
+
+Contrat ecrit par la tache 846. Le fonds documente est constitue par la tache
+845.

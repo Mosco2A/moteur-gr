@@ -160,6 +160,17 @@ void main() {
 
       await tester.pumpAndSettle();
 
+      // IL FAUT DEFILER DEPUIS LA TACHE 846, et c'est tout ce qui change ici.
+      // La fiche porte desormais, au-dessus de la liste, la description du
+      // sentier et sa difficulte deduite ; elle defile d'un seul mouvement, et
+      // un `Finder` ordinaire ne voit que ce qui est peint. Les trois etapes
+      // sont toujours la, simplement plus bas.
+      await tester.scrollUntilVisible(
+        find.text('Vallée Secrète', skipOffstage: false),
+        300,
+      );
+      await tester.pumpAndSettle();
+
       // Les 3 noms d'étapes doivent être affichés
       expect(find.text('Étape du Lac'), findsOneWidget);
       expect(find.text('Col du Vent'), findsOneWidget);

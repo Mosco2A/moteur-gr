@@ -1,5 +1,5 @@
-/// La fiche d'un sentier et ses etapes, avec ses quatre etats traites :
-/// chargement, erreur, donnee et vide.
+/// La fiche d'un sentier — ce qu'il est avant d'etre un programme : ses
+/// photos, sa description, sa difficulte deduite et ses etapes.
 library;
 
 import 'package:flutter/material.dart';
@@ -13,16 +13,31 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
+import '../providers/fiche_de_sentier_provider.dart';
 import '../providers/stages_provider.dart';
+import '../widgets/bande_de_photos.dart';
+import '../widgets/description_du_sentier.dart';
+import '../widgets/difficulte_calculee.dart';
 import '../widgets/stage_list_tile.dart';
 import '../../../core/branding/stepways_icons.dart';
 
-/// Écran détail d'un sentier.
+/// Écran détail d'un sentier — LA FICHE, entre le catalogue et la preparation.
 ///
-/// Affiche un header avec les infos du sentier (nom, région,
-/// distance totale, dénivelé total) puis la liste scrollable
-/// des étapes chargées via stagesProvider.
-/// Gère les états loading / error / data / vide.
+/// CE QU'IL MONTRE, ET POURQUOI IL A GROSSI (tache 846, demande de Christophe
+/// du 17/10 09:22, verbatim : « Il manque un truc entre le catalogue et le
+/// demarrage de la preparation ce sont les infos sur le trek selectionne »).
+/// Il portait le nom, la region, la distance, le denivele et la liste des
+/// etapes. Il porte desormais, dans cet ordre : les PHOTOS du sentier avec leur
+/// mention, sa DESCRIPTION en trois questions, sa DIFFICULTE DEDUITE de trois
+/// mesures a l'allure que le randonneur choisit ici meme, puis ses etapes.
+///
+/// TROIS BLOCS SUR QUATRE PEUVENT ETRE ABSENTS, ET ALORS ILS N'OCCUPENT RIEN.
+/// Un sentier sans manifeste n'affiche ni photo ni description — pas un cadre
+/// vide, pas un point d'interrogation, pas une hauteur reservee. C'est la
+/// quatrieme demande de la tache, et elle se verifie a l'oeil sur le sentier de
+/// test, qui n'a pas de fiche.
+///
+/// LES ETATS DES ETAPES SONT INCHANGES : chargement, erreur, donnee et vide.
 class TrailDetailScreen extends ConsumerWidget {
   const TrailDetailScreen({super.key, required this.trailId});
 
@@ -37,60 +52,105 @@ class TrailDetailScreen extends ConsumerWidget {
     observeScreenEntry(ref, ScreenBreadcrumb.trailDetail, trail: trailId);
     final config = ref.watch(trailConfigProvider);
     final stagesAsync = ref.watch(stagesProvider(trailId));
+    final fiche = ref.watch(ficheDeSentierProvider(trailId)).value;
     final theme = Theme.of(context);
     final t = Translations.of(context);
+    final stages = stagesAsync.value ?? const [];
 
     return Scaffold(
       appBar: AppBar(title: Text(config.displayName)),
-      body: Column(
-        children: [
-          // Header du sentier avec infos principales
-          _TrailHeader(config: config, theme: theme),
-          const SizedBox(height: AppTheme.spacingSm),
-          // Titre de section
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
-            child: SectionHeader(
-              title: 'Étapes',
-              icon: StepwaysIcons.chaussure,
+      // TOUTE LA FICHE DEFILE D'UN SEUL MOUVEMENT, et c'est le changement de
+      // structure de la tache 846. L'en-tete etait FIXE au-dessus d'une liste
+      // qui defilait seule : avec des photos, une description et une difficulte
+      // au-dessus des etapes, un en-tete fixe aurait pris la moitie de l'ecran
+      // et les etapes auraient defile dans ce qui reste. Un seul defilement.
+      //
+      // LE CACHE EST GENEREUX, ET C'EST MESURE PLUTOT QUE PRUDENT : la liste
+      // d'etapes est COURTE ET BORNEE — seize tuiles au plus sur le plus long
+      // sentier du catalogue, legeres et sans image. Les construire toutes
+      // evite le bloc blanc d'un defilement rapide sur une liste qui tient de
+      // toute facon en memoire.
+      body: CustomScrollView(
+        cacheExtent: 2000,
+        slivers: [
+          SliverToBoxAdapter(
+            child: _TrailHeader(config: config, theme: theme),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: AppTheme.spacingBase),
+          ),
+          // LES PHOTOS, LA DESCRIPTION : rien du tout sans manifeste.
+          if (fiche != null) ...[
+            SliverToBoxAdapter(child: BandeDePhotos(photos: fiche.photos)),
+            if (fiche.photos.isNotEmpty)
+              const SliverToBoxAdapter(
+                child: SizedBox(height: AppTheme.spacingBase),
+              ),
+            SliverToBoxAdapter(
+              child: DescriptionDuSentier(description: fiche.description),
+            ),
+          ],
+          // LA DIFFICULTE, DEDUITE DES ETAPES MESUREES. Elle attend les etapes
+          // — sans elles il n'y a pas de journees, donc rien a deduire — et
+          // elle disparait proprement quand il n'y en a pas.
+          SliverToBoxAdapter(
+            child: DifficulteCalculee(
+              stages: stages,
+              allures: config.availableDurations,
+              allureParDefaut: config.defaultDuration,
+              altitudeMaxM: config.maxAltitudeM,
             ),
           ),
-          // Liste des étapes (AsyncValue)
-          Expanded(
-            child: stagesAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, _) => EmptyState(
+          const SliverToBoxAdapter(child: SizedBox(height: AppTheme.spacingSm)),
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
+              child: SectionHeader(
+                title: 'Étapes',
+                icon: StepwaysIcons.chaussure,
+              ),
+            ),
+          ),
+          // Liste des étapes (AsyncValue) — les quatre etats d'avant.
+          stagesAsync.when(
+            loading: () => const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(AppTheme.spacingXl),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ),
+            error: (error, _) => SliverToBoxAdapter(
+              child: EmptyState(
                 icon: StepwaysIcons.danger,
                 title: t.common.cannotLoadStages,
                 subtitle: error.toString(),
               ),
-              data: (stages) {
-                if (stages.isEmpty) {
-                  return EmptyState(
+            ),
+            data: (chargees) {
+              if (chargees.isEmpty) {
+                return SliverToBoxAdapter(
+                  child: EmptyState(
                     icon: StepwaysIcons.chaussure,
                     title: t.common.noStages,
-                  );
-                }
-                return ListView.builder(
-                  padding: const EdgeInsets.only(
-                    top: AppTheme.spacingSm,
-                    bottom: AppTheme.spacingXl,
                   ),
-                  itemCount: stages.length,
-                  itemBuilder: (context, index) {
-                    final stage = stages[index];
-                    return StageListTile(
-                      stage: stage,
-                      // Ph4 (hub-and-push, SPEC §5) : push -> retour propre.
-                      onTap: () => context.push(
-                        '/trail/$trailId/stage/${stage.stageNumber}',
-                      ),
-                    );
-                  },
                 );
-              },
-            ),
+              }
+              return SliverList.builder(
+                itemCount: chargees.length,
+                itemBuilder: (context, index) {
+                  final stage = chargees[index];
+                  return StageListTile(
+                    stage: stage,
+                    // Ph4 (hub-and-push, SPEC §5) : push -> retour propre.
+                    onTap: () => context.push(
+                      '/trail/$trailId/stage/${stage.stageNumber}',
+                    ),
+                  );
+                },
+              );
+            },
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: AppTheme.spacingXl)),
         ],
       ),
       // Boutons d'action en bas

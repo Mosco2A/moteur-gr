@@ -258,6 +258,16 @@ flutter:
     # `couchages_hors_etape.json`) sont embarques eux aussi : ils sont la preuve
     # de l'origine de chaque chiffre, dans le binaire, a cote des chiffres.
     - assets/data/gr20/
+    # LES PHOTOS DES FICHES DE SENTIER (tache 846). Un dossier par sentier,
+    # a cote de ses donnees. Les dossiers d'assets de Flutter ne sont PAS
+    # recursifs : `assets/data/gr20/` n'embarque pas `assets/data/gr20/photos/`,
+    # il faut les deux lignes. Chaque dossier porte son LISEZ-MOI, qui est le
+    # CONTRAT de provenance des images — cinq champs obligatoires et une liste
+    # blanche de licences. Il voyage avec les photos pour la meme raison que les
+    # fichiers de releve brut voyagent avec les chiffres : la preuve a cote de
+    # ce qu'elle prouve.
+    - assets/data/gr20/photos/
+    - assets/data/mare_a_mare_centre/photos/
     - assets/i18n/
     - assets/tips/
     # IDENTITE VISUELLE (tache 632) — les TROIS familles livrees par Christophe

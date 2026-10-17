@@ -107,22 +107,34 @@ const registreDesRoutesDormantes = <String, RouteDormante>{
 
   // --- Doublons pauvres des premieres phases -----------------------------
   //
-  // Ces cinq routes ne sont pas des fonctions en attente : ce sont de VIEILLES
-  // VERSIONS d une fonction que le randonneur atteint DEJA ailleurs, par un
-  // ecran plus riche. Aucune ne merite une porte ; chacune attend qu on
+  // Ces quatre routes ne sont pas des fonctions en attente : ce sont de
+  // VIEILLES VERSIONS d une fonction que le randonneur atteint DEJA ailleurs,
+  // par un ecran plus riche. Aucune ne merite une porte ; chacune attend qu on
   // tranche entre supprimer la route ou supprimer aussi l ecran, ce qui est
   // une decision produit et pas un geste de lot.
-  '/trail/:id': RouteDormante(
-    raison:
-        'Fiche sentier de la phase 1 (`TrailDetailScreen`) : un en-tete et '
-        'la liste des etapes. Le randonneur arrive aujourd hui sur le COCKPIT '
-        '(`/home`), qui porte la meme information et tout le reste ; le detail '
-        'des etapes vit dans le Programme (`/trail/:id/itinerary`). La route a '
-        'survecu a la refonte hub-and-push, l ecran n a plus de lecteur.',
-    reveil:
-        'Decision produit : supprimer la route ET `TrailDetailScreen`, ou '
-        'la garder comme cible de deep-link documentee.',
-  ),
+  //
+  // ELLES ETAIENT CINQ : `/trail/:id` A RETROUVE SA PORTE (tache 846).
+  //
+  // CE QUE CETTE ENTREE DISAIT, ET ELLE DISAIT VRAI : « Fiche sentier de la
+  // phase 1 (TrailDetailScreen) : un en-tete et la liste des etapes. Le
+  // randonneur arrive aujourd hui sur le COCKPIT (/home), qui porte la meme
+  // information et tout le reste [...] l ecran n a plus de lecteur ». Son
+  // reveil etait une DECISION PRODUIT : supprimer la route et l ecran, ou le
+  // garder.
+  //
+  // LA DECISION EST VENUE DE CHRISTOPHE LE 17/10 09:22, et elle tranche dans
+  // l autre sens, verbatim : « Il manque un truc entre le catalogue et le
+  // demarrage de la preparation ce sont les infos sur le trek selectionne. Il
+  // faut avant que ca ouvre la preparation que le client puisse voir une
+  // description du trek ». L ecran n etait donc pas un doublon pauvre : il
+  // etait le bon ecran, vide de la moitie de son contenu et prive de sa porte.
+  // La tache 846 lui a donne la description, la difficulte deduite et les
+  // photos ; la carte du catalogue l OUVRE desormais au toucher.
+  //
+  // SORTIR D ICI N EST PAS UNE FORMALITE, C EST LA GARDE QUI L EXIGE : une
+  // route qui a retrouve sa porte et qui reste declaree dormante couvrirait
+  // une route qui va bien, et la prochaine vraie regression passerait pour
+  // normale. Voir l en-tete de ce fichier.
   '/stages': RouteDormante(
     raison:
         'Liste nue des etapes (`StageListScreen`, phase 2). Elle est le '
@@ -155,21 +167,25 @@ const registreDesRoutesDormantes = <String, RouteDormante>{
         'Nettoyage du routeur : supprimer la route jumelle une fois '
         'verifie qu aucun lien profond publie ne la vise.',
   ),
-  '/trail/:id/map': RouteDormante(
-    raison:
-        'Carte du sentier par son chemin de la phase 1. Elle construit '
-        'DESORMAIS le meme `MapScreen` que la route vivante `/map` (migration '
-        'L6-4 terminee, l ancien ecran de transition `TrailMapScreen` a '
-        'disparu) : les deux chemins menent au meme ecran. Or ses deux SEULS '
-        'gestes entrants vivent sur `TrailDetailScreen` et '
-        '`TrailStageDetailScreen`, les deux ecrans de la phase 1 endormis '
-        'ci-dessus — la carte est donc atteignable uniquement depuis des ecrans '
-        'que personne n atteint. Le randonneur ouvre la carte par le cockpit, '
-        'qui pousse `/map`.',
-    reveil:
-        'Avec les deux ecrans de la phase 1 : ce chemin disparait quand ils '
-        'disparaissent, puisqu il n existe que pour eux.',
-  ),
+  // `/trail/:id/map` A RETROUVE SA PORTE PAR RICOCHET (tache 846), ET SON
+  // REVEIL ETAIT ECRIT D AVANCE.
+  //
+  // CE QUE SON ENTREE DISAIT : « Carte du sentier par son chemin de la phase 1
+  // [...] ses deux SEULS gestes entrants vivent sur `TrailDetailScreen` et
+  // `TrailStageDetailScreen`, les deux ecrans de la phase 1 endormis — la
+  // carte est donc atteignable uniquement depuis des ecrans que personne
+  // n atteint ». Son reveil disait : « Avec les deux ecrans de la phase 1 ».
+  //
+  // C EST EXACTEMENT CE QUI S EST PRODUIT. La fiche du sentier a retrouve sa
+  // porte, et son bouton « Voir la carte » — qui existait deja, inchange —
+  // redevient un geste que le randonneur peut faire. Rien n a ete ajoute ici
+  // pour la reveiller : elle s est reveillee avec son lecteur.
+  //
+  // CE QUE CE RICOCHET ENSEIGNE, ET IL VAUT POUR LA SUITE : endormir une route
+  // parce que son SEUL appelant dort, c est endormir une chaine. Reveiller un
+  // ecran reveille tout ce qu il pousse. Le registre l avait prevu, et c est
+  // la seule raison pour laquelle on s en apercoit aujourd hui au lieu de le
+  // decouvrir dans six mois.
   '/trail-selection': RouteDormante(
     raison:
         'Bascule de sentier actif (F8D-02). Le randonneur change de sentier '

@@ -114,5 +114,15 @@ const gr20TrailConfig = TrailConfig(
   // d'etape et quinze coupures de jour relevees en tache 838, plus les trente
   // et un segments mesures entre nuits consecutives.
   possibleNightsAssetPath: 'assets/data/gr20/nuits_possibles.json',
+  // LA FICHE DU SENTIER (tache 846) : sa description en trois questions — ou
+  // c'est, ce qu'on y voit, a quoi s'attendre — et son manifeste de photos.
+  // AUCUN de ces textes ne vit dans le code, et aucune photo n'est choisie ici.
+  ficheAssetPath: 'assets/data/gr20/fiche.json',
+  // 2 578 m — L'ALTITUDE LA PLUS HAUTE DE LA TRACE, MESUREE SUR SES 9 128
+  // POINTS. Elle tombe dans l'etape 4 (Ascu-Stagnu vers Tighjettu), celle qui
+  // franchit le point le plus haut du chemin. C'est le plus haut du catalogue,
+  // et 1 066 m au-dessus de celui du Mare a Mare Centre : voila pourquoi
+  // l'altitude est un critere a part et non une consequence du denivele.
+  maxAltitudeM: 2578,
   privacyPolicyUrl: StepwaysLegal.privacyPolicyUrl,
 );

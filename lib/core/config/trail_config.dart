@@ -46,6 +46,8 @@ class TrailConfig {
     this.accommodationsAssetPath,
     this.tipAssetPaths = const [],
     this.possibleNightsAssetPath,
+    this.ficheAssetPath,
+    this.maxAltitudeM,
     this.privacyPolicyUrl,
   });
 
@@ -215,6 +217,42 @@ class TrailConfig {
   /// se comporte exactement comme avant. Aucun sentier n'est penalise de ne pas
   /// avoir ce releve : c'est un enrichissement, pas un prerequis.
   final String? possibleNightsAssetPath;
+
+  /// MANIFESTE DE LA FICHE DU SENTIER : sa description et ses photos.
+  ///
+  /// POURQUOI LA DESCRIPTION EST UN CHEMIN D'ASSET ET PAS TROIS CHAINES ICI.
+  /// Trois champs de texte dans cette classe auraient marche, et ils auraient
+  /// coute la meme chose que les chiffres saisis a la main de la tache 839 :
+  /// une description est de la MATIERE EDITORIALE, elle se relit, se corrige,
+  /// se traduit et grossit — elle n'a pas la meme vie qu'un identifiant ou
+  /// qu'une couleur de theme. Le depot a deja tranche ce genre de question pour
+  /// les etapes, les hebergements et les nuits possibles : la matiere va dans
+  /// un fichier de donnees, la configuration en porte le CHEMIN.
+  ///
+  /// Null = le sentier n'a pas de fiche. Ce n'est PAS une panne : la fiche
+  /// n'affiche alors ni section description, ni bande de photos, et la carte du
+  /// catalogue reste celle d'avant (cf. `FicheDeSentier`). Un sentier sans
+  /// photo ne doit pas montrer un cadre vide.
+  final String? ficheAssetPath;
+
+  /// Altitude MAXIMALE de la trace, en metres — MESUREE, jamais annoncee.
+  ///
+  /// POURQUOI ELLE EST ICI ALORS QUE LA DIFFICULTE SE CALCULE. C'est une
+  /// MESURE, pas un verdict : elle entre dans le calcul de la difficulte
+  /// (`DifficulteDuSentier`) au meme titre que le denivele des journees, et
+  /// elle se lit sur la trace comme [totalDistanceKm] et [totalElevationGain]
+  /// s'y lisent deja. Un test de garde relit le GPX et refuse toute divergence
+  /// (`test/assets/altitude_max_mesuree_846_test.dart`) : un chiffre change a
+  /// la main ici fait rougir la gate.
+  ///
+  /// POURQUOI ELLE NE SE CALCULE PAS A L'EXECUTION. La trace du GR20 porte
+  /// 9 128 points ; la lire et la parcourir pour afficher un seul nombre sur
+  /// une fiche serait payer un chargement de trace a chaque ouverture d'ecran.
+  /// La mesure est faite une fois, hors ligne, et verifiee par un test.
+  ///
+  /// Null = la trace ne porte pas d'altitude. Le critere d'altitude DISPARAIT
+  /// alors du calcul et la fiche DIT qu'il manque — elle ne devine pas.
+  final int? maxAltitudeM;
 
   /// URL de la politique de confidentialite du produit/sentier.
   ///

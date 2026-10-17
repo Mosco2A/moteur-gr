@@ -1,0 +1,12 @@
+{
+  "quoi": "La fiche du Mare a Mare Centre telle que le randonneur la lit AVANT d'ouvrir la preparation (tache 846). Memes trois questions et meme discipline que celle du GR20 : chaque chiffre cite est mesure sur la trace relevee dans OpenStreetMap, aucun n'est repris d'un topo. La difficulte n'est pas ici : elle se calcule a l'ecran.",
+  "schema": 1,
+  "trailId": "mare-a-mare-centre",
+  "attribution": "Trace : OpenStreetMap, 3 590 points releves, licence ODbL. Altitudes : modele de terrain EU-DEM 25 m.",
+  "description": {
+    "ou_c_est": "En Corse, en travers de l'ile et non dans sa longueur : de Ghisonaccia sur la cote est jusqu'a Porticcio sur le golfe d'Ajaccio. 87,3 km de chemin et 4 274 m de montee, en sept etapes mesurees sur la trace. Les deux bouts sont au bord de l'eau, et c'est de la que vient le nom : de la mer a la mer.",
+    "ce_qu_on_y_voit": "La Corse de l'interieur, celle des villages. Le chemin passe par Catastaghju, Cozzano, Guitera-les-Bains, Quasquara, Santa-Maria-Siche et Bisinao : on dort dans des villages habites et non dans des refuges d'altitude. Le point le plus haut de la trace est a 1 513 m, soit un kilometre plus bas que celui du GR20 : c'est de la moyenne montagne, chataigniers et maquis plutot que granit et neige.",
+    "a_quoi_s_attendre": "Des journees franches mais tenables, et des nuits en village. Les deux premieres etapes portent l'essentiel de la montee - 1 058 m puis 1 044 m - et les suivantes s'allegent jusqu'a la derniere, qui descend vers Porticcio avec 54 m de montee seulement. Onze hebergements reels sont releves le long du chemin, gites d'etape, campings et hotel : le ravitaillement est possible presque chaque jour, ce qui n'est pas le cas en haute montagne."
+  },
+  "photos": []
+}

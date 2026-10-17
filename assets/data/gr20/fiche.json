@@ -1,0 +1,12 @@
+{
+  "quoi": "La fiche du GR20 telle que le randonneur la lit AVANT d'ouvrir la preparation (tache 846, demande de Christophe du 17/10 09:22). La description repond aux trois questions de sa demande - ou c'est, ce qu'on y voit, a quoi s'attendre - et chaque chiffre qu'elle cite est MESURE sur la trace par tool/gr20_dans_stepways.py, jamais repris d'un topo. La difficulte n'est PAS ici : elle se calcule a l'ecran sur les chiffres mesures et l'allure choisie (lib/domain/difficulte_du_sentier.dart).",
+  "schema": 1,
+  "trailId": "gr20",
+  "attribution": "Trace et couchages : OpenStreetMap, relation 12484370 (GR 20 Principale), licence ODbL. Altitudes : modele de terrain EU-DEM 25 m via opentopodata.",
+  "description": {
+    "ou_c_est": "En Corse, dans toute la longueur de l'ile : de Calenzana, au-dessus de Calvi, jusqu'a Conca a l'arriere de Porto-Vecchio. 183,59 km de chemin et 11 644 m de montee, decoupes en seize etapes mesurees sur la trace. A mi-parcours exactement, au kilometre 91,80 soit 50,0 % du chemin, la gare de Vizzavona est le seul point du sentier desservi par le train : c'est la qu'on peut commencer, s'arreter, ou couper le GR20 en deux moities de longueur egale.",
+    "ce_qu_on_y_voit": "La haute montagne corse sur toute sa crete. Le chemin monte a 2 578 m a son point le plus haut, dans la quatrieme etape entre Ascu-Stagnu et Tighjettu, et redescend a 254 m a son point le plus bas : plus de deux kilometres d'altitude separent les deux. Les deux moities ne se ressemblent pas, et c'est mesure plutot que dit : pour la meme distance au metre pres, le nord porte 7 401 m de montee et le sud 4 243 m, soit 1,74 fois plus au nord. Le nord est la montagne rocheuse des cirques et des breches ; le sud ouvre sur les aiguilles de Bavella et sur la mer.",
+    "a_quoi_s_attendre": "Des journees de montagne, pas des journees de marche. La plus raide des seize monte 1 453 m des le premier jour au-dessus de Calenzana ; la plus longue fait 25,02 km. Le chemin se couche en refuge : soixante-quatorze couchages ont ete releves le long du trace, dont les refuges du Parc naturel regional de Corse, et trente et un endroits sont ouverts a un decoupage different du decoupage federal. Le sentier n'est jamais loin d'un secours mais souvent loin d'une route : le PGHM de Corte couvre toute l'ile."
+  },
+  "photos": []
+}
