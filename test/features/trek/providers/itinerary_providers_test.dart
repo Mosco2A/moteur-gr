@@ -161,5 +161,59 @@ void main() {
         expect(totalKm(reversed), closeTo(totalKm(forward), 0.001));
       },
     );
+
+    test(
+      'ET LE DENIVELE AUSSI : CET ECRAN ANNONCAIT LA MONTEE DE L AUTRE SENS',
+      () async {
+        // LE DEFAUT LIVRE, SUR L ECRAN QUI LE MONTRAIT (tache 853). Cet
+        // itineraire derive du Programme, et sa docstring promettait depuis
+        // toujours que « le sens de marche est deja applique en amont par
+        // plannedDaysProvider ». C'etait vrai de l'ORDRE et faux du DENIVELE :
+        // l'inversion n'etait qu'un `.reversed` sur la liste des etapes, donc
+        // chaque journee gardait la montee du sens de la TRACE. L'ecran
+        // Itineraire affichait « D+ 300 m » sur une journee qui en monte
+        // 1 097, et il le faisait en production.
+        //
+        // CE CAS LE FIGE PAR LE TOTAL : ce qu'on monte a l'aller se descend au
+        // retour. La somme des D+ du sens inverse doit donc valoir la somme
+        // des D- du sens aller, et surtout PAS la somme de ses D+.
+        final container = makeContainer();
+        await container.read(stagesProvider('test-trail').future);
+        container.read(selectedDurationProvider.notifier).set(5);
+        container.read(plannedDaysProvider('test-trail'));
+
+        final forward = await container.read(itineraryProvider.future);
+        final monteeAller = forward.fold<int>(
+          0,
+          (s, d) => s + d.totalElevation,
+        );
+        final descenteAller = forward.fold<int>(
+          0,
+          (s, d) => s + d.stages.fold<int>(0, (t, e) => t + e.elevationLossM),
+        );
+        // LE DECOR DOIT AVOIR DEUX TOTAUX DIFFERENTS, sinon ce cas ne prouve
+        // rien : un jeu d'etapes ou D+ vaut D- passerait avec le defaut en
+        // place.
+        expect(monteeAller, isNot(descenteAller));
+
+        container.read(selectedDirectionProvider.notifier).state = 'SN';
+        final reversed = await container.read(itineraryProvider.future);
+        final monteeRetour = reversed.fold<int>(
+          0,
+          (s, d) => s + d.totalElevation,
+        );
+
+        expect(
+          monteeRetour,
+          descenteAller,
+          reason: 'la montee du retour est la descente de l aller',
+        );
+        expect(
+          monteeRetour,
+          isNot(monteeAller),
+          reason: 'c est exactement le chiffre que l ecran annoncait a tort',
+        );
+      },
+    );
   });
 }

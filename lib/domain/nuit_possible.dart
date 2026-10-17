@@ -2,6 +2,12 @@
 /// point calcule entre deux refuges.
 library;
 
+// LE MODELE DE TEMPS DE MARCHE DU DEPOT, ET PAS UN AUTRE. Le sens inverse
+// recalcule la duree de chaque segment, parce que permuter montee et descente
+// change le temps : il doit le faire avec LA formule du produit, celle que les
+// seize etapes et l'heure d'arrivee emploient deja.
+import '../core/models/stage_duration.dart';
+
 /// UN ENDROIT OU L'ON PEUT DORMIR, ET D'OU L'ON PEUT REPARTIR (tache 839).
 ///
 /// POURQUOI CE MODELE EXISTE. La tache 634 a RETIRE le decoupage d'etape que le
@@ -39,6 +45,10 @@ class NuitPossible {
     required this.minutesRetour,
     required this.lits,
     required this.finDEtape,
+    this.deniveleAllerM = 0,
+    this.descenteAllerM = 0,
+    this.deniveleRetourM = 0,
+    this.descenteRetourM = 0,
   });
 
   /// Nom du lieu, tel qu'OpenStreetMap le porte.
@@ -76,6 +86,38 @@ class NuitPossible {
   /// plus couteuse du releve.
   final int minutesRetour;
 
+  /// MONTEE, EN METRES, POUR QUITTER LA TRACE ET REJOINDRE LE LIEU (tache 853).
+  ///
+  /// LE DEFAUT QUE CES QUATRE CHAMPS REPARENT. Le detour vers un couchage etait
+  /// releve en MINUTES depuis la tache 838, et ces minutes entraient bien dans
+  /// le temps de la journee. Son DENIVELE etait mesure par le meme releve et
+  /// n'arrivait jamais jusqu'ici : une journee qui finit au refuge Laparo
+  /// remonte 126 m le lendemain matin avant d'avoir avance d'un metre sur la
+  /// trace, et ces 126 m n'entraient dans aucun chiffre annonce. Le commentaire
+  /// des minutes disait deja pourquoi c'est inacceptable — « les taire ferait
+  /// passer une journee pour plus courte qu'elle n'est » — et le raisonnement
+  /// vaut mot pour mot pour les metres.
+  ///
+  /// LES QUATRE SONT MESURES SEPAREMENT, comme les minutes, et pour la meme
+  /// raison : le chemin n'est pas symetrique. On descend au refuge Laparo
+  /// (5 m de montee, 126 de descente) et on en remonte (126 de montee, 5 de
+  /// descente). Un seul chiffre aurait cache l'asymetrie la plus couteuse du
+  /// releve.
+  ///
+  /// Zero quand le lieu est sur la trace — et zero sur une FIN D'ETAPE, par
+  /// construction : le modele du depot place la nuit au point de la trace, donc
+  /// son detour vaut zero minute et zero metre.
+  final int deniveleAllerM;
+
+  /// Descente, en metres, pour quitter la trace et rejoindre le lieu.
+  final int descenteAllerM;
+
+  /// Montee, en metres, pour REVENIR du lieu sur la trace le lendemain.
+  final int deniveleRetourM;
+
+  /// Descente, en metres, pour revenir du lieu sur la trace le lendemain.
+  final int descenteRetourM;
+
   /// Lits CONNUS d'OpenStreetMap, ou `null` quand personne ne les a renseignes.
   final int? lits;
 
@@ -104,6 +146,15 @@ class NuitPossible {
     lon: (json['lon'] as num).toDouble(),
     minutesAller: (json['minutes_aller'] as num?)?.round() ?? 0,
     minutesRetour: (json['minutes_retour'] as num?)?.round() ?? 0,
+    // ABSENT VAUT ZERO, ET PAS « ON NE SAIT PAS ». Un sentier dont le releve
+    // ne porte pas le denivele du detour n'en voit aucun s'ajouter a ses
+    // journees : c'est l'etat d'avant la tache 853, donc aucune regression
+    // pour les sentiers plus pauvres. L'inverse — deviner une montee — est ce
+    // que ce depot ne fait jamais.
+    deniveleAllerM: (json['dplus_aller_m'] as num?)?.round() ?? 0,
+    descenteAllerM: (json['dmoins_aller_m'] as num?)?.round() ?? 0,
+    deniveleRetourM: (json['dplus_retour_m'] as num?)?.round() ?? 0,
+    descenteRetourM: (json['dmoins_retour_m'] as num?)?.round() ?? 0,
     lits: (json['lits'] as num?)?.round(),
     finDEtape: (json['fin_d_etape'] as num?)?.round(),
   );
@@ -159,6 +210,34 @@ class SegmentEntreNuits {
         descenteM: (json['dmoins_m'] as num).round(),
         minutes: (json['minutes'] as num).round(),
       );
+
+  /// LE MEME SEGMENT, MARCHE DANS L'AUTRE SENS (tache 853).
+  ///
+  /// Depart et arrivee s'echangent, MONTEE ET DESCENTE AUSSI — c'est tout le
+  /// defaut du sens inverse, et il ne suffit pas de retourner une liste pour
+  /// l'eviter. Le [rang] est redonne par l'appelant, qui seul sait la place du
+  /// segment dans le nouvel ordre.
+  ///
+  /// LE TEMPS EST RECALCULE, PAS RECOPIE, et c'est le point delicat. Le temps
+  /// de marche du depot paie la montee (400 m a l'heure) et la descente
+  /// (1,67 s par metre) a des tarifs differents : permuter les deux CHANGE la
+  /// duree. Recopier les minutes du sens de la trace ferait equilibrer les
+  /// journees du sens inverse sur un temps qui n'est pas le leur, et les
+  /// coupures tomberaient au mauvais endroit. On repasse donc par LE modele du
+  /// depot, celui-la et pas un autre.
+  SegmentEntreNuits aLEnvers({required int rang}) => SegmentEntreNuits(
+    rang: rang,
+    depart: arrivee,
+    arrivee: depart,
+    km: km,
+    deniveleM: descenteM,
+    descenteM: deniveleM,
+    minutes: estimatedStageDurationMinutes(
+      distanceKm: km,
+      elevationGainM: descenteM,
+      elevationLossM: deniveleM,
+    ),
+  );
 }
 
 /// TOUT CE QU'UN SENTIER OFFRE AU DECOUPAGE : ses nuits et ses segments.
@@ -209,6 +288,34 @@ class DecoupageDeNuits {
   /// Les nuits qui ne sont PAS des fins d'etape : ce que ce lot ajoute au jeu.
   List<NuitPossible> get coupuresNouvelles =>
       nuits.where((n) => !n.estFinDEtape).toList(growable: false);
+
+  /// LE MEME SENTIER, MARCHE DANS L'AUTRE SENS (tache 853).
+  ///
+  /// POURQUOI CECI VIT DANS LE DOMAINE ET PLUS DANS UN TEST. La tache 852
+  /// avait besoin du sens inverse pour mesurer son echelle ; faute d'un sens
+  /// inverse dans le produit, elle s'en est fabrique un DANS SON FICHIER DE
+  /// TEST. Un sens de marche reinvente dans un test est un sens de marche que
+  /// le produit n'a pas : c'est la forme la plus discrete de dette, et c'est
+  /// elle qui a laisse vivre le defaut des deniveles.
+  ///
+  /// CE QUI CHANGE : l'ordre des segments, et dans chacun le depart, l'arrivee,
+  /// la montee, la descente et la duree ([SegmentEntreNuits.aLEnvers]). LA TETE
+  /// DE SENTIER CHANGE DE BOUT : marche de Conca vers Calenzana, on part de
+  /// Conca. Les NUITS ne bougent pas — un refuge est au meme endroit quel que
+  /// soit le sens dont on y arrive, et son detour aussi.
+  DecoupageDeNuits get aLEnvers {
+    if (vide) return this;
+    final retournes = segments.reversed.toList(growable: false);
+    return DecoupageDeNuits(
+      trailId: trailId,
+      teteDeSentier: segments.last.arrivee,
+      nuits: nuits,
+      segments: [
+        for (var i = 0; i < retournes.length; i++)
+          retournes[i].aLEnvers(rang: i + 1),
+      ],
+    );
+  }
 
   /// Lit le decoupage depuis le JSON du sentier.
   factory DecoupageDeNuits.fromJson(

@@ -40,6 +40,7 @@ import '../../planning/planning_facade.dart'
 import '../../trail/trail_facade.dart' show stagesProvider;
 import '../../trek/trek_facade.dart' show selectedDirectionProvider;
 import '../../../domain/feasibility_formula.dart';
+import '../../../domain/sens_de_marche.dart';
 import '../domain/program_plan_search.dart';
 import 'trek_feasibility_provider.dart';
 
@@ -59,11 +60,18 @@ final _advisedSearchStagesProvider = Provider<List<StageModel>>((ref) {
         orElse: () => const <StageModel>[],
       );
   if (sorted.isEmpty) return const [];
+  // SENS DE MARCHE : etapes ORIENTEES, ordre ET deniveles (lot 853). Le conseil
+  // de duree se juge sur la sequence REELLE : la juger sur la montee du sens de
+  // la trace conseillait une allure que le sens inverse ne tient pas.
   final directions = ref.watch(trailConfigProvider.select((c) => c.directions));
-  final forward = directions.isNotEmpty ? directions.first : null;
   final selected = ref.watch(selectedDirectionProvider);
-  final reversed = forward != null && selected != null && selected != forward;
-  return reversed ? sorted.reversed.toList() : sorted;
+  return etapesDansLeSens(
+    sorted,
+    aLEnvers: marcheALEnvers(
+      sensDeReference: directions.isNotEmpty ? directions.first : null,
+      choisi: selected,
+    ),
+  );
 });
 
 /// LE PROGRAMME CONSEILLE, trouve par essai reel.

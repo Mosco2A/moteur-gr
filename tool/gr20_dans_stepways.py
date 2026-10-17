@@ -377,6 +377,44 @@ def nuits_possibles(mesure):
         lits = sum(c["lits"] for c in couchages if c.get("lits"))
         return ids, (lits or None)
 
+    def denivele_du_detour(couchages):
+        """LE DENIVELE DU DETOUR, dans les deux sens, en metres (tache 853).
+
+        POURQUOI CES QUATRE CHIFFRES SORTENT D ICI ET PAS D AILLEURS. La tache
+        838 avait deja mesure le detour vers un couchage hors trace, et elle le
+        relevait en MINUTES, separement a l aller et au retour (refuge Laparo :
+        10 minutes pour y descendre le soir, 28 pour en remonter le matin). Le
+        MEME releve porte le denivele de ce detour — `dplus_aller_m`,
+        `dmoins_aller_m`, `dplus_retour_m`, `dmoins_retour_m` — et personne ne
+        le ressortait : le decoupage ajoutait les minutes du detour au temps de
+        la journee et n ajoutait pas ses metres a son denivele. Une journee qui
+        finit au refuge Laparo remonte 126 m le lendemain matin avant d avoir
+        avance d un metre sur la trace, et ces 126 m n entraient dans aucun
+        chiffre annonce.
+
+        ON PREND LE MAXIMUM QUAND PLUSIEURS COUCHAGES PARTAGENT L ENDROIT. Les
+        lits se SOMMENT (deux gites au meme endroit font deux fois les lits), le
+        detour NON : le marcheur ne fait le chemin qu une fois. A coordonnees
+        egales le detour est le meme, et le maximum protege le cas ou le releve
+        differe de quelques metres entre deux etablissements voisins — on
+        annonce alors la montee la plus forte, jamais la plus faible.
+
+        Un endroit sans couchage joint rend quatre zeros, exactement comme les
+        minutes : aucune valeur devinee.
+        """
+
+        def maximum(champ):
+            if not couchages:
+                return 0
+            return max((c.get(champ) or 0) for c in couchages)
+
+        return {
+            "dplus_aller_m": maximum("dplus_aller_m"),
+            "dmoins_aller_m": maximum("dmoins_aller_m"),
+            "dplus_retour_m": maximum("dplus_retour_m"),
+            "dmoins_retour_m": maximum("dmoins_retour_m"),
+        }
+
     nuits = []
     for e in mesure["etapes"]:
         arrivee = e["arrivee"]
@@ -407,6 +445,19 @@ def nuits_possibles(mesure):
                 "lon": arrivee["lon"],
                 "minutes_aller": 0,
                 "minutes_retour": 0,
+                # UNE FIN D ETAPE EST SUR LA TRACE : AUCUN DETOUR, NI EN TEMPS
+                # NI EN METRES. Les minutes etaient deja a zero ici depuis la
+                # tache 838 ; les metres le sont pour la MEME raison, et c est
+                # la coherence qui compte. Le couchage joint plus bas est le
+                # BATIMENT voisin de la fin d etape, parfois a une vingtaine de
+                # metres de montee ; le modele du depot place la nuit AU point
+                # de la trace, et c est ce choix-la qui est porte ici. Le
+                # corriger serait changer la definition d une fin d etape, donc
+                # un autre lot — pas un effet de bord de celui-ci.
+                "dplus_aller_m": 0,
+                "dmoins_aller_m": 0,
+                "dplus_retour_m": 0,
+                "dmoins_retour_m": 0,
                 "lits": lits,
                 "origine": "fin d etape",
                 "fin_d_etape": e["rang"],
@@ -432,6 +483,11 @@ def nuits_possibles(mesure):
                 "lon": endroit["lon"],
                 "minutes_aller": endroit["minutes_aller"],
                 "minutes_retour": endroit["minutes_retour"],
+                # LE DETOUR EN METRES, A COTE DU DETOUR EN MINUTES (tache 853).
+                # `endroits_nouveaux` ne porte que les minutes ; le denivele est
+                # sur le couchage joint par ses coordonnees, c est-a-dire sur
+                # `ici`, deja calcule juste au-dessus pour les identifiants.
+                **denivele_du_detour(ici),
                 "lits": endroit["lits"] or None,
                 "origine": "coupure de jour relevee",
                 "fin_d_etape": None,

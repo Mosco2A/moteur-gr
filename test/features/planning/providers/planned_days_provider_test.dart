@@ -308,7 +308,7 @@ void main() {
       expect(stats.totalElevationLoss, gainForward);
     });
 
-    test('distance, duree et etapes restent INVARIANTES au sens', () async {
+    test('distance et etapes restent INVARIANTES au sens', () async {
       final ns = await containerWith(direction: 'NS');
       addTearDown(ns.dispose);
       final sn = await containerWith(direction: 'SN');
@@ -317,10 +317,42 @@ void main() {
       final forward = ns.read(planningStatsProvider('test-trail'));
       final backward = sn.read(planningStatsProvider('test-trail'));
 
+      // Le meme chemin fait la meme longueur dans les deux sens, et il porte le
+      // meme nombre d'etapes.
       expect(backward.totalDistance, forward.totalDistance);
-      expect(backward.totalHours, forward.totalHours);
       expect(backward.stageCount, forward.stageCount);
       expect(backward.trekDays, forward.trekDays);
+    });
+
+    test('LA DUREE, ELLE, N EST PAS INVARIANTE — ET C EST JUSTE', () async {
+      // LOT 853 — CE CAS A CHANGE D ATTENTE, ET LE CHANGEMENT EST LE CORRECTIF.
+      //
+      // IL EXIGEAIT UNE DUREE IDENTIQUE DANS LES DEUX SENS. Cette egalite
+      // n'etait vraie que parce que l'inversion ne retournait PAS les
+      // deniveles : les etapes gardaient la montee du sens de la trace, donc le
+      // modele de temps calculait deux fois la meme chose. C'etait le defaut,
+      // pas la propriete.
+      //
+      // MONTER PREND PLUS DE TEMPS QUE DESCENDRE, et le modele de marche du
+      // depot le dit. Ce jeu d'etapes monte 2 250 m a l'aller et 1 800 m au
+      // retour : le retour doit donc etre PLUS COURT en temps. Une duree
+      // inchangee signifierait que la permutation des deniveles n'a pas eu
+      // lieu.
+      final ns = await containerWith(direction: 'NS');
+      addTearDown(ns.dispose);
+      final sn = await containerWith(direction: 'SN');
+      addTearDown(sn.dispose);
+
+      final forward = ns.read(planningStatsProvider('test-trail'));
+      final backward = sn.read(planningStatsProvider('test-trail'));
+
+      expect(forward.totalElevationGain, gainForward);
+      expect(backward.totalElevationGain, lossForward);
+      expect(
+        backward.totalHours,
+        lessThan(forward.totalHours),
+        reason: 'moins de montee au retour, donc moins de temps',
+      );
     });
   });
 }

@@ -83,6 +83,29 @@ COUVERTURE_PAR_DOSSIER = {
     "mare_a_mare_centre": "mare-a-mare-centre",
 }
 
+# CHAPITRE DU FONDS -> SA FICHE PROPRE, QUAND LE CHAPITRE EST UN PRODUIT.
+#
+# TACHE 853 — LES DEUX MOITIES DU GR20 SONT LES PRODUITS EN VENTE, ET ELLES
+# N AVAIENT NI FICHE NI PHOTOS. Le lot 841 a fait du chapitre l unite de vente
+# et a retire le GR20 entier du catalogue ; le fonds de la 845 etait deja range
+# par chapitre (six vues au nord, six au sud, une couverture chacun) et l en-tete
+# de ce script l annoncait : « le jour ou les chapitres deviennent des produits,
+# chacun a deja sa couverture et ses vues ». Ce jour est arrive.
+#
+# LES IMAGES NE SONT PAS DUPLIQUEES, ET C EST UNE DECISION. Les douze fichiers
+# restent dans `assets/data/gr20/photos/` avec LEUR PREUVE UNIQUE ; les fiches
+# des chapitres les declarent par leur vrai chemin. Recopier six images par
+# chapitre aurait double six megaoctets de JPEG dans un binaire hors ligne par
+# conception, et surtout DEDOUBLE la preuve : deux PROVENANCE.json a tenir a
+# jour pour les memes images, donc deux occasions de se contredire. La garde
+# `photos_du_produit_848_test` a ete reecrite pour verifier la preuve A COTE DE
+# L IMAGE plutot qu a cote de la fiche — elle y a gagne en force, puisqu elle
+# compte desormais les images DISTINCTES du fonds.
+FICHES_DE_CHAPITRE = {
+    "gr20-nord": "gr20-nord",
+    "gr20-sud": "gr20-sud",
+}
+
 # MEME LISTE BLANCHE QUE LE LECTEUR DART (`LicencesCommerciales`). Les deux
 # doivent dire la meme chose : une liste plus permissive ici ferait entrer dans
 # le binaire ce que l'application refuserait d'afficher, et l'inverse ferait
@@ -365,6 +388,59 @@ def main() -> int:
             f"couverture {'posee' if couverture_posee else 'ABSENTE'}, "
             f"{sum(1 for r in refus if DOSSIER_PAR_CHAPITRE.get(r.get('chapitre', '')) == donnees)} refus inscrits"
         )
+
+        # (4bis) LA FICHE DE CHAQUE CHAPITRE QUI EST UN PRODUIT (tache 853).
+        #
+        # Le chapitre ne prend QUE ses images, et sa couverture est la SIENNE —
+        # le lac de Capitello au nord, le col de Bavella au sud. Sans ce bloc, la
+        # couverture du sentier mere servait aussi de couverture au sud, qui
+        # s'ouvrait donc sur une photo du nord.
+        for chapitre, dossier_du_chapitre in sorted(FICHES_DE_CHAPITRE.items()):
+            if DOSSIER_PAR_CHAPITRE.get(chapitre) != donnees:
+                continue
+            fiche_du_chapitre = (
+                RACINE / "assets" / "data" / dossier_du_chapitre / "fiche.json"
+            )
+            if not fiche_du_chapitre.exists():
+                anomalies.append(
+                    f"{chapitre} : {fiche_du_chapitre.relative_to(RACINE)} "
+                    f"manque — le texte de la fiche est EDITORIAL, ce script "
+                    f"n'ecrit que ses photos"
+                )
+                continue
+
+            du_chapitre = [i for i in liste if i["chapitre"] == chapitre]
+            couverture_du_chapitre = False
+            photos_du_chapitre: list[dict] = []
+            for image in du_chapitre:
+                est_couverture = (
+                    not couverture_du_chapitre and image["role"] == "couverture"
+                )
+                if est_couverture:
+                    couverture_du_chapitre = True
+                photos_du_chapitre.append(
+                    photo_pour_la_fiche(image, est_couverture)
+                )
+
+            if not couverture_du_chapitre:
+                anomalies.append(
+                    f"{chapitre} : aucune image de couverture dans le fonds — "
+                    f"la carte du catalogue resterait vide"
+                )
+
+            contenu_du_chapitre = json.loads(
+                fiche_du_chapitre.read_text(encoding="utf-8")
+            )
+            contenu_du_chapitre["photos"] = photos_du_chapitre
+            fiche_du_chapitre.write_text(
+                json.dumps(contenu_du_chapitre, ensure_ascii=False, indent=2)
+                + "\n",
+                encoding="utf-8",
+            )
+            print(
+                f"{chapitre} : {len(photos_du_chapitre)} photos, "
+                f"couverture {'posee' if couverture_du_chapitre else 'ABSENTE'}"
+            )
 
     for ligne in ecarts:
         print(f"ECARTEE — {ligne}")

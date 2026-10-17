@@ -63,12 +63,19 @@ void main() {
         final connues = {for (final n in gr20.nuits) n.nom};
         for (final jours in [7, 10, 12, 16, 20, 25, 31]) {
           for (final j in DecoupageSurLesNuits.repartir(gr20, jours)) {
-            expect(connues, contains(j.arrivee.nom));
+            // TACHE 853 — LE NOM EST TOUJOURS LA, LA NUIT PAS TOUJOURS. Dans
+            // le sens de la trace, toutes les arrivees SONT des nuits relevees
+            // et ce cas l'exige encore. Ce qui a change, c'est que la journee
+            // n'est plus JETEE quand ce n'est pas le cas : elle porte alors son
+            // nom de lieu et une nuit nulle (voir le cas de la tete de
+            // sentier).
+            expect(connues, contains(j.arriveeNom));
+            expect(j.arrivee, isNotNull, reason: 'sens de la trace');
             expect(
-              j.arrivee.osm,
+              j.arrivee!.osm,
               isNotEmpty,
               reason:
-                  '${j.arrivee.nom} : une arrivee sans identifiant '
+                  '${j.arriveeNom} : une arrivee sans identifiant '
                   'OpenStreetMap serait un point invente',
             );
           }
@@ -85,7 +92,9 @@ void main() {
       // A vingt-cinq journees, le programme DOIT s'arreter ailleurs qu'aux fins
       // d'etape — sinon le curseur n'aurait toujours que du repos a offrir.
       final vingtCinq = DecoupageSurLesNuits.repartir(gr20, 25);
-      final horsEtape = vingtCinq.where((j) => !j.arrivee.estFinDEtape).length;
+      final horsEtape = vingtCinq
+          .where((j) => !(j.arrivee?.estFinDEtape ?? false))
+          .length;
       expect(
         horsEtape,
         greaterThanOrEqualTo(25 - 16),

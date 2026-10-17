@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
+import '../../../domain/sens_de_marche.dart';
 import '../../trail/trail_facade.dart' show stagesProvider;
 import '../../trek/trek_facade.dart' show selectedDirectionProvider;
 import '../domain/planning_calculator.dart';
@@ -32,59 +33,76 @@ import 'trek_edit_lock_provider.dart';
 ///
 /// SENS de marche (retour QA polish, coherence Itineraire<->Programme) : le
 /// programme honore [selectedDirectionProvider] a l'identique de l'itineraire
-/// (itinerary_providers.dart). Quand l'utilisateur inverse le sens, l'ORDRE des
-/// etapes est inverse AVANT la repartition en jours -> Jour 1 = etape de depart
-/// du sens choisi. Sens de reference (ordre croissant) = 1er code de
-/// `TrailConfig.directions` (fourni par le sentier, jamais devine).
-final plannedDaysProvider = StateNotifierProvider.family<PlannedDaysNotifier, List<PlannedDay>, String>((
-  ref,
-  trailId,
-) {
-  // Etapes du sentier courant (asynchrones). Tant qu'elles ne sont pas la, on
-  // part d'une liste vide : l'ecran affiche alors son etat vide, puis le
-  // provider est recree avec les etapes reelles (ref.watch).
-  final stagesAsync = ref.watch(stagesProvider(trailId));
-  final duration = ref.watch(selectedDurationProvider);
-  final sorted = stagesAsync.maybeWhen(
-    data: (list) =>
-        List<StageModel>.of(list)
-          ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
-    orElse: () => const <StageModel>[],
-  );
+/// (itinerary_providers.dart). Quand l'utilisateur inverse le sens, les etapes
+/// sont ORIENTEES avant la repartition ([etapesDansLeSens]) -> Jour 1 = etape
+/// de depart du sens choisi, ET montee et descente permutees. Sens de reference
+/// (ordre croissant) = 1er code de `TrailConfig.directions` (fourni par le
+/// sentier, jamais devine).
+///
+/// LOT 853 — L'ORIENTATION PORTE DESORMAIS LES DENIVELES, ET C'ETAIT LE DEFAUT.
+/// Jusqu'ici l'inversion n'inversait que l'ORDRE : la montee de chaque etape
+/// restait celle du sens de la trace, donc le programme et l'itineraire
+/// annoncaient 300 m de montee sur une journee qui en monte 1 097. La
+/// permutation se fait maintenant UNE fois, ici, sur les etapes ; les sommes
+/// qui la refaisaient en aval ont ete retirees dans le meme lot, sinon elles
+/// l'annulaient.
+final plannedDaysProvider =
+    StateNotifierProvider.family<
+      PlannedDaysNotifier,
+      List<PlannedDay>,
+      String
+    >((ref, trailId) {
+      // Etapes du sentier courant (asynchrones). Tant qu'elles ne sont pas la, on
+      // part d'une liste vide : l'ecran affiche alors son etat vide, puis le
+      // provider est recree avec les etapes reelles (ref.watch).
+      final stagesAsync = ref.watch(stagesProvider(trailId));
+      final duration = ref.watch(selectedDurationProvider);
+      final sorted = stagesAsync.maybeWhen(
+        data: (list) =>
+            List<StageModel>.of(list)
+              ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
+        orElse: () => const <StageModel>[],
+      );
 
-  // Sens de marche : inverse l'ordre des etapes si le sens choisi n'est pas le
-  // sens de reference (parite avec itineraryProvider #12b). Direction-aware,
-  // sans nombre en dur ; le sens de reference est le 1er declare par le sentier.
-  final directions = ref.watch(trailConfigProvider.select((c) => c.directions));
-  final forward = directions.isNotEmpty ? directions.first : null;
-  final selected = ref.watch(selectedDirectionProvider);
-  final reversed = forward != null && selected != null && selected != forward;
-  final stages = reversed ? sorted.reversed.toList() : sorted;
+      // SENS DE MARCHE : les etapes sont ORIENTEES, et plus seulement remises
+      // dans l'autre ordre. Le sens de reference est le 1er declare par le
+      // sentier, jamais devine ; la permutation des deux deniveles vit dans
+      // [etapesDansLeSens] et nulle part ailleurs.
+      final directions = ref.watch(
+        trailConfigProvider.select((c) => c.directions),
+      );
+      final forward = directions.isNotEmpty ? directions.first : null;
+      final selected = ref.watch(selectedDirectionProvider);
+      final reversed = marcheALEnvers(
+        sensDeReference: forward,
+        choisi: selected,
+      );
+      final stages = etapesDansLeSens(sorted, aLEnvers: reversed);
 
-  // TACHE 634 — LE JOUR EN TROP REDEVIENT UN JOUR DE REPOS (DEM-260929-1327).
-  // Le lot 558 en faisait un DECOUPAGE de la journee la plus lourde ; Christophe
-  // l'a refuse. Le plafond de repos qui servait a declencher ce decoupage n'a
-  // donc plus d'objet.
-  final cachedRestDays = ref.read(manualRestDayCacheProvider);
-  final notifier = PlannedDaysNotifier(stages, duration, ref);
-  if (cachedRestDays.isNotEmpty) {
-    notifier.restoreRestDaysFromCache(cachedRestDays);
-  }
+      // TACHE 634 — LE JOUR EN TROP REDEVIENT UN JOUR DE REPOS (DEM-260929-1327).
+      // Le lot 558 en faisait un DECOUPAGE de la journee la plus lourde ; Christophe
+      // l'a refuse. Le plafond de repos qui servait a declencher ce decoupage n'a
+      // donc plus d'objet.
+      final cachedRestDays = ref.read(manualRestDayCacheProvider);
+      final notifier = PlannedDaysNotifier(stages, duration, ref);
+      if (cachedRestDays.isNotEmpty) {
+        notifier.restoreRestDaysFromCache(cachedRestDays);
+      }
 
-  // R12 (LOT L9) — VERROU « rando en cours ». Le verrou est INJECTE par
-  // `ref.listen` et NON par `ref.watch` : c'est volontaire. Un `watch`
-  // RECREERAIT le notifier a chaque etape terminee, effacant les modifications
-  // que le randonneur vient justement de faire sur ses jours a venir. Avec
-  // `listen`, le notifier vit, et seul son verrou se met a jour (fireImmediately
-  // pose l'etat initial des la creation, avant tout affichage).
-  ref.listen<TrekEditLock>(
-    trekEditLockProvider,
-    (_, next) => notifier.applyEditLock(next),
-    fireImmediately: true,
-  );
+      // R12 (LOT L9) — VERROU « rando en cours ». Le verrou est INJECTE par
+      // `ref.listen` et NON par `ref.watch` : c'est volontaire. Un `watch`
+      // RECREERAIT le notifier a chaque etape terminee, effacant les modifications
+      // que le randonneur vient justement de faire sur ses jours a venir. Avec
+      // `listen`, le notifier vit, et seul son verrou se met a jour (fireImmediately
+      // pose l'etat initial des la creation, avant tout affichage).
+      ref.listen<TrekEditLock>(
+        trekEditLockProvider,
+        (_, next) => notifier.applyEditLock(next),
+        fireImmediately: true,
+      );
 
-  return notifier;
-});
+      return notifier;
+    });
 
 /// Cache externe des positions (index) des jours de repos manuels.
 ///
@@ -429,27 +447,27 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
 ///
 /// Refletent les editions manuelles (recalcul depuis l'etat des jours).
 ///
-/// SENS DE MARCHE (R5, LOT L10) : les totaux D+/D- honorent desormais
-/// [selectedDirectionProvider], comme le font deja les lignes JOUR PAR JOUR de
-/// l'ecran Resume (`directionalDayStats`). Avant ce correctif, le meme ecran
-/// affichait un D+ global issu des valeurs BRUTES du seed pendant que ses lignes
-/// jour par jour permutaient montee et descente : incoherence interne, et
-/// rupture de parite GR20 (`itinerary_provider` y construit les etapes
-/// orientees AVANT de sommer, donc applique le sens au global ET au jour).
-/// En sens INVERSE, la montee et la descente s'echangent (le D+ devient le D-
-/// officiel) ; distance, duree et nombre d'etapes sont invariants au sens.
+/// SENS DE MARCHE : LES TOTAUX N'ONT PLUS RIEN A PERMUTER, ET C'EST LE
+/// CORRECTIF DU LOT 853.
+///
+/// CE QUE CE PROVIDER FAISAIT, ET POURQUOI C'ETAIT UN PANSEMENT. Le lot L10
+/// avait fait permuter ICI la montee et la descente (`isForward ? gain : loss`)
+/// parce que les etapes, elles, arrivaient avec les deniveles du sens de la
+/// trace : l'inversion n'etait qu'un `.reversed` sur la liste. Le pansement
+/// rendait ce total-ci juste et laissait faux tout ce qui ne l'avait pas copie
+/// — l'ecran Itineraire en particulier, qui annoncait 300 m de montee sur une
+/// journee qui en monte 1 097.
+///
+/// LA PERMUTATION EST REMONTEE A LA SOURCE ([etapesDansLeSens], applique par
+/// [plannedDaysProvider]). `day.totalElevationGainM` EST donc la montee du sens
+/// choisi, et la refaire ici serait une DOUBLE inversion qui remettrait le
+/// defaut en place par l'autre bout. Distance, duree et nombre d'etapes restent
+/// invariants au sens, comme avant.
 final planningStatsProvider = Provider.family<PlanningStats, String>((
   ref,
   trailId,
 ) {
   final days = ref.watch(plannedDaysProvider(trailId));
-
-  // Sens de reference = 1er sens declare par le sentier (jamais devine). Sans
-  // sens declare ou sans choix utilisateur, on reste dans le sens de reference.
-  final directions = ref.watch(trailConfigProvider.select((c) => c.directions));
-  final forward = directions.isNotEmpty ? directions.first : null;
-  final selected = ref.watch(selectedDirectionProvider);
-  final isForward = forward == null || selected == null || selected == forward;
 
   var totalDistance = 0.0;
   var totalGain = 0;
@@ -463,8 +481,8 @@ final planningStatsProvider = Provider.family<PlanningStats, String>((
   for (final day in days) {
     if (day.isRestDay) continue;
     totalDistance += day.totalDistanceKm;
-    totalGain += isForward ? day.totalElevationGainM : day.totalElevationLossM;
-    totalLoss += isForward ? day.totalElevationLossM : day.totalElevationGainM;
+    totalGain += day.totalElevationGainM;
+    totalLoss += day.totalElevationLossM;
     totalHours += day.estimatedHours;
     stageNumbers.addAll(day.stages.map((s) => s.stageNumber));
   }

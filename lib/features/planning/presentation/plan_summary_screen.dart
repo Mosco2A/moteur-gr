@@ -565,20 +565,16 @@ class _DaySummaryTile extends ConsumerWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    // Sens de marche courant (defaut = 1er sens du sentier).
-    final config = ref.watch(trailConfigProvider);
-    final forward = config.directions.isNotEmpty
-        ? config.directions.first
-        : 'NS';
-    final selected = ref.watch(selectedDirectionProvider) ?? forward;
-    final isForward = selected == forward;
-
     if (day.isRestDay) {
       return _buildRestDay(context, theme, scheme, ref);
     }
 
-    // Jour de marche : stats agregees DANS LE SENS de marche.
-    final stats = directionalDayStats(day, isForward: isForward);
+    // LES ETAPES DU JOUR ARRIVENT DEJA ORIENTEES (lot 853) : cette tuile n'a
+    // plus a connaitre le sens de marche pour dire un denivele juste. Elle
+    // lisait le sens pour permuter montee et descente elle-meme ; la
+    // permutation vit desormais dans `etapesDansLeSens`, une seule fois, en
+    // amont de la repartition.
+    final stats = directionalDayStats(day);
 
     // Etiquettes des etapes (numeros), derivees de la liste d'etapes du jour.
     final stageLabels = day.stages
@@ -953,25 +949,42 @@ class DaySummaryStats {
   const DaySummaryStats({
     required this.km,
     required this.gain,
+    required this.loss,
     required this.hours,
   });
   final double km;
   final int gain;
+
+  /// LA DESCENTE DU JOUR, portee depuis le lot 853.
+  ///
+  /// Elle manquait, et son absence etait la seconde moitie du defaut du sens
+  /// inverse : cet ecran n'avait AUCUN moyen d'afficher une descente juste,
+  /// meme en la connaissant. Une journee de montagne se prepare sur les DEUX
+  /// chiffres — la descente est ce qui use les genoux, et sur le GR20 elle
+  /// depasse la montee sur dix des seize etapes.
+  final int loss;
   final double hours;
 }
 
-/// Agrege distance / D+ / duree d'un jour DANS LE SENS de marche.
+/// Agrege distance / D+ / D- / duree d'un jour.
 ///
-/// Parite GR20 (« D+ du jour dans le sens choisi, inverse en sens retour ») :
-/// dans le sens de reference le D+ = somme des `elevationGainM` ; dans le sens
-/// inverse, la montee et la descente s'echangent (le D+ devient le D- officiel).
-/// La distance et la duree sont invariantes au sens. Fonction pure (testable).
-DaySummaryStats directionalDayStats(PlannedDay day, {required bool isForward}) {
-  final km = day.totalDistanceKm;
-  final gain = isForward ? day.totalElevationGainM : day.totalElevationLossM;
-  final hours = day.estimatedHours;
-  return DaySummaryStats(km: km, gain: gain, hours: hours);
-}
+/// LE SENS EST DEJA APPLIQUE EN AMONT, ET CETTE FONCTION NE LE REFAIT PLUS
+/// (lot 853). Les etapes du programme sont ORIENTEES par `etapesDansLeSens`
+/// avant toute repartition : `day.totalElevationGainM` EST la montee du sens
+/// CHOISI, et non celle de la trace. La permutation qui vivait ici etait un
+/// pansement, pose a l'epoque ou inverser le sens n'etait qu'un `.reversed`
+/// sur l'ordre des etapes — elle rendait CET ecran juste et laissait faux tous
+/// ceux qui ne l'avaient pas recopiee. La refaire maintenant serait une DOUBLE
+/// inversion, qui reinstallerait le defaut par l'autre bout.
+///
+/// Distance et duree sont invariantes au sens : le meme chemin fait la meme
+/// longueur dans les deux sens. Fonction pure (testable).
+DaySummaryStats directionalDayStats(PlannedDay day) => DaySummaryStats(
+  km: day.totalDistanceKm,
+  gain: day.totalElevationGainM,
+  loss: day.totalElevationLossM,
+  hours: day.estimatedHours,
+);
 
 /// Titre « Depart -> Arrivee » d'une etape DANS LE SENS de marche (parite GR20
 /// `stageTitleForDirection`). En sens inverse, on lit l'arrivee comme depart et

@@ -17,6 +17,7 @@ import '../../planning/planning_facade.dart'
 import '../../trek/trek_facade.dart'
     show selectedDirectionProvider, stagesProvider;
 import '../../../domain/feasibility_formula.dart';
+import '../../../domain/sens_de_marche.dart';
 import '../domain/feasibility_program.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/objective_profile.dart';
@@ -218,12 +219,20 @@ final stageEffortsProvider = FutureProvider<List<StageEffort>>((ref) async {
   final sorted = List<StageModel>.of(stages)
     ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber));
 
-  // Sens de marche : identique a itineraryProvider (direction-aware).
+  // SENS DE MARCHE : etapes ORIENTEES, ordre ET deniveles (lot 853). Le
+  // `.reversed` nu qui vivait ici faisait juger la faisabilite sur la montee du
+  // sens de la TRACE : en sens inverse, le moteur pesait une journee a 300 m de
+  // montee la ou le marcheur en a 1 097, et rendait donc un verdict trop
+  // optimiste — sur la seule chose qu'on lui demande de garder.
   final directions = ref.watch(trailConfigProvider.select((c) => c.directions));
-  final forward = directions.isNotEmpty ? directions.first : null;
   final selected = ref.watch(selectedDirectionProvider);
-  final reversed = forward != null && selected != null && selected != forward;
-  final ordered = reversed ? sorted.reversed.toList() : sorted;
+  final ordered = etapesDansLeSens(
+    sorted,
+    aLEnvers: marcheALEnvers(
+      sensDeReference: directions.isNotEmpty ? directions.first : null,
+      choisi: selected,
+    ),
+  );
 
   return [
     for (var i = 0; i < ordered.length; i++)

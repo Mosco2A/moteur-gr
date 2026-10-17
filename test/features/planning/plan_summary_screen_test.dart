@@ -8,6 +8,7 @@ import 'package:moteur_gr/features/booking/domain/models/nuitee_type.dart';
 import 'package:moteur_gr/features/booking/providers/nuitee_selections_provider.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
 import 'package:moteur_gr/domain/planned_day.dart';
+import 'package:moteur_gr/domain/sens_de_marche.dart';
 import 'package:moteur_gr/features/planning/presentation/plan_summary_screen.dart';
 import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
@@ -394,34 +395,76 @@ void main() {
   // --- Sens de marche : D+ inverse en sens retour -------------------------
 
   group('sens de marche', () {
-    // Sentier bi-directionnel (NS / SN). Etape : D+ 800, D- 300. Dans le sens de
-    // reference (NS = 1er sens du sentier de test) la tuile montre le D+ officiel
-    // (+800 m) ; dans le sens inverse (SN), montee et descente s'echangent
-    // (+300 m). Deux tests distincts (tree neuf) pour un override propre du
-    // StateProvider global de direction.
-    final directionalDays = [
+    // LOT 853 — CE GROUPE A CHANGE DE COUCHE, ET C'EST LE CORRECTIF LUI-MEME.
+    //
+    // CE QU'IL VERIFIAIT : que CET ecran permute montee et descente quand le
+    // sens est inverse. Il passait, et le produit mentait quand meme — parce
+    // que la permutation etait faite ICI, par l'ecran Resume, sur des etapes
+    // qui arrivaient avec les deniveles du sens de la TRACE. L'ecran Itineraire
+    // ne l'avait pas recopiee : il annoncait 300 m de montee sur une journee
+    // qui en monte 1 094, et c'est parti chez les clients.
+    //
+    // CE QU'IL VERIFIE MAINTENANT : que l'ecran affiche le denivele de la
+    // journee QU'ON LUI DONNE, sans le permuter — et que la permutation, elle,
+    // se fait en amont sur les etapes (`etapesDansLeSens`). Les deux ecrans
+    // deviennent justes ensemble, et ils ne peuvent plus se contredire.
+    //
+    // Etape de decor : D+ 800, D- 300.
+    final journeesDuSensDeLaTrace = [
       PlannedDay(dayNumber: 1, stages: [stage(1, gain: 800, loss: 300)]),
     ];
+    final journeesOrientees = [
+      PlannedDay(
+        dayNumber: 1,
+        stages: etapesDansLeSens([
+          stage(1, gain: 800, loss: 300),
+        ], aLEnvers: true),
+      ),
+    ];
 
-    testWidgets('sens aller (NS) : D+ du jour = D+ officiel', (tester) async {
+    testWidgets('L ECRAN N INVENTE RIEN : il montre le D+ de la journee', (
+      tester,
+    ) async {
       useTallSurface(tester);
-      await tester.pumpWidget(wrap(days: directionalDays, direction: 'NS'));
+      await tester.pumpWidget(
+        wrap(days: journeesDuSensDeLaTrace, direction: 'NS'),
+      );
+      await settle(tester);
+      expect(find.text('+800 m'), findsOneWidget);
+    });
+
+    testWidgets('ET IL NE PERMUTE PLUS DE SON COTE, MEME EN SENS INVERSE', (
+      tester,
+    ) async {
+      // LE PIEGE QUE CE CAS INTERDIT : la double inversion. Si cet ecran
+      // permutait encore ET que les etapes arrivent orientees, le sens inverse
+      // reafficherait les chiffres du sens de la trace — le defaut remis en
+      // place par l'autre bout.
+      useTallSurface(tester);
+      await tester.pumpWidget(
+        wrap(days: journeesDuSensDeLaTrace, direction: 'SN'),
+      );
       await settle(tester);
       expect(
         find.text('+800 m'),
         findsOneWidget,
-        reason: 'Sens aller : D+ = elevationGain (800)',
+        reason: 'la journee porte 800 de montee : l ecran dit 800',
       );
+      expect(find.text('+300 m'), findsNothing);
     });
 
-    testWidgets('sens retour (SN) : D+ affiche = D- officiel', (tester) async {
+    testWidgets('UNE JOURNEE ORIENTEE MONTRE LES CHIFFRES DE L ENVERS', (
+      tester,
+    ) async {
       useTallSurface(tester);
-      await tester.pumpWidget(wrap(days: directionalDays, direction: 'SN'));
+      await tester.pumpWidget(wrap(days: journeesOrientees, direction: 'SN'));
       await settle(tester);
       expect(
         find.text('+300 m'),
         findsOneWidget,
-        reason: 'Sens retour : D+ affiche = D- officiel (300)',
+        reason:
+            'etapes orientees : la montee du sens inverse est l ancienne '
+            'descente',
       );
     });
   });
@@ -579,17 +622,51 @@ void main() {
   // --- Helpers purs d'agregation (sens de marche) -------------------------
 
   group('helpers agregation (fonctions pures)', () {
-    test('directionalDayStats echange D+/D- selon le sens', () {
+    test('directionalDayStats NE PERMUTE PLUS : le sens est applique en amont', () {
+      // LOT 853 — CE CAS A CHANGE DE SENS, ET IL FAUT DIRE POURQUOI PLUTOT QUE
+      // DE LE SUPPRIMER. Il figeait la permutation D+/D- ICI, dans l'agregateur
+      // de l'ecran Resume. C'etait un pansement : les etapes arrivaient avec
+      // les deniveles du sens de la TRACE, cet ecran les permutait pour lui, et
+      // l'ecran Itineraire — qui ne l'avait pas recopie — annoncait 300 m de
+      // montee sur une journee qui en monte 1 097. La permutation est remontee
+      // dans `etapesDansLeSens`, appliquee une seule fois avant la repartition.
+      //
+      // CE QUE LE CAS GARDE : la fonction lit les DEUX deniveles de la journee
+      // telle qu'on la lui donne, sans en inventer ni en permuter aucun.
       final day = PlannedDay(
         dayNumber: 1,
         stages: [stage(1, distanceKm: 10, gain: 700, loss: 250)],
       );
-      final fwd = directionalDayStats(day, isForward: true);
-      expect(fwd.km, 10);
-      expect(fwd.gain, 700);
-      final back = directionalDayStats(day, isForward: false);
-      expect(back.km, 10, reason: 'distance invariante au sens');
-      expect(back.gain, 250, reason: 'sens retour : D+ = D- officiel');
+      final stats = directionalDayStats(day);
+      expect(stats.km, 10);
+      expect(stats.gain, 700);
+      // ET LA DESCENTE EST ENFIN PORTEE : l'ecran n'avait aucun moyen de
+      // l'afficher juste, meme en la connaissant.
+      expect(stats.loss, 250);
+    });
+
+    test('UNE JOURNEE ORIENTEE A L ENVERS DONNE LES CHIFFRES DE L ENVERS', () {
+      // LE DEFAUT LIVRE, REFAIT DE BOUT EN BOUT. Les chiffres sont ceux de la
+      // derniere etape du GR20 : de i Paliri vers Conca on descend 1 094 m et
+      // on ne monte que 300 ; marchee de Conca vers i Paliri, c'est l'inverse.
+      // L'application annoncait 300 m de montee a qui en avait 1 094 devant
+      // lui.
+      final aLEndroit = [stage(1, distanceKm: 13.2, gain: 300, loss: 1094)];
+      final aLEnvers = etapesDansLeSens(aLEndroit, aLEnvers: true);
+
+      final endroit = directionalDayStats(
+        PlannedDay(dayNumber: 1, stages: aLEndroit),
+      );
+      final envers = directionalDayStats(
+        PlannedDay(dayNumber: 1, stages: aLEnvers),
+      );
+
+      expect(endroit.gain, 300);
+      expect(endroit.loss, 1094);
+      expect(envers.gain, 1094, reason: 'de Conca vers i Paliri, ca MONTE');
+      expect(envers.loss, 300);
+      // La distance ne bouge pas : le meme chemin fait la meme longueur.
+      expect(envers.km, closeTo(endroit.km, 0.001));
     });
 
     test(
