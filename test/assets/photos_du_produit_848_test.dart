@@ -24,10 +24,41 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/models/fiche_de_sentier.dart';
 
-/// Les sentiers du catalogue qui declarent une fiche, et le dossier d'assets
-/// ou cette fiche vit.
+/// Les sentiers qui declarent une fiche, et le dossier d'assets ou cette fiche
+/// vit.
+///
+/// [TrailCatalog.referentiel] ET PAS [TrailCatalog.all] — LA JONCTION DES LOTS
+/// 841 ET 848 L'A IMPOSE (tache 851).
+///
+/// Ce fichier lisait `all`, qui etait alors « tout ce qui existe vraiment ». Le
+/// lot 841 lui a donne un second filtre : un sentier qui a des CHAPITRES en est
+/// ECARTE, sur la decision de Christophe du 15/10 17:45 (« on achete le sentier
+/// seulement si il n y a pas de chapitres »). Le GR20 mere a quitte `all`
+/// — et avec lui les DOUZE images de son fonds, puisque c'est SA fiche qui les
+/// declare. Mesure a la fusion : il ne comptait plus que 6 images sur 18
+/// et 11 refus sur 22, sans qu'une seule ligne de preuve ait bouge.
+///
+/// `referentiel` est le bon ensemble pour CE fichier, et ce n'est pas un
+/// assouplissement : les attentes restent 18 et 22, exactement. Ce que ces cas
+/// prouvent est l'INTEGRITE DU FONDS et la completude de sa preuve — chaque
+/// image publiable, sourcee, presente sur le disque, sans orpheline, avec son
+/// `PROVENANCE.json` et son `CHOIX_ET_REFUS.csv`. Or le GR20 mere « est une
+/// VERITE qui n'est pas un produit » (mot pour mot la doc de
+/// [TrailCatalog.all]) : ses donnees restent la reference d'ou ses chapitres
+/// sont decoupes, et son fonds photo avec elles. Le mesurer sur `all`, c'etait
+/// faire dependre une garde de DONNEES d'une decision de VENTE.
+///
+/// CE QUE CES CAS NE PROUVENT PLUS, ET IL FAUT LE DIRE : que tout sentier
+/// VENDU porte des photos. Les deux chapitres du GR20 ne declarent AUCUNE fiche
+/// (`ficheAssetPath` absent de `gr20_nord_trail_config.dart` et de
+/// `gr20_sud_trail_config.dart`), donc `ficheDeSentierProvider` rend `null` et
+/// leur fiche n'a ni texte ni bande de photos. C'est un TROU DE PRODUIT ouvert
+/// par la jonction des deux lots, pas un defaut de ce fichier : donner une
+/// fiche a chaque moitie du GR20 demande de repartir les douze images entre
+/// nord et sud, ce qui est un choix de contenu — il est remonte a Christophe
+/// plutot que tranche ici.
 Map<String, String> fichesDuCatalogue() => <String, String>{
-  for (final config in TrailCatalog.all)
+  for (final config in TrailCatalog.referentiel)
     if ((config.ficheAssetPath ?? '').isNotEmpty)
       config.id: config.ficheAssetPath!,
 };

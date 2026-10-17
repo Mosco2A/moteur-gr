@@ -92,23 +92,25 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte741<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-146 473<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte749<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+148 515<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
-| `lib/core/` |199 <!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |34 352<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` |485<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |101 431<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/core/` |200<!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |34 887<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
+| `lib/features/` |490<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |102 469<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 31 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 5 675<!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
 **`lib/domain/` n'a pas de ligne dans l'audit** : `mesurer_arborescence` ne
 détaille que les sous-dossiers de `core/`, `features/`, `shared/` et `i18n/`.
-Les 23 fichiers source de `lib/` hors de `core/`, `features/` et
+Les 28 fichiers source de `lib/` hors de `core/`, `features/` et
 `shared/` sont `lib/domain/`, `lib/i18n/i18n_setup.dart`, `lib/main.dart` et
-les deux fichiers de `lib/docs/`. Ajouter `domain` à la boucle de l'outil est à
+les deux fichiers de `lib/docs/`. Ce chiffre est le reste d'une soustraction
+(749 − 200 − 490 − 31) et il n'a pas de marqueur d'audit : il se recalcule donc
+à la main, et il a été refait sur l'arbre fusionné de la tâche 851. Ajouter `domain` à la boucle de l'outil est à
 faire par un lot qui a le droit d'écrire dans `tool/`.
 
 ### Les cinq plus grosses features (en fichiers)

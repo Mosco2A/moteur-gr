@@ -23,5 +23,16 @@
 /// LUE PAR 2 FICHIERS DE 2 FEATURES AU 07/10/2026 : `hub`, `settings`.
 library;
 
+/// `trainingPlanForTrailProvider` A ETE AJOUTE AU CONTRAT (tache 851), et la
+/// decision est volontaire au sens de l'avertissement ci-dessus : `hub` avait
+/// besoin du plan D'UN SENTIER DESIGNE, pas du plan du sentier ACTIF que
+/// `trainingPlanProvider` rend. Il lisait donc le second faute d'avoir le
+/// premier — et sa coche « preparation physique », qui vit par sentier,
+/// s'invalidait a chaque bascule en pleine phase de build (memoire #101735).
+/// Elargir la porte etait le prix a payer pour que chaque coche n'ecoute QUE
+/// ses propres sources, ce que sa documentation promettait deja.
 export 'providers/training_plan_providers.dart'
-    show trainingPlanProvider, trainingProgressProvider;
+    show
+        trainingPlanProvider,
+        trainingPlanForTrailProvider,
+        trainingProgressProvider;

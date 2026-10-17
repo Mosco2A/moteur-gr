@@ -269,8 +269,18 @@ class _BoutonDemo extends ConsumerWidget {
             // pour etre restaure a la sortie (bug 19, DEM-260930-1028). Sans
             // cela, quitter la demo laissait le sentier de demo actif — « on
             // est toujours en mode demo sans le savoir ».
-            entrerEnDemo(ref);
-            context.go('/home');
+            // LE DEPART EST PASSE DANS [entrerEnDemo] (tache 851). Il etait
+            // ecrit ici, sur la ligne suivante, DONC HORS DE LA GARDE DE
+            // RE-ENTREE : un second appui — le bouton reste sous le doigt
+            // pendant toute la transition — ne refaisait pas l'etat, mais
+            // relancait le depart et remontait le cockpit pour rien. Le geste
+            // est maintenant d'un seul bloc, et sans objet la seconde fois.
+            //
+            // L'EXCEPTION « setState during build » QUE LE PERSONA MALADROIT
+            // ATTRAPAIT N'ETAIT PAS CA : elle vient de la chaine de providers
+            // que le drapeau de demo salit, et elle est corrigee dans
+            // [entrerEnDemo] — mesure a l'appui, voir sa documentation.
+            entrerEnDemo(ref, context: context);
           },
           child: Padding(
             padding: const EdgeInsets.all(AppTheme.spacingBase),
