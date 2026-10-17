@@ -7,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/analytics/screen_entry.dart';
+import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/difficulte_du_sentier.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -20,7 +22,6 @@ import '../widgets/difficulty_badge.dart';
 import '../widgets/poi_tile.dart';
 import '../widgets/stage_list_tile.dart';
 import '../widgets/stage_stats_section.dart';
-import '../../../core/branding/stepways_icons.dart';
 
 /// Écran détail d'une étape.
 ///
@@ -29,6 +30,8 @@ import '../../../core/branding/stepways_icons.dart';
 /// coordonnées départ/arrivée. Liste les POIs associés.
 /// Bouton vers la carte centré sur l'étape.
 class TrailStageDetailScreen extends ConsumerWidget {
+  /// L'etape [stageId] du sentier [trailId], et de quoi ouvrir la carte
+  /// centree dessus.
   const TrailStageDetailScreen({
     super.key,
     required this.trailId,
@@ -108,7 +111,13 @@ class TrailStageDetailScreen extends ConsumerWidget {
                         style: theme.textTheme.headlineMedium,
                       ),
                     ),
-                    DifficultyBadge(difficulty: stage.difficulty),
+                    // Le denivele MESURE classe l'etape, pas l'etiquette
+                    // stockee (tache 848, cf. `DifficultyBadge`).
+                    DifficultyBadge(
+                      niveau: SeuilsDeDifficulte.pourDenivele(
+                        stage.elevationGainM,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: AppTheme.spacingMd),
@@ -153,8 +162,8 @@ class TrailStageDetailScreen extends ConsumerWidget {
                   ...pois.map((poi) => PoiTile(poi: poi)),
                 const SizedBox(height: AppTheme.spacingLg),
                 // Bouton vers la carte
-                // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
-                // largeur (SizedBox width infinity conserve). Libelle inchange.
+                // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary,
+                // pleine largeur (SizedBox conserve). Libelle inchange.
                 SizedBox(
                   width: double.infinity,
                   child: AppButton(

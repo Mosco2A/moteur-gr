@@ -1,0 +1,118 @@
+{
+  "quoi": "La fiche du GR20 telle que le randonneur la lit AVANT d'ouvrir la preparation (tache 846, demande de Christophe du 17/10 09:22). La description repond aux trois questions de sa demande - ou c'est, ce qu'on y voit, a quoi s'attendre - et chaque chiffre qu'elle cite est MESURE sur la trace par tool/gr20_dans_stepways.py, jamais repris d'un topo. La difficulte n'est PAS ici : elle se calcule a l'ecran sur les chiffres mesures et l'allure choisie (lib/domain/difficulte_du_sentier.dart).",
+  "schema": 1,
+  "trailId": "gr20",
+  "attribution": "Trace et couchages : OpenStreetMap, relation 12484370 (GR 20 Principale), licence ODbL. Altitudes : modele de terrain EU-DEM 25 m via opentopodata.",
+  "description": {
+    "ou_c_est": "En Corse, dans toute la longueur de l'ile : de Calenzana, au-dessus de Calvi, jusqu'a Conca a l'arriere de Porto-Vecchio. 183,59 km de chemin et 11 644 m de montee, decoupes en seize etapes mesurees sur la trace. A mi-parcours exactement, au kilometre 91,80 soit 50,0 % du chemin, la gare de Vizzavona est le seul point du sentier desservi par le train : c'est la qu'on peut commencer, s'arreter, ou couper le GR20 en deux moities de longueur egale.",
+    "ce_qu_on_y_voit": "La haute montagne corse sur toute sa crete. Le chemin monte a 2 578 m a son point le plus haut, dans la quatrieme etape entre Ascu-Stagnu et Tighjettu, et redescend a 254 m a son point le plus bas : plus de deux kilometres d'altitude separent les deux. Les deux moities ne se ressemblent pas, et c'est mesure plutot que dit : pour la meme distance au metre pres, le nord porte 7 401 m de montee et le sud 4 243 m, soit 1,74 fois plus au nord. Le nord est la montagne rocheuse des cirques et des breches ; le sud ouvre sur les aiguilles de Bavella et sur la mer.",
+    "a_quoi_s_attendre": "Des journees de montagne, pas des journees de marche. La plus raide des seize monte 1 453 m des le premier jour au-dessus de Calenzana ; la plus longue fait 25,02 km. Le chemin se couche en refuge : soixante-quatorze couchages ont ete releves le long du trace, dont les refuges du Parc naturel regional de Corse, et trente et un endroits sont ouverts a un decoupage different du decoupage federal. Le sentier n'est jamais loin d'un secours mais souvent loin d'une route : le PGHM de Corte couvre toute l'ile."
+  },
+  "photos": [
+    {
+      "fichier": "assets/data/gr20/photos/couverture-lac-de-capitello.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Lac_de_Capitello_-_Corse.jpg",
+      "auteur": "Benjamin GW",
+      "licence": "CC BY-SA 4.0",
+      "mention": "Benjamin GW, « Lac de Capitello - Corse », CC BY-SA 4.0, via Wikimedia Commons",
+      "lat": 42.21285,
+      "lon": 9.013511,
+      "couverture": true
+    },
+    {
+      "fichier": "assets/data/gr20/photos/couverture-col-de-bavella.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Corsica_Col_de_Bavella_Aiguilles_de_Bavella.jpg",
+      "auteur": "Isiwal",
+      "licence": "CC BY-SA 3.0",
+      "mention": "Isiwal, « Corsica Col de Bavella Aiguilles de Bavella », CC BY-SA 3.0, via Wikimedia Commons",
+      "lat": 41.79620604,
+      "lon": 9.22588706
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-4-depart-calenzana.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Gr-20-calvi-to-ortu-di-u-piobbu-06.jpg",
+      "auteur": "MartinThoma",
+      "licence": "CC0 1.0",
+      "mention": "MartinThoma, « Gr-20-calvi-to-ortu-di-u-piobbu-06 », CC0 1.0, via Wikimedia Commons",
+      "lat": 42.494928,
+      "lon": 8.850469
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-2-crete-asco-tighjettu.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Gr-20-asco-tighiettu-11.jpg",
+      "auteur": "MartinThoma",
+      "licence": "CC0 1.0",
+      "mention": "MartinThoma, « Gr-20-asco-tighiettu-11 », CC0 1.0, via Wikimedia Commons",
+      "lat": 42.376281,
+      "lon": 8.937444
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-5-ciottulu-di-i-mori.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Ciottulu-di-i-mori-05.jpg",
+      "auteur": "MartinThoma",
+      "licence": "CC0 1.0",
+      "mention": "MartinThoma, « Ciottulu-di-i-mori-05 », CC0 1.0, via Wikimedia Commons",
+      "lat": 42.336703,
+      "lon": 8.872367
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-3-pozzines-de-nino.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Gr-20-castel-de-vergio-to-manganu-12.jpg",
+      "auteur": "MartinThoma",
+      "licence": "CC0 1.0",
+      "mention": "MartinThoma, « Gr-20-castel-de-vergio-to-manganu-12 », CC0 1.0, via Wikimedia Commons"
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-1-lac-de-nino-chevaux.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Lac_de_Nino_with_horses.JPG",
+      "auteur": "Hg6996",
+      "licence": "CC0 1.0",
+      "mention": "Hg6996, « Lac de Nino with horses », CC0 1.0, via Wikimedia Commons"
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-4-refuge-de-prati.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Refuge_de_Prati1.jpg",
+      "auteur": "Rémih",
+      "licence": "CC BY-SA 4.0",
+      "mention": "Rémih, « Refuge de Prati1 », CC BY-SA 4.0, via Wikimedia Commons",
+      "lat": 42.008389,
+      "lon": 9.21777
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-1-lac-de-bastani.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Lac_de_Bastani_-_Monte_Renoso,_Ghisoni,_France_(Unsplash).jpg",
+      "auteur": "Maarten Deckers maartendeckers",
+      "licence": "CC0 1.0",
+      "mention": "Maarten Deckers maartendeckers, « Lac de Bastani - Monte Renoso, Ghisoni, France (Unsplash) », CC0 1.0, via Wikimedia Commons",
+      "lat": 42.0635996,
+      "lon": 9.1300249
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-2-marche-vers-bavella.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:0_Aiguilles_de_Bavella_JPG1.jpg",
+      "auteur": "Jean-Pol GRANDMONT",
+      "licence": "CC BY 3.0",
+      "mention": "Jean-Pol GRANDMONT, « 0 Aiguilles de Bavella JPG1 », CC BY 3.0, via Wikimedia Commons",
+      "lat": 41.79333333,
+      "lon": 9.22333333
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-3-sentier-punta-usciolu.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:GR20_Punta_di_l%27Usciolu2.jpg",
+      "auteur": "Rémih",
+      "licence": "CC BY-SA 4.0",
+      "mention": "Rémih, « GR20 Punta di l'Usciolu2 », CC BY-SA 4.0, via Wikimedia Commons",
+      "lat": 41.926712,
+      "lon": 9.195862
+    },
+    {
+      "fichier": "assets/data/gr20/photos/vue-5-refuge-e-capanelle.jpg",
+      "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Refuge_d%27E_Capannelle.jpg",
+      "auteur": "Rémih",
+      "licence": "CC BY-SA 4.0",
+      "mention": "Rémih, « Refuge d'E Capannelle », CC BY-SA 4.0, via Wikimedia Commons",
+      "lat": 42.077888,
+      "lon": 9.14979
+    }
+  ]
+}

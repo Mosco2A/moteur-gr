@@ -1,0 +1,405 @@
+{
+ "objet": "La provenance des photos embarquees dans le binaire, image par image. Ce fichier est dans le dossier d'assets declare au pubspec : la preuve de licence voyage avec l'image, comme les fichiers de releve brut voyagent avec les chiffres (tache 839).",
+ "dossier_de_donnees": "gr20",
+ "source_du_fonds": "Athena, tache 845",
+ "etabli_le": "2026-10-17",
+ "source_unique": "Wikimedia Commons. Chaque fichier y a une page publique qui porte sa licence : la preuve est verifiable a l adresse indiquee.",
+ "regle": "Aucune image n'entre dans le produit sans son adresse d'origine, son auteur, sa licence exacte et la mention a afficher. Toute licence interdisant l'usage commercial ou la modification est refusee. Toute image dont la preuve de licence n'est pas lisible a son adresse est refusee.",
+ "copies_locales": "Chaque fichier local est une copie du fichier d'origine de Wikimedia Commons, redimensionnee a 2000 px de large au plus, en JPEG qualite 85. Aucun recadrage ni retouche. Les dimensions et l'empreinte SHA-256 donnees ici sont MESUREES sur le fichier livre, pas annoncees par l'API. L'adresse du fichier original est donnee pour chaque image.",
+ "ecrit_par": "tool/photos_dans_stepways.py — ne pas editer a la main",
+ "nombre_d_images": 12,
+ "images": [
+  {
+   "fichier": "couverture-lac-de-capitello.jpg",
+   "chapitre_du_fonds": "gr20-nord",
+   "role_dans_le_fonds": "couverture",
+   "couverture_du_sentier": true,
+   "lieu": "Lac de Capitello",
+   "legende": "Le lac de Capitello et ses aiguilles, au-dessus du refuge de Manganu.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Lac_de_Capitello_-_Corse.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Lac_de_Capitello_-_Corse.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Benjamin GW",
+   "licence": "CC BY-SA 4.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Benjamin GW, « Lac de Capitello - Corse », CC BY-SA 4.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 4.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 42.21285,
+    "lon": 9.013511
+   },
+   "distance_a_la_trace_m": 518,
+   "pixels": "2000x755",
+   "octets": 440023,
+   "sha256": "18370e41702930d090a1d1cffce44569170dbb1d5dc45dd84c91641bad52b679",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "couverture-col-de-bavella.jpg",
+   "chapitre_du_fonds": "gr20-sud",
+   "role_dans_le_fonds": "couverture",
+   "couverture_du_sentier": false,
+   "lieu": "Col de Bavella",
+   "legende": "Les bergeries du col de Bavella devant les aiguilles.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Corsica_Col_de_Bavella_Aiguilles_de_Bavella.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/9/99/Corsica_Col_de_Bavella_Aiguilles_de_Bavella.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Isiwal",
+   "licence": "CC BY-SA 3.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/3.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Isiwal, « Corsica Col de Bavella Aiguilles de Bavella », CC BY-SA 3.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 3.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 41.79620604,
+    "lon": 9.22588706
+   },
+   "distance_a_la_trace_m": 35,
+   "pixels": "2000x1333",
+   "octets": 594168,
+   "sha256": "eaa3248056e532ba6a5a8f077adff7b2839113592fde42ca16aec5d6467c2c7a",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-4-depart-calenzana.jpg",
+   "chapitre_du_fonds": "gr20-nord",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Au-dessus de Calenzana",
+   "legende": "La Balagne et la mer depuis la montee de Calenzana, premiere etape.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Gr-20-calvi-to-ortu-di-u-piobbu-06.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/2/20/Gr-20-calvi-to-ortu-di-u-piobbu-06.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "MartinThoma",
+   "licence": "CC0 1.0",
+   "adresse_de_la_licence": "https://creativecommons.org/publicdomain/zero/1.0/deed.fr",
+   "attribution_obligatoire": "non",
+   "mention_a_afficher": "MartinThoma, « Gr-20-calvi-to-ortu-di-u-piobbu-06 », CC0 1.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Aucune condition. Nous creditons l'auteur par choix, pas par obligation.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC0 1.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 42.494928,
+    "lon": 8.850469
+   },
+   "distance_a_la_trace_m": 7,
+   "pixels": "2000x514",
+   "octets": 100684,
+   "sha256": "757fbcfaabc470e298f9637370ebd350d8329bfde4e86003b89dc511e9bbd066",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-2-crete-asco-tighjettu.jpg",
+   "chapitre_du_fonds": "gr20-nord",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Entre Ascu Stagnu et Tighjettu",
+   "legende": "Panorama depuis la crete, sur l'etape d'Ascu Stagnu a Tighjettu.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Gr-20-asco-tighiettu-11.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/3/36/Gr-20-asco-tighiettu-11.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "MartinThoma",
+   "licence": "CC0 1.0",
+   "adresse_de_la_licence": "https://creativecommons.org/publicdomain/zero/1.0/deed.fr",
+   "attribution_obligatoire": "non",
+   "mention_a_afficher": "MartinThoma, « Gr-20-asco-tighiettu-11 », CC0 1.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Aucune condition. Nous creditons l'auteur par choix, pas par obligation.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC0 1.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 42.376281,
+    "lon": 8.937444
+   },
+   "distance_a_la_trace_m": 10,
+   "pixels": "1920x723",
+   "octets": 232124,
+   "sha256": "a278be4fa85e5eca713b1c170a915d7aa724db623068f59bc939107439c67208",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-5-ciottulu-di-i-mori.jpg",
+   "chapitre_du_fonds": "gr20-nord",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Refuge de Ciottulu di i Mori",
+   "legende": "Lever de soleil depuis le refuge de Ciottulu di i Mori.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Ciottulu-di-i-mori-05.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/b/be/Ciottulu-di-i-mori-05.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "MartinThoma",
+   "licence": "CC0 1.0",
+   "adresse_de_la_licence": "https://creativecommons.org/publicdomain/zero/1.0/deed.fr",
+   "attribution_obligatoire": "non",
+   "mention_a_afficher": "MartinThoma, « Ciottulu-di-i-mori-05 », CC0 1.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Aucune condition. Nous creditons l'auteur par choix, pas par obligation.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC0 1.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 42.336703,
+    "lon": 8.872367
+   },
+   "distance_a_la_trace_m": 186,
+   "pixels": "2000x633",
+   "octets": 103222,
+   "sha256": "072b3109f49d5b7d15d19938090820abe2b07aa48e76cef3ba31586a539be37b",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-3-pozzines-de-nino.jpg",
+   "chapitre_du_fonds": "gr20-nord",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Lac de Nino",
+   "legende": "La plaine de pozzines du lac de Nino, entre Castel di Vergio et Manganu.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Gr-20-castel-de-vergio-to-manganu-12.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/6/64/Gr-20-castel-de-vergio-to-manganu-12.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "MartinThoma",
+   "licence": "CC0 1.0",
+   "adresse_de_la_licence": "https://creativecommons.org/publicdomain/zero/1.0/deed.fr",
+   "attribution_obligatoire": "non",
+   "mention_a_afficher": "MartinThoma, « Gr-20-castel-de-vergio-to-manganu-12 », CC0 1.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Aucune condition. Nous creditons l'auteur par choix, pas par obligation.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC0 1.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": null,
+   "distance_a_la_trace_m": null,
+   "pixels": "2000x442",
+   "octets": 170883,
+   "sha256": "447af9a1a69557e7b83973e126974bf5e271d5633de3b71d0b4de18c5d8ebe7f",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-1-lac-de-nino-chevaux.jpg",
+   "chapitre_du_fonds": "gr20-nord",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Lac de Nino",
+   "legende": "Les pozzines du lac de Nino et les chevaux en liberte.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Lac_de_Nino_with_horses.JPG",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Lac_de_Nino_with_horses.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Hg6996",
+   "licence": "CC0 1.0",
+   "adresse_de_la_licence": "https://creativecommons.org/publicdomain/zero/1.0/deed.fr",
+   "attribution_obligatoire": "non",
+   "mention_a_afficher": "Hg6996, « Lac de Nino with horses », CC0 1.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Aucune condition. Nous creditons l'auteur par choix, pas par obligation.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC0 1.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": null,
+   "distance_a_la_trace_m": null,
+   "pixels": "2000x1500",
+   "octets": 813108,
+   "sha256": "3de5eb242c8baf09d7259e0b66f49d3ba27a211e146f77f946eac74f4caf47ba",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-4-refuge-de-prati.jpg",
+   "chapitre_du_fonds": "gr20-sud",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Refuge de Prati",
+   "legende": "Le refuge de Prati, les tentes et la mer au fond.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Refuge_de_Prati1.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/9/97/Refuge_de_Prati1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Rémih",
+   "licence": "CC BY-SA 4.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Rémih, « Refuge de Prati1 », CC BY-SA 4.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 4.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 42.008389,
+    "lon": 9.21777
+   },
+   "distance_a_la_trace_m": 1,
+   "pixels": "2000x1500",
+   "octets": 716230,
+   "sha256": "09dd671eaa2941e23a8f24ae4fe1fdfc2ca7e84a6d5a9b34cca82a7f2795af53",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-1-lac-de-bastani.jpg",
+   "chapitre_du_fonds": "gr20-sud",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Lac de Bastani, Monte Renoso",
+   "legende": "Le lac de Bastani sous le Monte Renoso, au-dessus d'E Capanelle.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Lac_de_Bastani_-_Monte_Renoso,_Ghisoni,_France_(Unsplash).jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Lac_de_Bastani_-_Monte_Renoso%2C_Ghisoni%2C_France_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Maarten Deckers maartendeckers",
+   "licence": "CC0 1.0",
+   "adresse_de_la_licence": "https://creativecommons.org/publicdomain/zero/1.0/deed.fr",
+   "attribution_obligatoire": "non",
+   "mention_a_afficher": "Maarten Deckers maartendeckers, « Lac de Bastani - Monte Renoso, Ghisoni, France (Unsplash) », CC0 1.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Aucune condition. Nous creditons l'auteur par choix, pas par obligation.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC0 1.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 42.0635996,
+    "lon": 9.1300249
+   },
+   "distance_a_la_trace_m": 1897,
+   "pixels": "2000x1333",
+   "octets": 393492,
+   "sha256": "cb5dc4b42bdbc76538e6c4250285c34cadf8a0a3a0fdefa2a25d66a70fc37118",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-2-marche-vers-bavella.jpg",
+   "chapitre_du_fonds": "gr20-sud",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Vers le col de Bavella",
+   "legende": "Randonneurs sur le chemin, face aux aiguilles de Bavella.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:0_Aiguilles_de_Bavella_JPG1.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/3/33/0_Aiguilles_de_Bavella_JPG1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Jean-Pol GRANDMONT",
+   "licence": "CC BY 3.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by/3.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Jean-Pol GRANDMONT, « 0 Aiguilles de Bavella JPG1 », CC BY 3.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur, la licence et un lien vers la licence.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY 3.0",
+     "CC BY-SA 3.0",
+     "GFDL"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 41.79333333,
+    "lon": 9.22333333
+   },
+   "distance_a_la_trace_m": 310,
+   "pixels": "2000x1333",
+   "octets": 878307,
+   "sha256": "352be22b612a9b6d4c6747af7d20710cce38bb99675c937c1035aa06c09780c5",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-3-sentier-punta-usciolu.jpg",
+   "chapitre_du_fonds": "gr20-sud",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Punta di l'Usciolu",
+   "legende": "Le sentier et sa marque blanche et rouge sur la Punta di l'Usciolu.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:GR20_Punta_di_l%27Usciolu2.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/f/f5/GR20_Punta_di_l%27Usciolu2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Rémih",
+   "licence": "CC BY-SA 4.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Rémih, « GR20 Punta di l'Usciolu2 », CC BY-SA 4.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 4.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 41.926712,
+    "lon": 9.195862
+   },
+   "distance_a_la_trace_m": 20,
+   "pixels": "2000x1500",
+   "octets": 1031235,
+   "sha256": "637c850f2488c66e817f1f85b456da05cdf1aa4299a4d83045e999bcb06e8f79",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-5-refuge-e-capanelle.jpg",
+   "chapitre_du_fonds": "gr20-sud",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Refuge d E Capanelle",
+   "legende": "Le refuge d'E Capanelle et la marque du sentier sur le mur.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Refuge_d%27E_Capannelle.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Refuge_d%27E_Capannelle.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Rémih",
+   "licence": "CC BY-SA 4.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Rémih, « Refuge d'E Capannelle », CC BY-SA 4.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 4.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 42.077888,
+    "lon": 9.14979
+   },
+   "distance_a_la_trace_m": 44,
+   "pixels": "2000x1500",
+   "octets": 1387202,
+   "sha256": "76fbc6b3b17ed14169aa2e8309d4e3616c01ce45a4f43d54be2747e1dffd542f",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  }
+ ]
+}

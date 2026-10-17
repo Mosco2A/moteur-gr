@@ -1,0 +1,208 @@
+{
+ "objet": "La provenance des photos embarquees dans le binaire, image par image. Ce fichier est dans le dossier d'assets declare au pubspec : la preuve de licence voyage avec l'image, comme les fichiers de releve brut voyagent avec les chiffres (tache 839).",
+ "dossier_de_donnees": "mare_a_mare_centre",
+ "source_du_fonds": "Athena, tache 845",
+ "etabli_le": "2026-10-17",
+ "source_unique": "Wikimedia Commons. Chaque fichier y a une page publique qui porte sa licence : la preuve est verifiable a l adresse indiquee.",
+ "regle": "Aucune image n'entre dans le produit sans son adresse d'origine, son auteur, sa licence exacte et la mention a afficher. Toute licence interdisant l'usage commercial ou la modification est refusee. Toute image dont la preuve de licence n'est pas lisible a son adresse est refusee.",
+ "copies_locales": "Chaque fichier local est une copie du fichier d'origine de Wikimedia Commons, redimensionnee a 2000 px de large au plus, en JPEG qualite 85. Aucun recadrage ni retouche. Les dimensions et l'empreinte SHA-256 donnees ici sont MESUREES sur le fichier livre, pas annoncees par l'API. L'adresse du fichier original est donnee pour chaque image.",
+ "ecrit_par": "tool/photos_dans_stepways.py — ne pas editer a la main",
+ "nombre_d_images": 6,
+ "images": [
+  {
+   "fichier": "couverture-punta-di-campolongo.jpg",
+   "chapitre_du_fonds": "mare-a-mare-centre",
+   "role_dans_le_fonds": "couverture",
+   "couverture_du_sentier": true,
+   "lieu": "Punta di Campolongo",
+   "legende": "Les cretes et la foret du haut Taravo depuis la Punta di Campolongo.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Monte_Renoso_Punta_di_Campolongo.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Monte_Renoso_Punta_di_Campolongo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Rémih",
+   "licence": "CC BY-SA 4.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Rémih, « Monte Renoso Punta di Campolongo », CC BY-SA 4.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 4.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 41.965061,
+    "lon": 9.223478
+   },
+   "distance_a_la_trace_m": 35,
+   "pixels": "2000x1500",
+   "octets": 698150,
+   "sha256": "45d43b7d52a58693ef4b4e6903404a40e823306ee7f0075e94096d8da98de328",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-2-foret-du-fiumorbu.jpg",
+   "chapitre_du_fonds": "mare-a-mare-centre",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Forêt du Fium'Orbu",
+   "legende": "Le sentier, un cairn et la marque orange dans la hetraie du Fium'Orbu.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:For%C3%AAt_du_Fium%27Orbu2.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/8/80/For%C3%AAt_du_Fium%27Orbu2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Rémih",
+   "licence": "CC BY-SA 4.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Rémih, « Forêt du Fium'Orbu2 », CC BY-SA 4.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 4.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 41.964745,
+    "lon": 9.22698
+   },
+   "distance_a_la_trace_m": 6,
+   "pixels": "2000x1500",
+   "octets": 1227182,
+   "sha256": "b8dd5a310ac474d371909447756dfd51c104233bda97502a5b7d4f298153ef86",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-5-arrivee-a-porticcio.jpg",
+   "chapitre_du_fonds": "mare-a-mare-centre",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Porticcio",
+   "legende": "L'arrivee a la mer : la cote de Porticcio et les montagnes derriere.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Porticcio.JPG",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Porticcio.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Gwentux",
+   "licence": "CC BY-SA 3.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/3.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Gwentux, « Porticcio », CC BY-SA 3.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 3.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": null,
+   "distance_a_la_trace_m": null,
+   "pixels": "2000x1124",
+   "octets": 342697,
+   "sha256": "4715dec47f1ec423865e6eff5d4453b5104dcaa89c13276aa9a97c6f674850e7",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-4-village-de-palneca.jpg",
+   "chapitre_du_fonds": "mare-a-mare-centre",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Palneca, vallee du Taravo",
+   "legende": "Le village de Palneca au creux de la foret du Taravo.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Palneca_Punta_di_Campolongo.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/9/93/Palneca_Punta_di_Campolongo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Rémih",
+   "licence": "CC BY-SA 4.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Rémih, « Palneca Punta di Campolongo », CC BY-SA 4.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 4.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 41.964931,
+    "lon": 9.223395
+   },
+   "distance_a_la_trace_m": 24,
+   "pixels": "2000x1500",
+   "octets": 785341,
+   "sha256": "89b37537a9c24df6109fb4eb67004631c0a9c5f16f3d1324d17e563b8d72673c",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-1-sentiers-du-taravo.jpg",
+   "chapitre_du_fonds": "mare-a-mare-centre",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Col de Laparo",
+   "legende": "La pancarte des sentiers du Taravo au col de Laparo.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Col_de_Laparo_Sentiers_du_Taravo.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/2/27/Col_de_Laparo_Sentiers_du_Taravo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Rémih",
+   "licence": "CC BY-SA 4.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Rémih, « Col de Laparo Sentiers du Taravo », CC BY-SA 4.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 4.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 41.965313,
+    "lon": 9.223865
+   },
+   "distance_a_la_trace_m": 1,
+   "pixels": "2000x1500",
+   "octets": 967883,
+   "sha256": "759aac4a3e212a38638eb28c260d10907ef71e987f0ed5caec53aa55ae94e7e1",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  },
+  {
+   "fichier": "vue-3-ruisseau-de-partuso.jpg",
+   "chapitre_du_fonds": "mare-a-mare-centre",
+   "role_dans_le_fonds": "vue",
+   "couverture_du_sentier": false,
+   "lieu": "Ruisseau de Partuso",
+   "legende": "Une vasque du ruisseau de Partuso, pres des bergeries de Chiasolli.",
+   "adresse_d_origine": "https://commons.wikimedia.org/wiki/File:Ruisseau_de_Partuso_Chiasolli2.jpg",
+   "adresse_du_fichier_original": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Ruisseau_de_Partuso_Chiasolli2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "auteur": "Rémih",
+   "licence": "CC BY-SA 4.0",
+   "adresse_de_la_licence": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+   "attribution_obligatoire": "oui",
+   "mention_a_afficher": "Rémih, « Ruisseau de Partuso Chiasolli2 », CC BY-SA 4.0, via Wikimedia Commons",
+   "conditions": "Usage commercial autorise. Citer l'auteur et la licence. Toute oeuvre DERIVEE doit etre publiee sous la meme licence : nous n'utilisons l'image que redimensionnee, jamais retouchee ni incrustee dans un visuel compose.",
+   "preuve_de_licence": {
+    "methode": "le modele de licence est physiquement pose sur la page du fichier, et la page a ete relue le 17/10/2026",
+    "modeles_de_licence_sur_la_page": [
+     "CC BY-SA 4.0"
+    ],
+    "avertissement_de_droits_sur_la_page": "aucun",
+    "resultat": "verifiee"
+   },
+   "coordonnees": {
+    "lat": 41.89225,
+    "lon": 9.159053
+   },
+   "distance_a_la_trace_m": 4546,
+   "pixels": "2000x1500",
+   "octets": 1382190,
+   "sha256": "ec664b8477e1f345beac63bbe9b9599cfab8e996ab59339f8d073ce1d9d1f43f",
+   "modification_apportee": "copie redimensionnee a 2000 px de large (ou laissee a sa taille si elle etait plus petite), enregistree en JPEG qualite 85. Aucun recadrage, aucune retouche, aucun filtre, aucune incrustation."
+  }
+ ]
+}

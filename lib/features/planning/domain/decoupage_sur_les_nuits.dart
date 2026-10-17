@@ -3,6 +3,7 @@
 library;
 
 import '../../../domain/nuit_possible.dart';
+import '../../../domain/repartition_equilibree.dart';
 
 /// UNE JOURNEE DE MARCHE DONT L'ARRIVEE EST UN LIEU QUI EXISTE.
 ///
@@ -152,46 +153,30 @@ abstract final class DecoupageSurLesNuits {
 
   /// Les index de DEBUT de chaque journee, equilibres sur le temps de marche.
   ///
-  /// Meme esprit que la repartition d'etapes de [PlanningCalculator] : on vise
-  /// une charge moyenne par jour et on coupe des qu'on l'atteint, en gardant
-  /// toujours assez de segments pour les jours restants. La garantie est forte
-  /// et c'est elle qui compte : AUTANT de journees que demande, chacune non
-  /// vide, et chacune terminee sur un lieu releve.
+  /// La garantie est forte et c'est elle qui compte : AUTANT de journees que
+  /// demande, chacune non vide, et chacune terminee sur un lieu releve.
+  ///
+  /// TACHE 848 — LE COMPTE ETAIT TENU, L'EQUILIBRE NE L'ETAIT PAS. Ce calcul
+  /// visait la charge moyenne et coupait des qu'il l'atteignait ; quand la
+  /// charge se concentrait en tete — et sur le GR20 elle s'y concentre, le nord
+  /// porte 7 401 m de montee contre 4 243 m au sud —, il sortait avec moins de
+  /// coupes que de journees et se completait PAR LA FIN, une journee par
+  /// segment. Le compte etait juste et les journees fausses : sur douze jours,
+  /// la journee la plus dure du GR20 pesait 2 088 m de montee alors que le
+  /// decoupage le PERMETTAIT a 1 455 m — 633 m de montee de trop, le tiers
+  /// d'une journee, pose sur le dos du marcheur par un defaut d'algorithme.
+  ///
+  /// [RepartitionEquilibree] rend les deux : le compte ET la journee la plus
+  /// chargee aussi legere que possible. Elle est partagee avec le regroupement
+  /// d'etapes de [PlanningCalculator] — un seul algorithme de repartition dans
+  /// le depot, comme il n'y a qu'un seul modele de temps de marche.
   static List<int> _coupesEquilibrees(
     List<SegmentEntreNuits> segments,
     int journees,
   ) {
-    final n = segments.length;
-    if (journees >= n) return List<int>.generate(n, (i) => i);
-
-    final total = segments.fold<int>(0, (s, x) => s + x.minutes);
-    final parJour = total / journees;
-
-    final coupes = <int>[0];
-    var cumul = 0.0;
-    for (var i = 0; i < n && coupes.length < journees; i++) {
-      cumul += segments[i].minutes;
-      final joursRestants = journees - coupes.length;
-      final segmentsRestants = n - i - 1;
-      if (cumul >= parJour && segmentsRestants >= joursRestants) {
-        coupes.add(i + 1);
-        cumul = 0;
-      }
-    }
-    // Si la charge s'est concentree en tete, la boucle peut sortir avec moins
-    // de coupes que de journees demandees. On complete alors PAR LA FIN : les
-    // dernieres journees prennent un segment chacune. Le COMPTE demande est
-    // ainsi garanti sans jamais couper ailleurs qu'a une nuit relevee.
-    if (coupes.length < journees) {
-      final completes = <int>{...coupes};
-      var position = n - 1;
-      while (completes.length < journees && position > 0) {
-        completes.add(position);
-        position--;
-      }
-      final finales = completes.toList()..sort();
-      return finales;
-    }
-    return coupes;
+    return RepartitionEquilibree.coupes(
+      segments.map((s) => s.minutes.toDouble()).toList(growable: false),
+      journees,
+    );
   }
 }

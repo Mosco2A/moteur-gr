@@ -24,8 +24,21 @@
 /// `hub`, `map`, `settings`, `trek`, `weather`.
 library;
 
+// LE DECOUPAGE SUR LES NUITS RELEVEES SORT PAR LA PORTE (tache 848). La FICHE
+// du sentier doit annoncer la difficulte de l'allure CONSEILLEE, et le verdict
+// est celui de la pire journee : il depend donc du decoupage. Or le decoupage
+// qui pose les journees sur les trente et une nuits RELEVEES (tache 838) est
+// plus fin que le regroupement des seize etapes de la federation, et ca se
+// MESURE — sur douze jours, la pire journee du GR20 tombe de 1 824 m a 1 455 m.
+// La fiche lit donc CE decoupage-la, et par cette porte : le plafond des
+// croisements entre features est a ZERO
+// (`test/structurel/couches_respectees_645_test.dart`).
+export 'domain/decoupage_sur_les_nuits.dart'
+    show DecoupageSurLesNuits, JourneeSurLesNuits;
 export 'domain/planning_calculator.dart' show PlanningCalculator;
 export 'models/day_plan.dart' show DayPlan;
+export 'providers/nuits_possibles_provider.dart'
+    show decoupageDuSentierProvider;
 export 'providers/planned_days_provider.dart'
     show manualRestDayCacheProvider, plannedDaysProvider;
 export 'providers/planning_provider.dart'
