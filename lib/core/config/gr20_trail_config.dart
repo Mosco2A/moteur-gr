@@ -134,6 +134,17 @@ const gr20TrailConfig = TrailConfig(
   // Difficile ». Les quatre reperes du selecteur sont donc les quatre allures
   // qu'il annonce : une fiche qui propose 10 jours quand le discours parle de 9
   // oblige le lecteur a faire la conversion lui-meme.
+  //
+  // TACHE 852 — LES QUATRE ALLURES RESTENT, LES QUATRE VERDICTS QU'IL ANNONCAIT
+  // NE TIENNENT PAS, ET C'EST MESURE. La bande « expert » n'existe plus (17/10
+  // 17:25) et la difficulte se calcule desormais sur l'effort complet d'une
+  // journee — distance, montee, descente. Resultat sur les quatre reperes
+  // ci-dessous, decoupage sur les trente et une nuits relevees : TRES DIFFICILE
+  // aux quatre, et aux vingt-cinq autres allures de 7 a 31 jours, DANS LES DEUX
+  // SENS. Son echelle descendante (difficile a 12 et 16 jours) ne sort pas des
+  // chiffres, parce que la premiere journee — 11,3 km, 1 455 m de montee,
+  // 26,5 km-effort — ne se coupe pas : il n'existe aucun couchage dans la
+  // montee. Ce n'est pas le selecteur qu'il faut corriger, c'est le discours.
   availableDurations: [7, 9, 12, 16],
   defaultDuration: 16,
   offlineFirst: true,

@@ -1,0 +1,1755 @@
+{
+ "quoi": "L'effort des journees du GR20 et le verdict de chaque troncon, sur les quatre bandes et les deux methodes de la tache 852.",
+ "tache": 852,
+ "decision": "Christophe, 17/10 17:25 (memoire #102180)",
+ "regle_par_journee": "effort (km-effort) = km + D+/100 + 0.3 x D-/100 ; facile sous 10.0, moyen jusqu a 17.5, difficile jusqu a 25.0, tres difficile au-dela",
+ "regle_par_troncon": "la pire journee donne le plancher ; le verdict monte d un cran quand 4 journees des deux bandes hautes se SUIVENT",
+ "attribution": "Trace, couchages et coupe nord/sud : OpenStreetMap, relation 12484370 (GR 20 Principale), licence ODbL. Altitudes : EU-DEM 25 m. Variante Bonifatu : mesure de la tache 849.",
+ "entrees": {
+  "segments_entre_nuits": 31,
+  "longueur_km": 183.585,
+  "dplus_total_m": 11625,
+  "dmoins_total_m": 11650
+ },
+ "sentier_entier": {
+  "sens trace": {
+   "7": {
+    "journees": 7,
+    "pire_journee": {
+     "numero": 4,
+     "depart": "Refuge de Manganu",
+     "arrivee": "Gare de Vizzavona",
+     "km": 28.408,
+     "dplus_m": 1922,
+     "dmoins_m": 2573,
+     "km_effort": 55.35
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 7,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "8": {
+    "journees": 8,
+    "pire_journee": {
+     "numero": 3,
+     "depart": "Bergerie de Ballone",
+     "arrivee": "Bergeries de Vaccaghia",
+     "km": 28.17,
+     "dplus_m": 1382,
+     "dmoins_m": 1246,
+     "km_effort": 45.73
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 8,
+    "plus_longue_suite": 8,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "9": {
+    "journees": 9,
+    "pire_journee": {
+     "numero": 4,
+     "depart": "Castel De Vergio",
+     "arrivee": "Refuge de Petra Piana",
+     "km": 24.993,
+     "dplus_m": 1494,
+     "dmoins_m": 1047,
+     "km_effort": 43.07
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 9,
+    "plus_longue_suite": 9,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "10": {
+    "journees": 10,
+    "pire_journee": {
+     "numero": 7,
+     "depart": "Bergeries d'Alzeta",
+     "arrivee": "Refuge de Prati",
+     "km": 25.027,
+     "dplus_m": 1176,
+     "dmoins_m": 948,
+     "km_effort": 39.63
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 10,
+    "plus_longue_suite": 10,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "11": {
+    "journees": 11,
+    "pire_journee": {
+     "numero": 3,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Ciottulu di i Mori",
+     "km": 14.775,
+     "dplus_m": 1818,
+     "dmoins_m": 1266,
+     "km_effort": 36.75
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 11,
+    "plus_longue_suite": 11,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "12": {
+    "journees": 12,
+    "pire_journee": {
+     "numero": 6,
+     "depart": "Refuge de Manganu",
+     "arrivee": "Refuge de l'Onda",
+     "km": 18.204,
+     "dplus_m": 1254,
+     "dmoins_m": 1448,
+     "km_effort": 35.09
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 12,
+    "plus_longue_suite": 12,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "13": {
+    "journees": 13,
+    "pire_journee": {
+     "numero": 2,
+     "depart": "Refuge de l'Ortu di u Piobbu",
+     "arrivee": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "km": 12.245,
+     "dplus_m": 1401,
+     "dmoins_m": 1499,
+     "km_effort": 30.75
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 13,
+    "plus_longue_suite": 13,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "14": {
+    "journees": 14,
+    "pire_journee": {
+     "numero": 13,
+     "depart": "Bergerie I Croci",
+     "arrivee": "Col de Bavella",
+     "km": 17.609,
+     "dplus_m": 812,
+     "dmoins_m": 1139,
+     "km_effort": 29.15
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 12,
+    "plus_longue_suite": 11,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "15": {
+    "journees": 15,
+    "pire_journee": {
+     "numero": 7,
+     "depart": "Refuge de Manganu",
+     "arrivee": "Bergerie de Tolla",
+     "km": 14.514,
+     "dplus_m": 818,
+     "dmoins_m": 1394,
+     "km_effort": 26.88
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 13,
+    "plus_longue_suite": 12,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "16": {
+    "journees": 16,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 13,
+    "plus_longue_suite": 8,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "17": {
+    "journees": 17,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 11,
+    "plus_longue_suite": 4,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "18": {
+    "journees": 18,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 10,
+    "plus_longue_suite": 3,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "19": {
+    "journees": 19,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 8,
+    "plus_longue_suite": 3,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "20": {
+    "journees": 20,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "21": {
+    "journees": 21,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "22": {
+    "journees": 22,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "23": {
+    "journees": 23,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "24": {
+    "journees": 24,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "25": {
+    "journees": 25,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 1,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "26": {
+    "journees": 26,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 1,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "27": {
+    "journees": 27,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 1,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "28": {
+    "journees": 28,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 1,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "29": {
+    "journees": 29,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 1,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "30": {
+    "journees": 30,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 1,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "31": {
+    "journees": 31,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 11.349,
+     "dplus_m": 1455,
+     "dmoins_m": 194,
+     "km_effort": 26.48
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 5,
+    "plus_longue_suite": 1,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   }
+  },
+  "sens inverse": {
+   "7": {
+    "journees": 7,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'Asinau",
+     "km": 28.489,
+     "dplus_m": 2102,
+     "dmoins_m": 806,
+     "km_effort": 51.93
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 7,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "8": {
+    "journees": 8,
+    "pire_journee": {
+     "numero": 8,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Calenzana",
+     "km": 23.594,
+     "dplus_m": 1693,
+     "dmoins_m": 2856,
+     "km_effort": 49.09
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 8,
+    "plus_longue_suite": 8,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "9": {
+    "journees": 9,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Gare de Vizzavona",
+     "arrivee": "Refuge de Petra Piana",
+     "km": 20.036,
+     "dplus_m": 2026,
+     "dmoins_m": 1109,
+     "km_effort": 43.62
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 9,
+    "plus_longue_suite": 9,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "10": {
+    "journees": 10,
+    "pire_journee": {
+     "numero": 4,
+     "depart": "Refuge de Prati",
+     "arrivee": "Bergeries d'Alzeta",
+     "km": 25.027,
+     "dplus_m": 948,
+     "dmoins_m": 1176,
+     "km_effort": 38.04
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 10,
+    "plus_longue_suite": 10,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "11": {
+    "journees": 11,
+    "pire_journee": {
+     "numero": 11,
+     "depart": "Refuge de Carozzu",
+     "arrivee": "Calenzana",
+     "km": 18.689,
+     "dplus_m": 1104,
+     "dmoins_m": 2088,
+     "km_effort": 35.99
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 11,
+    "plus_longue_suite": 11,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "12": {
+    "journees": 12,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Col de Bavella",
+     "km": 17.741,
+     "dplus_m": 1447,
+     "dmoins_m": 489,
+     "km_effort": 33.68
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 12,
+    "plus_longue_suite": 12,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "13": {
+    "journees": 13,
+    "pire_journee": {
+     "numero": 6,
+     "depart": "Bergerie de Gialgone",
+     "arrivee": "Gare de Vizzavona",
+     "km": 22.197,
+     "dplus_m": 637,
+     "dmoins_m": 1272,
+     "km_effort": 32.38
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 13,
+    "plus_longue_suite": 13,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "14": {
+    "journees": 14,
+    "pire_journee": {
+     "numero": 13,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 12.245,
+     "dplus_m": 1499,
+     "dmoins_m": 1401,
+     "km_effort": 31.44
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 14,
+    "plus_longue_suite": 14,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "15": {
+    "journees": 15,
+    "pire_journee": {
+     "numero": 14,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 12.245,
+     "dplus_m": 1499,
+     "dmoins_m": 1401,
+     "km_effort": 31.44
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 15,
+    "plus_longue_suite": 15,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "16": {
+    "journees": 16,
+    "pire_journee": {
+     "numero": 2,
+     "depart": "Refuge d'i Paliri",
+     "arrivee": "Refuge d'Asinau",
+     "km": 15.28,
+     "dplus_m": 1005,
+     "dmoins_m": 506,
+     "km_effort": 26.85
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 15,
+    "plus_longue_suite": 13,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "17": {
+    "journees": 17,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 15,
+    "plus_longue_suite": 12,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "18": {
+    "journees": 18,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 13,
+    "plus_longue_suite": 7,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "19": {
+    "journees": 19,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 12,
+    "plus_longue_suite": 5,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "20": {
+    "journees": 20,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 11,
+    "plus_longue_suite": 4,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "21": {
+    "journees": 21,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 10,
+    "plus_longue_suite": 4,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "22": {
+    "journees": 22,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 9,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "23": {
+    "journees": 23,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 8,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "24": {
+    "journees": 24,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 8,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "25": {
+    "journees": 25,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 8,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "26": {
+    "journees": 26,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "27": {
+    "journees": 27,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "28": {
+    "journees": 28,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "29": {
+    "journees": 29,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "30": {
+    "journees": 30,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "31": {
+    "journees": 31,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Conca",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 13.209,
+     "dplus_m": 1097,
+     "dmoins_m": 300,
+     "km_effort": 25.08
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   }
+  }
+ },
+ "chapitres": {
+  "GR20 Nord": {
+   "segments": 15,
+   "allures": {
+    "5": {
+     "journees": 5,
+     "pire_journee": {
+      "numero": 4,
+      "depart": "Castel De Vergio",
+      "arrivee": "Refuge de Petra Piana",
+      "km": 24.993,
+      "dplus_m": 1494,
+      "dmoins_m": 1047,
+      "km_effort": 43.07
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 5,
+     "plus_longue_suite": 5,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "6": {
+     "journees": 6,
+     "pire_journee": {
+      "numero": 3,
+      "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+      "arrivee": "Refuge de Ciottulu di i Mori",
+      "km": 14.775,
+      "dplus_m": 1818,
+      "dmoins_m": 1266,
+      "km_effort": 36.75
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 6,
+     "plus_longue_suite": 6,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "7": {
+     "journees": 7,
+     "pire_journee": {
+      "numero": 2,
+      "depart": "Refuge de l'Ortu di u Piobbu",
+      "arrivee": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+      "km": 12.245,
+      "dplus_m": 1401,
+      "dmoins_m": 1499,
+      "km_effort": 30.75
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 7,
+     "plus_longue_suite": 7,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "8": {
+     "journees": 8,
+     "pire_journee": {
+      "numero": 8,
+      "depart": "Bergerie de Tolla",
+      "arrivee": "Gare de Vizzavona",
+      "km": 13.894,
+      "dplus_m": 1104,
+      "dmoins_m": 1179,
+      "km_effort": 28.47
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 6,
+     "plus_longue_suite": 5,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "9": {
+     "journees": 9,
+     "pire_journee": {
+      "numero": 1,
+      "depart": "Calenzana",
+      "arrivee": "Refuge de l'Ortu di u Piobbu",
+      "km": 11.349,
+      "dplus_m": 1455,
+      "dmoins_m": 194,
+      "km_effort": 26.48
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 6,
+     "plus_longue_suite": 4,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "10": {
+     "journees": 10,
+     "pire_journee": {
+      "numero": 1,
+      "depart": "Calenzana",
+      "arrivee": "Refuge de l'Ortu di u Piobbu",
+      "km": 11.349,
+      "dplus_m": 1455,
+      "dmoins_m": 194,
+      "km_effort": 26.48
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 5,
+     "plus_longue_suite": 2,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "11": {
+     "journees": 11,
+     "pire_journee": {
+      "numero": 1,
+      "depart": "Calenzana",
+      "arrivee": "Refuge de l'Ortu di u Piobbu",
+      "km": 11.349,
+      "dplus_m": 1455,
+      "dmoins_m": 194,
+      "km_effort": 26.48
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 5,
+     "plus_longue_suite": 2,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "12": {
+     "journees": 12,
+     "pire_journee": {
+      "numero": 1,
+      "depart": "Calenzana",
+      "arrivee": "Refuge de l'Ortu di u Piobbu",
+      "km": 11.349,
+      "dplus_m": 1455,
+      "dmoins_m": 194,
+      "km_effort": 26.48
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 4,
+     "plus_longue_suite": 2,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "13": {
+     "journees": 13,
+     "pire_journee": {
+      "numero": 1,
+      "depart": "Calenzana",
+      "arrivee": "Refuge de l'Ortu di u Piobbu",
+      "km": 11.349,
+      "dplus_m": 1455,
+      "dmoins_m": 194,
+      "km_effort": 26.48
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 4,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "14": {
+     "journees": 14,
+     "pire_journee": {
+      "numero": 1,
+      "depart": "Calenzana",
+      "arrivee": "Refuge de l'Ortu di u Piobbu",
+      "km": 11.349,
+      "dplus_m": 1455,
+      "dmoins_m": 194,
+      "km_effort": 26.48
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 4,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "15": {
+     "journees": 15,
+     "pire_journee": {
+      "numero": 1,
+      "depart": "Calenzana",
+      "arrivee": "Refuge de l'Ortu di u Piobbu",
+      "km": 11.349,
+      "dplus_m": 1455,
+      "dmoins_m": 194,
+      "km_effort": 26.48
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 4,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    }
+   }
+  },
+  "GR20 Sud": {
+   "segments": 16,
+   "allures": {
+    "5": {
+     "journees": 5,
+     "pire_journee": {
+      "numero": 3,
+      "depart": "Refuge de Prati",
+      "arrivee": "Refuge de Matalza",
+      "km": 21.774,
+      "dplus_m": 951,
+      "dmoins_m": 1347,
+      "km_effort": 35.32
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 5,
+     "plus_longue_suite": 5,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "6": {
+     "journees": 6,
+     "pire_journee": {
+      "numero": 5,
+      "depart": "Bergerie I Croci",
+      "arrivee": "Col de Bavella",
+      "km": 17.609,
+      "dplus_m": 812,
+      "dmoins_m": 1139,
+      "km_effort": 29.15
+     },
+     "plancher": "tres difficile",
+     "journees_en_bandes_hautes": 6,
+     "plus_longue_suite": 6,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "tres difficile"
+    },
+    "7": {
+     "journees": 7,
+     "pire_journee": {
+      "numero": 6,
+      "depart": "Refuge d'Asinau",
+      "arrivee": "Refuge d'i Paliri",
+      "km": 15.28,
+      "dplus_m": 506,
+      "dmoins_m": 1005,
+      "km_effort": 23.36
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 7,
+     "plus_longue_suite": 7,
+     "verdict_monte_par_l_accumulation": true,
+     "verdict": "tres difficile"
+    },
+    "8": {
+     "journees": 8,
+     "pire_journee": {
+      "numero": 7,
+      "depart": "Refuge d'Asinau",
+      "arrivee": "Refuge d'i Paliri",
+      "km": 15.28,
+      "dplus_m": 506,
+      "dmoins_m": 1005,
+      "km_effort": 23.36
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 5,
+     "plus_longue_suite": 3,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "difficile"
+    },
+    "9": {
+     "journees": 9,
+     "pire_journee": {
+      "numero": 1,
+      "depart": "Gare de Vizzavona",
+      "arrivee": "Bergeries de Scarpaccedié",
+      "km": 12.076,
+      "dplus_m": 797,
+      "dmoins_m": 284,
+      "km_effort": 20.9
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 4,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "difficile"
+    },
+    "10": {
+     "journees": 10,
+     "pire_journee": {
+      "numero": 5,
+      "depart": "Refuge de Prati",
+      "arrivee": "Refuge d'Usciolu",
+      "km": 10.897,
+      "dplus_m": 654,
+      "dmoins_m": 714,
+      "km_effort": 19.58
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 3,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "difficile"
+    },
+    "11": {
+     "journees": 11,
+     "pire_journee": {
+      "numero": 11,
+      "depart": "Refuge d'i Paliri",
+      "arrivee": "Conca",
+      "km": 13.209,
+      "dplus_m": 300,
+      "dmoins_m": 1097,
+      "km_effort": 19.5
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 2,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "difficile"
+    },
+    "12": {
+     "journees": 12,
+     "pire_journee": {
+      "numero": 12,
+      "depart": "Refuge d'i Paliri",
+      "arrivee": "Conca",
+      "km": 13.209,
+      "dplus_m": 300,
+      "dmoins_m": 1097,
+      "km_effort": 19.5
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 1,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "difficile"
+    },
+    "13": {
+     "journees": 13,
+     "pire_journee": {
+      "numero": 13,
+      "depart": "Refuge d'i Paliri",
+      "arrivee": "Conca",
+      "km": 13.209,
+      "dplus_m": 300,
+      "dmoins_m": 1097,
+      "km_effort": 19.5
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 1,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "difficile"
+    },
+    "14": {
+     "journees": 14,
+     "pire_journee": {
+      "numero": 14,
+      "depart": "Refuge d'i Paliri",
+      "arrivee": "Conca",
+      "km": 13.209,
+      "dplus_m": 300,
+      "dmoins_m": 1097,
+      "km_effort": 19.5
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 1,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "difficile"
+    },
+    "15": {
+     "journees": 15,
+     "pire_journee": {
+      "numero": 15,
+      "depart": "Refuge d'i Paliri",
+      "arrivee": "Conca",
+      "km": 13.209,
+      "dplus_m": 300,
+      "dmoins_m": 1097,
+      "km_effort": 19.5
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 1,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "difficile"
+    },
+    "16": {
+     "journees": 16,
+     "pire_journee": {
+      "numero": 16,
+      "depart": "Refuge d'i Paliri",
+      "arrivee": "Conca",
+      "km": 13.209,
+      "dplus_m": 300,
+      "dmoins_m": 1097,
+      "km_effort": 19.5
+     },
+     "plancher": "difficile",
+     "journees_en_bandes_hautes": 1,
+     "plus_longue_suite": 1,
+     "verdict_monte_par_l_accumulation": false,
+     "verdict": "difficile"
+    }
+   }
+  }
+ },
+ "variante_bonifatu": {
+  "source": "tache 849, variante_bonifatu_849.json",
+  "remplace": {
+   "depart": "Calenzana",
+   "arrivee": "Refuge de l'Ortu di u Piobbu",
+   "km": 11.349,
+   "dplus_m": 1455,
+   "dmoins_m": 194,
+   "km_effort": 26.48,
+   "bande": "tres difficile"
+  },
+  "par": [
+   {
+    "depart": "Calenzana",
+    "arrivee": "Auberge de la Foret (Bonifatu)",
+    "km": 11.7384,
+    "dplus_m": 632,
+    "dmoins_m": 384,
+    "km_effort": 19.21,
+    "bande": "difficile"
+   },
+   {
+    "depart": "Auberge de la Foret (Bonifatu)",
+    "arrivee": "Refuge de l'Ortu di u Piobbu",
+    "km": 7.9521,
+    "dplus_m": 1056,
+    "dmoins_m": 38,
+    "km_effort": 18.63,
+    "bande": "difficile"
+   }
+  ],
+  "sentier_entier_avec_la_variante": {
+   "7": {
+    "journees": 7,
+    "pire_journee": {
+     "numero": 4,
+     "depart": "Refuge de Manganu",
+     "arrivee": "Gare de Vizzavona",
+     "km": 28.408,
+     "dplus_m": 1922,
+     "dmoins_m": 2573,
+     "km_effort": 55.35
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 7,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "8": {
+    "journees": 8,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge de Petra Piana",
+     "arrivee": "Bivouac de Bocca Palmente",
+     "km": 26.107,
+     "dplus_m": 1811,
+     "dmoins_m": 2034,
+     "km_effort": 50.32
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 8,
+    "plus_longue_suite": 8,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "9": {
+    "journees": 9,
+    "pire_journee": {
+     "numero": 8,
+     "depart": "Refuge Laparo",
+     "arrivee": "Refuge d'Asinau",
+     "km": 25.839,
+     "dplus_m": 1372,
+     "dmoins_m": 1326,
+     "km_effort": 43.54
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 9,
+    "plus_longue_suite": 9,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "10": {
+    "journees": 10,
+    "pire_journee": {
+     "numero": 7,
+     "depart": "Bergeries d'Alzeta",
+     "arrivee": "Refuge de Prati",
+     "km": 25.027,
+     "dplus_m": 1176,
+     "dmoins_m": 948,
+     "km_effort": 39.63
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 10,
+    "plus_longue_suite": 10,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "11": {
+    "journees": 11,
+    "pire_journee": {
+     "numero": 1,
+     "depart": "Calenzana",
+     "arrivee": "Refuge de l'Ortu di u Piobbu",
+     "km": 19.691,
+     "dplus_m": 1688,
+     "dmoins_m": 422,
+     "km_effort": 37.84
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 11,
+    "plus_longue_suite": 11,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "12": {
+    "journees": 12,
+    "pire_journee": {
+     "numero": 4,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Ciottulu di i Mori",
+     "km": 14.775,
+     "dplus_m": 1818,
+     "dmoins_m": 1266,
+     "km_effort": 36.75
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 12,
+    "plus_longue_suite": 12,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "13": {
+    "journees": 13,
+    "pire_journee": {
+     "numero": 7,
+     "depart": "Refuge de Manganu",
+     "arrivee": "Refuge de l'Onda",
+     "km": 18.204,
+     "dplus_m": 1254,
+     "dmoins_m": 1448,
+     "km_effort": 35.09
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 13,
+    "plus_longue_suite": 13,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "14": {
+    "journees": 14,
+    "pire_journee": {
+     "numero": 3,
+     "depart": "Refuge de l'Ortu di u Piobbu",
+     "arrivee": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "km": 12.245,
+     "dplus_m": 1401,
+     "dmoins_m": 1499,
+     "km_effort": 30.75
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 14,
+    "plus_longue_suite": 14,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "15": {
+    "journees": 15,
+    "pire_journee": {
+     "numero": 14,
+     "depart": "Bergerie I Croci",
+     "arrivee": "Col de Bavella",
+     "km": 17.609,
+     "dplus_m": 812,
+     "dmoins_m": 1139,
+     "km_effort": 29.15
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 13,
+    "plus_longue_suite": 11,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "16": {
+    "journees": 16,
+    "pire_journee": {
+     "numero": 8,
+     "depart": "Refuge de Manganu",
+     "arrivee": "Bergerie de Tolla",
+     "km": 14.514,
+     "dplus_m": 818,
+     "dmoins_m": 1394,
+     "km_effort": 26.88
+    },
+    "plancher": "tres difficile",
+    "journees_en_bandes_hautes": 14,
+    "plus_longue_suite": 12,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "tres difficile"
+   },
+   "17": {
+    "journees": 17,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Bergerie de Ballone",
+     "km": 9.575,
+     "dplus_m": 1162,
+     "dmoins_m": 1148,
+     "km_effort": 24.64
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 14,
+    "plus_longue_suite": 8,
+    "verdict_monte_par_l_accumulation": true,
+    "verdict": "tres difficile"
+   },
+   "18": {
+    "journees": 18,
+    "pire_journee": {
+     "numero": 17,
+     "depart": "Refuge d'Asinau",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 15.28,
+     "dplus_m": 506,
+     "dmoins_m": 1005,
+     "km_effort": 23.36
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 13,
+    "plus_longue_suite": 8,
+    "verdict_monte_par_l_accumulation": true,
+    "verdict": "tres difficile"
+   },
+   "19": {
+    "journees": 19,
+    "pire_journee": {
+     "numero": 18,
+     "depart": "Refuge d'Asinau",
+     "arrivee": "Refuge d'i Paliri",
+     "km": 15.28,
+     "dplus_m": 506,
+     "dmoins_m": 1005,
+     "km_effort": 23.36
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 11,
+    "plus_longue_suite": 3,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "20": {
+    "journees": 20,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 10,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "21": {
+    "journees": 21,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 8,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "22": {
+    "journees": 22,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 7,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "23": {
+    "journees": 23,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "24": {
+    "journees": 24,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "25": {
+    "journees": 25,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "26": {
+    "journees": 26,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "27": {
+    "journees": 27,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "28": {
+    "journees": 28,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "29": {
+    "journees": 29,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "30": {
+    "journees": 30,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "31": {
+    "journees": 31,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   },
+   "32": {
+    "journees": 32,
+    "pire_journee": {
+     "numero": 5,
+     "depart": "Refuge d'Ascu-Stagnu (Haut-Asco)",
+     "arrivee": "Refuge de Tighjettu",
+     "km": 8.41,
+     "dplus_m": 1162,
+     "dmoins_m": 927,
+     "km_effort": 22.81
+    },
+    "plancher": "difficile",
+    "journees_en_bandes_hautes": 6,
+    "plus_longue_suite": 2,
+    "verdict_monte_par_l_accumulation": false,
+    "verdict": "difficile"
+   }
+  }
+ },
+ "ce_que_la_mesure_dit": {
+  "le_gr20_est_tres_difficile_a_toutes_les_allures_et_dans_les_deux_sens": true,
+  "la_pire_journee_ne_descend_jamais_sous_km_effort": 25.08,
+  "la_variante_bonifatu_change_de_bande": true,
+  "avec_la_variante_le_sentier_devient_difficile_a_partir_de": 19
+ }
+}

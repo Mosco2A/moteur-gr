@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/analytics/screen_entry.dart';
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../domain/difficulte_du_sentier.dart';
+import '../../../domain/echelle_de_difficulte.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -111,11 +111,14 @@ class TrailStageDetailScreen extends ConsumerWidget {
                         style: theme.textTheme.headlineMedium,
                       ),
                     ),
-                    // Le denivele MESURE classe l'etape, pas l'etiquette
-                    // stockee (tache 848, cf. `DifficultyBadge`).
+                    // L'EFFORT MESURE classe l'etape, pas l'etiquette stockee
+                    // (tache 848, recalibree 852 sur les trois mesures : cf.
+                    // `DifficultyBadge` et `SeuilsDeDifficulte`).
                     DifficultyBadge(
-                      niveau: SeuilsDeDifficulte.pourDenivele(
-                        stage.elevationGainM,
+                      niveau: SeuilsDeDifficulte.pourUneJournee(
+                        km: stage.distanceKm,
+                        deniveleM: stage.elevationGainM,
+                        descenteM: stage.elevationLossM,
                       ),
                     ),
                   ],

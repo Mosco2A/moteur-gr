@@ -8,7 +8,7 @@ import '../../../core/branding/stepways_icons.dart';
 import '../../../core/models/stage_duration.dart';
 import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../domain/difficulte_du_sentier.dart';
+import '../../../domain/echelle_de_difficulte.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/stage_number_badge.dart';
 import 'difficulty_badge.dart';
@@ -83,15 +83,18 @@ class StageListTile extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: AppTheme.spacingSm),
-                    // LA PASTILLE SUIT LE DENIVELE MESURE, PAS L'ETIQUETTE
-                    // STOCKEE (tache 848). Les seuils classent l'etape
-                    // (decision de Christophe du 17/10) ; l'etiquette de
+                    // LA PASTILLE SUIT L'EFFORT MESURE, PAS L'ETIQUETTE
+                    // STOCKEE (tache 848, recalibree 852). Les seuils classent
+                    // l'etape sur ses TROIS mesures — distance, montee,
+                    // descente (Christophe, 17/10 17:25) ; l'etiquette de
                     // `stages.json` a ete calculee sur les anciens seuils et
-                    // dirait « Modere » pour une journee de 967 m que la
-                    // nouvelle echelle classe difficile.
+                    // dirait « Modere » pour une journee de 967 m que cette
+                    // echelle classe difficile.
                     DifficultyBadge(
-                      niveau: SeuilsDeDifficulte.pourDenivele(
-                        stage.elevationGainM,
+                      niveau: SeuilsDeDifficulte.pourUneJournee(
+                        km: stage.distanceKm,
+                        deniveleM: stage.elevationGainM,
+                        descenteM: stage.elevationLossM,
                       ),
                     ),
                   ],

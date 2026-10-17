@@ -25,7 +25,7 @@ import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
-import 'package:moteur_gr/domain/difficulte_du_sentier.dart';
+import 'package:moteur_gr/domain/echelle_de_difficulte.dart';
 import 'package:moteur_gr/domain/nuit_possible.dart';
 import 'package:moteur_gr/features/planning/planning_facade.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_detail_screen.dart';

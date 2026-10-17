@@ -223,9 +223,4 @@ class CouleursSemantiques {
   /// l'horaire se lise comme une citation et non comme une donnee de l'app
   /// (parite GR20).
   static const fondSombreDesHorairesIndicatifs = Color(0xFF2C2C2C);
-
-  /// Difficulte « expert » du badge de sentier : le cran au-dela de
-  /// `AppTheme.rougeExtreme`, en violet, pour qu'il ne se lise pas comme « plus
-  /// rouge » mais comme autre chose.
-  static const violetDifficulteExpert = Color(0xFF7B1FA2);
 }
