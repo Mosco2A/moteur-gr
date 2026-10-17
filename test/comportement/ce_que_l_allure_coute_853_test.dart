@@ -196,10 +196,7 @@ void main() {
       // Il n'y a rien a comparer, donc rien a afficher : une ligne de choix a
       // une seule case est un faux choix.
       await tester.pumpWidget(sousTest(allures: const <int>[4]));
-      expect(
-        find.byKey(const ValueKey('effort-de-l-allure-4')),
-        findsNothing,
-      );
+      expect(find.byKey(const ValueKey('effort-de-l-allure-4')), findsNothing);
       expect(find.byKey(const ValueKey('ce-que-l-allure-coute')), findsNothing);
       // Le nombre de jours conseille, lui, reste dit.
       expect(find.byKey(const ValueKey('jours-conseilles')), findsOneWidget);

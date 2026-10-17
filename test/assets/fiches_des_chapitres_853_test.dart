@@ -33,10 +33,7 @@ import 'package:moteur_gr/features/planning/domain/decoupage_sur_les_nuits.dart'
 /// La fiche d'un chapitre, lue par le MEME lecteur que le produit.
 FicheDeSentier ficheDe(String trailId) {
   final chemin = TrailCatalog.byId(trailId)!.ficheAssetPath!;
-  final fiche = lireFicheDeSentier(
-    File(chemin).readAsStringSync(),
-    trailId,
-  );
+  final fiche = lireFicheDeSentier(File(chemin).readAsStringSync(), trailId);
   expect(fiche, isNotNull, reason: '$trailId : sa fiche doit se lire');
   return fiche!;
 }
@@ -47,8 +44,8 @@ Map<String, Map<String, dynamic>> lireLesChapitres() {
       jsonDecode(File('assets/data/gr20/chapitres.json').readAsStringSync())
           as Map<String, dynamic>;
   return {
-    for (final c in (brut['chapitres'] as List<dynamic>)
-        .cast<Map<String, dynamic>>())
+    for (final c
+        in (brut['chapitres'] as List<dynamic>).cast<Map<String, dynamic>>())
       c['id'] as String: c,
   };
 }

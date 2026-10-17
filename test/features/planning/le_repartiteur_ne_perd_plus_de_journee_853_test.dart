@@ -48,9 +48,7 @@ DecoupageDeNuits lireGr20() => DecoupageDeNuits.fromJson(
 /// Le releve brut des couchages — la SOURCE du denivele de detour.
 Map<String, dynamic> lireLesCouchages() =>
     jsonDecode(
-          File(
-            'assets/data/gr20/couchages_hors_etape.json',
-          ).readAsStringSync(),
+          File('assets/data/gr20/couchages_hors_etape.json').readAsStringSync(),
         )
         as Map<String, dynamic>;
 
