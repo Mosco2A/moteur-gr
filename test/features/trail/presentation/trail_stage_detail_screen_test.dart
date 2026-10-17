@@ -175,7 +175,14 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('Difficile'), findsOneWidget);
+      // TACHE 852 — CE DECOR CHANGE DE BANDE, ET C'EST LE LOT QUI LE VEUT.
+      // L'etape de decor fait 14,0 km, monte 950 m et descend 600 m. Sur
+      // l'ancienne regle — le seul denivele positif — 950 m tombait dans
+      // « Difficile » (700 a 1 000). Sur l'effort complet elle vaut
+      // 14,0 + 9,5 + 1,8 = 25,3 km-effort, donc « Tres difficile » (a partir de
+      // 25,0). Une journee de quatorze kilometres qui monte 950 m et en
+      // redescend 600 est plus dure que ce que sa seule montee disait.
+      expect(find.text('Tres difficile'), findsOneWidget);
     });
 
     testWidgets('affiche les POIs de l\'étape uniquement', (tester) async {

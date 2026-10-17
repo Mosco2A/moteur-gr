@@ -41,6 +41,21 @@ abstract class DayPlan with _$DayPlan {
   /// Nombre d'étapes prévues ce jour
   int get stageCount => stages.length;
 
+  /// DENIVELE NEGATIF total en metres pour ce jour, compte positivement.
+  ///
+  /// IL EST CALCULE ET NON STOCKE, ET C'EST VOLONTAIRE. Les deux autres totaux
+  /// sont des champs que le repartiteur remplit ; celui-ci est la SOMME DES
+  /// ETAPES de la journee, c'est-a-dire exactement ce que le repartiteur fait
+  /// pour les deux autres. Un champ de plus aurait demande de regenerer le
+  /// modele et aurait pu porter une valeur en desaccord avec `stages` ; un
+  /// getter ne peut pas mentir.
+  ///
+  /// IL EXISTE DEPUIS LA TACHE 852 : la difficulte d'une journee se calcule sur
+  /// ses TROIS mesures — distance, montee, descente (Christophe, 17/10 17:25) —
+  /// et un sentier sans nuits relevees passe par ce modele-ci.
+  int get totalElevationLossM =>
+      stages.fold<int>(0, (somme, etape) => somme + etape.elevationLossM);
+
   /// Désérialisation depuis JSON
   factory DayPlan.fromJson(Map<String, dynamic> json) =>
       _$DayPlanFromJson(json);
