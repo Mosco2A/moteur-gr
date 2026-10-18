@@ -1,29 +1,34 @@
-// GARDE — TACHE 854 : UNE ETAPE NE SE COUPE PAS, ET VOILA CE QUE CA CHANGE.
+// GARDE — TACHE 854 : PEUT-ON COUPER LES ETAPES LES PLUS DURES DU GR20 ?
 //
-// LA REGLE, TRANCHEE PAR CHRISTOPHE LE 18/10 10:46, verbatim : « pourquoi 19
-// jours??? il y a 16 etapes ???? et tu ne peux pas couper les etapes !!!! ».
+// LA QUESTION DE CHRISTOPHE, verbatim le 18/10 10:18 : « tu ne m'a pas dit
+// s'il etait possible de decouper les etapes les plus dure ».
 //
-// LA DISTINCTION QUI COMMANDE TOUT. Une ETAPE est un segment FIXE du sentier
-// et l'unite de VENTE (1 EUR l'etape, GR20 = 16 etapes = 16 EUR, modele
-// #99305) : la couper fabriquerait une dix-septieme etape et changerait le
-// produit et son prix. Une JOURNEE est ce que le marcheur fait de sa journee :
-// il GROUPE des etapes entieres, il ajoute des journees de REPOS, il ne coupe
-// jamais une etape en deux demi-journees.
+// LE MODELE, PRECISE LE 18/10 11:03, ET C'EST LUI QUI FAIT LOI : « NON si on
+// peut couper des etapes pour rendre le GR20 plus facile et le faire en 19
+// Jours on fait!! Mais les etapes du GR restent les etapes du GR. 16 c'et 16,
+// si le gars fait la premiere en 2 fois et bien c'est toujours 16 etape en 17
+// jours ».
 //
-// CE QUE CE FICHIER A D'ABORD EU FAUX, ET IL FAUT QUE CA RESTE ECRIT. La
-// premiere version de ce lot cherchait ou DORMIR A L'INTERIEUR des etapes
-// dures pour les couper, et concluait que le plancher du GR20 etait l'etape 1
-// (26,46 km-effort). C'etait une mesure juste sur une base INTERDITE. Sur la
-// seule base legale — grouper des etapes entieres — le plancher est l'ETAPE 6,
-// Ciottulu di i Mori vers Manganu, a 36,45 km-effort. La bonne regle donne un
-// sentier BIEN PLUS DUR que la mauvaise, pas plus facile.
+// LES DEUX COMPTES NE SE TOUCHENT JAMAIS. L'ETAPE est la reference FIXE du
+// sentier et l'unite de VENTE : seize, pour toujours, 16 EUR. La JOURNEE est
+// libre — on peut faire une etape en DEUX journees, grouper plusieurs etapes,
+// ajouter du repos. Couper une journee a l'interieur d'une etape est donc
+// AUTORISE, et les trente et une nuits de la tache 838 sont de bonnes bornes.
+// Le COMPTE D'ETAPES et le PRIX sont gardes a part, dans
+// `le_prix_ne_suit_pas_les_jours_854_test.dart`.
+//
+// LA LACUNE QUE CE LOT COMBLE. La tache 849 n'a fouille QU'UN segment,
+// Calenzana vers l'Ortu di u Piobbu, et y a trouve qu'on ne peut rien couper.
+// Sa reponse a ete lue comme « on ne peut pas couper », alors qu'elle ne
+// portait que sur la PREMIERE etape. Les quinze autres n'avaient jamais ete
+// examinees — et depuis la 852 la pire a CHANGE D'IDENTITE : ce n'est plus
+// l'etape 1 mais l'ETAPE 6, Ciottulu di i Mori vers Manganu.
 //
 // DEUX CALCULS INDEPENDANTS, ET ILS DOIVENT CONCORDER.
 // `tool/couper_les_etapes_dures_854.py` mesure en Python et ecrit
 // `assets/data/gr20/coupes_854.json`. Ce fichier-ci recalcule les MEMES
 // scenarios en DART, par le socle du produit (`SeuilsDeDifficulte`,
-// `DifficulteDuSentier`, `RepartitionEquilibree`), et exige le meme verdict
-// etape par etape et allure par allure.
+// `DifficulteDuSentier`, `RepartitionEquilibree`), et exige le meme verdict.
 library;
 
 import 'dart:convert';
@@ -45,7 +50,8 @@ String _nomDeBande(NiveauDeDifficulte niveau) => switch (niveau) {
 void main() {
   late Map<String, dynamic> mesure;
   late List<dynamic> etapes;
-  late Map<String, dynamic> legal;
+  late List<dynamic> segments;
+  late Map<String, dynamic> enCoupant;
 
   setUpAll(() {
     final fichier = File('assets/data/gr20/coupes_854.json');
@@ -58,66 +64,28 @@ void main() {
     );
     mesure = jsonDecode(fichier.readAsStringSync()) as Map<String, dynamic>;
     etapes = mesure['etapes_federales'] as List<dynamic>;
-    legal = mesure['base_legale_groupement_d_etapes'] as Map<String, dynamic>;
+    enCoupant = mesure['en_coupant_ou_l_on_peut'] as Map<String, dynamic>;
+
+    final nuits =
+        jsonDecode(
+              File('assets/data/gr20/nuits_possibles.json').readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    segments = nuits['entre_les_nuits'] as List<dynamic>;
   });
-
-  /// Les etapes, dans l'ordre, reduites a ce que le classement demande.
-  List<JourneeMesuree> etapesMesurees({bool envers = false}) {
-    final liste = <JourneeMesuree>[];
-    for (final brut in etapes) {
-      final e = brut as Map<String, dynamic>;
-      liste.add(
-        JourneeMesuree(
-          km: (e['km'] as num).toDouble(),
-          // LE SENS INVERSE ECHANGE LES DEUX DENIVELES : ce qu'on montait, on
-          // le descend.
-          deniveleM: envers ? e['dmoins_m'] as int : e['dplus_m'] as int,
-          descenteM: envers ? e['dplus_m'] as int : e['dmoins_m'] as int,
-        ),
-      );
-    }
-    return envers ? liste.reversed.toList() : liste;
-  }
-
-  /// Le sentier groupe en [jours] journees de marche — DES ETAPES ENTIERES,
-  /// jamais une coupure.
-  DifficulteDuSentier? auRythmeDe(int jours, {bool envers = false}) {
-    final unites = etapesMesurees(envers: envers);
-    final charges = <double>[
-      for (final brut in etapes)
-        ((brut as Map<String, dynamic>)['minutes'] as num).toDouble(),
-    ];
-    final ordonnees = envers ? charges.reversed.toList() : charges;
-    final debuts = RepartitionEquilibree.coupes(ordonnees, jours);
-
-    final journees = <JourneeMesuree>[];
-    for (var i = 0; i < debuts.length; i++) {
-      final fin = i + 1 < debuts.length ? debuts[i + 1] : unites.length;
-      var km = 0.0;
-      var dplus = 0;
-      var dmoins = 0;
-      for (var j = debuts[i]; j < fin; j++) {
-        km += unites[j].km;
-        dplus += unites[j].deniveleM;
-        dmoins += unites[j].descenteM;
-      }
-      journees.add(JourneeMesuree(km: km, deniveleM: dplus, descenteM: dmoins));
-    }
-    return DifficulteDuSentier.calculer(jours: jours, journees: journees);
-  }
 
   // =========================================================================
   // 1 — LES SEIZE ETAPES : LE DART ET LE PYTHON DISENT LA MEME BANDE
   // =========================================================================
 
   group('les seize etapes federales', () {
-    test('il y en a bien SEIZE, et c est le nombre qui se vend', () {
+    test('il y en a bien SEIZE, et ce nombre ne bougera jamais', () {
       expect(
         etapes.length,
         16,
         reason:
-            'le modele du 01/09 (#99305) vend le GR20 seize etapes ; le '
-            'catalogue porte 9 au nord et 7 au sud, qui somment a seize',
+            '« 16 c est 16 ». C est la reference du sentier et l unite de '
+            'vente ; couper des journees dedans n en fait pas dix-sept.',
       );
     });
 
@@ -168,7 +136,7 @@ void main() {
         isTrue,
         reason:
             'les etapes ${controle['etapes_dont_la_bande_differe']} changent '
-            'de bande selon la source : les chiffres de ce lot ne seraient '
+            'de bande selon la source : les chiffres de coupe ne seraient '
             'plus comparables a ceux de la fiche',
       );
       expect(
@@ -182,258 +150,299 @@ void main() {
   });
 
   // =========================================================================
-  // 2 — LE PLANCHER EST L'ETAPE LA PLUS DURE, ET IL NE BOUGE PLUS
+  // 2 — LA REPONSE : QUI SE COUPE, QUI NE SE COUPE PAS
   // =========================================================================
 
-  group('le plancher du sentier', () {
-    test('AU PLUS SEIZE JOURNEES DE MARCHE, parce qu il y a seize etapes', () {
-      expect(
-        legal['journees_de_marche_maximum'],
-        16,
-        reason:
-            'une journee groupe des etapes entieres : on ne peut pas en '
-            'fabriquer une dix-septieme. Au-dela de seize, on n ajoute que '
-            'du REPOS, qui ne touche aucune journee de marche.',
-      );
-    });
-
-    test('LE PLANCHER EST L ETAPE 6, PAS L ETAPE 1', () {
-      final plancher = legal['plancher_sens_normal'] as Map<String, dynamic>;
-      expect(
-        plancher['rang'],
-        6,
-        reason:
-            'Ciottulu di i Mori vers Manganu : 25,02 km, D+786, D-1190. Elle '
-            'ne monte que 786 m et c est pourtant la plus dure des seize — '
-            'une journee de vingt-cinq kilometres n est pas facile parce '
-            'qu elle monte peu.',
-      );
-      expect(
-        (plancher['effort_km'] as num).toDouble(),
-        closeTo(36.45, 0.01),
-        reason:
-            'et le seuil du tres difficile est a 25,0 : le plancher le '
-            'depasse de plus de onze km-effort, pas de un et demi comme le '
-            'disait la mesure faite sur la base interdite',
-      );
-      expect(plancher['bande'], 'tres difficile');
-    });
-
-    test('EN SENS INVERSE LE PLANCHER EST ENCORE PLUS HAUT', () {
-      final envers = legal['plancher_sens_inverse'] as Map<String, dynamic>;
-      expect(
-        (envers['effort_km'] as num).toDouble(),
-        closeTo(39.28, 0.01),
-        reason:
-            'la meme etape marchee a l envers monte 1 190 m au lieu de 786 : '
-            'de Manganu vers Ciottulu di i Mori elle vaut 39,28 km-effort',
-      );
-      expect(
-        (envers['effort_km'] as num).toDouble(),
-        greaterThan(
-          ((legal['plancher_sens_normal'] as Map<String, dynamic>)['effort_km']
-                  as num)
-              .toDouble(),
-        ),
-        reason: 'le sens inverse est le sens DUR sur cette etape',
-      );
-    });
-
-    test('LE PLANCHER EST ATTEINT DES TREIZE JOURNEES, ET NE BOUGE PLUS', () {
-      expect(
-        legal['plancher_atteint_a_partir_de_jours'],
-        13,
-        reason:
-            'des treize journees de marche, le repartiteur laisse l etape 6 '
-            'seule dans sa journee : la pire journee EST cette etape. '
-            'Christophe le disait de seize ; la mesure dit treize, donc son '
-            'raisonnement tient et le plancher arrive meme plus tot.',
-      );
-
-      // LA PREUVE EN DART, allure par allure : de 13 a 16 journees la pire
-      // journee ne bouge pas d'un centieme.
-      for (var jours = 13; jours <= 16; jours++) {
-        final pire = auRythmeDe(jours)!.pireJournee!;
-        expect(
-          pire.kmEffort,
-          closeTo(36.45, 0.01),
-          reason:
-              'a $jours journees de marche la pire journee est encore '
-              'l etape 6 : ajouter des journees ne la coupe pas',
+  group('peut-on couper les etapes dures', () {
+    test('DIX etapes sur seize sont dans les deux bandes hautes', () {
+      final hautes = etapes.where((e) {
+        final niveau = SeuilsDeDifficulte.pourUneJournee(
+          km: ((e as Map<String, dynamic>)['km'] as num).toDouble(),
+          deniveleM: e['dplus_m'] as int,
+          descenteM: e['dmoins_m'] as int,
         );
-      }
-    });
-  });
+        return niveau.estUneBandeHaute;
+      }).toList();
 
-  // =========================================================================
-  // 3 — LES QUATRE ALLURES, DANS LES DEUX SENS, SUR LA BASE LEGALE
-  // =========================================================================
-
-  group('les quatre allures de la fiche', () {
-    test('7, 9, 12 et 16 journees : TRES DIFFICILE dans les deux sens', () {
-      for (final jours in <int>[7, 9, 12, 16]) {
-        for (final envers in <bool>[false, true]) {
-          final d = auRythmeDe(jours, envers: envers);
-          expect(d, isNotNull);
-          expect(
-            _nomDeBande(d!.verdict!),
-            'tres difficile',
-            reason:
-                'a $jours journees, sens ${envers ? 'inverse' : 'normal'} : '
-                'AUCUNE des quatre allures ne fait descendre le GR20, et '
-                'aucune n en est proche',
-          );
-        }
-      }
-    });
-
-    test('le Dart retrouve les chiffres du Python, allure par allure', () {
-      final normal = legal['allures_sens_normal'] as Map<String, dynamic>;
-      final inverse = legal['allures_sens_inverse'] as Map<String, dynamic>;
-
-      for (var jours = 7; jours <= 16; jours++) {
-        final attenduNormal =
-            (normal['$jours'] as Map<String, dynamic>)['pire_journee_km_effort']
-                as num;
-        expect(
-          auRythmeDe(jours)!.pireJournee!.kmEffort,
-          closeTo(attenduNormal.toDouble(), 0.02),
-          reason: 'sens normal, $jours journees',
-        );
-
-        final attenduInverse =
-            (inverse['$jours']
-                    as Map<String, dynamic>)['pire_journee_km_effort']
-                as num;
-        expect(
-          auRythmeDe(jours, envers: true)!.pireJournee!.kmEffort,
-          closeTo(attenduInverse.toDouble(), 0.02),
-          reason: 'sens inverse, $jours journees',
-        );
-      }
-    });
-
-    test('AUCUNE allure de 1 a 16 journees ne descend sous tres difficile', () {
-      for (var jours = 1; jours <= 16; jours++) {
-        expect(
-          _nomDeBande(auRythmeDe(jours)!.verdict!),
-          'tres difficile',
-          reason:
-              'a $jours journees. LA REPONSE A « pourquoi 19 jours » : il n y '
-              'a pas de dix-neuvieme journee de MARCHE a avoir, et aucune des '
-              'seize possibles ne fait descendre le sentier. Les dix-neuf '
-              'jours de la 852 venaient d un decoupage qui coupait les '
-              'etapes.',
-        );
-      }
-    });
-  });
-
-  // =========================================================================
-  // 4 — LE DEFAUT : LE DECOUPAGE DU PRODUIT COUPE LES ETAPES
-  // =========================================================================
-
-  group('le defaut mesure', () {
-    test('QUINZE des trente et une bornes de journee ne sont pas des fins '
-        'd etape', () {
-      final defaut =
-          mesure['defaut_le_decoupage_coupe_les_etapes']
-              as Map<String, dynamic>;
-      expect(defaut['bornes_possibles'], 31);
+      expect(hautes.length, 10);
       expect(
-        defaut['bornes_qui_ne_sont_pas_des_fins_d_etape'],
+        (mesure['bilan'] as Map<String, dynamic>)['etapes_hautes'],
+        10,
+        reason: 'le Python doit compter les memes',
+      );
+    });
+
+    test('OUI : SIX des dix se coupent sur une nuit DEJA RELEVEE', () {
+      final bilan = mesure['bilan'] as Map<String, dynamic>;
+      expect(
+        bilan['hautes_coupables'],
+        containsAll(<int>[6, 9, 10, 11, 12, 13]),
+        reason:
+            'LA REPONSE A CHRISTOPHE : oui, la majorite des etapes dures se '
+            'coupent, et les points de coupe existent deja dans la donnee du '
+            'produit (releve 838). Il n y a rien a inventer.',
+      );
+      expect((bilan['hautes_coupables'] as List<dynamic>).length, 6);
+    });
+
+    test('QUATRE ne se coupent pas, et il faut dire lesquelles', () {
+      final bilan = mesure['bilan'] as Map<String, dynamic>;
+      expect(
+        bilan['hautes_incoupables'],
+        containsAll(<int>[1, 4, 7, 16]),
+        reason:
+            'ces quatre n ont AUCUNE nuit relevee a l interieur. Pour trois '
+            'd entre elles (4, 7, 16) cela veut dire « rien dans le releve de '
+            'la 838 », pas « rien n existe » : seule la premiere a ete '
+            'fouillee au large par la 849.',
+      );
+      expect((bilan['hautes_incoupables'] as List<dynamic>).length, 4);
+    });
+
+    test('TROIS etapes hautes restent a fouiller au large', () {
+      final aFouiller = (mesure['a_fouiller_au_large'] as List<dynamic>)
+          .where(
+            (e) =>
+                (e as Map<String, dynamic>)['deja_fouille_par_la_849'] == false,
+          )
+          .map((e) => (e as Map<String, dynamic>)['rang'])
+          .toList();
+      expect(
+        aFouiller,
+        containsAll(<int>[4, 7, 16]),
+        reason:
+            'LE TROU DE MESURE DE CE LOT, NOMME PLUTOT QU ARRONDI : le releve '
+            '838 avait un couloir de 3 km et un seuil de 30 minutes. Dire de '
+            'ces trois etapes qu elles ne se coupent pas demanderait le '
+            'releve large de la 849 (8 km, aucun seuil), qui n a ete fait que '
+            'sur la premiere.',
+      );
+    });
+
+    test('QUINZE des trente et une bornes tombent DANS une etape, et c est '
+        'autorise', () {
+      expect(enCoupant['bornes_possibles'], 31);
+      expect(
+        enCoupant['bornes_a_l_interieur_d_une_etape'],
         15,
         reason:
-            'A CES QUINZE BORNES, LE PRODUIT COUPE UNE ETAPE EN DEUX. Il '
-            'fabrique donc des etapes que personne n a vendues, et c est ce '
-            'que Christophe a interdit le 18/10.',
+            'A CES QUINZE BORNES, LE MARCHEUR S ARRETE AU MILIEU D UNE ETAPE. '
+            'C est permis : « si le gars fait la premiere en 2 fois et bien c '
+            'est toujours 16 etape en 17 jours ». Le compte d etapes ne bouge '
+            'pas, le compte de jours monte.',
       );
     });
+  });
 
-    test('la donnee du produit AVOUE elle-meme le decoupage interdit', () {
-      final defaut =
-          mesure['defaut_le_decoupage_coupe_les_etapes']
-              as Map<String, dynamic>;
+  // =========================================================================
+  // 3 — LA PIRE ETAPE SE COUPE, ET ELLE SORT DE LA BANDE DU HAUT
+  // =========================================================================
+
+  group('l etape 6, la pire des seize', () {
+    Map<String, dynamic> etape6() =>
+        etapes.firstWhere((e) => (e as Map<String, dynamic>)['rang'] == 6)
+            as Map<String, dynamic>;
+
+    test('elle est bien la pire des seize sur l effort complet', () {
+      var pire = etapes.first as Map<String, dynamic>;
+      for (final e in etapes) {
+        final m = e as Map<String, dynamic>;
+        if ((m['effort_km'] as num) > (pire['effort_km'] as num)) pire = m;
+      }
       expect(
-        defaut['aveu_dans_la_donnee'],
-        contains('ailleurs qu a une fin d etape'),
+        pire['rang'],
+        6,
         reason:
-            'LA PREUVE N EST PAS UNE DEDUCTION : le champ `quoi` de '
-            'nuits_possibles.json dit mot pour mot que le curseur de duree '
-            's en sert « pour poser une fin de journee ailleurs qu a une fin '
-            'd etape ». C est ecrit dans le binaire livre.',
+            'la 852 l a etabli : par le seul D+ la pire etait la premiere ; '
+            'sur l effort complet c est l etape 6, qui ne monte que 786 m '
+            'mais fait 25,02 km et descend 1 190 m',
+      );
+      expect(pire['bande'], 'tres difficile');
+      expect(
+        (pire['effort_km'] as num).toDouble(),
+        closeTo(36.45, 0.01),
+        reason: 'et c est le chiffre que la 852 a publie',
       );
     });
 
-    test('LA BASE INTERDITE ANNONCAIT UN SENTIER PLUS FACILE QU IL N EST', () {
-      final defaut =
-          mesure['defaut_le_decoupage_coupe_les_etapes']
+    test('ELLE SE COUPE, et trois endroits releves tombent dedans', () {
+      final nuits = etape6()['nuits_interieures'] as List<dynamic>;
+      expect(nuits.length, 3);
+      expect(
+        nuits.map((n) => (n as Map<String, dynamic>)['nom']),
+        containsAll(<String>[
+          'Bergeries de Radule',
+          'Castel De Vergio',
+          'Bergeries de Vaccaghia',
+        ]),
+        reason:
+            'les trois portent un identifiant OpenStreetMap et un temps '
+            'd acces mesure dans les deux sens',
+      );
+    });
+
+    test('coupee a Castel De Vergio elle QUITTE la bande du haut', () {
+      final coupe = etape6()['coupe'] as Map<String, dynamic>;
+      expect(coupe['coupe_a'], 'Castel De Vergio');
+
+      // On recalcule les deux moities EN DART, pour ne pas croire le Python
+      // sur parole.
+      final demi1 = coupe['demi_1'] as Map<String, dynamic>;
+      final demi2 = coupe['demi_2'] as Map<String, dynamic>;
+      final e1 = SeuilsDeDifficulte.effortDeLaJournee(
+        km: (demi1['km'] as num).toDouble(),
+        deniveleM: demi1['dplus_m'] as int,
+        descenteM: demi1['dmoins_m'] as int,
+      );
+      final e2 = SeuilsDeDifficulte.effortDeLaJournee(
+        km: (demi2['km'] as num).toDouble(),
+        deniveleM: demi2['dplus_m'] as int,
+        descenteM: demi2['dmoins_m'] as int,
+      );
+      final pire = e1 > e2 ? e1 : e2;
+
+      expect(
+        pire,
+        closeTo((coupe['pire_des_deux_km_effort'] as num).toDouble(), 0.001),
+      );
+      expect(
+        _nomDeBande(SeuilsDeDifficulte.pourEffort(pire)),
+        'difficile',
+        reason:
+            'LA REPONSE CHIFFREE A CHRISTOPHE : la pire etape du GR20 passe '
+            'de « tres difficile » a « difficile » en dormant a Castel De '
+            'Vergio, qui est a UNE MINUTE du sentier. Elle se coupe, et la '
+            'coupe est bon marche. Et ca reste l etape 6 : on en a fait deux '
+            'journees, pas deux etapes.',
+      );
+      expect(
+        (coupe['minutes_aller'] as int) + (coupe['minutes_retour'] as int),
+        lessThanOrEqualTo(4),
+        reason: 'une minute a l aller, une au retour : le detour est nul',
+      );
+    });
+  });
+
+  // =========================================================================
+  // 4 — LE RECALCUL : CE QUE COUPER APPORTE, ET CE QUI BLOQUE ENCORE
+  // =========================================================================
+
+  group('le recalcul du sentier entier', () {
+    /// Les trente et une journees du produit, groupees en [jours] par le
+    /// repartiteur du depot, puis classees par le socle.
+    DifficulteDuSentier? auRythmeDe(int jours) {
+      final charges = segments
+          .map(
+            (s) => ((s as Map<String, dynamic>)['minutes'] as num).toDouble(),
+          )
+          .toList();
+      final debuts = RepartitionEquilibree.coupes(charges, jours);
+      final journees = <JourneeMesuree>[];
+      for (var i = 0; i < debuts.length; i++) {
+        final fin = i + 1 < debuts.length ? debuts[i + 1] : segments.length;
+        var km = 0.0;
+        var dplus = 0;
+        var dmoins = 0;
+        for (var j = debuts[i]; j < fin; j++) {
+          final s = segments[j] as Map<String, dynamic>;
+          km += (s['km'] as num).toDouble();
+          dplus += s['dplus_m'] as int;
+          dmoins += s['dmoins_m'] as int;
+        }
+        journees.add(
+          JourneeMesuree(km: km, deniveleM: dplus, descenteM: dmoins),
+        );
+      }
+      return DifficulteDuSentier.calculer(jours: jours, journees: journees);
+    }
+
+    test('COUPER APPORTE BEAUCOUP A LA JOURNEE DU MARCHEUR', () {
+      // La comparaison qui chiffre le benefice : meme sentier, meme formule,
+      // mais sans jamais couper a l'interieur d'une etape.
+      final sans =
+          (mesure['si_l_on_ne_coupait_jamais_dans_une_etape']
+                  as Map<String, dynamic>)['allures_sens_normal']
               as Map<String, dynamic>;
-      final faux =
-          defaut['allures_sur_cette_base_fausse'] as Map<String, dynamic>;
-      final pireFausse =
-          ((faux['16'] as Map<String, dynamic>)['pire_journee_km_effort']
+      final avec = enCoupant['allures'] as Map<String, dynamic>;
+
+      final pireAvec =
+          ((avec['16'] as Map<String, dynamic>)['pire_journee_km_effort']
+                  as num)
+              .toDouble();
+      final pireSans =
+          ((sans['16'] as Map<String, dynamic>)['pire_journee_km_effort']
                   as num)
               .toDouble();
 
       expect(
-        pireFausse,
-        lessThan(
-          ((legal['plancher_sens_normal'] as Map<String, dynamic>)['effort_km']
-                  as num)
-              .toDouble(),
-        ),
+        pireSans - pireAvec,
+        greaterThan(9.0),
         reason:
-            'LE SENS DE L ERREUR COMPTE, ET IL EST DU MAUVAIS COTE : a seize '
-            'jours, la base interdite annoncait une pire journee de '
-            '${pireFausse.toStringAsFixed(2)} km-effort quand la verite est '
-            '36,45. Elle annoncait donc au randonneur une journee PLUS '
-            'LEGERE que celle qu il marchera. Une erreur qui rassure a tort '
-            'est la pire espece sur un sentier de haute montagne.',
-      );
-    });
-  });
-
-  // =========================================================================
-  // 5 — LES DEUX CHAPITRES, LES VRAIS PRODUITS
-  // =========================================================================
-
-  group('les deux chapitres', () {
-    test('le nord porte 9 etapes, le sud 7, donc 9 et 7 journees de marche '
-        'au plus', () {
-      final chapitres = legal['chapitres'] as Map<String, dynamic>;
-      expect((chapitres['gr20-nord'] as Map<String, dynamic>)['etapes'], 9);
-      expect((chapitres['gr20-sud'] as Map<String, dynamic>)['etapes'], 7);
-      expect(
-        (chapitres['gr20-nord']
-            as Map<String, dynamic>)['journees_de_marche_maximum'],
-        9,
-        reason:
-            'ET C EST UN DEFAUT LIVRE : la fiche du chapitre nord, ecrite par '
-            'la tache 853, annonce « de cinq a quinze jours ». Quinze '
-            'journees de marche sur neuf etapes demanderait de couper six '
-            'etapes.',
+            'LE CHIFFRE A RETENIR : a seize jours, les quinze coupures font '
+            'passer la journee la plus dure de ${pireSans.toStringAsFixed(2)} '
+            'a ${pireAvec.toStringAsFixed(2)} km-effort — pres de dix '
+            'km-effort en moins sur le pire jour du marcheur. Couper sert.',
       );
     });
 
-    test('les deux chapitres sont TRES DIFFICILES a toutes leurs allures', () {
-      final chapitres = legal['chapitres'] as Map<String, dynamic>;
-      for (final id in <String>['gr20-nord', 'gr20-sud']) {
-        final c = chapitres[id] as Map<String, dynamic>;
-        final allures = c['allures'] as Map<String, dynamic>;
-        for (final entree in allures.entries) {
-          expect(
-            (entree.value as Map<String, dynamic>)['verdict'],
-            'tres difficile',
-            reason:
-                '$id a ${entree.key} journee(s). LE SUD N EST PLUS LE '
-                'CHAPITRE OU L ALLURE CHANGE LE VERDICT : son plancher est '
-                'l etape 13 (Usciolu vers Asinau, 33,12 km-effort), donc il '
-                'est tres difficile a TOUTES ses allures. La fiche du sud '
-                'dit le contraire et doit etre corrigee.',
-          );
-        }
+    test('MAIS LE SENTIER RESTE TRES DIFFICILE DE 7 A 31 JOURS', () {
+      for (var jours = 7; jours <= 31; jours++) {
+        final d = auRythmeDe(jours);
+        expect(d, isNotNull);
+        expect(
+          _nomDeBande(d!.verdict!),
+          'tres difficile',
+          reason:
+              'a $jours jours, en coupant partout ou le releve 838 le permet',
+        );
       }
+      expect(
+        enCoupant['premiere_allure_non_tres_difficile'],
+        isNull,
+        reason: 'aucune allure de 7 a 31 jours ne fait descendre le sentier',
+      );
+    });
+
+    test('ET LA CAUSE EST UNE SEULE ETAPE : LA PREMIERE', () {
+      // A partir de seize jours, la pire journee EST l'etape 1, et elle vaut
+      // 26,48 km-effort pour un seuil a 25,0.
+      for (var jours = 16; jours <= 31; jours++) {
+        final pire = auRythmeDe(jours)!.pireJournee!;
+        expect(
+          pire.kmEffort,
+          closeTo(26.48, 0.01),
+          reason:
+              'a $jours jours la pire journee est le premier segment, '
+              'Calenzana vers l Ortu di u Piobbu, et elle ne change plus : '
+              'aucune nuit ne tombe a son interieur, meme en fouillant au '
+              'large (849)',
+        );
+      }
+      expect(
+        SeuilsDeDifficulte.effortTresDifficileKm,
+        25.0,
+        reason: 'le seuil que cette etape depasse de 1,48 km-effort',
+      );
+      expect(
+        enCoupant['ce_qui_bloque'],
+        contains('ETAPE 1'),
+        reason: 'et la mesure Python nomme la meme cause',
+      );
+    });
+
+    test('LE SEUL CHEMIN VERS DIFFICILE PASSE PAR LA VARIANTE BONIFATU', () {
+      expect(
+        enCoupant['le_seul_chemin_vers_difficile'],
+        allOf(contains('BONIFATU'), contains('DIX-NEUF')),
+        reason:
+            'LA REPONSE A « le GR20 descend-il a difficile AVANT 19 jours » : '
+            'NON. Couper partout ou l on peut n y suffit pas, parce que la '
+            'premiere etape ne se coupe pas. Le seul chemin est la variante '
+            'Bonifatu, qui la remplace par deux journees difficiles (19,21 et '
+            '18,63 km-effort, mesure 849) — et avec elle le sentier devient '
+            'difficile a DIX-NEUF jours (mesure 852), pas avant. Les '
+            'dix-neuf jours sont donc un chiffre de VARIANTE, pas de coupe.',
+      );
     });
   });
 }

@@ -298,4 +298,93 @@ void main() {
       );
     });
   });
+
+  // =========================================================================
+  // 4 — SEIZE ETAPES EN DIX-SEPT JOURNEES : LE CAS QUE CHRISTOPHE A NOMME
+  // =========================================================================
+  //
+  // VERBATIM, 18/10 11:03 : « Mais les etapes du GR restent les etapes du GR.
+  // 16 c'et 16, si le gars fait la premiere en 2 fois et bien c'est toujours
+  // 16 etape en 17 jours ».
+  //
+  // COUPER UNE JOURNEE A L'INTERIEUR D'UNE ETAPE EST AUTORISE — c'est meme ce
+  // qu'on cherche pour le mode facile. Ce qui ne doit JAMAIS bouger, c'est le
+  // COMPTE D'ETAPES et donc le PRIX. Dix-sept journees ou sept, c'est seize
+  // etapes et seize euros.
+
+  group('seize etapes en dix-sept journees', () {
+    test('couper la premiere etape en deux ne fait pas dix-sept etapes', () {
+      // LE COMPTE D'ETAPES EST UNE PROPRIETE DU SENTIER, PAS DU PROGRAMME.
+      // On fabrique dix-sept journees a partir des trente et un segments
+      // entre nuits — donc en coupant a l'interieur d'etapes — et on verifie
+      // que le nombre d'ETAPES VENDUES ne s'en apercoit pas.
+      final charges = List<double>.generate(31, (i) => 60.0 + i);
+      final dixSept = RepartitionEquilibree.coupes(charges, 17);
+
+      expect(
+        dixSept.length,
+        17,
+        reason: 'dix-sept journees, obtenues en coupant dans les etapes',
+      );
+      expect(
+        TrailCatalog.byId(idNord)!.totalStages +
+            TrailCatalog.byId(idSud)!.totalStages,
+        16,
+        reason:
+            'SEIZE ETAPES, ET ELLES NE BOUGENT PAS. Le compte d etapes vit '
+            'dans la donnee du catalogue ; le nombre de journees vit dans le '
+            'programme du marcheur. Les deux ne se touchent jamais.',
+      );
+    });
+
+    test(
+      'le droit ENREGISTRE porte le compte d ETAPES, pas de journees',
+      () async {
+        // C'EST LA LIGNE QUI COMPTE VRAIMENT : ce qui est ecrit en base apres
+        // l'achat. Si un nombre de journees s'y glissait, la reprise et le
+        // repaiement se feraient sur un mauvais compte.
+        final svc = await service(etapesEnCagnotte: 16);
+        await svc.acheterLesChapitres([idNord, idSud]);
+
+        expect(
+          await svc.acquiredStagesFor(idNord),
+          9,
+          reason: 'neuf ETAPES acquises au nord, jamais un nombre de jours',
+        );
+        expect(
+          await svc.acquiredStagesFor(idSud),
+          7,
+          reason: 'sept ETAPES acquises au sud',
+        );
+        expect(
+          await svc.acquiredStagesFor(idNord) +
+              await svc.acquiredStagesFor(idSud),
+          16,
+          reason:
+              'SEIZE ETAPES ACQUISES, quel que soit le nombre de journees que '
+              'le marcheur se donnera pour les faire',
+        );
+      },
+    );
+
+    test('un second periple repaie SEIZE etapes, pas dix-sept', () async {
+      // « OUI IL REPAYE ! » (16/10). Ce qu'il repaie est le prix du
+      // chapitre en ETAPES, et il ne doit pas dependre de l'allure de la
+      // premiere marche.
+      final svc = await service(etapesEnCagnotte: 18);
+      await svc.buyTrail(idNord);
+      expect(wallet.balanceSteps, 9);
+
+      final second = await svc.ouvrirUnNouveauPeriple(idNord);
+      expect(second.isOwned, isTrue);
+      expect(second.peripleNumero, 2);
+      expect(
+        wallet.balanceSteps,
+        0,
+        reason:
+            'neuf etapes la premiere fois, NEUF la seconde : le prix plein du '
+            'chapitre, jamais un compte de journees',
+      );
+    });
+  });
 }

@@ -951,10 +951,10 @@
   "bande": "tres difficile",
   "pourquoi": "C est la plus petite unite que le decoupage sait manipuler : aucune nuit relevee ne tombe a son interieur."
  },
- "base_legale_groupement_d_etapes": {
-  "regle": "Christophe, 18/10 10:46 : « il y a 16 etapes ???? et tu ne peux pas couper les etapes !!!! ». Une ETAPE est un segment fixe du sentier et l unite de VENTE ; une JOURNEE groupe des etapes entieres et peut s accompagner de journees de REPOS.",
+ "si_l_on_ne_coupait_jamais_dans_une_etape": {
+  "avertissement": "CE N EST PAS LA REGLE DU PRODUIT. Couper une journee a l interieur d une etape est AUTORISE (Christophe, 18/10 11:03 : « si le gars fait la premiere en 2 fois et bien c est toujours 16 etape en 17 jours »). Ce jeu de chiffres sert uniquement a MESURER ce que les quinze coupures apportent.",
   "journees_de_marche_maximum": 16,
-  "pourquoi": "Seize etapes, donc au plus seize journees de MARCHE. Au-dela on n ajoute que du REPOS, qui ne touche aucune journee de marche : la journee la plus dure ne bouge plus.",
+  "pourquoi": "Sans coupure interieure, seize etapes donnent au plus seize journees de marche, et le plancher est l etape la plus dure.",
   "plancher_sens_normal": {
    "etape": "Refuge de Ciottulu di i Mori -> Refuge de Manganu",
    "rang": 6,
@@ -1431,12 +1431,12 @@
    }
   }
  },
- "defaut_le_decoupage_coupe_les_etapes": {
-  "quoi": "`DecoupageSurLesNuits` groupe des SEGMENTS ENTRE NUITS (31), pas des ETAPES (16). Quinze des trente et une bornes de journee ne sont PAS des fins d etape : a ces bornes, le produit coupe une etape en deux, donc il fabrique des etapes qui n existent pas et que personne n a vendues.",
-  "aveu_dans_la_donnee": "Les nuits ou une journee de GR20 peut se terminer : les seize fins d etape et les quinze coupures de jour relevees en tache 838. Le curseur de duree s en sert pour poser une fin de journee ailleurs qu a une fin d etape, et seulement sur un endroit RELEVE.",
+ "en_coupant_ou_l_on_peut": {
+  "quoi": "`DecoupageSurLesNuits` pose les bornes de journee sur les TRENTE ET UNE nuits relevees : les seize fins d etape ET les quinze coupures de jour. Une journee peut donc s arreter A L INTERIEUR d une etape, ce qui est exactement autorise — le compte d ETAPES reste seize, seul le compte de JOURS monte.",
+  "ecrit_dans_la_donnee": "Les nuits ou une journee de GR20 peut se terminer : les seize fins d etape et les quinze coupures de jour relevees en tache 838. Le curseur de duree s en sert pour poser une fin de journee ailleurs qu a une fin d etape, et seulement sur un endroit RELEVE.",
   "bornes_possibles": 31,
-  "bornes_qui_ne_sont_pas_des_fins_d_etape": 15,
-  "allures_sur_cette_base_fausse": {
+  "bornes_a_l_interieur_d_une_etape": 15,
+  "allures": {
    "7": {
     "journees": 7,
     "verdict": "tres difficile",
@@ -1738,7 +1738,9 @@
     "plus_longue_suite_haute": 1
    }
   },
-  "premiere_allure_non_tres_difficile": null
+  "premiere_allure_non_tres_difficile": null,
+  "ce_qui_bloque": "L ETAPE 1, Calenzana vers l Ortu di u Piobbu : 26,48 km-effort et aucune nuit a son interieur, meme en fouillant au large (tache 849 : rien a moins de 6,2 km de sentier et 973 m plus bas). Tant qu elle est la, le sentier reste tres difficile a TOUTES les allures de 7 a 31 jours.",
+  "le_seul_chemin_vers_difficile": "La VARIANTE BONIFATU, qui remplace cette premiere etape par deux journees difficiles (19,21 et 18,63 km-effort, mesure 849). Avec elle le sentier devient difficile a DIX-NEUF JOURS (mesure 852), pas avant."
  },
  "chapitres": [
   {

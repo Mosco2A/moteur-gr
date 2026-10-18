@@ -1,43 +1,67 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Tache 854 : UNE ETAPE NE SE COUPE PAS — LE PLANCHER REEL DU GR20.
+"""Tache 854 : PEUT-ON COUPER LES ETAPES LES PLUS DURES DU GR20 ?
 
-LA REGLE, TRANCHEE PAR CHRISTOPHE LE 18/10 10:46, verbatim : « pourquoi 19
-jours??? il y a 16 etapes ???? et tu ne peux pas couper les etapes !!!! ».
+LA QUESTION DE CHRISTOPHE, verbatim le 18/10 10:18 : « tu ne m'a pas dit s'il
+etait possible de decouper les etapes les plus dure ».
 
-LA DISTINCTION QUI COMMANDE TOUT CE FICHIER. Une ETAPE est un segment FIXE du
-sentier et l unite de VENTE (1 EUR l etape, GR20 = 16 etapes = 16 EUR, modele
-#99305) : la couper fabriquerait une dix-septieme etape et changerait le
-produit et son prix. Une JOURNEE est ce que le marcheur fait de sa journee :
-il GROUPE des etapes entieres, il ajoute des journees de REPOS, il ne coupe
-jamais une etape en deux demi-journees.
+LE MODELE, PRECISE PAR CHRISTOPHE LE 18/10 11:03, ET C EST LUI QUI FAIT LOI :
+« NON si on peut couper des etapes pour rendre le GR20 plus facile et le faire
+en 19 Jours on fait!! Mais les etapes du GR restent les etapes du GR. 16 c'et
+16, si le gars fait la premiere en 2 fois et bien c'est toujours 16 etape en
+17 jours ».
 
-CE QUE CET OUTIL A D ABORD MESURE, ET QUI ETAIT LA MAUVAISE QUESTION. Sa
-premiere version cherchait ou DORMIR A L INTERIEUR des etapes dures pour les
-couper — la question que la tache 849 avait posee sur la seule premiere etape.
-Cette mesure est conservee plus bas parce qu elle a une valeur : elle dit ou
-l on peut dormir, s abriter, se ravitailler. Mais elle NE SERT PLUS a decider
-ou une journee commence ou finit, et le lot a servi a etablir pourquoi.
+LES DEUX COMPTES NE SE TOUCHENT JAMAIS, ET TOUT EST LA.
+  - L ETAPE est la reference FIXE du sentier et l unite de VENTE. Le GR20 en a
+    SEIZE et il en aura toujours seize : 16 etapes = 16 EUR (modele #99305),
+    quel que soit le nombre de jours.
+  - LA JOURNEE est LIBRE. Le marcheur peut faire une etape en DEUX journees,
+    grouper plusieurs etapes dans une journee, ou ajouter du repos. Couper une
+    journee A L INTERIEUR d une etape est AUTORISE, et c est precisement ce
+    qu on cherche pour le mode facile.
+  - Faire la premiere etape en deux fois donne donc SEIZE ETAPES EN DIX-SEPT
+    JOURS. Le compte d etapes ne bouge jamais, le compte de jours si.
 
-CE QU IL MESURE, DANS CET ORDRE, ET IL N INVENTE AUCUNE DONNEE.
+CONSEQUENCE : les trente et une nuits relevees par la tache 838 SONT de bonnes
+bornes de journee, et le repartiteur a RAISON de s en servir. Cet outil ne les
+conteste pas, il les utilise.
+
+LA LACUNE QU IL COMBLE. La tache 849 a fouille UN SEUL segment, Calenzana vers
+l Ortu di u Piobbu, et a conclu qu on n y peut rien dormir a l interieur. Sa
+reponse a ete lue comme « on ne peut pas couper », alors qu elle ne portait que
+sur la PREMIERE etape. Les quinze autres n ont jamais ete examinees. Et depuis
+la tache 852 la pire a CHANGE D IDENTITE : ce n est plus l etape 1 mais
+l ETAPE 6, Ciottulu di i Mori vers Manganu, qui ne monte que 786 m mais fait
+25,02 km et descend 1 190 m.
+
+CE QU IL MESURE, ET IL N INVENTE AUCUNE DONNEE.
   1. l effort des SEIZE etapes federales, avec la formule de la tache 852 ;
-  2. LA BASE LEGALE : le sentier groupe en journees d ETAPES ENTIERES, a
-     toutes les allures possibles (une a seize) et DANS LES DEUX SENS, plus
-     les deux chapitres qui sont les vrais produits. C est la reponse ;
-  3. LE DEFAUT : quinze des trente et une bornes de journee du produit ne
-     sont PAS des fins d etape, donc le decoupage livre COUPE des etapes —
-     et la donnee du produit l ecrit elle-meme dans son champ `quoi` ;
-  4. l information conservee : ou l on peut dormir a l interieur de chaque
-     etape, avec coordonnees, source OpenStreetMap et temps d acces dans les
-     deux sens. Utile au marcheur, interdit au repartiteur.
+  2. pour CHACUNE des etapes des deux bandes hautes : existe-t-il une nuit
+     RELEVEE a son interieur, laquelle, a quel PK, avec ses coordonnees, son
+     identifiant OpenStreetMap et son temps d acces DANS LES DEUX SENS ;
+  3. ce que CHAQUE coupe donne : les deux demi-journees et leur effort ;
+  4. LE RECALCUL : en coupant partout ou l on peut, que devient la journee la
+     plus dure, a quelles allures, et le GR20 descend-il a « difficile » avant
+     dix-neuf jours ;
+  5. et, pour chiffrer ce que couper APPORTE, le meme sentier si l on ne
+     coupait JAMAIS a l interieur d une etape (`si_l_on_ne_coupait_jamais`).
 
-LE RESULTAT PRINCIPAL, POUR QUE PERSONNE N AIT A LE CHERCHER : sur la base
-legale, LE PLANCHER DU GR20 EST L ETAPE 6 (Ciottulu di i Mori vers Manganu,
-25,02 km, D+786, D-1190), soit 36,45 km-effort en sens normal et 39,28 en sens
-inverse, pour un seuil de tres difficile a 25,0. Il est atteint des TREIZE
-journees de marche et ne bouge plus ensuite. Aucune allure, dans aucun sens,
-ne fait descendre le GR20 sous « tres difficile » — et les dix-neuf jours de
-la tache 852 venaient du decoupage qui coupait les etapes.
+LES RESULTATS PRINCIPAUX, POUR QUE PERSONNE N AIT A LES CHERCHER.
+  - OUI, LES ETAPES DURES SE COUPENT, ET LA PIRE EN PREMIER : six des dix
+    etapes des bandes hautes portent une nuit relevee a l interieur, dont
+    l ETAPE 6, qui tombe de 36,45 a 24,93 km-effort en dormant a Castel De
+    Vergio — a UNE MINUTE du sentier. Elle quitte la bande du haut.
+  - COUPER APPORTE BEAUCOUP A LA JOURNEE DU MARCHEUR : a seize jours, les
+    quinze coupures font passer la pire journee de 36,45 a 26,48 km-effort.
+  - MAIS CA NE SUFFIT PAS A CHANGER LA BANDE DU SENTIER, et la cause est une
+    seule etape : la PREMIERE, 26,48 km-effort, dont la fouille large de la
+    849 (couloir de 8 km, aucun seuil de minutes) n a rien trouve a moins de
+    6,2 km de sentier et 973 m plus bas. Tant qu elle est la, le GR20 reste
+    TRES DIFFICILE de 7 a 31 jours.
+  - LE SEUL CHEMIN VERS « DIFFICILE » PASSE DONC PAR LA VARIANTE BONIFATU, qui
+    remplace cette premiere etape par deux journees difficiles (19,21 et 18,63
+    km-effort, mesure 849) — et avec elle le sentier devient difficile a
+    DIX-NEUF JOURS (mesure 852), pas avant.
 
 LES ENTREES SONT CELLES DU PRODUIT, AUCUNE SAISIE A LA MAIN. Les trente et une
 nuits relevees et les trente et un segments entre elles viennent de
@@ -517,21 +541,16 @@ def main() -> int:
             break
 
     # =====================================================================
-    # LA SEULE BASE LEGALE : ON GROUPE DES ETAPES ENTIERES, ON N EN COUPE
-    # AUCUNE (correction de Christophe, 18/10 10:46).
+    # LE CONTREFACTUEL : SI L ON NE COUPAIT JAMAIS A L INTERIEUR D UNE ETAPE
     # =====================================================================
-    # « pourquoi 19 jours??? il y a 16 etapes ???? et tu ne peux pas couper
-    # les etapes !!!! ». UNE ETAPE est un segment FIXE du sentier et l unite
-    # de VENTE (1 EUR l etape, 16 etapes = 16 EUR, modele #99305) : la couper
-    # fabriquerait une dix-septieme etape et changerait le produit et son
-    # prix. UNE JOURNEE est ce que le marcheur fait : il peut GROUPER
-    # plusieurs etapes dans sa journee et ajouter des journees de REPOS, il ne
-    # peut pas couper une etape en deux demi-journees.
+    # Ce n est PAS la regle du produit — couper une journee a l interieur
+    # d une etape est autorise (Christophe, 18/10 11:03). C est la MESURE DE
+    # CE QUE COUPER APPORTE : meme sentier, meme formule, mais en n autorisant
+    # une fin de journee QUE sur une fin d etape. L ecart entre les deux jeux
+    # de chiffres est exactement le benefice des quinze coupures de la 838.
     #
-    # CONSEQUENCE ARITHMETIQUE, ET C EST LE COEUR : le nombre de JOURNEES DE
-    # MARCHE ne peut pas depasser SEIZE. A seize, une journee vaut une etape
-    # et le plancher est atteint. Au-dela, on n ajoute que du REPOS, qui ne
-    # touche aucune journee de marche : LA JOURNEE LA PLUS DURE NE BOUGE PLUS.
+    # Sur cette base le nombre de journees de marche plafonne a SEIZE, et le
+    # plancher est l etape la plus dure : l etape 6, a 36,45 km-effort.
     allures_legales = {}
     for n in range(7, len(etapes) + 1):
         allures_legales[n] = verdict_d_un_decoupage(grouper(etapes, n))
@@ -688,19 +707,19 @@ def main() -> int:
                 "aucune nuit relevee ne tombe a son interieur."
             ),
         },
-        # --- LA BASE LEGALE : LA REPONSE -----------------------------------
-        "base_legale_groupement_d_etapes": {
-            "regle": (
-                "Christophe, 18/10 10:46 : « il y a 16 etapes ???? et tu ne "
-                "peux pas couper les etapes !!!! ». Une ETAPE est un segment "
-                "fixe du sentier et l unite de VENTE ; une JOURNEE groupe des "
-                "etapes entieres et peut s accompagner de journees de REPOS."
+        # --- LE CONTREFACTUEL : CE QUE COUPER APPORTE ----------------------
+        "si_l_on_ne_coupait_jamais_dans_une_etape": {
+            "avertissement": (
+                "CE N EST PAS LA REGLE DU PRODUIT. Couper une journee a "
+                "l interieur d une etape est AUTORISE (Christophe, 18/10 "
+                "11:03 : « si le gars fait la premiere en 2 fois et bien c est "
+                "toujours 16 etape en 17 jours »). Ce jeu de chiffres sert "
+                "uniquement a MESURER ce que les quinze coupures apportent."
             ),
             "journees_de_marche_maximum": len(etapes),
             "pourquoi": (
-                "Seize etapes, donc au plus seize journees de MARCHE. "
-                "Au-dela on n ajoute que du REPOS, qui ne touche aucune "
-                "journee de marche : la journee la plus dure ne bouge plus."
+                "Sans coupure interieure, seize etapes donnent au plus seize "
+                "journees de marche, et le plancher est l etape la plus dure."
             ),
             "plancher_sens_normal": {
                 "etape": "%s -> %s"
@@ -727,18 +746,18 @@ def main() -> int:
             "allures_sens_inverse": allures_legales_envers,
             "chapitres": chapitres_legaux,
         },
-        # --- CE QUE LE PRODUIT FAIT AUJOURD HUI, ET QUI EST LE DEFAUT -------
-        "defaut_le_decoupage_coupe_les_etapes": {
+        # --- LA REGLE DU PRODUIT : ON COUPE OU L ON PEUT -------------------
+        "en_coupant_ou_l_on_peut": {
             "quoi": (
-                "`DecoupageSurLesNuits` groupe des SEGMENTS ENTRE NUITS (31), "
-                "pas des ETAPES (16). Quinze des trente et une bornes de "
-                "journee ne sont PAS des fins d etape : a ces bornes, le "
-                "produit coupe une etape en deux, donc il fabrique des etapes "
-                "qui n existent pas et que personne n a vendues."
+                "`DecoupageSurLesNuits` pose les bornes de journee sur les "
+                "TRENTE ET UNE nuits relevees : les seize fins d etape ET les "
+                "quinze coupures de jour. Une journee peut donc s arreter A "
+                "L INTERIEUR d une etape, ce qui est exactement autorise — le "
+                "compte d ETAPES reste seize, seul le compte de JOURS monte."
             ),
-            "aveu_dans_la_donnee": nuits["quoi"],
+            "ecrit_dans_la_donnee": nuits["quoi"],
             "bornes_possibles": len(segments),
-            "bornes_qui_ne_sont_pas_des_fins_d_etape": len(
+            "bornes_a_l_interieur_d_une_etape": len(
                 [
                     s
                     for s in segments
@@ -748,8 +767,21 @@ def main() -> int:
                     }
                 ]
             ),
-            "allures_sur_cette_base_fausse": allures,
+            "allures": allures,
             "premiere_allure_non_tres_difficile": premiere_difficile,
+            "ce_qui_bloque": (
+                "L ETAPE 1, Calenzana vers l Ortu di u Piobbu : 26,48 "
+                "km-effort et aucune nuit a son interieur, meme en fouillant "
+                "au large (tache 849 : rien a moins de 6,2 km de sentier et "
+                "973 m plus bas). Tant qu elle est la, le sentier reste tres "
+                "difficile a TOUTES les allures de 7 a 31 jours."
+            ),
+            "le_seul_chemin_vers_difficile": (
+                "La VARIANTE BONIFATU, qui remplace cette premiere etape par "
+                "deux journees difficiles (19,21 et 18,63 km-effort, mesure "
+                "849). Avec elle le sentier devient difficile a DIX-NEUF "
+                "JOURS (mesure 852), pas avant."
+            ),
         },
         "chapitres": chap.get("chapitres", chap),
     }
@@ -891,24 +923,30 @@ def main() -> int:
         % (premiere_difficile if premiere_difficile else "AUCUNE de 7 a 31 jours")
     )
     print()
-    print("!!! CETTE BASE EST FAUSSE : elle COUPE des etapes.")
     print(
-        "    %d des %d bornes de journee ne sont PAS des fins d etape."
+        "    %d des %d bornes de journee tombent A L INTERIEUR d une etape, "
+        "et c est autorise :"
         % (
-            sortie["defaut_le_decoupage_coupe_les_etapes"][
-                "bornes_qui_ne_sont_pas_des_fins_d_etape"
-            ],
+            sortie["en_coupant_ou_l_on_peut"]["bornes_a_l_interieur_d_une_etape"],
             len(segments),
         )
+    )
+    print("    le compte d ETAPES reste seize, seul le compte de JOURS monte.")
+    print()
+    print("CE QUI BLOQUE : %s" % sortie["en_coupant_ou_l_on_peut"]["ce_qui_bloque"])
+    print()
+    print(
+        "LE SEUL CHEMIN VERS DIFFICILE : %s"
+        % sortie["en_coupant_ou_l_on_peut"]["le_seul_chemin_vers_difficile"]
     )
 
     print()
     print("=" * 74)
-    print("LA SEULE BASE LEGALE : ON GROUPE DES ETAPES ENTIERES")
+    print("CONTREFACTUEL : SI L ON NE COUPAIT JAMAIS DANS UNE ETAPE")
     print("=" * 74)
     print(
-        "Seize etapes, donc AU PLUS SEIZE journees de MARCHE. "
-        "Au-dela : du repos seulement."
+        "Ce n est PAS la regle du produit : c est la mesure de ce que les "
+        "quinze coupures apportent."
     )
     print()
     print("PLANCHER (l etape la plus dure, elle minore toute journee) :")
