@@ -35,6 +35,13 @@ library;
 // (`test/structurel/couches_respectees_645_test.dart`).
 export 'domain/decoupage_sur_les_nuits.dart'
     show DecoupageSurLesNuits, JourneeSurLesNuits;
+// LE POSEUR DE JOURNEES SORT PAR LA PORTE (tache 855). La FICHE du sentier et
+// le PROGRAMME du client doivent poser les MEMES journees : jusqu'ici la fiche
+// coupait les etapes sur les nuits relevees et le programme ne coupait jamais,
+// et a seize jours les deux annonçaient 26,48 et 36,45 km-effort pour la meme
+// pire journee. `JourneesDuSentier` est desormais le SEUL endroit qui en
+// decide ; la fiche le lit par cette porte.
+export 'domain/journees_du_sentier.dart' show JourneePosee, JourneesDuSentier;
 export 'domain/planning_calculator.dart' show PlanningCalculator;
 export 'models/day_plan.dart' show DayPlan;
 export 'providers/nuits_possibles_provider.dart'

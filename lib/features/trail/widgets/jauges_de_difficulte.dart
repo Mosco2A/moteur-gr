@@ -256,6 +256,7 @@ class ChoixDesJours extends StatelessWidget {
     required this.conseillee,
     required this.onChoisi,
     this.effortDeLaPireJournee,
+    this.lesJoursSontUnConseil = '',
   });
 
   /// Les allures offertes, en jours, triees.
@@ -277,6 +278,20 @@ class ChoixDesJours extends StatelessWidget {
   /// prefere la ligne muette au chiffre invente.
   final double? Function(int jours)? effortDeLaPireJournee;
 
+  /// LA PHRASE QUI DIT QUE LE NOMBRE DE JOURS EST UN CONSEIL, VENUE DE LA FICHE
+  /// DU SENTIER ([DescriptionDeSentier.lesJoursSontUnConseil]).
+  ///
+  /// ELLE ETAIT EN DUR ICI, EN FRANCAIS SEULEMENT (tache 855). Ce widget
+  /// n'importe pas Slang : la phrase etait donc un litteral francais, invisible
+  /// dans les quatre autres langues de l'application, et un texte editorial se
+  /// modifiait en recompilant. Elle descend desormais dans
+  /// `assets/data/<sentier>/fiche.json`, ou le produit parle de lui-meme.
+  ///
+  /// Vide : AUCUNE phrase ne s'affiche. On prefere le silence a une phrase
+  /// inventee — c'est la meme discipline que [effortDeLaPireJournee] juste
+  /// au-dessus.
+  final String lesJoursSontUnConseil;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -290,15 +305,14 @@ class ChoixDesJours extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        Text(
-          'C\'est un conseil, pas une caracteristique du sentier : vous le '
-          'marchez dans le nombre de jours que vous voulez, et le niveau '
-          'ci-dessous suit votre choix.',
-          key: const ValueKey('les-jours-sont-un-conseil'),
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: AppTheme.grisTexteSecondaire,
+        if (lesJoursSontUnConseil.isNotEmpty)
+          Text(
+            lesJoursSontUnConseil,
+            key: const ValueKey('les-jours-sont-un-conseil'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.grisTexteSecondaire,
+            ),
           ),
-        ),
         if (allures.length >= 2) ...[
           const SizedBox(height: AppTheme.spacingXs),
           Wrap(

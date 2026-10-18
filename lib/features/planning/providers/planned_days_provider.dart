@@ -7,13 +7,17 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage_row.dart';
+import '../../../domain/mesure_de_la_journee.dart';
+import '../../../domain/nuit_possible.dart';
 import '../../../domain/sens_de_marche.dart';
 import '../../trail/trail_facade.dart' show stagesProvider;
 import '../../trek/trek_facade.dart' show selectedDirectionProvider;
+import '../domain/journees_du_sentier.dart';
 import '../domain/planning_calculator.dart';
 import '../domain/trek_edit_lock.dart';
 import '../models/day_plan.dart';
 import '../../../domain/planned_day.dart';
+import 'nuits_possibles_provider.dart';
 import 'planning_provider.dart';
 import 'trek_edit_lock_provider.dart';
 
@@ -83,8 +87,30 @@ final plannedDaysProvider =
       // Le lot 558 en faisait un DECOUPAGE de la journee la plus lourde ; Christophe
       // l'a refuse. Le plafond de repos qui servait a declencher ce decoupage n'a
       // donc plus d'objet.
+      // LES NUITS RELEVEES DU SENTIER — CE QUI PERMET AU PROGRAMME DE COUPER
+      // COMME LA FICHE LE PROMET (tache 855).
+      //
+      // LE DEFAUT QUE CETTE LIGNE FERME, ET IL ETAIT LIVRE. La fiche de vente
+      // posait ses journees sur les trente et une nuits relevees du GR20, donc
+      // en COUPANT a l'interieur des etapes ; ce provider-ci ne coupait JAMAIS.
+      // A seize jours la fiche annonçait une pire journee de 26,48 km-effort
+      // quand ce programme en produisait une de 36,45 : neuf km-effort d'ecart,
+      // du cote qui RASSURE A TORT, sur un sentier de haute montagne.
+      //
+      // LE DECOUPAGE EST LU DANS LE SENS DE LA TRACE et l'orientation est
+      // passee a part : rien dans un `DecoupageDeNuits` ne dit s'il a deja ete
+      // retourne, et l'attribution d'un segment a son etape n'a de sens que sur
+      // l'ordre de la trace (c'est la que `finDEtape` parle).
+      final nuits = ref.watch(decoupageDuSentierProvider(trailId));
+
       final cachedRestDays = ref.read(manualRestDayCacheProvider);
-      final notifier = PlannedDaysNotifier(stages, duration, ref);
+      final notifier = PlannedDaysNotifier(
+        stages,
+        duration,
+        ref,
+        nuitsDansLeSensDeLaTrace: nuits,
+        aLEnvers: reversed,
+      );
       if (cachedRestDays.isNotEmpty) {
         notifier.restoreRestDaysFromCache(cachedRestDays);
       }
@@ -123,13 +149,35 @@ final manualRestDayCacheProvider = StateProvider<List<int>>((ref) => const []);
 /// mais generique : il opere sur des [StageModel] du sentier courant et non sur
 /// une base d'etapes en dur.
 class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
-  PlannedDaysNotifier(this._stages, this._duration, this._ref)
-    : _hasManualEdits = false,
-      super(_generate(_stages, _duration));
+  PlannedDaysNotifier(
+    this._stages,
+    this._duration,
+    this._ref, {
+    DecoupageDeNuits? nuitsDansLeSensDeLaTrace,
+    bool aLEnvers = false,
+  }) : _nuits = nuitsDansLeSensDeLaTrace,
+       _aLEnvers = aLEnvers,
+       _hasManualEdits = false,
+       super(
+         _generate(
+           _stages,
+           _duration,
+           nuits: nuitsDansLeSensDeLaTrace,
+           aLEnvers: aLEnvers,
+         ),
+       );
 
   final List<StageModel> _stages;
   final int _duration;
   final Ref _ref;
+
+  /// Les nuits relevees du sentier, dans le sens de la TRACE. Nulles pour un
+  /// sentier qui n'en fournit pas — et alors le programme groupe des etapes
+  /// entieres, exactement comme avant la tache 855.
+  final DecoupageDeNuits? _nuits;
+
+  /// VRAI quand le marcheur a choisi de parcourir le sentier a l'envers.
+  final bool _aLEnvers;
 
   bool _hasManualEdits;
 
@@ -184,11 +232,77 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
   /// joignable pendant la rando via l'accordeon « Preparer ».
   bool get canReorder => !_editLock.trekStarted;
 
-  /// Genere le programme initial : repartition des etapes sur la duree via le
-  /// meme calculateur que l'ecran de repartition, converti en jours editables.
-  static List<PlannedDay> _generate(List<StageModel> stages, int duration) {
+  /// Genere le programme initial par LE poseur de journees du depot.
+  ///
+  /// TACHE 855 — C'EST LE MEME CALCUL QUE LA FICHE DE VENTE, ET C'EST TOUT
+  /// L'OBJET DU CHANGEMENT. [JourneesDuSentier.poser] pose les journees une
+  /// seule fois ; la fiche en tire ses mesures, le programme en tire ses jours
+  /// editables. Il n'y a plus deux calculs qui doivent s'accorder, il y a UN
+  /// calcul et DEUX projections — la divergence de neuf km-effort que ce
+  /// provider entretenait avec la fiche n'est plus seulement surveillee, elle
+  /// est devenue impossible a ecrire.
+  ///
+  /// LE REPOS RESTE DU REPOS. Le poseur ne rend que les journees de MARCHE :
+  /// quand le marcheur demande plus de jours que le sentier n'en offre de
+  /// marchables, le surplus devient des jours de REPOS, comme la tache 634 l'a
+  /// decide.
+  static List<PlannedDay> _generate(
+    List<StageModel> stages,
+    int duration, {
+    DecoupageDeNuits? nuits,
+    bool aLEnvers = false,
+  }) {
     if (stages.isEmpty) return const [];
-    return _fromDayPlans(PlanningCalculator.distribute(stages, duration));
+
+    final journees = JourneesDuSentier.poser(
+      etapes: stages,
+      nuitsDansLeSensDeLaTrace: nuits,
+      aLEnvers: aLEnvers,
+      jours: duration,
+    );
+    if (journees.isEmpty) {
+      return _fromDayPlans(PlanningCalculator.distribute(stages, duration));
+    }
+
+    final marche = JourneesDuSentier.programme(journees);
+    return _avecLeRepos(marche, duration - marche.length);
+  }
+
+  /// Glisse [repos] jours de REPOS entre les journees de marche.
+  ///
+  /// La repartition est celle de [PlanningCalculator] — on ne reecrit pas un
+  /// second placeur de repos — et elle passe par un aller-retour en [DayPlan]
+  /// parce que c'est elle qui sait ou les poser regulierement.
+  static List<PlannedDay> _avecLeRepos(List<PlannedDay> marche, int repos) {
+    if (repos <= 0) return _renumber(marche);
+
+    final jours = <PlannedDay>[];
+    final positions = _placerLeRepos(marche.length, repos);
+    for (var i = 0; i < marche.length; i++) {
+      for (var r = 0; r < positions[i]; r++) {
+        jours.add(const PlannedDay(dayNumber: 0, stages: [], isRestDay: true));
+      }
+      jours.add(marche[i]);
+    }
+    while (jours.length < marche.length + repos) {
+      jours.add(const PlannedDay(dayNumber: 0, stages: [], isRestDay: true));
+    }
+    return _renumber(jours);
+  }
+
+  /// Combien de jours de repos placer AVANT chaque journee de marche.
+  ///
+  /// Meme arithmetique que `PlanningCalculator._computeRestPositions` : les
+  /// repos s'espacent regulierement au lieu de s'entasser a la fin.
+  static List<int> _placerLeRepos(int journees, int repos) {
+    final positions = List.filled(journees, 0);
+    if (repos <= 0 || journees <= 0) return positions;
+    final intervalle = journees / (repos + 1);
+    for (var r = 0; r < repos; r++) {
+      final ou = ((r + 1) * intervalle).round().clamp(0, journees - 1);
+      positions[ou]++;
+    }
+    return positions;
   }
 
   /// Convertit les [DayPlan] (calcul) en [PlannedDay] (editables) puis
@@ -299,17 +413,111 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
   bool canMergeWithNext(int dayIndex) => mergeBlockedReason(dayIndex) == null;
 
   /// Regroupe le jour [dayIndex] avec le suivant (parite GR20).
+  ///
+  /// TACHE 855 — LA MESURE ET LES SEGMENTS SE REUNISSENT AUSSI. Depuis qu'une
+  /// journee peut couvrir un MORCEAU d'etape, reunir deux journees ne se resume
+  /// plus a concatener leurs etapes : si l'une des deux porte sa mesure propre,
+  /// la journee reunie doit porter la SOMME des deux mesures. Sans cela, une
+  /// journee reunie aurait annonce la somme de ses etapes ENTIERES — donc plus
+  /// que ce qu'elle fait marcher — et c'est exactement le defaut que ce lot
+  /// ferme, reintroduit par le geste d'edition.
+  ///
+  /// L'ETAPE A CHEVAL N'EST COMPTEE QU'UNE FOIS. Quand la fin de la premiere
+  /// journee et le debut de la seconde tombent dans la MEME etape, les deux
+  /// portent cette etape : la concatener naivement la ferait apparaitre deux
+  /// fois dans le meme jour.
   void mergeWithNext(int dayIndex) {
     if (!canMergeWithNext(dayIndex)) return;
     final days = List<PlannedDay>.of(state);
     final a = days[dayIndex];
     final b = days[dayIndex + 1];
-    days[dayIndex] = a.copyWith(stages: [...a.stages, ...b.stages]);
+
+    final etapes = <StageModel>[...a.stages];
+    for (final etape in b.stages) {
+      if (!etapes.any((x) => x.stageNumber == etape.stageNumber)) {
+        etapes.add(etape);
+      }
+    }
+
+    days[dayIndex] = PlannedDay(
+      dayNumber: a.dayNumber,
+      stages: etapes,
+      isRestDay: false,
+      segments: [...a.segments, ...b.segments],
+      mesure: _reunir(a, b),
+    );
     days.removeAt(dayIndex + 1);
     _hasManualEdits = true;
     state = _renumber(days);
     _updateRestDayCache();
   }
+
+  /// LA MESURE DE DEUX JOURNEES REUNIES, ou `null` quand les deux couvrent des
+  /// etapes entieres et que la somme des etapes suffit.
+  ///
+  /// Des que l'UNE des deux porte une mesure propre, la journee reunie en porte
+  /// une : on prend la mesure de celle qui en a et, pour l'autre, ce que ses
+  /// etapes entieres mesurent. Mélanger les deux sources est exact — une etape
+  /// entiere EST sa propre mesure — et c'est la seule facon de ne pas perdre le
+  /// morceau d'etape au passage.
+  static MesureDeLaJournee? _reunir(PlannedDay a, PlannedDay b) {
+    if (a.mesure == null && b.mesure == null) return null;
+    return _mesureDe(a).plus(_mesureDe(b));
+  }
+
+  /// DEGROUPE UNE JOURNEE : chaque morceau reprend sa journee.
+  ///
+  /// DEUX GRAINS, ET LE CHOIX SE LIT SUR LA JOURNEE PLUTOT QUE SE DEVINE.
+  ///
+  ///  - Quand la journee reunit plusieurs SEGMENTS a l'interieur d'UNE SEULE
+  ///    etape (tache 855), on degroupe par segment : chacun reprend sa journee
+  ///    avec sa mesure propre, et chacun finit sur un lieu RELEVE.
+  ///  - Sinon on degroupe par ETAPE, exactement comme avant ce lot.
+  ///
+  /// POURQUOI LA PREMIERE BRANCHE EXIGE UNE SEULE ETAPE. Attribuer un segment a
+  /// son etape demande l'ordre de la trace et la table des fins d'etape, qui
+  /// vivent dans [JourneesDuSentier] et non ici. Tant que la journee ne touche
+  /// qu'une etape, la question ne se pose pas : tous ses segments sont dedans.
+  /// Des qu'elle en touche plusieurs, deviner serait le seul moyen de
+  /// continuer — on degroupe donc par etape, ce qui est toujours defini.
+  ///
+  /// RESERVE NOMMEE : le detour vers le couchage intermediaire. Reunir deux
+  /// journees GARDE le detour de la nuit qui disparait ([_reunir]) et degrouper
+  /// n'AJOUTE pas celui de la nuit qui apparait. Les deux ecarts sont de
+  /// quelques minutes et vont dans le sens prudent pour le regroupement ; les
+  /// corriger demanderait de savoir QUELLE nuit change, et une soustraction
+  /// devinee serait pire que l'ecart qu'elle corrige.
+  static List<PlannedDay> _degrouper(PlannedDay jour) {
+    final etapes = jour.stages;
+    if (jour.segments.length > 1 && etapes.length == 1) {
+      return [
+        for (final segment in jour.segments)
+          PlannedDay(
+            dayNumber: 0,
+            stages: etapes,
+            segments: [segment],
+            mesure: MesureDeLaJournee(
+              km: segment.km,
+              deniveleM: segment.deniveleM,
+              descenteM: segment.descenteM,
+              minutes: segment.minutes,
+            ),
+          ),
+      ];
+    }
+    return [
+      for (final etape in etapes) PlannedDay(dayNumber: 0, stages: [etape]),
+    ];
+  }
+
+  static MesureDeLaJournee _mesureDe(PlannedDay jour) =>
+      jour.mesure ??
+      MesureDeLaJournee(
+        km: jour.totalDistanceKm,
+        deniveleM: jour.totalElevationGainM,
+        descenteM: jour.totalElevationLossM,
+        minutes: (jour.estimatedHours * 60).round(),
+      );
 
   /// Vrai si le jour [dayIndex] peut etre separe.
   bool canSplit(int dayIndex) => splitBlockedReason(dayIndex) == null;
@@ -333,6 +541,14 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
     if (isDayLocked(dayIndex)) return 'locked';
     final day = state[dayIndex];
     if (day.isRestDay || day.stages.isEmpty) return 'single';
+    // TACHE 855 — ON DEGROUPE AUSSI DES SEGMENTS, PAS SEULEMENT DES ETAPES.
+    // Une journee posee sur les nuits relevees peut reunir plusieurs SEGMENTS
+    // a l'interieur d'une seule etape : il y a bien quelque chose a degrouper,
+    // et le compte d'etapes seul ne le voyait pas. Degrouper rend a chaque
+    // segment sa journee — et un segment finit toujours sur un lieu RELEVE,
+    // donc rien n'est invente (c'est le grief que Christophe avait fait au
+    // decoupage du lot 558, et il reste leve).
+    if (day.segments.length > 1) return null;
     // Il faut au moins DEUX etapes reunies pour qu'il y ait quelque chose a
     // degrouper.
     return day.stages.length > 1 ? null : 'single';
@@ -345,9 +561,7 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
     if (!canSplit(dayIndex)) return;
     final days = List<PlannedDay>.of(state);
     final toSplit = days[dayIndex];
-    final newDays = toSplit.stages
-        .map((s) => PlannedDay(dayNumber: 0, stages: [s]))
-        .toList(growable: false);
+    final newDays = _degrouper(toSplit);
     days.removeAt(dayIndex);
     days.insertAll(dayIndex, newDays);
     _hasManualEdits = true;
@@ -385,7 +599,15 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
     }
 
     final remainingDays = (_duration - locked) < 1 ? 1 : _duration - locked;
-    var tail = _generate(remainingStages, remainingDays);
+    // LA REPLANIFICATION PASSE PAR LE MEME POSEUR QUE LA GENERATION, avec les
+    // memes nuits et le meme sens : sans cela, « Replanifier » aurait ete la
+    // porte derobee par laquelle le programme redevient incapable de couper.
+    var tail = _generate(
+      remainingStages,
+      remainingDays,
+      nuits: _nuits,
+      aLEnvers: _aLEnvers,
+    );
     var offset = 0;
     for (final restIndex in restIndices) {
       final insertAt = (restIndex + offset).clamp(0, tail.length);

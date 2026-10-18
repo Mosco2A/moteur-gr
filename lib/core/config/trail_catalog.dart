@@ -141,19 +141,33 @@ abstract final class TrailCatalog {
   /// `final` et non `const` : le filtre est evalue UNE fois, au premier acces.
   /// Les donnees restent compilees — c'est la selection qui ne peut plus l'etre.
   ///
-  /// LA SECONDE GARDE EST ARRIVEE AVEC LE CHAPITRE (tache 841), ET ELLE NE
-  /// RESSEMBLE PAS A LA PREMIERE. Un sentier qui a des CHAPITRES
-  /// ([TrailConfig.aDesChapitres]) est ecarte lui aussi, sur la decision de
-  /// Christophe du 15/10 17:45 : « on achete le sentier seulement si il n y a
-  /// pas de chapitres ». Mais la raison est opposee a celle du sentier fictif.
-  /// Le fictif est un MENSONGE : on le rend introuvable, et c'est pour cela que
-  /// [byId] ne le voit pas. Le sentier mere est une VERITE qui n'est pas un
-  /// produit : il doit rester resolvable (voir [byId] et [referentiel]), parce
-  /// que ses donnees sont celles d'ou ses chapitres sont decoupes et que sa
-  /// numerotation de reference ne doit JAMAIS bouger (regle CH-10). Les deux
-  /// gardes vivent donc ensemble, et elles ne se confondent pas.
+  /// LA SECONDE GARDE A VECU TROIS JOURS ET ELLE EST RETIREE (tache 855).
+  ///
+  /// CE QU'ELLE FAISAIT. La tache 841 ecartait du catalogue tout sentier ayant
+  /// des CHAPITRES, sur la decision de Christophe du 15/10 17:45 : « on achete
+  /// le sentier seulement si il n y a pas de chapitres ».
+  ///
+  /// CE QUI L'ANNULE, decision du 18/10 11:19, verbatim : « Tu achetes TOUT le
+  /// GR, ou par troncon (2) c'est tout ce que tu as a proposer. Apres dans la
+  /// realisation il y a tres dificile, moyen, facile ». L'OFFRE EST DONC DE
+  /// TROIS PRODUITS ET NON DE DEUX : le GR20 ENTIER, le troncon NORD, le
+  /// troncon SUD.
+  ///
+  /// ET LE SYMPTOME ETAIT DEJA VISIBLE. Le sentier mere avait une FICHE
+  /// complete — sa description, ses douze photos sourcees — et AUCUN geste de
+  /// l'application n'y menait : la fiche existait pour un produit que le
+  /// catalogue avait retire. Ce lot-ci le remet, et la fiche redevient
+  /// atteignable.
+  ///
+  /// LE PRIX NE DEMANDE AUCUN ARBITRAGE, il se deduit : un euro l'etape, le
+  /// mere en a seize, le nord neuf, le sud sept. Acheter tout ou acheter les
+  /// deux moities coute donc la MEME chose, seize euros — et c'est voulu.
+  ///
+  /// LA PREMIERE GARDE RESTE, et elle etait d'une autre nature : le sentier
+  /// fictif est un MENSONGE, on le rend introuvable, et c'est pour cela que
+  /// [byId] ne le voit pas non plus.
   static final List<TrailConfig> all = _registre
-      .where((c) => !c.isFictional && !c.aDesChapitres)
+      .where((c) => !c.isFictional)
       .toList(growable: false);
 
   /// LE REFERENTIEL — tout ce qui existe VRAIMENT, produits et sentiers meres.

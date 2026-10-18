@@ -89,32 +89,32 @@ void main() {
   }
 
   group('CE QUI EST ACHETABLE, ET A QUEL PRIX EN ETAPES', () {
-    test(
-      'les deux chapitres sont au catalogue, le sentier entier n y est plus',
-      () {
-        // LA REGLE DE CHRISTOPHE DU 15/10, LUE DANS LE CATALOGUE.
-        expect(TrailCatalog.ids, contains('gr20-nord'));
-        expect(TrailCatalog.ids, contains('gr20-sud'));
-        expect(
-          TrailCatalog.ids,
-          isNot(contains('gr20')),
-          reason:
-              'un sentier qui a des chapitres n est plus un produit : ce sont '
-              'ses chapitres qui se vendent',
-        );
-        // MAIS IL EXISTE TOUJOURS, et c est la difference avec un sentier
-        // fictif : sa numerotation de reference ne doit jamais bouger (CH-10).
-        expect(TrailCatalog.byId('gr20'), isNotNull);
-        expect(TrailCatalog.contains('gr20'), isTrue);
-        expect(TrailCatalog.sentiersMeres.map((c) => c.id), ['gr20']);
-        expect(TrailCatalog.chapitresDe('gr20').map((c) => c.id), [
-          'gr20-nord',
-          'gr20-sud',
-        ]);
-        // ET L APPLICATION DEMARRE TOUJOURS AU MEME ENDROIT.
-        expect(TrailCatalog.defaultTrail.id, 'mare-a-mare-centre');
-      },
-    );
+    test('les TROIS produits du GR20 sont au catalogue', () {
+      // LA REGLE DE CHRISTOPHE DU 18/10 11:19, LUE DANS LE CATALOGUE, verbatim :
+      // « Tu achetes TOUT le GR, ou par troncon (2) c'est tout ce que tu as a
+      // proposer ». Elle REMPLACE celle du 15/10 17:45 (« on achete le sentier
+      // seulement si il n y a pas de chapitres »), que ce cas gardait.
+      expect(TrailCatalog.ids, contains('gr20-nord'));
+      expect(TrailCatalog.ids, contains('gr20-sud'));
+      expect(
+        TrailCatalog.ids,
+        contains('gr20'),
+        reason:
+            'le sentier entier est le premier des trois produits : sa fiche '
+            'existait deja, avec ses douze photos, et aucun geste n y menait',
+      );
+      // ET SA NUMEROTATION DE REFERENCE NE BOUGE PAS (regle CH-10) : c est
+      // d elle que les deux chapitres sont decoupes.
+      expect(TrailCatalog.byId('gr20'), isNotNull);
+      expect(TrailCatalog.contains('gr20'), isTrue);
+      expect(TrailCatalog.sentiersMeres.map((c) => c.id), ['gr20']);
+      expect(TrailCatalog.chapitresDe('gr20').map((c) => c.id), [
+        'gr20-nord',
+        'gr20-sud',
+      ]);
+      // ET L APPLICATION DEMARRE TOUJOURS AU MEME ENDROIT.
+      expect(TrailCatalog.defaultTrail.id, 'mare-a-mare-centre');
+    });
 
     test(
       'LE PRIX D UN CHAPITRE EST SON NOMBRE D ETAPES : neuf et sept',
@@ -228,33 +228,48 @@ void main() {
     });
   });
 
-  group('UN SENTIER A CHAPITRES NE SE VEND PLUS EN BLOC', () {
-    test(
-      'l achat du sentier mere est REFUSE, et il est refuse NOMMEMENT',
-      () async {
-        final monetisation = await service(etapes: 50);
-        expect(monetisation.aDesChapitres('gr20'), isTrue);
-        expect(monetisation.aDesChapitres('gr20-nord'), isFalse);
-        expect(monetisation.aDesChapitres('mare-a-mare-centre'), isFalse);
+  // TACHE 855 — CE GROUPE GARDAIT L INVERSE DE LA DECISION ACTUELLE.
+  //
+  // Il s appelait « UN SENTIER A CHAPITRES NE SE VEND PLUS EN BLOC » et
+  // exigeait que l achat du GR20 entier soit REFUSE. Decision de Christophe du
+  // 18/10 11:19, verbatim : « Tu achetes TOUT le GR, ou par troncon (2) c'est
+  // tout ce que tu as a proposer ». LE BLOC EST LE PREMIER DES TROIS PRODUITS.
+  group('LE SENTIER ENTIER SE VEND EN BLOC, A SEIZE ETAPES', () {
+    test('l achat du sentier mere PASSE, et il coute seize etapes', () async {
+      final monetisation = await service(etapes: 50);
+      expect(monetisation.aDesChapitres('gr20'), isTrue);
+      expect(monetisation.aDesChapitres('gr20-nord'), isFalse);
+      expect(monetisation.aDesChapitres('mare-a-mare-centre'), isFalse);
 
-        final issue = await monetisation.buyTrail('gr20');
-        expect(issue.status, PurchaseStatusResult.sentierAChapitres);
-        // RIEN DEBITE, AUCUN DROIT POSE.
-        expect(cagnotte.balanceSteps, 50);
-        expect(await monetisation.ownsTrail('gr20'), isFalse);
-        // ET LE REFUS N EST PAS « PRIX INTROUVABLE » : le sentier mere a un
-        // prix parfaitement connu, il n est simplement pas a vendre.
-        expect(monetisation.stagesOfTrail('gr20'), 16);
-        expect(issue.status, isNot(PurchaseStatusResult.unknownPrice));
-      },
-    );
+      // AVOIR DES CHAPITRES N EMPECHE PLUS DE SE VENDRE.
+      final issue = await monetisation.buyTrail('gr20');
+      expect(issue.status, PurchaseStatusResult.owned);
+      expect(issue.stepsFromWallet, 16);
+      expect(cagnotte.balanceSteps, 34, reason: '50 - 16');
+      expect(await monetisation.ownsTrail('gr20'), isTrue);
+      // LE PRIX EST CELUI DU CATALOGUE, jamais declare par l appelant.
+      expect(monetisation.stagesOfTrail('gr20'), 16);
+    });
+
+    test('acheter TOUT coute le meme prix que les DEUX moities', () async {
+      // LE PRIX SE DEDUIT SEUL, decision du 18/10 11:19 : un euro l etape. Le
+      // mere en a seize, le nord neuf, le sud sept — donc acheter tout et
+      // acheter les deux moities coutent la MEME chose. Aucun arbitrage.
+      final monetisation = await service(etapes: 50);
+      expect(
+        monetisation.stagesOfTrail('gr20-nord') +
+            monetisation.stagesOfTrail('gr20-sud'),
+        monetisation.stagesOfTrail('gr20'),
+      );
+    });
 
     test(
-      'le refus tient MEME sur un droit acquis d avant les chapitres',
+      'un droit acquis d avant les chapitres ouvre un nouveau periple',
       () async {
-        // Le cas reel : un randonneur avait achete le GR20 entier avant la
-        // tache 841. Son droit reste (la propriete n a pas d echeance) mais le
-        // produit n existe plus — ni rachat, ni nouveau periple.
+        // LE CAS REEL, ET IL CHANGE DE REPONSE. Un randonneur avait achete le
+        // GR20 entier avant la tache 841 ; celle-ci avait fait disparaitre le
+        // produit sous son droit, donc ni rachat ni nouveau periple. Le produit
+        // existe de nouveau : son droit redevient pleinement utilisable.
         final monetisation = await service(etapes: 50);
         await db.trekEntitlementsDao.upsert(
           TrekEntitlementsCompanion.insert(
@@ -267,17 +282,17 @@ void main() {
         );
         expect(await monetisation.ownsTrail('gr20'), isTrue);
 
+        // DEJA POSSEDE : on ne le fait pas repayer pour rien.
         expect(
           (await monetisation.buyTrail('gr20')).status,
-          PurchaseStatusResult.sentierAChapitres,
+          PurchaseStatusResult.alreadyOwned,
         );
-        expect(
-          (await monetisation.ouvrirUnNouveauPeriple('gr20')).status,
-          PurchaseStatusResult.sentierAChapitres,
-        );
-        // SON DROIT N EST PAS TOUCHE : rien n est reverrouille.
+
+        // ET UN SECOND PERIPLE SE REPAIE, comme sur n importe quel produit.
+        final second = await monetisation.ouvrirUnNouveauPeriple('gr20');
+        expect(second.status, PurchaseStatusResult.owned);
+        expect(second.stepsFromWallet, 16);
         expect(await monetisation.ownsTrail('gr20'), isTrue);
-        expect(cagnotte.balanceSteps, 50);
       },
     );
 

@@ -253,7 +253,11 @@ void main() {
         // `gr20_chapitres_mesures_841_test.dart`).
         expect(TrailCatalog.byId('gr20'), isNotNull);
         expect(TrailCatalog.referentiel.map((c) => c.id), contains('gr20'));
-        expect(TrailCatalog.ids, isNot(contains('gr20')));
+        // TACHE 855 — LE SENTIER MERE EST REVENU AU CATALOGUE. Ce cas exigeait
+        // son ABSENCE (tache 841). Decision de Christophe du 18/10 11:19,
+        // verbatim : « Tu achetes TOUT le GR, ou par troncon (2) c'est tout ce
+        // que tu as a proposer » — trois produits, dont le sentier entier.
+        expect(TrailCatalog.ids, contains('gr20'));
         expect(TrailCatalog.ids, containsAll(['gr20-nord', 'gr20-sud']));
         // L'application demarre toujours sur le meme sentier : le defaut est le
         // PREMIER du catalogue.
@@ -265,7 +269,10 @@ void main() {
         expect(gr20TrailConfig.isFreeTrail, isFalse);
         expect(gr20TrailConfig.isFictional, isFalse);
         expect(gr20TrailConfig.aDesChapitres, isTrue);
-        expect(gr20TrailConfig.estVendable, isFalse);
+        // IL A DES CHAPITRES ET IL EST VENDABLE (tache 855) : les deux ne
+        // s'excluent plus. Acheter tout le GR coute seize etapes, acheter ses
+        // deux moities en coute neuf plus sept — la meme chose.
+        expect(gr20TrailConfig.estVendable, isTrue);
       },
     );
 

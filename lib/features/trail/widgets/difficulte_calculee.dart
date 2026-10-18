@@ -68,6 +68,7 @@ class DifficulteCalculee extends StatefulWidget {
     required this.allures,
     required this.allureParDefaut,
     this.nuits,
+    this.lesJoursSontUnConseil = '',
   });
 
   /// Les etapes mesurees du sentier, dans l'ordre.
@@ -82,6 +83,10 @@ class DifficulteCalculee extends StatefulWidget {
   /// Les nuits RELEVEES du sentier, quand il en a. Nulles sinon, et alors les
   /// journees viennent du regroupement des etapes.
   final DecoupageDeNuits? nuits;
+
+  /// La phrase de la FICHE qui dit que le nombre de jours est un conseil
+  /// ([DescriptionDeSentier.lesJoursSontUnConseil]). Vide : rien ne s'affiche.
+  final String lesJoursSontUnConseil;
 
   @override
   State<DifficulteCalculee> createState() => _DifficulteCalculeeState();
@@ -135,33 +140,33 @@ class _DifficulteCalculeeState extends State<DifficulteCalculee> {
   /// LES TROIS MESURES DE CHAQUE JOURNEE DE MARCHE, a l'allure [jours].
   ///
   /// Les TROIS, et plus le seul denivele positif : c'est la decision de
-  /// Christophe du 17/10 17:25. Les deux decoupages du depot les portent deja —
-  /// `JourneeSurLesNuits` depuis la tache 838, `DayPlan` depuis toujours — donc
-  /// aucune donnee nouvelle n'est allee se chercher pour ce changement.
-  List<JourneeMesuree> _journeesDuSentier(int jours) {
-    final nuits = widget.nuits;
-    if (nuits != null && !nuits.vide) {
-      return DecoupageSurLesNuits.repartir(nuits, jours)
-          .map(
-            (journee) => JourneeMesuree(
-              km: journee.km,
-              deniveleM: journee.deniveleM,
-              descenteM: journee.descenteM,
-            ),
-          )
-          .toList(growable: false);
-    }
-    return PlanningCalculator.distribute(widget.stages, jours)
-        .where((jour) => !jour.isRestDay)
-        .map(
-          (jour) => JourneeMesuree(
-            km: jour.totalDistanceKm,
-            deniveleM: jour.totalElevationGainM,
-            descenteM: jour.totalElevationLossM,
-          ),
-        )
-        .toList(growable: false);
-  }
+  /// Christophe du 17/10 17:25.
+  ///
+  /// TACHE 855 — CE CALCUL N'EST PLUS ICI, ET C'ETAIT LE DEFAUT LE PLUS GRAVE
+  /// DU PRODUIT. Ces lignes posaient les journees de la FICHE sur les trente et
+  /// une nuits relevees, donc EN COUPANT les etapes ; le PROGRAMME du client,
+  /// lui, ne coupait jamais. A seize jours la fiche annonçait une pire journee
+  /// de 26,48 km-effort quand le programme en produisait une de 36,45 — neuf
+  /// km-effort d'ecart, du cote qui RASSURE A TORT, sur un sentier de haute
+  /// montagne. Le « mode facile » etait ANNONCE et PAS IMPLEMENTE.
+  ///
+  /// Les journees sont desormais posees par [JourneesDuSentier], le SEUL
+  /// endroit du depot qui en decide, et le programme lit le MEME calcul. La
+  /// divergence n'est plus surveillee par un test : elle est devenue
+  /// impossible a ecrire.
+  List<JourneeMesuree> _journeesDuSentier(int jours) =>
+      JourneesDuSentier.mesurees(
+        JourneesDuSentier.poser(
+          etapes: widget.stages,
+          nuitsDansLeSensDeLaTrace: widget.nuits,
+          // LA FICHE MONTRE LE SENTIER DANS LE SENS DE SA TRACE. Le choix du
+          // sens vit dans le PROGRAMME (`selectedDirectionProvider`) et la
+          // fiche n'en porte aucun selecteur : lui en inventer un ici
+          // afficherait un sens que le client n'a pas choisi.
+          aLEnvers: false,
+          jours: jours,
+        ),
+      );
 
   /// CE QUE CHAQUE ALLURE COUTE, EN KILOMETRES-EFFORT DE SA PIRE JOURNEE.
   ///
@@ -238,6 +243,7 @@ class _DifficulteCalculeeState extends State<DifficulteCalculee> {
             choisie: _jours,
             conseillee: widget.allureParDefaut,
             effortDeLaPireJournee: _effortDeLaPireJournee,
+            lesJoursSontUnConseil: widget.lesJoursSontUnConseil,
             onChoisi: (jours) => setState(() => _jours = jours),
           ),
           const SizedBox(height: AppTheme.spacingSm),

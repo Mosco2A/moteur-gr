@@ -131,7 +131,7 @@ void main() {
       );
     });
 
-    test('IL N Y A QUE DEUX TRONCONS VENDABLES SUR LE GR20', () async {
+    test('IL Y A TROIS PRODUITS SUR LE GR20 : TOUT, LE NORD, LE SUD', () async {
       final vendables = TrailCatalog.all
           .where((c) => c.id == idNord || c.id == idSud || c.id == idMere)
           .map((c) => c.id)
@@ -139,27 +139,40 @@ void main() {
 
       expect(
         vendables,
-        unorderedEquals(<String>[idNord, idSud]),
+        unorderedEquals(<String>[idMere, idNord, idSud]),
         reason:
-            'Christophe, 18/10 : « Il y a seulement 2 troncon ». Le sentier '
-            'mere est retire de la vente par `chapterIds` ; un troisieme '
-            'produit GR20 au catalogue serait un doublon de ses deux '
-            'chapitres, vendu une seconde fois.',
+            'Christophe, 18/10 11:19, verbatim : « Tu achetes TOUT le GR, ou '
+            'par troncon (2) c\'est tout ce que tu as a proposer ». CE CAS '
+            'EXIGEAIT DEUX PRODUITS quelques heures plus tot, sur sa phrase '
+            '« Il y a seulement 2 troncon » — qui comptait les TRONCONS, pas '
+            'les produits. Il en a nomme trois depuis.',
       );
     });
 
-    test('le sentier mere ne se vend PAS en bloc', () async {
+    test('vendre TOUT ne vend pas deux fois la meme chose', () async {
+      // LE SOUPCON QUI AVAIT MOTIVE LE RETRAIT, ET LA RAISON POUR LAQUELLE IL
+      // NE TIENT PAS : un troisieme produit serait un doublon « vendu une
+      // seconde fois ». Il n en est pas un, parce que LE PRIX EST LE MEME des
+      // deux cotes — seize etapes pour tout, neuf plus sept pour les moities.
+      // Le client choisit une FORME d achat, pas un supplement.
+      final svc = await service(etapesEnCagnotte: 99);
+      expect(svc.stagesOfTrail(idMere), 16);
+      expect(svc.stagesOfTrail(idNord) + svc.stagesOfTrail(idSud), 16);
+    });
+
+    test('le sentier mere SE VEND en bloc, a seize etapes', () async {
       final svc = await service(etapesEnCagnotte: 99);
       final issue = await svc.buyTrail(idMere);
 
       expect(
         issue.status,
-        PurchaseStatusResult.sentierAChapitres,
+        PurchaseStatusResult.owned,
         reason:
-            'un sentier a chapitres se vend par chapitres (regle du 15/10) ; '
-            'le vendre en bloc ferait un troisieme produit',
+            'decision du 18/10 11:19 : le sentier entier est un produit. Ce '
+            'cas attendait un REFUS (regle du 15/10), qui est annulee.',
       );
-      expect(wallet.balanceSteps, 99, reason: 'un refus ne debite rien');
+      expect(issue.stepsFromWallet, 16);
+      expect(wallet.balanceSteps, 83, reason: '99 - 16');
     });
   });
 

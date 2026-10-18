@@ -187,12 +187,10 @@ class VenteParChapitres {
         trailId: trailId,
       );
     }
-    if (_pricing.aDesChapitres(trailId)) {
-      return PurchaseOutcome(
-        status: PurchaseStatusResult.sentierAChapitres,
-        trailId: trailId,
-      );
-    }
+    // LE REFUS « SENTIER A CHAPITRES » EST RETIRE ICI AUSSI (tache 855) : le
+    // sentier entier est un produit, donc on peut y ouvrir un nouveau periple
+    // comme sur n'importe quel autre. Voir `monetization_purchases.dart` pour
+    // la decision du 18/10 11:19.
     // Contenu pas encore acquis : c'est un PREMIER achat, pas un second
     // périple. Le geste ordinaire s'en charge, et il ouvre le périple nº 1.
     if (!await _entitlements.ownsTrail(trailId)) {

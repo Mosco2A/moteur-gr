@@ -318,6 +318,22 @@ enum PurchaseStatusResult {
   ///
   /// CE QUE L'ÉCRAN DOIT EN FAIRE : proposer les chapitres
   /// ([TrailCatalog.chapitresDe]), jamais afficher une panne.
+  ///
+  /// ━━━ CE STATUT N'EST PLUS PRODUIT PAR AUCUN CHEMIN (tâche 855) ━━━
+  ///
+  /// Décision de Christophe du 18/10 11:19, verbatim : « Tu achetes TOUT le GR,
+  /// ou par troncon (2) c'est tout ce que tu as à proposer ». LE SENTIER ENTIER
+  /// EST REDEVENU UN PRODUIT : au catalogue, à seize étapes, achetable. Les
+  /// deux refus qui levaient ce statut (`monetization_purchases.dart` et
+  /// `monetization_chapitres.dart`) sont retirés ; plus rien ne le renvoie.
+  ///
+  /// IL RESTE DÉCLARÉ, INERTE ET DIT. Le supprimer entraînerait sa clé de
+  /// traduction dans les CINQ fichiers de langue et une régénération de Slang,
+  /// pour retirer un cas que personne n'atteint : bénéfice nul, risque non nul.
+  /// Un lecteur qui le croise doit donc savoir qu'il décrit une offre qui
+  /// n'existe plus, et non un cas à gérer. S'il redevenait atteignable, tout
+  /// est encore là — le statut, ses cinq traductions, son aiguillage dans
+  /// `paywall_sheet.dart`.
   sentierAChapitres,
 }
 

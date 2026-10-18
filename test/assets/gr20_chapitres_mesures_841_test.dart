@@ -351,19 +351,47 @@ void main() {
     });
   });
 
-  group('LE SENTIER MERE RESTE UNE REFERENCE, ET N EST PLUS UN PRODUIT', () {
-    test(
-      'le catalogue montre les chapitres, le referentiel garde le sentier',
-      () {
-        expect(TrailCatalog.ids, containsAll(['gr20-nord', 'gr20-sud']));
-        expect(TrailCatalog.ids, isNot(contains('gr20')));
-        expect(TrailCatalog.referentiel.map((c) => c.id), contains('gr20'));
-        expect(TrailCatalog.byId('gr20'), isNotNull);
-        expect(gr20TrailConfig.aDesChapitres, isTrue);
-        expect(gr20TrailConfig.estVendable, isFalse);
-        expect(gr20TrailConfig.chapterIds, ['gr20-nord', 'gr20-sud']);
-      },
-    );
+  // TACHE 855 — CE GROUPE DISAIT LE CONTRAIRE, ET CHRISTOPHE A TRANCHE
+  // L'INVERSE TROIS JOURS PLUS TARD.
+  //
+  // Il s'appelait « LE SENTIER MERE RESTE UNE REFERENCE, ET N EST PLUS UN
+  // PRODUIT » et gardait le retrait decide le 15/10 17:45 (« on achete le
+  // sentier seulement si il n y a pas de chapitres »).
+  //
+  // Decision du 18/10 11:19, verbatim : « Tu achetes TOUT le GR, ou par
+  // troncon (2) c'est tout ce que tu as a proposer. Apres dans la realisation
+  // il y a tres dificile, moyen, facile ». L'OFFRE EST DE TROIS PRODUITS : le
+  // GR20 ENTIER, le nord, le sud.
+  //
+  // CE QUE LE RETRAIT AVAIT PRODUIT, ET QUI SE VOYAIT : la fiche du sentier
+  // mere existait, complete, avec ses douze photos sourcees — et AUCUN geste
+  // de l'application n'y menait.
+  group('LE SENTIER MERE EST UN PRODUIT, ET SES DEUX CHAPITRES AUSSI', () {
+    test('les TROIS produits sont au catalogue', () {
+      expect(
+        TrailCatalog.ids,
+        containsAll(['gr20', 'gr20-nord', 'gr20-sud']),
+        reason: 'trois produits : tout le GR, le nord, le sud',
+      );
+      expect(TrailCatalog.referentiel.map((c) => c.id), contains('gr20'));
+      expect(TrailCatalog.byId('gr20'), isNotNull);
+      expect(gr20TrailConfig.aDesChapitres, isTrue);
+      // IL A DES CHAPITRES ET IL EST VENDABLE : les deux ne s'excluent plus.
+      expect(gr20TrailConfig.estVendable, isTrue);
+      expect(gr20TrailConfig.chapterIds, ['gr20-nord', 'gr20-sud']);
+    });
+
+    test('LE PRIX SE DEDUIT SEUL : seize = neuf + sept', () {
+      // Aucun arbitrage a rendre, decision du 18/10 11:19 : un euro l'etape.
+      // Acheter tout et acheter les deux moities coutent la MEME chose.
+      expect(gr20TrailConfig.priceInStages, 16);
+      expect(gr20NordTrailConfig.priceInStages, 9);
+      expect(gr20SudTrailConfig.priceInStages, 7);
+      expect(
+        gr20NordTrailConfig.priceInStages + gr20SudTrailConfig.priceInStages,
+        gr20TrailConfig.priceInStages,
+      );
+    });
 
     test(
       'les chapitres sont vendables, et ils disent DE QUI ils sont chapitres',
@@ -383,14 +411,26 @@ void main() {
       },
     );
 
-    test('AUCUN AUTRE SENTIER DU CATALOGUE N A DE CHAPITRES', () {
+    test('LE GR20 EST LE SEUL SENTIER A AVOIR DES CHAPITRES', () {
       // Le GR20 est le SEUL cas, et c est une exception declaree : chaque
       // moitie fait neuf ou sept etapes, au-dessus des cinq a six jours de la
       // regle CH-1. Si un autre sentier gagnait des chapitres un jour, ce cas
       // le dirait plutot que de laisser la regle se relacher en silence.
       expect(TrailCatalog.sentiersMeres.map((c) => c.id), ['gr20']);
+
+      // TACHE 855 — CE CAS VERIFIAIT QUE LE CATALOGUE NE PORTE AUCUN SENTIER A
+      // CHAPITRES. Il en porte un, desormais, et c'est exactement la decision :
+      // ce qu'on verifie n'est plus leur ABSENCE mais qu'il n'y en ait pas
+      // D'AUTRE que le GR20.
+      final aChapitres = TrailCatalog.all
+          .where((c) => c.aDesChapitres)
+          .map((c) => c.id);
+      expect(aChapitres, ['gr20']);
+
+      // ET TOUT CE QUI EST AU CATALOGUE EST A VENDRE : plus aucun produit
+      // affiche n'est inachetable.
       for (final c in TrailCatalog.all) {
-        expect(c.aDesChapitres, isFalse, reason: c.id);
+        expect(c.estVendable, isTrue, reason: c.id);
       }
     });
   });

@@ -202,17 +202,22 @@ class TrailPurchases {
     // celui-ci empeche de le VENDRE a qui l'appellerait quand meme. La lecon du
     // lot 601 et de l'avenant 614 est exactement celle-la : une regle qui ne
     // vit que dans ce qu'on affiche est contournable par un appel.
-    if (_pricing.aDesChapitres(trailId)) {
-      _log.w(
-        '[Monetization] $trailId : sentier a chapitres -> vente en bloc '
-        'REFUSEE (rien debite, aucun droit pose). Ses chapitres se vendent '
-        'separement.',
-      );
-      return PurchaseOutcome(
-        status: PurchaseStatusResult.sentierAChapitres,
-        trailId: trailId,
-      );
-    }
+    // LE REFUS « SENTIER A CHAPITRES » EST RETIRE (tache 855).
+    //
+    // CE QU'IL FAISAIT. La tache 841 refusait la vente en bloc d'un sentier
+    // ayant des chapitres : seuls ses chapitres se vendaient.
+    //
+    // CE QUI L'ANNULE, decision de Christophe du 18/10 11:19, verbatim : « Tu
+    // achetes TOUT le GR, ou par troncon (2) c'est tout ce que tu as a
+    // proposer ». VENDRE LE SENTIER ENTIER EST DESORMAIS LE PREMIER DES TROIS
+    // PRODUITS, et ce refus-ci l'interdisait depuis le code — c'est-a-dire a
+    // l'endroit le plus difficile a voir depuis un ecran.
+    //
+    // LE PRIX SUIT SANS RIEN DE PLUS A ECRIRE : il est LU au catalogue
+    // (`TrailPricing.stagesOfTrail` -> `TrailConfig.totalStages`), donc le
+    // sentier mere coute ses SEIZE etapes et ses deux chapitres neuf et sept.
+    // Acheter tout et acheter les deux moities coutent la meme chose, et c'est
+    // voulu.
     if (await _entitlements.ownsTrail(trailId)) {
       // DEJA POSSEDE : RIEN N'EST DEBITE ET RIEN N'EST REVERROUILLE.
       //

@@ -171,11 +171,27 @@ class TrailConfig {
   /// Vrai si ce sentier A des chapitres — donc s'il ne se vend plus en bloc.
   bool get aDesChapitres => chapterIds.isNotEmpty;
 
-  /// Vrai si ce sentier peut être ACHETÉ tel quel.
+  /// Vrai si ce sentier peut être ACHETÉ tel quel — ET C'EST DÉSORMAIS VRAI DE
+  /// TOUS, SENTIERS MÈRES COMPRIS.
   ///
-  /// Faux pour un sentier qui a des chapitres : ce sont ses chapitres qui se
-  /// vendent, et le randonneur qui veut tout le sentier les prend tous.
-  bool get estVendable => !aDesChapitres;
+  /// CE QUE CE GETTER DISAIT, ET PENDANT TROIS JOURS SEULEMENT. La tâche 841 le
+  /// rendait FAUX pour un sentier à chapitres : « ce sont ses chapitres qui se
+  /// vendent, et le randonneur qui veut tout le sentier les prend tous ».
+  ///
+  /// CE QUI L'ANNULE, décision de Christophe du 18/10 11:19, verbatim : « Tu
+  /// achetes TOUT le GR, ou par troncon (2) c'est tout ce que tu as à
+  /// proposer ». LE SENTIER ENTIER EST UN PRODUIT, au même titre que chacun de
+  /// ses deux tronçons : trois produits, pas deux.
+  ///
+  /// POURQUOI CE GETTER RESTE PLUTÔT QUE DE DISPARAÎTRE. Il porte une QUESTION
+  /// qui a un sens — « ce sentier est-il à vendre ? » — et la réponse est
+  /// aujourd'hui « oui » pour tout ce qui existe. Un sentier FICTIF, lui, n'est
+  /// pas à vendre, mais il est écarté bien plus haut : il est introuvable
+  /// ([TrailCatalog.byId] ne le résout pas), donc la question ne lui est jamais
+  /// posée. Garder le getter laisse un seul endroit à changer le jour où une
+  /// offre aura de nouveau des sentiers non vendables ; le supprimer obligerait
+  /// à retrouver tous ses appelants.
+  bool get estVendable => true;
 
   /// PRIX du sentier, EN ÉTAPES. `null` = le prix vaut [totalStages].
   ///

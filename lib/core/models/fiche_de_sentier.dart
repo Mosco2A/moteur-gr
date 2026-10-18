@@ -110,6 +110,7 @@ class DescriptionDeSentier {
     this.ouCest = '',
     this.ceQuOnYVoit = '',
     this.aQuoiSAttendre = '',
+    this.lesJoursSontUnConseil = '',
   });
 
   /// Aucune description : l'ecran n'affiche alors AUCUNE section.
@@ -124,9 +125,30 @@ class DescriptionDeSentier {
   /// A QUOI S'ATTENDRE : le terrain, les couchages, ce qui surprend.
   final String aQuoiSAttendre;
 
-  /// Vrai quand les trois champs sont vides.
+  /// LE NOMBRE DE JOURS EST UN CONSEIL — la phrase qui le dit au client.
+  ///
+  /// ELLE VIT ICI DEPUIS LA TACHE 855, ET AVANT ELLE ETAIT EN DUR DANS UN
+  /// WIDGET, EN FRANCAIS SEULEMENT. `jauges_de_difficulte.dart` la portait
+  /// comme un litteral : elle etait donc invisible dans les quatre autres
+  /// langues de l'application, et un texte editorial — celui qui explique au
+  /// client ce qu'il achete — se modifiait en recompilant.
+  ///
+  /// POURQUOI DANS LA FICHE ET NON DANS LES FICHIERS DE LANGUE. C'est une
+  /// phrase de PRODUIT et non d'interface : elle parle de ce sentier-la, de son
+  /// decoupage et de la liberte qu'il laisse. Deux sentiers peuvent avoir
+  /// besoin de la dire differemment — un sentier sans couchage intermediaire ne
+  /// laisse pas la meme liberte qu'un GR20 qui porte trente et une nuits
+  /// relevees. La fiche est l'endroit ou le produit parle de lui-meme.
+  ///
+  /// Vide : l'ecran n'affiche alors AUCUNE phrase, et n'en invente pas.
+  final String lesJoursSontUnConseil;
+
+  /// Vrai quand les quatre champs sont vides.
   bool get estVide =>
-      ouCest.isEmpty && ceQuOnYVoit.isEmpty && aQuoiSAttendre.isEmpty;
+      ouCest.isEmpty &&
+      ceQuOnYVoit.isEmpty &&
+      aQuoiSAttendre.isEmpty &&
+      lesJoursSontUnConseil.isEmpty;
 
   /// Lit la description d'un manifeste. Un bloc absent rend [vide].
   static DescriptionDeSentier depuisJson(Object? brut) {
@@ -135,6 +157,7 @@ class DescriptionDeSentier {
       ouCest: _texte(brut['ou_c_est']),
       ceQuOnYVoit: _texte(brut['ce_qu_on_y_voit']),
       aQuoiSAttendre: _texte(brut['a_quoi_s_attendre']),
+      lesJoursSontUnConseil: _texte(brut['les_jours_sont_un_conseil']),
     );
   }
 }

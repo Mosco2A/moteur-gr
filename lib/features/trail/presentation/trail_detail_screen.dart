@@ -110,12 +110,31 @@ class TrailDetailScreen extends ConsumerWidget {
           // LA DIFFICULTE, DEDUITE DES JOURNEES REELLES. Elle attend de quoi
           // faire des journees — les nuits relevees du sentier, ou ses etapes
           // — et elle disparait proprement quand il n'y a ni l'un ni l'autre.
+          // LES ALLURES VIENNENT DU PRODUIT, PLUS D'UNE LISTE EN DUR
+          // (tache 855). LE DEFAUT : la fiche DIT au client « vous le marchez
+          // dans le nombre de jours que vous voulez », puis ne lui offrait que
+          // TROIS pastilles au nord (5, 7, 9) et QUATRE au sud (5, 7, 8, 12),
+          // venues de `config.availableDurations`. Elle se contredisait dans le
+          // meme ecran, a trois lignes d'intervalle.
+          //
+          // Or le produit porte DEJA le choix libre au jour pres :
+          // `DurationBounds.options` rend chaque duree de son minimum a son
+          // maximum, et le curseur du PROGRAMME s'en sert deja
+          // (`DurationSelector`). La fiche ne demandait pas la bonne liste —
+          // c'etait tout.
           SliverToBoxAdapter(
             child: DifficulteCalculee(
               stages: stages,
-              allures: config.availableDurations,
+              allures: ref.watch(durationBoundsProvider(trailId)).options,
               allureParDefaut: config.defaultDuration,
               nuits: ref.watch(decoupageDuSentierProvider(trailId)),
+              // LA PHRASE VIENT DE LA FICHE DU SENTIER (tache 855) : elle etait
+              // en dur dans le widget, en francais seulement.
+              // UN SENTIER SANS FICHE N'AFFICHE AUCUNE PHRASE, et n'en invente
+              // pas : c'est la discipline de tout cet ecran (« pas un cadre
+              // vide, rien »), et le sentier de test n'a pas de fiche.
+              lesJoursSontUnConseil:
+                  fiche?.description.lesJoursSontUnConseil ?? '',
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: AppTheme.spacingSm)),

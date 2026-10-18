@@ -199,14 +199,26 @@ void main() {
     // Le garde-fou du moteur reste en place par ailleurs (`_selectTrail` sort
     // immediatement si le sentier est deja actif) : la porte est fermee des DEUX
     // cotes, a l ecran et dans le code.
+    // ON FAIT DEFILER JUSQU A LA CARTE AVANT DE CONCLURE (tache 855). Le
+    // catalogue a gagne un produit — le GR20 ENTIER est redevenu achetable
+    // (decision du 18/10 11:19) — et la carte des Pyrenees est donc passee
+    // sous la ligne de flottaison. Sans ce defilement, l absence du bouton
+    // « Choisir » serait verifiee sur une carte QUE FLUTTER N A PAS CONSTRUITE,
+    // et ce cas passerait au vert en ne mesurant plus rien.
+    final cartePyrenees = find.byKey(
+      ValueKey('trail-current-${pyreneesTrailConfig.id}'),
+    );
+    await tester.scrollUntilVisible(cartePyrenees, 200);
+    await tester.pumpAndSettle();
+
+    expect(
+      cartePyrenees,
+      findsOneWidget,
+      reason: 'et l etat actif se VOIT, par la pastille',
+    );
     expect(
       find.byKey(ValueKey('trail-select-${pyreneesTrailConfig.id}')),
       findsNothing,
-    );
-    expect(
-      find.byKey(ValueKey('trail-current-${pyreneesTrailConfig.id}')),
-      findsOneWidget,
-      reason: 'et l etat actif se VOIT, par la pastille',
     );
     expect(container.read(selectedTrailIdProvider), pyreneesTrailConfig.id);
   });

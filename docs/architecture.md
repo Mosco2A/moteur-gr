@@ -92,25 +92,25 @@ lib/core/   lib/shared/  socle : base Drift, services, thème, routage, widgets 
 
 ## Arborescence mesurée
 
-`lib/` compte752<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
-149 439<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
+`lib/` compte755<!-- audit:arborescence.zones.lib.fichiers_source --> fichiers source et
+150 531<!-- audit:arborescence.zones.lib.lignes_source --> lignes, hors
 120 <!-- audit:arborescence.zones.lib.fichiers_generes --> fichiers générés (`.g.dart`,
 `.freezed.dart`).
 
 | Dossier | Fichiers | Lignes |
 |---|---|---|
-| `lib/core/` |200<!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |34 944<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
-| `lib/features/` |491<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |102 850<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
+| `lib/core/` |200<!-- audit:arborescence.detail_lib.lib/core/*.fichiers --> |35 016<!-- audit:arborescence.detail_lib.lib/core/*.lignes --> |
+| `lib/features/` |492<!-- audit:arborescence.detail_lib.lib/features/*.fichiers --> |103 415<!-- audit:arborescence.detail_lib.lib/features/*.lignes --> |
 | `lib/shared/` | 31 <!-- audit:arborescence.detail_lib.lib/shared/*.fichiers --> | 5 675<!-- audit:arborescence.detail_lib.lib/shared/*.lignes --> |
 | `lib/domain/` | non ventilé par l'audit | non ventilé par l'audit |
 
 **`lib/domain/` n'a pas de ligne dans l'audit** : `mesurer_arborescence` ne
 détaille que les sous-dossiers de `core/`, `features/`, `shared/` et `i18n/`.
-Les 29 fichiers source de `lib/` hors de `core/`, `features/` et
+Les 32 fichiers source de `lib/` hors de `core/`, `features/` et
 `shared/` sont `lib/domain/`, `lib/i18n/i18n_setup.dart`, `lib/main.dart` et
 les deux fichiers de `lib/docs/`. Ce chiffre est le reste d'une soustraction
-(751 − 200 − 491 − 31) et il n'a pas de marqueur d'audit : il se recalcule donc
-à la main, et il a été refait sur l'arbre de la tâche 852, qui ajoute `lib/domain/echelle_de_difficulte.dart`. Ajouter `domain` à la boucle de l'outil est à
+(755 − 200 − 492 − 31) et il n'a pas de marqueur d'audit : il se recalcule donc
+à la main, et il a été refait sur l'arbre de la tâche 855, qui ajoute `lib/domain/temps_de_marche_naismith.dart` et `lib/domain/mesure_de_la_journee.dart`. Ajouter `domain` à la boucle de l'outil est à
 faire par un lot qui a le droit d'écrire dans `tool/`.
 
 ### Les cinq plus grosses features (en fichiers)
@@ -121,7 +121,7 @@ faire par un lot qui a le droit d'écrire dans `tool/`.
 | `safety` | 33 <!-- audit:arborescence.detail_lib.lib/features/safety.fichiers --> |7 323 <!-- audit:arborescence.detail_lib.lib/features/safety.lignes --> |
 | `feasibility` | 31 <!-- audit:arborescence.detail_lib.lib/features/feasibility.fichiers --> | 7 753 <!-- audit:arborescence.detail_lib.lib/features/feasibility.lignes --> |
 | `weather` | 29 <!-- audit:arborescence.detail_lib.lib/features/weather.fichiers --> | 5 201 <!-- audit:arborescence.detail_lib.lib/features/weather.lignes --> |
-| `planning` | 28 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 9 902 <!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
+| `planning` | 29 <!-- audit:arborescence.detail_lib.lib/features/planning.fichiers --> | 10 428<!-- audit:arborescence.detail_lib.lib/features/planning.lignes --> |
 
 `trek` reste la plus grosse feature, et de loin.
 

@@ -60,10 +60,24 @@ final decorQuiSEnchaine = <StageModel>[
   etape(4, 10, 800, 300),
 ];
 
+/// LA PHRASE QUI DIT QUE LE NOMBRE DE JOURS EST UN CONSEIL — VENUE DE LA FICHE
+/// DU SENTIER DEPUIS LA TACHE 855.
+///
+/// Elle etait EN DUR dans `jauges_de_difficulte.dart`, en francais seulement :
+/// ce widget n'importe pas Slang, donc elle etait invisible dans les quatre
+/// autres langues. Elle vit desormais dans
+/// `assets/data/<sentier>/fiche.json` et le widget la REÇOIT. Ce decor fournit
+/// donc celle du GR20, mot pour mot.
+const phraseDeLaFiche =
+    'C\'est un conseil, pas une caracteristique du sentier : vous marchez le '
+    'GR20 dans le nombre de jours que vous voulez, et le niveau annonce suit '
+    'votre choix.';
+
 Widget sousTest({
   List<StageModel>? stages,
   List<int> allures = const <int>[2, 4],
   int allureParDefaut = 4,
+  String phrase = phraseDeLaFiche,
 }) => MaterialApp(
   home: Scaffold(
     body: SingleChildScrollView(
@@ -71,6 +85,7 @@ Widget sousTest({
         stages: stages ?? decor,
         allures: allures,
         allureParDefaut: allureParDefaut,
+        lesJoursSontUnConseil: phrase,
       ),
     ),
   ),
@@ -81,15 +96,35 @@ void main() {
     await tester.pumpWidget(sousTest());
     expect(find.byKey(const ValueKey('jours-conseilles')), findsOneWidget);
     expect(find.text('Nombre de jours CONSEILLE : 4 jours'), findsOneWidget);
-    // Et la phrase qui dit que c'est le client qui choisit.
+    // Et la phrase qui dit que c'est le client qui choisit — VENUE DE LA FICHE
+    // du sentier depuis la tache 855, et plus ecrite dans le widget.
     final phrase = tester.widget<Text>(
       find.byKey(const ValueKey('les-jours-sont-un-conseil')),
     );
+    expect(phrase.data, phraseDeLaFiche);
     expect(phrase.data, contains('nombre de jours que vous voulez'));
     expect(phrase.data, contains('pas une caracteristique du sentier'));
     // L'allure conseillee est MARQUEE dans le choix, les autres non.
     expect(find.text('4 jours (conseille)'), findsOneWidget);
     expect(find.text('2 jours'), findsOneWidget);
+  });
+
+  testWidgets('UN SENTIER SANS PHRASE DE FICHE N EN INVENTE AUCUNE', (
+    tester,
+  ) async {
+    // TACHE 855 — LA PHRASE VIENT DE LA FICHE, DONC ELLE PEUT MANQUER. Un
+    // sentier dont la fiche ne la porte pas n'affiche RIEN : on prefere le
+    // silence a un texte invente, et c'est la meme discipline que le reste de
+    // cet ecran (« aucun coefficient invente ; l'absence est DITE, pas
+    // devinee »).
+    // Le nombre de jours conseille, lui, reste affiche : il est mesure, pas
+    // editorial.
+    await tester.pumpWidget(sousTest(phrase: ''));
+    expect(find.byKey(const ValueKey('jours-conseilles')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('les-jours-sont-un-conseil')),
+      findsNothing,
+    );
   });
 
   testWidgets('LES DEUX JAUGES SONT LA, PAS UN MOT SEUL', (tester) async {
