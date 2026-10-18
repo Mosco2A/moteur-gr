@@ -157,7 +157,14 @@ void main() {
       expect(find.text('600m'), findsOneWidget);
     });
 
-    testWidgets('affiche le badge de difficulté', (tester) async {
+    testWidgets('N AFFICHE PLUS AUCUN MOT DE NIVEAU (tache 858)', (
+      tester,
+    ) async {
+      // LA PASTILLE DE NIVEAU EST RETIREE AVEC LE COMPTE QUI LA PRODUISAIT :
+      // le kilometre-effort de la tache 852, retire le 18/10/2026 parce qu'il
+      // etait faux et qu'il etait affiche aux clients. Les niveaux de l'indice
+      // de terrain seront tranches par Christophe (« On tranchera les niveaux
+      // apres », 18/10 19:32), et aucun seuil n'est invente d'ici la.
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -175,14 +182,16 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // TACHE 852 — CE DECOR CHANGE DE BANDE, ET C'EST LE LOT QUI LE VEUT.
-      // L'etape de decor fait 14,0 km, monte 950 m et descend 600 m. Sur
-      // l'ancienne regle — le seul denivele positif — 950 m tombait dans
-      // « Difficile » (700 a 1 000). Sur l'effort complet elle vaut
-      // 14,0 + 9,5 + 1,8 = 25,3 km-effort, donc « Tres difficile » (a partir de
-      // 25,0). Une journee de quatorze kilometres qui monte 950 m et en
-      // redescend 600 est plus dure que ce que sa seule montee disait.
-      expect(find.text('Tres difficile'), findsOneWidget);
+      for (final mot in <String>[
+        'Facile',
+        'Moyen',
+        'Difficile',
+        'Tres difficile',
+      ]) {
+        expect(find.text(mot), findsNothing, reason: 'le mot « $mot »');
+      }
+      // LE NOM DE L ETAPE RESTE, LUI.
+      expect(find.text(testStage.name), findsOneWidget);
     });
 
     testWidgets('affiche les POIs de l\'étape uniquement', (tester) async {

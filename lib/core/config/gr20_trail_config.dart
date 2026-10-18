@@ -142,9 +142,11 @@ const gr20TrailConfig = TrailConfig(
   // ci-dessous, decoupage sur les trente et une nuits relevees : TRES DIFFICILE
   // aux quatre, et aux vingt-cinq autres allures de 7 a 31 jours, DANS LES DEUX
   // SENS. Son echelle descendante (difficile a 12 et 16 jours) ne sort pas des
-  // chiffres, parce que la premiere journee — 11,3 km, 1 455 m de montee,
-  // 26,5 km-effort — ne se coupe pas : il n'existe aucun couchage dans la
-  // montee. Ce n'est pas le selecteur qu'il faut corriger, c'est le discours.
+  // chiffres, parce que la premiere journee — 11,3 km, 1 455 m de montee d'un
+  // seul tenant, un indice de terrain de 50 — ne se coupe pas : il n'existe
+  // aucun couchage dans la montee. Ce n'est pas le selecteur qu'il faut
+  // corriger, c'est le discours. (Chiffre remesure en tache 858 : le
+  // kilometre-effort qui disait 26,5 est retire.)
   availableDurations: [7, 9, 12, 16],
   defaultDuration: 16,
   offlineFirst: true,

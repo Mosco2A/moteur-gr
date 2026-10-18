@@ -1,5 +1,6 @@
-/// Une etape en ligne de liste, avec sa duree ESTIMEE (calculee, non stockee)
-/// et sa pastille de difficulte.
+/// Une etape en ligne de liste, avec sa duree ESTIMEE (calculee, non stockee).
+/// Plus de pastille de niveau depuis la tache 858 : le mot qu'elle portait
+/// venait du kilometre-effort retire.
 library;
 
 import 'package:flutter/material.dart';
@@ -8,16 +9,14 @@ import '../../../core/branding/stepways_icons.dart';
 import '../../../core/models/stage_duration.dart';
 import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../domain/echelle_de_difficulte.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/stage_number_badge.dart';
-import 'difficulty_badge.dart';
 import 'elevation_indicator.dart';
 
 /// Carte d'étape pour la liste scrollable.
 ///
-/// Affiche : numéro, nom, distance (km), dénivelé D+/D- (m),
-/// durée estimée (calculée), badge de difficulté coloré.
+/// Affiche : numéro, nom, distance (km), dénivelé D+/D- (m) et
+/// durée estimée (calculée).
 /// Un tap déclenche [onTap] pour naviguer vers le détail.
 class StageListTile extends StatelessWidget {
   /// Une etape a afficher, et le geste qui ouvre son detail.
@@ -73,32 +72,17 @@ class StageListTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Nom + badge difficulté
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        stage.name,
-                        style: theme.textTheme.titleMedium,
-                      ),
-                    ),
-                    const SizedBox(width: AppTheme.spacingSm),
-                    // LA PASTILLE SUIT L'EFFORT MESURE, PAS L'ETIQUETTE
-                    // STOCKEE (tache 848, recalibree 852). Les seuils classent
-                    // l'etape sur ses TROIS mesures — distance, montee,
-                    // descente (Christophe, 17/10 17:25) ; l'etiquette de
-                    // `stages.json` a ete calculee sur les anciens seuils et
-                    // dirait « Modere » pour une journee de 967 m que cette
-                    // echelle classe difficile.
-                    DifficultyBadge(
-                      niveau: SeuilsDeDifficulte.pourUneJournee(
-                        km: stage.distanceKm,
-                        deniveleM: stage.elevationGainM,
-                        descenteM: stage.elevationLossM,
-                      ),
-                    ),
-                  ],
-                ),
+                // LE NOM SEUL, ET PLUS DE PASTILLE DE NIVEAU (tache 858).
+                //
+                // CE QUI A ETE RETIRE ICI, ET POURQUOI IL FAUT LE SAVOIR. La
+                // pastille affichait un MOT — facile, moyen, difficile, tres
+                // difficile — calcule a partir du kilometre-effort de la tache
+                // 852, retire le 18/10/2026 parce qu'il etait faux. Christophe
+                // tranchera les niveaux de l'indice de terrain plus tard
+                // (« On tranchera les niveaux apres », 18/10 19:32) ; d'ici la
+                // aucun mot n'est affiche, parce qu'un seuil invente se
+                // recopie ensuite partout comme s'il avait ete mesure.
+                Text(stage.name, style: theme.textTheme.titleMedium),
                 const SizedBox(height: AppTheme.spacingXs),
                 // Distance + durée
                 Row(

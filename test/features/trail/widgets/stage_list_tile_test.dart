@@ -68,14 +68,30 @@ void main() {
       expect(find.text('3'), findsOneWidget);
     });
 
-    testWidgets('affiche le badge de difficulté', (tester) async {
+    testWidgets('N AFFICHE PLUS AUCUN MOT DE NIVEAU (tache 858)', (
+      tester,
+    ) async {
+      // LA PASTILLE DE NIVEAU EST RETIREE AVEC LE COMPTE QUI LA PRODUISAIT.
+      // Elle affichait un mot calcule a partir du kilometre-effort de la tache
+      // 852, retire le 18/10/2026 parce qu'il etait faux. Christophe
+      // tranchera les niveaux de l'indice de terrain apres ; d'ici la, aucun
+      // mot, et surtout aucun seuil invente.
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(body: StageListTile(stage: testStage)),
         ),
       );
 
-      expect(find.text('Difficile'), findsOneWidget);
+      for (final mot in <String>[
+        'Facile',
+        'Moyen',
+        'Difficile',
+        'Tres difficile',
+      ]) {
+        expect(find.text(mot), findsNothing, reason: 'le mot « $mot »');
+      }
+      // LE NOM DE L ETAPE, LUI, EST BIEN LA.
+      expect(find.text(testStage.name), findsOneWidget);
     });
 
     testWidgets('affiche la durée estimée formatée', (tester) async {

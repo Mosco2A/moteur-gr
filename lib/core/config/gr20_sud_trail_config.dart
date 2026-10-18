@@ -51,7 +51,7 @@ const gr20SudTrailConfig = TrailConfig(
   // CE CHAPITRE EST LE SEUL ENDROIT DU GR20 OU L'ALLURE CHANGE LE VERDICT, et
   // la frontiere tombe exactement entre sept et huit jours. A SEPT il est tres
   // difficile, et c'est l'ENCHAINEMENT qui le monte, pas une journee qui
-  // casse : sa plus dure ne vaut que 23,4 km-effort, donc « difficile », mais
+  // casse : sa plus dure ne vaut qu'un indice de terrain de 27, mais
   // journees dures se suivent sans un jour pour respirer. A HUIT il est
   // difficile — la suite tombe a trois — et il le reste jusqu'a seize.
   //
@@ -60,7 +60,8 @@ const gr20SudTrailConfig = TrailConfig(
   // qui change ce qu'on lui vend, alors que la fiche de ce chapitre le lui
   // annonce noir sur blanc. Un texte qui promet un cran que le selecteur
   // n'atteint pas est pire qu'un texte muet. Douze ferme la serie du cote
-  // etale, pour que l'ecart de km-effort entre les allures se lise d'un coup.
+  // etale, pour que l'ecart d'INDICE entre les allures se lise d'un coup : de
+  // 35 a cinq jours a 20 a seize, le sud repond a l'allure (tache 858).
   availableDurations: [5, 7, 8, 12],
   defaultDuration: 7,
   offlineFirst: true,
