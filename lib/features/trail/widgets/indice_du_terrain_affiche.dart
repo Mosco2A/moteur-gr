@@ -10,6 +10,7 @@ import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/indice_du_terrain.dart';
 import '../../../domain/journees_pesees.dart';
+import '../../../domain/note_sur_vingt.dart';
 import '../../../domain/nuit_possible.dart';
 import '../../../domain/profil_du_terrain.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -19,6 +20,7 @@ import '../../../shared/widgets/section_header.dart';
 // croisements entre features est a ZERO.
 import '../../planning/planning_facade.dart';
 import 'choix_des_jours.dart';
+import 'lectures_du_plan_affichees.dart';
 
 /// L'INDICE DE TERRAIN AFFICHE AVEC CE QUI LE PRODUIT (tache 858).
 ///
@@ -155,7 +157,11 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
     final journees = <JourneeAPeser>[];
     var pkPrecedent = 0.0;
     var departPrecedent = nuits.teteDeSentier;
-    for (final journee in DecoupageSurLesNuits.repartir(nuits, jours)) {
+    for (final journee in DecoupageSurLesNuits.repartir(
+      nuits,
+      jours,
+      effortDuGroupe: _effortDuGroupe(nuits),
+    )) {
       final arrivee = journee.arrivee;
       final pkArrivee = arrivee?.pkKm ?? pkPrecedent;
       journees.add(
@@ -176,6 +182,35 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
     return journees;
   }
 
+  /// L'EFFORT D'UN GROUPE DE SEGMENTS — ce que le repartiteur egalise depuis
+  /// la tache 860.
+  ///
+  /// Christophe, verbatim 19/10 : « Oui a l'effort pas au temps ». La charge
+  /// rendue est l'INDICE REEL de la journee, celui que l'ecran affiche, et pas
+  /// une somme d'indices de morceaux : l'indice est sous-additif quand une
+  /// coupure tombe dans une montee, donc une somme optimiserait un chiffre que
+  /// personne ne voit. `null` quand le sentier n'a pas de profil — le
+  /// repartiteur retombe alors sur le temps de marche.
+  double Function(int, int)? _effortDuGroupe(DecoupageDeNuits nuits) {
+    if (widget.profil.estVide) return null;
+    final pkParNom = <String, double>{
+      for (final nuit in nuits.nuits) nuit.nom: nuit.pkKm,
+    };
+    double pkDeFin(int segment) =>
+        pkParNom[nuits.segments[segment].arrivee] ?? 0.0;
+    return (debut, fin) {
+      final pkDebut = debut == 0 ? 0.0 : pkDeFin(debut - 1);
+      final pkFin = pkDeFin(fin - 1);
+      if (pkFin <= pkDebut) return 0.0;
+      return IndiceDuTerrain.calculer(
+        terrain: widget.profil.tranche(
+          pkDebutM: pkDebut * 1000.0,
+          pkFinM: pkFin * 1000.0,
+        ),
+      ).indice;
+    };
+  }
+
   /// Le sentier pese a l'allure [jours], ou `null`.
   SentierPese? _peser(int jours) => SentierPese.peser(
     jours: jours,
@@ -183,14 +218,14 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
     journees: _journeesDuSentier(jours),
   );
 
-  /// L'indice de terrain de la pire journee d'une allure, ou `null` quand il
+  /// La NOTE SUR VINGT de la pire journee d'une allure, ou `null` quand elle
   /// n'est pas mesurable — jamais zero, qui passerait pour une journee facile.
-  double? _indiceDeLaPireJournee(int jours) {
+  double? _noteDeLaPireJournee(int jours) {
     final deja = _indiceParAllure[jours];
     if (deja != null) return deja;
     final pire = _peser(jours)?.pireJournee;
     if (pire == null) return null;
-    return _indiceParAllure[jours] = pire.indiceDuTerrain;
+    return _indiceParAllure[jours] = pire.noteSurVingt;
   }
 
   @override
@@ -208,18 +243,14 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
     // interpolation : `aucun_code_mort_645_test` lit les identifiants du code
     // APRES avoir retire les chaines, donc un appel ecrit dans un `${...}` lui
     // est invisible. C'est a l'appel de sortir de la chaine.
+    final note = pire == null ? '' : nombreAUneDecimale(pire.noteSurVingt);
     final indice = pire == null ? '' : nombreAUneDecimale(pire.indiceDuTerrain);
-    final socle = pire == null
-        ? ''
-        : nombreAUneDecimale(pire.terrain.socleMesure);
-    final majoration = pire == null
-        ? ''
-        : nombreAUneDecimale(pire.terrain.majorationDeContinuite);
     final km = pire == null ? '' : nombreAUneDecimale(pire.km);
     final montee = pire == null
         ? ''
-        : pire.terrain.plusGrosseMonteeM.round().toString();
+        : pire.plusGrosseMonteeM.round().toString();
     final temps = pire == null ? '' : formatDurationMinutes(pire.minutes);
+    final corpus = NoteSurVingt.etapesDuCorpus.toString();
 
     return Padding(
       key: const ValueKey('indice-du-terrain'),
@@ -228,14 +259,14 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SectionHeader(
-            title: 'Indice de terrain',
+            title: 'Difficulte, journee par journee',
             icon: StepwaysIcons.difficulte,
           ),
           ChoixDesJours(
             allures: _alluresUtiles,
             choisie: _jours,
             conseillee: widget.allureParDefaut,
-            indiceDeLaPireJournee: _indiceDeLaPireJournee,
+            noteDeLaPireJournee: _noteDeLaPireJournee,
             onChoisi: (jours) => setState(() => _jours = jours),
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -245,45 +276,71 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (pire != null) ...[
+                  // LES QUATRE LECTURES DU PLAN, ET LE NOMBRE DE JOURS EN
+                  // PREMIER : sans lui, « journee la plus dure 18,9 » ne veut
+                  // rien dire.
+                  LecturesDuPlanAffichees(lectures: pese.lectures),
+                  const SizedBox(height: AppTheme.spacingSm),
+                  // LA NOTE DE LA PIRE JOURNEE, SUR VINGT. C'est le seul
+                  // nombre NOTE du produit : une journee en a une, un sentier
+                  // n'en a pas.
                   Text(
-                    'Journee la plus dure : indice $indice',
-                    key: const ValueKey('indice-de-la-pire-journee'),
+                    'Journee la plus dure : $note sur 20',
+                    key: const ValueKey('note-de-la-pire-journee'),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
+                  if (pire.estEcretee) ...[
+                    const SizedBox(height: AppTheme.spacingXs),
+                    // UNE NOTE ECRETEE NE DIT PAS LA MEME CHOSE QU'UN VINGT
+                    // QUI TOMBE PILE, et le taire serait trompeur : cette
+                    // journee groupe plusieurs etapes, donc elle depasse la
+                    // plus dure etape officielle connue. Ce sont les deux
+                    // faits ci-dessous qui la distinguent alors.
+                    Text(
+                      'Vingt est le plafond : cette journee est plus dure que '
+                      'les $corpus etapes officielles du corpus. Ce sont les '
+                      'deux chiffres ci-dessous qui la decrivent vraiment.',
+                      key: const ValueKey('note-ecretee'),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.grisTexteSecondaire,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: AppTheme.spacingXs),
+                  // LES DEUX FAITS SANS ECHELLE, A COTE DE LA NOTE. Ce ne sont
+                  // PAS des notes : la plus grosse montee continue et le
+                  // kilometrage portent ce que la note ne dit pas, et eux ne
+                  // s'ecretent jamais. Mesure du GR20 a huit jours : un jour a
+                  // 1 162 m d'un seul tenant note MOINS qu'un jour a 739 m qui
+                  // fait 38 km.
                   Text(
                     'Journee ${pire.numero} sur ${pese.journeesDeMarche} : '
-                    '$km km, ${pire.deniveleM} m de montee et '
-                    '${pire.descenteM} m de descente, dont une montee de '
-                    '$montee m d\'un seul tenant.',
+                    'une montee de $montee m d\'un seul tenant, $km km de '
+                    'marche.',
+                    key: const ValueKey('les-deux-faits'),
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: AppTheme.spacingXs),
+                  Text(
+                    '${pire.deniveleM} m de montee et ${pire.descenteM} m de '
+                    'descente au total, pour un indice de terrain de $indice.',
                     key: const ValueKey('pire-journee'),
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: AppTheme.spacingXs),
-                  // LE TEMPS DE MARCHE, SOUS SON PROPRE NOM ET A PART. C'est
-                  // un AUTRE nombre que l'indice, calcule par un AUTRE modele
-                  // (celui du depot, source unique depuis la tache 839).
-                  Text(
-                    'Temps de marche de cette journee : $temps. C\'est un '
-                    'autre nombre que l\'indice, et il ne s\'en deduit pas : '
-                    'deux journees de meme duree n\'ont pas le meme indice.',
-                    key: const ValueKey('temps-de-marche'),
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: AppTheme.spacingXs),
-                  // CE QUI EST MESURE ET CE QUI EST ASSUME, CHIFFRE A COTE DU
-                  // RESULTAT. C'est le seul chiffre qui dit au lecteur quelle
-                  // confiance accorder au nombre.
-                  Text(
-                    'Dont $socle mesure sur la trace et $majoration de '
-                    'majoration pour la continuite des montees, qui est la '
-                    'seule part assumee.',
-                    key: const ValueKey('part-mesuree-et-part-assumee'),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: AppTheme.grisTexteSecondaire,
                     ),
+                  ),
+                  const SizedBox(height: AppTheme.spacingXs),
+                  // LE TEMPS DE MARCHE, SOUS SON PROPRE NOM ET A PART. C'est
+                  // un AUTRE nombre que la note, calcule par un AUTRE modele
+                  // (celui du depot, source unique depuis la tache 839).
+                  Text(
+                    'Temps de marche de cette journee : $temps. C\'est un '
+                    'autre nombre que la note, et il ne s\'en deduit pas : '
+                    'deux journees de meme duree n\'ont pas la meme note.',
+                    key: const ValueKey('temps-de-marche'),
+                    style: theme.textTheme.bodyMedium,
                   ),
                 ],
                 if (pese.mesuresManquantes.isNotEmpty) ...[
@@ -312,6 +369,16 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
                 // LA REGLE, SOUS LE RESULTAT. Elle vient du socle qui l'a
                 // appliquee et n'est pas reecrite ici : une regle affichee qui
                 // n'est pas la regle appliquee est pire que pas de regle.
+                Text(
+                  'Une note de 20 veut dire : plus dur que les $corpus etapes '
+                  'officielles relevees le ${NoteSurVingt.dateDuCalage}. Zero, '
+                  'c\'est six kilometres de plat.',
+                  key: const ValueKey('ce-que-la-note-veut-dire'),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppTheme.grisTexteSecondaire,
+                  ),
+                ),
+                const SizedBox(height: AppTheme.spacingXs),
                 Text(
                   LoiDeLIndice.retenue.regleAffichee,
                   key: const ValueKey('regle-de-l-indice'),

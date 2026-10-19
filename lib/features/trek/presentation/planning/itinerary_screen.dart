@@ -495,40 +495,20 @@ class _StageTile extends StatelessWidget {
 
   final StageModel stage;
 
-  String _difficultyLabel() {
-    switch (stage.difficulty) {
-      case 'easy':
-        return t.stage.difficulty.easy;
-      case 'moderate':
-        return t.stage.difficulty.moderate;
-      case 'hard':
-        return t.stage.difficulty.hard;
-      case 'extreme':
-        return t.stage.difficulty.extreme;
-      default:
-        return stage.difficulty;
-    }
-  }
-
-  Color _difficultyColor() {
-    switch (stage.difficulty) {
-      case 'easy':
-        return AppTheme.vertFacile;
-      case 'moderate':
-        return AppTheme.jauneModere;
-      case 'hard':
-        return AppTheme.orangeDifficile;
-      case 'extreme':
-        return AppTheme.rougeExtreme;
-      default:
-        return AppTheme.grisGranite;
-    }
-  }
+  // PLUS DE PASTILLE DE NIVEAU ICI (tache 860). Elle lisait l'etiquette
+  // STOCKEE de l'etape (`easy` / `moderate` / `hard`), seize valeurs posees
+  // une fois pour toutes dans `stages.json`. Ces etiquettes n'etaient pas
+  // fausses — c'est pour cela que personne ne les avait vues : les cinq
+  // « hard » du GR20 sont bien ses etapes de rang 1, 2, 3, 4 et 6 sur seize.
+  // LEUR DEFAUT EST STRUCTUREL : une etiquette est FIXE PAR ETAPE, donc elle
+  // est MUETTE sur la JOURNEE — et c'est la journee qui concerne le client,
+  // puisque c'est elle qu'il marche. La note sur vingt de la fiche, elle, suit
+  // le decoupage reel. Les etiquettes sont retirees de la donnee, et une garde
+  // de test interdit leur retour.
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final diffColor = _difficultyColor();
 
     return InkWell(
       onTap: () => context.push('/stages/${stage.stageNumber}'),
@@ -542,19 +522,23 @@ class _StageTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Pastille numero d'etape teintee par difficulte.
+            // PASTILLE DU NUMERO D'ETAPE, EN COULEUR NEUTRE (tache 860).
+            // Elle etait teintee par l'etiquette de niveau STOCKEE, retiree
+            // parce qu'elle est muette sur la journee reellement marchee.
             Container(
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: diffColor.withAlpha(30),
+                color: AppTheme.grisGranite.withAlpha(30),
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                border: Border.all(color: diffColor, width: 2),
+                border: Border.all(color: AppTheme.grisGranite, width: 2),
               ),
               alignment: Alignment.center,
               child: Text(
                 '${stage.stageNumber}',
-                style: theme.textTheme.labelLarge?.copyWith(color: diffColor),
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: AppTheme.grisGranite,
+                ),
               ),
             ),
             const SizedBox(width: AppTheme.spacingMd),
@@ -604,27 +588,6 @@ class _StageTile extends StatelessWidget {
                   const SizedBox(height: AppTheme.spacingXs),
                   Row(
                     children: [
-                      // Chip difficulte (semantique).
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.spacingSm,
-                          vertical: AppTheme.spacingXs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: diffColor.withAlpha(40),
-                          borderRadius: BorderRadius.circular(
-                            AppTheme.radiusChip,
-                          ),
-                          border: Border.all(color: diffColor),
-                        ),
-                        child: Text(
-                          _difficultyLabel(),
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: diffColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
                       const Spacer(),
                       // Action (parite GR20) : ouvrir le detail de l'etape.
                       // Affordance de navigation vers le detail.

@@ -41,7 +41,7 @@ FENETRE_LISSAGE = 7  # ProfilDuTerrain.fenetreDeLissage
 PAS_ECHANTILLON = 7  # ProfilDuTerrain.pasDEchantillonnage
 
 # --- LA LOI (LoiDeLIndice) -------------------------------------------------
-BETA = 1.25
+BETA = 1.08  # tache 860 : exposant mesure (Riegel, borne basse recreatif)
 D_REF_M = 550.0
 REPIT_MINUTES = 15.0
 ALLURE_REPOSANTE_KMH = 4.0

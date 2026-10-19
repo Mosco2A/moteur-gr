@@ -26,6 +26,7 @@ import 'package:moteur_gr/core/config/gr20_sud_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
 import 'package:moteur_gr/core/models/fiche_de_sentier.dart';
+import 'package:moteur_gr/domain/indice_du_terrain.dart';
 import 'package:moteur_gr/domain/journees_pesees.dart';
 import 'package:moteur_gr/domain/nuit_possible.dart';
 import 'package:moteur_gr/domain/profil_du_terrain.dart';
@@ -70,14 +71,46 @@ ProfilDuTerrain profilDe(String dossier) {
   );
 }
 
+/// L'EFFORT D'UN GROUPE DE SEGMENTS — la charge que le repartiteur egalise
+/// depuis la tache 860 (« Oui a l'effort pas au temps »).
+double Function(int, int) effortDuGroupe(
+  DecoupageDeNuits nuits,
+  ProfilDuTerrain profil,
+) {
+  final pkParNom = <String, double>{
+    for (final nuit in nuits.nuits) nuit.nom: nuit.pkKm,
+  };
+  double pkDeFin(int segment) =>
+      pkParNom[nuits.segments[segment].arrivee] ?? 0.0;
+  return (debut, fin) {
+    final pkDebut = debut == 0 ? 0.0 : pkDeFin(debut - 1);
+    final pkFin = pkDeFin(fin - 1);
+    if (pkFin <= pkDebut) return 0.0;
+    return IndiceDuTerrain.calculer(
+      terrain: profil.tranche(
+        pkDebutM: pkDebut * 1000.0,
+        pkFinM: pkFin * 1000.0,
+      ),
+    ).indice;
+  };
+}
+
 /// LES JOURNEES D'UNE ALLURE, AVEC LEURS BORNES SUR LA TRACE — exactement
 /// comme la fiche les pose (tache 858). La borne de depart d'une journee est
 /// l'arrivee de la precedente, et toutes viennent des nuits RELEVEES.
-List<JourneeAPeser> journeesDe(DecoupageDeNuits nuits, int jours) {
+List<JourneeAPeser> journeesDe(
+  DecoupageDeNuits nuits,
+  ProfilDuTerrain profil,
+  int jours,
+) {
   final journees = <JourneeAPeser>[];
   var pk = 0.0;
   var depart = nuits.teteDeSentier;
-  for (final j in DecoupageSurLesNuits.repartir(nuits, jours)) {
+  for (final j in DecoupageSurLesNuits.repartir(
+    nuits,
+    jours,
+    effortDuGroupe: effortDuGroupe(nuits, profil),
+  )) {
     final pkFin = j.arrivee?.pkKm ?? pk;
     journees.add(
       JourneeAPeser(
@@ -100,11 +133,15 @@ List<JourneeAPeser> journeesDe(DecoupageDeNuits nuits, int jours) {
 /// L'INDICE DE TERRAIN de la pire journee d'un chapitre a une allure donnee,
 /// par le socle du produit (tache 858). Il a remplace le kilometre-effort de
 /// la tache 852, qui etait faux et que ces fiches CITAIENT a leurs clients.
-JourneePesee pireJourneeDe(String dossier, int jours) => SentierPese.peser(
-  jours: jours,
-  profil: profilDe(dossier),
-  journees: journeesDe(lireLesNuits(dossier), jours),
-)!.pireJournee!;
+JourneePesee pireJourneeDe(String dossier, int jours) {
+  final profil = profilDe(dossier);
+  final nuits = lireLesNuits(dossier);
+  return SentierPese.peser(
+    jours: jours,
+    profil: profil,
+    journees: journeesDe(nuits, profil, jours),
+  )!.pireJournee!;
+}
 
 void main() {
   group('853 — les deux chapitres ont enfin une fiche', () {
@@ -259,28 +296,31 @@ void main() {
         'ET SA FICHE LE CHIFFRE', () {
       // CE QUE LA FICHE DU NORD PROMET, ET POURQUOI C'EST VRAI : sa premiere
       // journee monte 1 455 m d'un seul tenant et AUCUN couchage releve ne la
-      // coupe. Son indice de terrain est donc le plancher de toutes les
-      // allures fines : de sept a quinze jours, la pire journee ne descend
-      // plus.
+      // coupe. Elle est donc le PLANCHER de toutes les allures fines : de
+      // huit a quinze jours, la pire journee du nord ne descend plus.
       final nuits = lireLesNuits('gr20-nord');
       expect(nuits.journeesMaximales, 15);
-      for (var jours = 7; jours <= 15; jours++) {
+      for (var jours = 8; jours <= 15; jours++) {
         final pire = pireJourneeDe('gr20-nord', jours);
         expect(
-          pire.indiceDuTerrain,
-          closeTo(50.0, 0.1),
+          pire.noteSurVingt,
+          closeTo(15.55, 0.05),
           reason: 'le nord a $jours jours',
         );
         expect(pire.depart, 'Calenzana');
+        expect(pire.plusGrosseMonteeM, closeTo(1454, 2));
       }
-      // ET SERRER L'ALLURE A CINQ JOURS LA FAIT MONTER DE MOITIE, ce que la
-      // fiche annonce : 81 contre 50, soit 1,6 fois.
+      // A SEPT JOURS LE PLANCHER N EST PLUS L ETAPE 1, et c'est une
+      // consequence de l'exposant mesure : la journee Ortu vers Ascu-Stagnu
+      // la depasse de quatre centiemes d'indice.
+      expect(pireJourneeDe('gr20-nord', 7).noteSurVingt, closeTo(15.94, 0.05));
+      // ET SERRER L'ALLURE A CINQ JOURS FAIT MONTER DE TROIS POINTS, ce que la
+      // fiche annonce : 18,5 contre 15,6 sur vingt.
       final aCinq = pireJourneeDe('gr20-nord', 5);
-      expect(aCinq.indiceDuTerrain, closeTo(80.9, 0.1));
-      expect(aCinq.indiceDuTerrain / 50.0, closeTo(1.6, 0.05));
+      expect(aCinq.noteSurVingt, closeTo(18.46, 0.05));
       final texte = ficheDe('gr20-nord').description.aQuoiSAttendre;
-      expect(texte, contains('un indice de terrain de 50'));
-      expect(texte, contains('passe a un indice de 81, soit 1,6 fois'));
+      expect(texte, contains('une note de 15,6 sur 20'));
+      expect(texte, contains('passe a 18,5 sur 20'));
     });
 
     test('LE SUD DESCEND QUAND ON LUI DONNE DU TEMPS, ET LA FICHE LE '
@@ -290,14 +330,14 @@ void main() {
       // tombe de 35 a 20, parce que ses montees se coupent toutes sur un
       // couchage releve.
       expect(lireLesNuits('gr20-sud').journeesMaximales, 16);
-      final aCinq = pireJourneeDe('gr20-sud', 5).indiceDuTerrain;
-      final aSept = pireJourneeDe('gr20-sud', 7).indiceDuTerrain;
-      final aHuit = pireJourneeDe('gr20-sud', 8).indiceDuTerrain;
-      final aSeize = pireJourneeDe('gr20-sud', 16).indiceDuTerrain;
-      expect(aCinq, closeTo(35.3, 0.1));
-      expect(aSept, closeTo(27.2, 0.1));
-      expect(aHuit, closeTo(25.5, 0.1));
-      expect(aSeize, closeTo(20.4, 0.1));
+      final aCinq = pireJourneeDe('gr20-sud', 5).noteSurVingt;
+      final aSept = pireJourneeDe('gr20-sud', 7).noteSurVingt;
+      final aHuit = pireJourneeDe('gr20-sud', 8).noteSurVingt;
+      final aSeize = pireJourneeDe('gr20-sud', 16).noteSurVingt;
+      expect(aCinq, closeTo(11.95, 0.05));
+      expect(aSept, closeTo(5.23, 0.05));
+      expect(aHuit, closeTo(3.66, 0.05));
+      expect(aSeize, closeTo(2.58, 0.05));
       expect(
         aCinq > aSept && aSept > aHuit && aHuit > aSeize,
         isTrue,
@@ -312,8 +352,8 @@ void main() {
       expect(plancher.depart, contains('Vizzavona'));
       expect(plancher.deniveleM, greaterThan(plancher.descenteM));
       final texte = ficheDe('gr20-sud').description.aQuoiSAttendre;
-      expect(texte, contains('un indice de 27'));
-      expect(texte, contains('ne descend jamais sous un indice de 20'));
+      expect(texte, contains('5,2 sur 20'));
+      expect(texte, contains('ne descend jamais sous 2,6 sur 20'));
       expect(texte, contains('Vizzavona'));
     });
 
@@ -324,7 +364,7 @@ void main() {
       expect(gr20SudTrailConfig.availableDurations, contains(8));
       final indices = {
         for (final jours in gr20SudTrailConfig.availableDurations)
-          jours: pireJourneeDe('gr20-sud', jours).indiceDuTerrain,
+          jours: pireJourneeDe('gr20-sud', jours).noteSurVingt,
       };
       expect(
         indices.values.toSet().length,

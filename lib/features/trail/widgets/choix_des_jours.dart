@@ -1,4 +1,4 @@
-/// Le choix de l'allure, et ce que chaque allure coute EN INDICE DE TERRAIN.
+/// Le choix de l'allure, et la NOTE SUR VINGT de sa journee la plus dure.
 library;
 
 import 'package:flutter/material.dart';
@@ -12,10 +12,11 @@ import '../../../core/theme/app_theme.dart';
 /// donc AFFICHE, et l'allure du sentier est marquee comme le conseil qu'elle
 /// est — pas comme une caracteristique du chemin.
 ///
-/// CHAQUE ALLURE PORTE L'INDICE DE SA PIRE JOURNEE, ET AUCUN MOT. L'echelle de
-/// mots annoncee le 17/10 11:05 est morte a la mesure (les quatre allures du
-/// GR20 sortaient le meme mot), et le kilometre-effort qui l'alimentait est
-/// retire par la tache 858 : il etait faux. Ce qui reste est le NOMBRE, et il
+/// CHAQUE ALLURE PORTE LA NOTE DE SA PIRE JOURNEE, SUR VINGT, ET AUCUN MOT.
+/// L'echelle de mots annoncee le 17/10 11:05 est morte a la mesure, et le
+/// kilometre-effort qui l'alimentait est retire par la tache 858 : il etait
+/// faux. Depuis la tache 860 le nombre affiche est une NOTE SUR VINGT, c'est-a-
+/// dire la place de la journee parmi les etapes officielles du monde — et il
 /// parle : serrer l'allure ne change pas le chemin, il concentre la meme
 /// montagne sur moins de journees.
 class ChoixDesJours extends StatelessWidget {
@@ -27,7 +28,7 @@ class ChoixDesJours extends StatelessWidget {
     required this.choisie,
     required this.conseillee,
     required this.onChoisi,
-    this.indiceDeLaPireJournee,
+    this.noteDeLaPireJournee,
   });
 
   /// Les allures offertes, en jours, triees.
@@ -42,12 +43,12 @@ class ChoixDesJours extends StatelessWidget {
   /// Appele quand le lecteur choisit une autre allure.
   final ValueChanged<int> onChoisi;
 
-  /// L'INDICE DE TERRAIN DE LA PIRE JOURNEE D'UNE ALLURE, en points.
+  /// LA NOTE SUR VINGT DE LA PIRE JOURNEE D'UNE ALLURE.
   ///
-  /// Nul quand l'appelant ne sait pas le dire — un sentier sans trace ou sans
+  /// Nulle quand l'appelant ne sait pas la dire — un sentier sans trace ou sans
   /// nuits relevees —, et alors chaque allure n'affiche que son nombre de
   /// jours. On prefere la ligne muette au chiffre invente.
-  final double? Function(int jours)? indiceDeLaPireJournee;
+  final double? Function(int jours)? noteDeLaPireJournee;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +85,7 @@ class ChoixDesJours extends StatelessWidget {
                     jours: jours,
                     conseillee: jours == conseillee,
                     choisie: jours == choisie,
-                    indice: indiceDeLaPireJournee?.call(jours),
+                    note: noteDeLaPireJournee?.call(jours),
                   ),
                   selected: jours == choisie,
                   onSelected: (_) => onChoisi(jours),
@@ -97,10 +98,11 @@ class ChoixDesJours extends StatelessWidget {
           // une ALLURE. Elle nomme aussi l'unite une seule fois, plutot que de
           // la repeter sur chaque pastille.
           Text(
-            'Sous chaque allure : l\'indice de terrain de sa journee la plus '
-            'dure (un point = un kilometre de plat). Serrer l\'allure ne '
-            'change pas le chemin, il concentre la meme montagne sur moins de '
-            'journees.',
+            'Sous chaque allure : la note sur vingt de sa journee la plus '
+            'dure. Vingt, c\'est plus dur que les 106 etapes officielles du '
+            'corpus de calage ; zero, c\'est six kilometres de plat. Serrer '
+            'l\'allure ne change pas le chemin, il concentre la meme montagne '
+            'sur moins de journees.',
             key: const ValueKey('ce-que-l-allure-coute'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: AppTheme.grisTexteSecondaire,
@@ -112,7 +114,7 @@ class ChoixDesJours extends StatelessWidget {
   }
 }
 
-/// L'ETIQUETTE D'UNE ALLURE : son nombre de jours, puis ce qu'elle coute.
+/// L'ETIQUETTE D'UNE ALLURE : son nombre de jours, puis sa note.
 ///
 /// DEUX LIGNES ET PAS UNE. « 7 jours · 55,3 » sur une seule ligne fabrique des
 /// pastilles si larges qu'elles passent a la ligne une par une : l'ecart entre
@@ -123,7 +125,7 @@ class _EtiquetteDUneAllure extends StatelessWidget {
     required this.jours,
     required this.conseillee,
     required this.choisie,
-    required this.indice,
+    required this.note,
   });
 
   /// L'allure, en jours.
@@ -135,14 +137,14 @@ class _EtiquetteDUneAllure extends StatelessWidget {
   /// VRAI quand c'est l'allure actuellement retenue.
   final bool choisie;
 
-  /// L'indice de terrain de la pire journee de cette allure, nul s'il n'est
-  /// pas mesure.
-  final double? indice;
+  /// La note sur vingt de la pire journee de cette allure, nulle si elle
+  /// n'est pas mesurable.
+  final double? note;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final pire = indice;
+    final pire = note;
     final chiffre = pire == null ? null : nombreAUneDecimale(pire);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -157,7 +159,7 @@ class _EtiquetteDUneAllure extends StatelessWidget {
         if (chiffre != null)
           Text(
             chiffre,
-            key: ValueKey('indice-de-l-allure-$jours'),
+            key: ValueKey('note-de-l-allure-$jours'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: AppTheme.grisTexteSecondaire,
               fontWeight: choisie ? FontWeight.w700 : FontWeight.w400,

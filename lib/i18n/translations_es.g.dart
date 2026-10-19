@@ -291,7 +291,6 @@ class _Translations$stage$es extends Translations$stage$fr {
 	@override String get description => 'Descripción';
 	@override String get coordinates => 'Coordenadas';
 	@override String get pois => 'Puntos de interés';
-	@override late final _Translations$stage$difficulty$es difficulty = _Translations$stage$difficulty$es._(_root);
 	@override String get remaining => '{distance} km restantes';
 	@override String get arrived => 'Has llegado!';
 	@override String get altitudeProfile => 'Perfil altimétrico';
@@ -301,7 +300,6 @@ class _Translations$stage$es extends Translations$stage$fr {
 	@override String get loadingList => 'Cargando las etapas...';
 	@override String get dPlus => 'D+';
 	@override String get dMinus => 'D-';
-	@override String get difficultyLabel => 'Dificultad';
 	@override late final _Translations$stage$waterSources$es waterSources = _Translations$stage$waterSources$es._(_root);
 	@override late final _Translations$stage$accommodation$es accommodation = _Translations$stage$accommodation$es._(_root);
 	@override late final _Translations$stage$advice$es advice = _Translations$stage$advice$es._(_root);
@@ -2190,20 +2188,6 @@ class _Translations$map$attribution$es extends Translations$map$attribution$fr {
 	// Translations
 	@override String get licence => 'Datos cartograficos con licencia ODbL — ver la licencia';
 	@override String get traces => 'Trazados de los senderos recogidos en OpenStreetMap';
-}
-
-// Path: stage.difficulty
-class _Translations$stage$difficulty$es extends Translations$stage$difficulty$fr {
-	_Translations$stage$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
-
-	final TranslationsEs _root; // ignore: unused_field
-
-	// Translations
-	@override String get easy => 'Fácil';
-	@override String get moderate => 'Moderado';
-	@override String get hard => 'Difícil';
-	@override String get expert => 'Experto';
-	@override String get extreme => 'Extremo';
 }
 
 // Path: stage.waterSources
@@ -4502,11 +4486,6 @@ extension on TranslationsEs {
 			'stage.description' => 'Descripción',
 			'stage.coordinates' => 'Coordenadas',
 			'stage.pois' => 'Puntos de interés',
-			'stage.difficulty.easy' => 'Fácil',
-			'stage.difficulty.moderate' => 'Moderado',
-			'stage.difficulty.hard' => 'Difícil',
-			'stage.difficulty.expert' => 'Experto',
-			'stage.difficulty.extreme' => 'Extremo',
 			'stage.remaining' => '{distance} km restantes',
 			'stage.arrived' => 'Has llegado!',
 			'stage.altitudeProfile' => 'Perfil altimétrico',
@@ -4516,7 +4495,6 @@ extension on TranslationsEs {
 			'stage.loadingList' => 'Cargando las etapas...',
 			'stage.dPlus' => 'D+',
 			'stage.dMinus' => 'D-',
-			'stage.difficultyLabel' => 'Dificultad',
 			'stage.waterSources.title' => 'Puntos de agua',
 			'stage.waterSources.count' => '{n} fuente(s)',
 			'stage.waterSources.none' => 'No hay ningún punto de agua indicado en esta etapa. Lleva al menos 3 L por persona.',
@@ -4806,14 +4784,14 @@ extension on TranslationsEs {
 			'checklist.ui.requiredWarnBody' => 'Este equipo es obligatorio por seguridad (inspirado en el reglamento UTMB). Seguro que quieres quitarlo?',
 			'checklist.ui.keep' => 'Mantener',
 			'checklist.ui.removeAnyway' => 'Quitar de todos modos',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.reduceQuantity' => 'Reducir cantidad',
 			'checklist.ui.increaseQuantity' => 'Aumentar cantidad',
 			'checklist.ui.addToShoppingList' => 'Añadir a la lista de la compra',
 			'checklist.ui.removeFromShoppingList' => 'Quitar de la lista',
 			'checklist.ui.help' => 'Ayuda',
 			'checklist.ui.shoppingListTitle' => 'Lista de la compra',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.shoppingListEmpty' => 'Tu lista de la compra está vacía. Añade artículos con el botón del carrito.',
 			'checklist.ui.shoppingToBuy' => 'Por comprar',
 			'checklist.ui.shoppingPurchased' => 'Ya comprado',
@@ -5320,14 +5298,14 @@ extension on TranslationsEs {
 			'demo.collecteIntro' => 'La información usada para calcular la viabilidad.',
 			'demo.collecteProfil' => 'Tu perfil',
 			'demo.collecteForme' => 'Tu forma física',
-			_ => null,
-		} ?? switch (path) {
 			'demo.collecteExperience' => 'Tu experiencia',
 			'demo.collecteSaison' => 'Temporada de salida',
 			'demo.collecteSentier' => 'El sendero',
 			'demo.collecteJours' => 'Número de días',
 			'demo.collecteAbsent' => 'No indicado',
 			'demo.sortieFaite' => 'Has salido de la demo.',
+			_ => null,
+		} ?? switch (path) {
 			'updates.readyTitle' => 'Actualización lista',
 			'updates.readyBodyOne' => 'Un sendero ha sido actualizado.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} senderos han sido actualizados.',
@@ -5834,14 +5812,14 @@ extension on TranslationsEs {
 			'moderation.decisions.restrict' => 'Contenido restringido',
 			'moderation.decisions.remove' => 'Contenido retirado',
 			'moderation.noStatement' => 'No se ha aplicado ninguna restricción a tu contenido.',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.complaintAction' => 'Impugnar esta decisión',
 			'moderation.complaintTitle' => 'Impugnar una decisión',
 			'moderation.complaintIntro' => 'Puedes impugnar una decisión de moderación. Explica por qué consideras la decisión injustificada (artículo 20).',
 			'moderation.complaintExposeLabel' => 'Tu impugnación',
 			'moderation.complaintExposeHint' => 'Describe los motivos de tu impugnación.',
 			'moderation.complaintSubmit' => 'Enviar impugnación',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.complaintSent' => 'Impugnación registrada. Será examinada.',
 			'moderation.complaintEmpty' => 'Explica tu impugnación.',
 			'moderation.a11y.reportForm' => 'Formulario de denuncia de contenido',
@@ -6348,14 +6326,14 @@ extension on TranslationsEs {
 			'systemBackup.confirm' => 'Entendido',
 			'systemBackup.a11yCheckbox' => 'Rechazar la copia de seguridad de todos mis datos por el sistema del teléfono',
 			'lieu.ouvrirDansLesCartes' => 'Abrir en mapas',
-			_ => null,
-		} ?? switch (path) {
 			'lieu.cartesIndisponibles' => 'Ninguna aplicación de mapas pudo abrirse en este dispositivo.',
 			'lieu.adresse' => 'Dirección',
 			'lieu.telephoner' => 'Llamar',
 			'lieu.siteOfficiel' => 'Sitio oficial',
 			'lieu.aCompleter' => 'Información pendiente de confirmar',
 			'lieu.source' => 'Fuente',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.rafraichir' => 'Actualizar desde la base de datos',
 			'lieu.rafraichirFait' => ({required Object n}) => '${n} información(es) actualizada(s) desde la base de datos.',
 			'lieu.rafraichirDejaAJour' => 'Ya está al día: la base de datos no tiene nada más reciente.',

@@ -101,13 +101,13 @@ Widget bloc({
 
 void main() {
   group('858 — l indice de terrain est a l ecran, en nombre', () {
-    testWidgets('LE BLOC PORTE L INDICE DE LA PIRE JOURNEE, ET C EST CELLE '
-        'QUI MONTE', (tester) async {
+    testWidgets('LE BLOC PORTE LA NOTE SUR VINGT DE LA PIRE JOURNEE, ET C '
+        'EST CELLE QUI MONTE', (tester) async {
       await tester.pumpWidget(bloc());
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey('indice-du-terrain')), findsOneWidget);
-      expect(find.text('Indice de terrain'), findsOneWidget);
+      expect(find.text('Difficulte, journee par journee'), findsOneWidget);
 
       // LA PIRE JOURNEE EST LA MONTEE, ET SON INDICE EST AFFICHE. Le sentier
       // d'essai monte 800 m d'un seul tenant sur ses cinq premiers kilometres.
@@ -121,17 +121,21 @@ void main() {
       expect(pire.profil.segments, hasLength(40));
 
       final ligne = tester.widget<Text>(
-        find.byKey(const ValueKey('indice-de-la-pire-journee')),
+        find.byKey(const ValueKey('note-de-la-pire-journee')),
       );
-      expect(ligne.data, startsWith('Journee la plus dure : indice '));
-      // L'indice d'une montee de 800 m a 16 % : le socle mesure vaut environ
-      // 23 points et la majoration de continuite l'augmente, puisque 800 m
-      // depasse les 550 m de reference.
+      expect(ligne.data, startsWith('Journee la plus dure : '));
+      expect(ligne.data, endsWith(' sur 20'));
+      // Une montee de 800 m a 16 % vaut un indice d'environ 24 points, donc
+      // une note de l'ordre de quatre a cinq sur vingt : c'est une etape
+      // honnete, pas une epreuve mondiale.
       final chiffre = double.parse(
-        ligne.data!.split('indice ').last.replaceAll(',', '.'),
+        ligne.data!
+            .replaceAll('Journee la plus dure : ', '')
+            .replaceAll(' sur 20', '')
+            .replaceAll(',', '.'),
       );
-      expect(chiffre, greaterThan(20.0));
-      expect(chiffre, lessThan(40.0));
+      expect(chiffre, greaterThan(0.0));
+      expect(chiffre, lessThan(20.0));
     });
 
     testWidgets('LE TEMPS DE MARCHE EST AFFICHE A PART, SOUS SON PROPRE '
@@ -155,17 +159,26 @@ void main() {
       );
     });
 
-    testWidgets('LA PART MESUREE ET LA PART ASSUMEE SONT DITES A COTE DU '
-        'RESULTAT', (tester) async {
+    testWidgets('LES DEUX FAITS SANS ECHELLE SONT A COTE DE LA NOTE : la '
+        'montee continue et le kilometrage', (tester) async {
       await tester.pumpWidget(bloc());
       await tester.pumpAndSettle();
 
-      final part = tester.widget<Text>(
-        find.byKey(const ValueKey('part-mesuree-et-part-assumee')),
+      final faits = tester.widget<Text>(
+        find.byKey(const ValueKey('les-deux-faits')),
       );
-      expect(part.data, contains('mesure sur la trace'));
-      expect(part.data, contains('majoration pour la continuite'));
-      expect(part.data, contains('seule part assumee'));
+      expect(faits.data, contains('une montee de 800 m d\'un seul tenant'));
+      expect(faits.data, contains('km de marche'));
+      // ET LES QUATRE LECTURES DU PLAN SONT LA, SANS AUCUN TOTAL.
+      expect(find.byKey(const ValueKey('lectures-du-plan')), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('lecture-nombre-de-jours')),
+        findsOneWidget,
+      );
+      final pasDeNote = tester.widget<Text>(
+        find.byKey(const ValueKey('pas-de-note-de-sentier')),
+      );
+      expect(pasDeNote.data, contains('Un sentier n\'a pas de note'));
     });
 
     testWidgets('LA REGLE AFFICHEE EST LA REGLE APPLIQUEE', (tester) async {
@@ -178,7 +191,14 @@ void main() {
       expect(regle.data, LoiDeLIndice.retenue.regleAffichee);
       expect(regle.data, contains('un point vaut un kilometre de plat'));
       expect(regle.data, contains('15 minutes de terrain reposant'));
-      expect(regle.data, contains('2,4 fois'));
+      expect(regle.data, contains('2,1 fois'));
+      // ET CE QUE LA NOTE VEUT DIRE EST DIT, avec la date du corpus.
+      final sens = tester.widget<Text>(
+        find.byKey(const ValueKey('ce-que-la-note-veut-dire')),
+      );
+      expect(sens.data, contains('106 etapes officielles'));
+      expect(sens.data, contains('19/10/2026'));
+      expect(sens.data, contains('six kilometres de plat'));
     });
 
     testWidgets('CHAQUE ALLURE PORTE SON CHIFFRE, ET SERRER L ALLURE LE FAIT '
@@ -190,10 +210,10 @@ void main() {
       expect(find.byKey(const ValueKey('allure-1')), findsOneWidget);
       expect(find.byKey(const ValueKey('allure-2')), findsOneWidget);
       final aUnJour = tester.widget<Text>(
-        find.byKey(const ValueKey('indice-de-l-allure-1')),
+        find.byKey(const ValueKey('note-de-l-allure-1')),
       );
       final aDeuxJours = tester.widget<Text>(
-        find.byKey(const ValueKey('indice-de-l-allure-2')),
+        find.byKey(const ValueKey('note-de-l-allure-2')),
       );
       final unJour = double.parse(aUnJour.data!.replaceAll(',', '.'));
       final deuxJours = double.parse(aDeuxJours.data!.replaceAll(',', '.'));
@@ -213,12 +233,12 @@ void main() {
       await tester.pumpAndSettle();
 
       final avant = tester
-          .widget<Text>(find.byKey(const ValueKey('indice-de-la-pire-journee')))
+          .widget<Text>(find.byKey(const ValueKey('note-de-la-pire-journee')))
           .data;
       await tester.tap(find.byKey(const ValueKey('allure-1')));
       await tester.pumpAndSettle();
       final apres = tester
-          .widget<Text>(find.byKey(const ValueKey('indice-de-la-pire-journee')))
+          .widget<Text>(find.byKey(const ValueKey('note-de-la-pire-journee')))
           .data;
       expect(apres, isNot(avant));
     });
@@ -254,7 +274,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.byKey(const ValueKey('indice-de-la-pire-journee')),
+        find.byKey(const ValueKey('note-de-la-pire-journee')),
         findsNothing,
       );
       expect(find.text('2 journees de marche a cette allure.'), findsOneWidget);
@@ -271,7 +291,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey('indice-du-terrain')), findsNothing);
-      expect(find.text('Indice de terrain'), findsNothing);
+      expect(find.text('Difficulte, journee par journee'), findsNothing);
     });
   });
 }

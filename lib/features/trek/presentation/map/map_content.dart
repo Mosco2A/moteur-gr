@@ -360,7 +360,6 @@ class _MapContentState extends State<MapContent> {
                                 startLng: sm.startLng,
                                 endLat: sm.endLat,
                                 endLng: sm.endLng,
-                                difficulty: sm.difficulty,
                               ),
                             )
                             .toList();

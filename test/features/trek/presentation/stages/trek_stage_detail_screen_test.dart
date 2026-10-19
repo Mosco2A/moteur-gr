@@ -140,8 +140,12 @@ void main() {
       expect(find.text('km'), findsOneWidget);
       expect(find.text('m'), findsNWidgets(2));
 
-      // Badge difficulte — SW-SKIN-L5 : UNE seule occurrence (chip semantique).
-      expect(find.text('Difficile'), findsOneWidget);
+      // PLUS DE BADGE DE DIFFICULTE (tache 860) : il portait l'etiquette
+      // STOCKEE de l'etape, retiree parce qu'elle est fixe par etape donc
+      // muette sur la journee marchee. Aucun mot de niveau ne doit rester.
+      for (final mot in <String>['Facile', 'Modere', 'Difficile', 'Extreme']) {
+        expect(find.text(mot), findsNothing, reason: 'le mot « $mot »');
+      }
 
       // Profil altimetrique section
       expect(find.text('Profil altimétrique'), findsOneWidget);
@@ -332,8 +336,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Conseils'), findsOneWidget);
-      // Etape 'hard' -> conseil "etape technique".
-      expect(find.textContaining('Étape technique'), findsOneWidget);
+      // LE CONSEIL D'ETAPE TECHNIQUE EST RETIRE AVEC L'ETIQUETTE (tache 860) :
+      // il etait declenche par `hard` ou `extreme`, donc par une etiquette
+      // fixe. Le conseil de depart, lui, ne depend d'aucun niveau, et
+      // l'avertissement de gros denivele reste declenche par une MESURE.
+      expect(find.textContaining('Étape technique'), findsNothing);
       // 2 points d'eau -> conseil "remplis tes gourdes".
       // TACHE 757 : tutoiement (« Remplissez vos » -> « Remplis tes »).
       expect(find.textContaining('Remplis tes gourdes'), findsOneWidget);

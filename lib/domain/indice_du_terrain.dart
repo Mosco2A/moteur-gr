@@ -19,14 +19,15 @@ class LoiDeLIndice {
   /// Construit une loi. Les valeurs par defaut sont celles que Christophe a
   /// tranchees le 18/10/2026 ; [LoiDeLIndice.retenue] les porte.
   const LoiDeLIndice({
-    this.beta = 1.25,
+    this.beta = 1.08,
     this.deniveleDeReferenceM = 550.0,
     this.repitQuiCoupeUneMonteeMinutes = 15.0,
     this.allureSurTerrainReposantKmH = 4.0,
     this.secondesParMetreDeDescente = 5.0,
   });
 
-  /// LA LOI RETENUE : celle des quatre arbitrages du 18/10/2026.
+  /// LA LOI RETENUE : les quatre arbitrages du 18/10/2026, avec l'exposant
+  /// mesure du 19/10 (tache 860).
   static const LoiDeLIndice retenue = LoiDeLIndice();
 
   /// LA LOI SANS AUCUNE PART ASSUMEE : l'indice entierement mesure.
@@ -38,22 +39,45 @@ class LoiDeLIndice {
   /// le GR20 entier comme sur une montee isolee.
   static const LoiDeLIndice entierementMesuree = LoiDeLIndice(beta: 1.0);
 
-  /// L'EXPOSANT DE LA MAJORATION DE CONTINUITE : 1,25. C'EST LA SEULE PART
-  /// ASSUMEE DE L'INDICE.
+  /// L'EXPOSANT DE LA MAJORATION DE CONTINUITE : 1,08. C'EST LA SEULE PART
+  /// ASSUMEE DE L'INDICE, ET ELLE EST DESORMAIS ADOSSEE A UNE MESURE PUBLIEE.
   ///
-  /// DECISION DE CHRISTOPHE, 18/10/2026 19:34 (memoire #102251) : une montee de
-  /// 1 000 m doit valoir environ 2,4 FOIS une montee de 500 m a pente egale, et
-  /// non deux fois. 1,25 rend 2,38.
+  /// IL VALAIT 1,25 JUSQU'AU 19/10/2026, ET CE 1,25 N'AVAIT AUCUNE FONDATION
+  /// PUBLIEE. Il avait ete choisi pour produire « franchement plus que le
+  /// double », ce que Christophe demandait, et c'est tout ce qu'on pouvait en
+  /// dire. Athena est rentree avec la seule mesure solide qui existe sur la
+  /// super-linearite d'un effort d'endurance :
   ///
-  /// AUCUNE SOURCE NE CHIFFRE CE FACTEUR, ET IL FAUT LE DIRE EN FACE. Chez
-  /// Minetti le cout par metre est CONSTANT a pente donnee : monter 1 000 m a
-  /// 15 % coute exactement deux fois monter 500 m, metaboliquement. La
-  /// super-linearite est un effet de FATIGUE, pas d'energetique. On l'assume,
-  /// on la nomme, on la chiffre : a 1,25 la part assumee vaut 11 % de l'indice
-  /// en moyenne sur les trente-deux journees mesurees du GR20 et 34 % au
-  /// maximum. A 1,5 elle atteindrait 72 % d'une journee, a 2,0 cent
-  /// quatre-vingt-douze : le chiffre cesserait d'etre une mesure corrigee pour
-  /// devenir une opinion habillee.
+  ///   - RIEGEL (1977, et sa litterature de reprise) : l'exposant de fatigue
+  ///     vaut 1,06 pour l'elite et 1,08 a 1,10 pour le coureur RECREATIF.
+  ///     1,08 est la borne basse du recreatif, donc le choix le plus prudent
+  ///     du domaine le plus proche de notre marcheur.
+  ///   - DRAKE, FINKE et FERGUSON (2023, European Journal of Applied
+  ///     Physiology) : ils fondent la FORME en loi de puissance, c'est-a-dire
+  ///     exactement la forme `(D+/D_ref)^(beta-1)` employee ici.
+  ///
+  /// LA RESERVE, ET ELLE EST D'ATHENA ELLE-MEME : LES EXPOSANTS PUBLIES PORTENT
+  /// SUR LA DUREE D'UN EFFORT ENTIER, PAS SUR LA HAUTEUR D'UNE COTE. On
+  /// applique donc une loi mesuree sur un objet (le temps d'une course) a un
+  /// autre objet (le denivele d'une montee continue), PAR ANALOGIE. Cette
+  /// analogie n'est pas mesuree, elle est assumee, et c'est la derniere chose
+  /// non mesuree qui reste dans l'indice. La forme est fondee ; la
+  /// transposition d'objet ne l'est pas.
+  ///
+  /// CE QUE LE CHANGEMENT COUTE, MESURE SUR LES SEIZE ETAPES DU GR20 : le total
+  /// passe de 397,37 a 394,30, soit -0,8 %, avec un Spearman de 0,9912 et six
+  /// changements de rang d'un cran. CHANGER L'EXPOSANT EST PRESQUE UN
+  /// NON-EVENEMENT sur le classement. Ce qu'il change vraiment, c'est la PART
+  /// ASSUMEE : de 9,73 % a 3,28 % de l'indice en brut (somme des majorations en
+  /// valeur absolue sur somme des indices), et de 0,53 % a 0,25 % en net.
+  ///
+  /// QUI Y PERD : l'etape 1 du GR20, celle qui a la plus grosse montee continue
+  /// du sentier (1 453 m d'un seul tenant). Son indice tombe de 50,03 a 42,58
+  /// et son percentile dans le corpus mondial de 83,0 a 77,4 % — c'est elle qui
+  /// avait le plus a perdre d'une courbe moins raide. Sa note, elle, MONTE,
+  /// parce que c'est la jauge sur les rangs qui a change de question
+  /// ([NoteSurVingt]) : un probleme de RANG ne se corrige pas par un changement
+  /// de MAGNITUDE.
   final double beta;
 
   /// LA TAILLE DE MONTEE OU LA MAJORATION EST NULLE : 550 m.
@@ -132,9 +156,10 @@ class LoiDeLIndice {
   ///
   /// A pente egale l'indice d'une montee est proportionnel a son denivele
   /// puissance [beta], donc doubler le denivele multiplie l'indice par
-  /// `2^beta` — 2,38 a beta = 1,25, et exactement 2 a beta = 1. C'est LE
-  /// nombre que Christophe a arbitre le 18/10 19:34, et c'est donc celui que
-  /// l'ecran affiche plutot que l'exposant, qui ne se lit pas.
+  /// `2^beta` — 2,11 a beta = 1,08, et exactement 2 a beta = 1. C'est ce
+  /// nombre que l'ecran affiche plutot que l'exposant, qui ne se lit pas :
+  /// doubler la montee coute un peu plus que le double, et c'est tout ce que
+  /// la mesure publiee autorise a dire.
   double get ratioDeDoublement => math.pow(2, beta).toDouble();
 
   /// LA LOI EN UNE PHRASE, TELLE QU'ELLE S'AFFICHE SOUS LE RESULTAT.

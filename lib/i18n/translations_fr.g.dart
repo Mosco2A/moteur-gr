@@ -515,8 +515,6 @@ class Translations$stage$fr {
 	/// fr: 'Points d'intérêt'
 	String get pois => 'Points d\'intérêt';
 
-	late final Translations$stage$difficulty$fr difficulty = Translations$stage$difficulty$fr.internal(_root);
-
 	/// fr: '{distance} km restants'
 	String get remaining => '{distance} km restants';
 
@@ -543,9 +541,6 @@ class Translations$stage$fr {
 
 	/// fr: 'D-'
 	String get dMinus => 'D-';
-
-	/// fr: 'Difficulté'
-	String get difficultyLabel => 'Difficulté';
 
 	late final Translations$stage$waterSources$fr waterSources = Translations$stage$waterSources$fr.internal(_root);
 	late final Translations$stage$accommodation$fr accommodation = Translations$stage$accommodation$fr.internal(_root);
@@ -4677,30 +4672,6 @@ class Translations$map$attribution$fr {
 	String get traces => 'Traces des sentiers relevees dans OpenStreetMap';
 }
 
-// Path: stage.difficulty
-class Translations$stage$difficulty$fr {
-	Translations$stage$difficulty$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Facile'
-	String get easy => 'Facile';
-
-	/// fr: 'Modéré'
-	String get moderate => 'Modéré';
-
-	/// fr: 'Difficile'
-	String get hard => 'Difficile';
-
-	/// fr: 'Expert'
-	String get expert => 'Expert';
-
-	/// fr: 'Extrême'
-	String get extreme => 'Extrême';
-}
-
 // Path: stage.waterSources
 class Translations$stage$waterSources$fr {
 	Translations$stage$waterSources$fr.internal(this._root);
@@ -8690,11 +8661,6 @@ extension on Translations {
 			'stage.description' => 'Description',
 			'stage.coordinates' => 'Coordonnées',
 			'stage.pois' => 'Points d\'intérêt',
-			'stage.difficulty.easy' => 'Facile',
-			'stage.difficulty.moderate' => 'Modéré',
-			'stage.difficulty.hard' => 'Difficile',
-			'stage.difficulty.expert' => 'Expert',
-			'stage.difficulty.extreme' => 'Extrême',
 			'stage.remaining' => '{distance} km restants',
 			'stage.arrived' => 'Tu es arrivé !',
 			'stage.altitudeProfile' => 'Profil altimétrique',
@@ -8704,7 +8670,6 @@ extension on Translations {
 			'stage.loadingList' => 'Chargement des étapes...',
 			'stage.dPlus' => 'D+',
 			'stage.dMinus' => 'D-',
-			'stage.difficultyLabel' => 'Difficulté',
 			'stage.waterSources.title' => 'Points d\'eau',
 			'stage.waterSources.count' => '{n} source(s)',
 			'stage.waterSources.none' => 'Pas de point d\'eau référencé sur cette étape. Prévois au moins 3 L par personne.',
@@ -8994,14 +8959,14 @@ extension on Translations {
 			'checklist.ui.requiredWarnBody' => 'Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Veux-tu vraiment le retirer ?',
 			'checklist.ui.keep' => 'Garder',
 			'checklist.ui.removeAnyway' => 'Retirer quand même',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.reduceQuantity' => 'Réduire quantité',
 			'checklist.ui.increaseQuantity' => 'Augmenter quantité',
 			'checklist.ui.addToShoppingList' => 'Ajouter à la liste de courses',
 			'checklist.ui.removeFromShoppingList' => 'Retirer de la liste',
 			'checklist.ui.help' => 'Aide',
 			'checklist.ui.shoppingListTitle' => 'Liste de courses',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.shoppingListEmpty' => 'Ta liste de courses est vide. Ajoute des items avec le bouton panier.',
 			'checklist.ui.shoppingToBuy' => 'À acheter',
 			'checklist.ui.shoppingPurchased' => 'Déjà acheté',
@@ -9508,14 +9473,14 @@ extension on Translations {
 			'demo.collecteIntro' => 'Les informations utilisées pour calculer la faisabilité.',
 			'demo.collecteProfil' => 'Ton profil',
 			'demo.collecteForme' => 'Ta forme',
-			_ => null,
-		} ?? switch (path) {
 			'demo.collecteExperience' => 'Ton expérience',
 			'demo.collecteSaison' => 'Saison du départ',
 			'demo.collecteSentier' => 'Le sentier',
 			'demo.collecteJours' => 'Nombre de jours',
 			'demo.collecteAbsent' => 'Non renseigné',
 			'demo.sortieFaite' => 'Tu as quitté la démo.',
+			_ => null,
+		} ?? switch (path) {
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
@@ -10022,14 +9987,14 @@ extension on Translations {
 			'moderation.decisions.restrict' => 'Contenu restreint',
 			'moderation.decisions.remove' => 'Contenu retiré',
 			'moderation.noStatement' => 'Aucune restriction n\'a été appliquée à tes contenus.',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.complaintAction' => 'Contester cette décision',
 			'moderation.complaintTitle' => 'Contester une décision',
 			'moderation.complaintIntro' => 'Tu peux contester une décision de modération. Explique pourquoi tu estimes la décision injustifiée (article 20).',
 			'moderation.complaintExposeLabel' => 'Ta contestation',
 			'moderation.complaintExposeHint' => 'Décris les raisons de ta contestation.',
 			'moderation.complaintSubmit' => 'Envoyer la contestation',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.complaintSent' => 'Contestation enregistrée. Elle sera examinée.',
 			'moderation.complaintEmpty' => 'Explique ta contestation.',
 			'moderation.a11y.reportForm' => 'Formulaire de signalement de contenu',
@@ -10536,14 +10501,14 @@ extension on Translations {
 			'systemBackup.confirm' => 'C\'est noté',
 			'systemBackup.a11yCheckbox' => 'Refuser la sauvegarde de toutes mes données par le système du téléphone',
 			'lieu.ouvrirDansLesCartes' => 'Ouvrir dans les cartes',
-			_ => null,
-		} ?? switch (path) {
 			'lieu.cartesIndisponibles' => 'Aucune application de cartes n\'a pu s\'ouvrir sur cet appareil.',
 			'lieu.adresse' => 'Adresse',
 			'lieu.telephoner' => 'Appeler',
 			'lieu.siteOfficiel' => 'Site officiel',
 			'lieu.aCompleter' => 'Information à compléter',
 			'lieu.source' => 'Source',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.rafraichir' => 'Rafraîchir depuis la base',
 			'lieu.rafraichirFait' => ({required Object n}) => '${n} information(s) mise(s) à jour depuis la base.',
 			'lieu.rafraichirDejaAJour' => 'Déjà à jour : la base ne contient rien de plus récent.',

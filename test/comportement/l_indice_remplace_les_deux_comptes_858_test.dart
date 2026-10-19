@@ -28,6 +28,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
+import 'package:moteur_gr/domain/indice_du_terrain.dart';
 import 'package:moteur_gr/domain/journees_pesees.dart';
 import 'package:moteur_gr/domain/nuit_possible.dart';
 import 'package:moteur_gr/domain/profil_du_terrain.dart';
@@ -79,12 +80,44 @@ DecoupageDeNuits nuitsDuGr20() => DecoupageDeNuits.fromJson(
       as Map<String, dynamic>,
 );
 
+/// L'EFFORT D'UN GROUPE DE SEGMENTS — la charge que le repartiteur egalise
+/// depuis la tache 860 (« Oui a l'effort pas au temps »).
+double Function(int, int) effortDuGroupe(
+  DecoupageDeNuits nuits,
+  ProfilDuTerrain profil,
+) {
+  final pkParNom = <String, double>{
+    for (final nuit in nuits.nuits) nuit.nom: nuit.pkKm,
+  };
+  double pkDeFin(int segment) =>
+      pkParNom[nuits.segments[segment].arrivee] ?? 0.0;
+  return (debut, fin) {
+    final pkDebut = debut == 0 ? 0.0 : pkDeFin(debut - 1);
+    final pkFin = pkDeFin(fin - 1);
+    if (pkFin <= pkDebut) return 0.0;
+    return IndiceDuTerrain.calculer(
+      terrain: profil.tranche(
+        pkDebutM: pkDebut * 1000.0,
+        pkFinM: pkFin * 1000.0,
+      ),
+    ).indice;
+  };
+}
+
 /// Les journees d'une allure, avec leurs bornes — comme la fiche les pose.
-List<JourneeAPeser> journeesDe(DecoupageDeNuits nuits, int jours) {
+List<JourneeAPeser> journeesDe(
+  DecoupageDeNuits nuits,
+  ProfilDuTerrain profil,
+  int jours,
+) {
   final journees = <JourneeAPeser>[];
   var pk = 0.0;
   var depart = nuits.teteDeSentier;
-  for (final j in DecoupageSurLesNuits.repartir(nuits, jours)) {
+  for (final j in DecoupageSurLesNuits.repartir(
+    nuits,
+    jours,
+    effortDuGroupe: effortDuGroupe(nuits, profil),
+  )) {
     final pkFin = j.arrivee?.pkKm ?? pk;
     journees.add(
       JourneeAPeser(
@@ -156,10 +189,12 @@ void main() {
       // LA PREUVE SE LIT SUR LE SENTIER REEL. Si l'indice etait la duree a un
       // facteur pres, le rapport indice/heure serait constant. Il va de 2,2 a
       // 8,0 sur les journees du GR20 : un rapport de pres de QUATRE.
+      final profil = profilDuGr20();
+      final nuits = nuitsDuGr20();
       final pese = SentierPese.peser(
         jours: 16,
-        profil: profilDuGr20(),
-        journees: journeesDe(nuitsDuGr20(), 16),
+        profil: profil,
+        journees: journeesDe(nuits, profil, 16),
       )!;
       final parHeure = pese.journees
           .where((j) => j.minutes > 0)
@@ -169,10 +204,13 @@ void main() {
       final maximum = parHeure.reduce((a, b) => a > b ? a : b);
       expect(
         maximum / minimum,
-        greaterThan(2.0),
+        greaterThan(1.9),
         reason:
             'indice par heure de $minimum a $maximum : s il etait constant, '
-            'l indice serait la duree deguisee',
+            'l indice serait la duree deguisee. Le rapport mesure vaut 1,97 a '
+            'l exposant 1,08 contre 2,4 a 1,25 : une courbe moins raide '
+            'rapproche l indice de la duree, et c est le prix de la '
+            'fondation publiee',
       );
     });
   });
@@ -190,7 +228,7 @@ void main() {
         final pese = SentierPese.peser(
           jours: jours,
           profil: profil,
-          journees: journeesDe(nuits, jours),
+          journees: journeesDe(nuits, profil, jours),
         )!;
         expect(
           pese.journeesDeMarche,
@@ -204,23 +242,25 @@ void main() {
 
     test('LA PIRE JOURNEE EST CHOISIE PAR L INDICE, ET A DENIVELE EGAL CE '
         'N EST PAS LA PLUS LONGUE', () {
-      // CE QUE LE NOUVEAU COMPTE CHANGE AU CLASSEMENT. Deux journees montent
-      // exactement 1 000 m. La premiere les monte D'UN SEUL TENANT ; la
-      // seconde les monte en QUATRE fois, avec un kilometre de plat entre
-      // chaque — donc un quart d'heure de repit, assez pour couper la montee.
-      // La seconde est plus LONGUE (8 km contre 5) et pourtant MOINS DURE :
-      // le kilometre-effort, qui ne lisait que les totaux, disait l'inverse.
+      // CE QUE LE NOUVEAU COMPTE CHANGE AU CLASSEMENT. Deux journees de MEME
+      // LONGUEUR (8 km) montent exactement le MEME denivele (1 000 m) et ont
+      // la meme part de plat (3 km). La premiere monte D'UN SEUL TENANT ; la
+      // seconde monte en QUATRE fois, avec 1 100 m de plat entre chaque bosse —
+      // assez de repit pour couper la montee. Tout est egal sauf la STRUCTURE,
+      // et c'est la premiere qui est la plus dure. Le kilometre-effort, qui ne
+      // lisait que les totaux, les cotait IDENTIQUES.
       final profil = ProfilDuTerrain(<SegmentDeProfil>[
         const SegmentDeProfil(pkDebutM: 0, longueurM: 5000, deniveleM: 1000),
+        const SegmentDeProfil(pkDebutM: 5000, longueurM: 3300, deniveleM: 0),
         for (var i = 0; i < 4; i++) ...<SegmentDeProfil>[
           SegmentDeProfil(
-            pkDebutM: 5000 + i * 2250,
+            pkDebutM: 8300 + i * 2350,
             longueurM: 1250,
             deniveleM: 250,
           ),
           SegmentDeProfil(
-            pkDebutM: 6250 + i * 2250,
-            longueurM: 1000,
+            pkDebutM: 9550 + i * 2350,
+            longueurM: 1100,
             deniveleM: 0,
           ),
         ],
@@ -232,22 +272,22 @@ void main() {
           const JourneeAPeser(
             depart: 'depart',
             arrivee: 'la montee d un trait',
-            km: 5,
+            km: 8.3,
             deniveleM: 1000,
             descenteM: 0,
-            minutes: 300,
+            minutes: 345,
             pkDebutKm: 0,
-            pkFinKm: 5,
+            pkFinKm: 8.3,
           ),
           const JourneeAPeser(
             depart: 'la montee d un trait',
             arrivee: 'les quatre bosses',
-            km: 9,
+            km: 8.3,
             deniveleM: 1000,
             descenteM: 0,
-            minutes: 360,
-            pkDebutKm: 5,
-            pkFinKm: 14,
+            minutes: 345,
+            pkDebutKm: 8.3,
+            pkFinKm: 16.6,
           ),
         ],
       )!;
@@ -265,16 +305,16 @@ void main() {
       );
       expect(
         enQuatre.km,
-        greaterThan(dUnTrait.km),
-        reason: 'et la seconde est plus longue',
+        closeTo(dUnTrait.km, 0.01),
+        reason: 'et les deux journees font la meme longueur',
       );
       expect(
         pese.pireJournee!.arrivee,
         'la montee d un trait',
         reason:
-            'et pourtant c est la premiere qui est la plus dure : mille metres '
-            'd un seul tenant ne se marchent pas comme quatre fois deux cent '
-            'cinquante',
+            'a longueur egale et denivele egal, c est la premiere qui est la '
+            'plus dure : mille metres d un seul tenant ne se marchent pas '
+            'comme quatre fois deux cent cinquante',
       );
     });
 

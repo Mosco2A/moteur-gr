@@ -35,6 +35,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
 import 'package:moteur_gr/core/models/stage_duration.dart';
+import 'package:moteur_gr/domain/indice_du_terrain.dart';
 import 'package:moteur_gr/domain/journees_pesees.dart';
 import 'package:moteur_gr/domain/nuit_possible.dart';
 import 'package:moteur_gr/domain/profil_du_terrain.dart';
@@ -66,10 +67,36 @@ SentierPese peser({
 }) {
   final profilUtile = aLEnvers ? profil.aLEnvers : profil;
   final total = profil.longueurM / 1000.0;
+  // LE DECOUPAGE SE FAIT A L'EFFORT (tache 860), et dans le sens demande : la
+  // charge d'un groupe est l'indice REEL de la journee sur le profil utile.
+  final pkParNom = <String, double>{
+    for (final nuit in nuits.nuits) nuit.nom: nuit.pkKm,
+  };
+  double pkDeFin(int segment) {
+    final pkTrace = pkParNom[nuits.segments[segment].arrivee] ?? 0.0;
+    return aLEnvers ? total - pkTrace : pkTrace;
+  }
+
+  double effort(int debut, int fin) {
+    final pkDebut = debut == 0 ? 0.0 : pkDeFin(debut - 1);
+    final pkFin = pkDeFin(fin - 1);
+    if (pkFin <= pkDebut) return 0.0;
+    return IndiceDuTerrain.calculer(
+      terrain: profilUtile.tranche(
+        pkDebutM: pkDebut * 1000.0,
+        pkFinM: pkFin * 1000.0,
+      ),
+    ).indice;
+  }
+
   final journees = <JourneeAPeser>[];
   var pk = 0.0;
   var depart = nuits.teteDeSentier;
-  for (final j in DecoupageSurLesNuits.repartir(nuits, jours)) {
+  for (final j in DecoupageSurLesNuits.repartir(
+    nuits,
+    jours,
+    effortDuGroupe: effort,
+  )) {
     final pkTrace = j.arrivee?.pkKm;
     final pkFin = pkTrace == null ? pk : (aLEnvers ? total - pkTrace : pkTrace);
     journees.add(

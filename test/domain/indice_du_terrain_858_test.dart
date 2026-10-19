@@ -221,8 +221,8 @@ void main() {
       );
     });
 
-    test('LA DECISION DE CHRISTOPHE EST TENUE : une montee de 1 000 m vaut '
-        '2,38 fois une montee de 500 m a pente egale', () {
+    test('UNE MONTEE DE 1 000 M VAUT 2,11 FOIS UNE MONTEE DE 500 M a pente '
+        'egale — l exposant mesure de la tache 860', () {
       final cinqCents = IndiceDuTerrain.calculer(
         terrain: sentier([morceau(deniveleM: 500, pente: 0.20)]),
       );
@@ -233,10 +233,11 @@ void main() {
       expect(mille.monteesContinues, 1);
       expect(
         mille.indice / cinqCents.indice,
-        closeTo(2.38, 0.01),
+        closeTo(2.11, 0.01),
         reason:
-            'decision du 18/10 19:34 : « franchement plus que le double », '
-            'et 1,25 rend 2,38',
+            'a l exposant 1,08 — Riegel, borne basse du recreatif — doubler '
+            'la montee coute 2,11 fois, et non 2,38 comme au 1,25 sans '
+            'fondation publiee de la tache 858',
       );
       // Le socle seul, lui, est exactement proportionnel : c'est la mesure de
       // Minetti qui le dit, et c'est pour cela que la majoration est assumee.
@@ -409,7 +410,7 @@ void main() {
     });
 
     test('A L INTERIEUR D UNE MONTEE, LE DEFICIT EST CELUI DE LA FORME '
-        'CLOSE : 1 - 2^(1-beta), soit 15,9 %', () {
+        'CLOSE : 1 - 2^(1-beta), soit 5,4 % a l exposant mesure', () {
       final montee = sentier([morceau(deniveleM: 1000, pente: 0.20)]);
       final profil = ProfilDuTerrain(montee);
       final dUnTrait = IndiceDuTerrain.calculer(terrain: montee);
@@ -426,10 +427,12 @@ void main() {
       expect(deficit, closeTo(attendu, 1e-9));
       expect(
         deficit,
-        closeTo(0.159, 0.001),
+        closeTo(0.054, 0.001),
         reason:
             'dormir au milieu d une montee rend le chemin REELLEMENT plus '
-            'facile : ce deficit est l information, pas un defaut',
+            'facile : ce deficit est l information, pas un defaut. Il valait '
+            '15,9 % a l exposant 1,25 et il vaut 5,4 % a 1,08 — la nuit a '
+            'mi-pente achete trois fois moins qu on ne le croyait',
       );
     });
 

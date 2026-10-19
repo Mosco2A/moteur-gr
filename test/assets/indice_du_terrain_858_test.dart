@@ -293,10 +293,11 @@ void main() {
               as Map<String, dynamic>;
       expect(
         (premiereAuTrace['indice'] as num).toDouble(),
-        greaterThan(4 * (premiereAlEnvers['indice'] as num).toDouble()),
+        greaterThan(3 * (premiereAlEnvers['indice'] as num).toDouble()),
         reason:
-            'Calenzana - l Ortu di u Piobbu vaut quatre fois plus en montant '
-            'qu en descendant : le compte de la 852 les cotait presque pareil',
+            'Calenzana - l Ortu di u Piobbu vaut 3,6 fois plus en montant qu '
+            'en descendant a l exposant mesure 1,08 (4,8 fois a 1,25) : le '
+            'compte de la 852, lui, les cotait presque pareil',
       );
       expect(
         (trace['somme_des_16_etapes'] as num).toDouble(),

@@ -731,17 +731,14 @@ class _ElevationProfile extends StatelessWidget {
     if (days.isEmpty) return const SizedBox.shrink();
 
     final dayElevations = <int>[];
-    final dayDifficulties = <int>[];
     var maxElevation = 0;
     for (final day in days) {
       if (day.isRestDay || day.stages.isEmpty) {
         dayElevations.add(0);
-        dayDifficulties.add(0);
         continue;
       }
       final gain = day.totalElevationGainM;
       dayElevations.add(gain);
-      dayDifficulties.add(day.maxDifficulty);
       if (gain > maxElevation) maxElevation = gain;
     }
     if (maxElevation == 0) maxElevation = 1;
@@ -790,7 +787,6 @@ class _ElevationProfile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: List.generate(dayElevations.length, (i) {
                 final elevation = dayElevations[i];
-                final difficulty = dayDifficulties[i];
                 final heightRatio = elevation / maxElevation;
                 final isRestDay = days[i].isRestDay;
 
@@ -801,14 +797,12 @@ class _ElevationProfile extends StatelessWidget {
                   barColor = AppTheme.bleuRepos;
                 } else if (elevation == 0) {
                   barColor = AppTheme.grisGranite.withAlpha(30);
-                } else if (difficulty <= 1) {
-                  barColor = AppTheme.vertFacile;
-                } else if (difficulty <= 2) {
-                  barColor = AppTheme.jauneModere;
-                } else if (difficulty <= 3) {
-                  barColor = AppTheme.orangeDifficile;
                 } else {
-                  barColor = AppTheme.rougeExtreme;
+                  // LA BARRE DIT LE DENIVELE, ET RIEN QUE LUI (tache 860). Sa
+                  // couleur venait du rang de l'etiquette stockee, retiree
+                  // parce qu'elle ne dit rien de la journee. La HAUTEUR de la
+                  // barre, elle, est mesuree.
+                  barColor = AppTheme.grisGranite;
                 }
 
                 return Expanded(
@@ -944,13 +938,6 @@ class _DayCard extends ConsumerWidget {
     );
   }
 
-  Color _difficultyColor(int rank) {
-    if (rank <= 1) return AppTheme.vertFacile;
-    if (rank <= 2) return AppTheme.jauneModere;
-    if (rank <= 3) return AppTheme.orangeDifficile;
-    return AppTheme.rougeExtreme;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -960,7 +947,11 @@ class _DayCard extends ConsumerWidget {
     }
 
     final durationStr = _formatDuration(day.estimatedHours);
-    final difficultyColor = _difficultyColor(day.maxDifficulty);
+    // COULEUR NEUTRE DEPUIS LA TACHE 860 : la teinte venait du rang de
+    // l'etiquette stockee de l'etape, retiree parce qu'elle est muette sur la
+    // journee. Un jour de marche se peint donc comme un jour de marche, et sa
+    // difficulte se lit en chiffre sur la fiche.
+    const difficultyColor = AppTheme.grisGranite;
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),

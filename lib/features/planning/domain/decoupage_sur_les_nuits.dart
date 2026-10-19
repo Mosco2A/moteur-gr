@@ -134,13 +134,14 @@ abstract final class DecoupageSurLesNuits {
   /// derniere journee du sens inverse, qui revient a la tete de sentier.
   static List<JourneeSurLesNuits> repartir(
     DecoupageDeNuits decoupage,
-    int journees,
-  ) {
+    int journees, {
+    double Function(int debutSegment, int finSegment)? effortDuGroupe,
+  }) {
     if (decoupage.vide || journees <= 0) return const <JourneeSurLesNuits>[];
     final segments = decoupage.segments;
     final cible = journees > segments.length ? segments.length : journees;
 
-    final coupes = _coupesEquilibrees(segments, cible);
+    final coupes = _coupesEquilibrees(segments, cible, effortDuGroupe);
     final nuitsParNom = <String, NuitPossible>{
       for (final n in decoupage.nuits) n.nom: n,
     };
@@ -209,7 +210,8 @@ abstract final class DecoupageSurLesNuits {
     return jours;
   }
 
-  /// Les index de DEBUT de chaque journee, equilibres sur le temps de marche.
+  /// Les index de DEBUT de chaque journee, equilibres sur l'EFFORT quand
+  /// l'appelant sait le chiffrer, sur le temps de marche sinon.
   ///
   /// La garantie est forte et c'est elle qui compte : AUTANT de journees que
   /// demande, chacune non vide, et chacune terminee sur un lieu releve.
@@ -231,7 +233,23 @@ abstract final class DecoupageSurLesNuits {
   static List<int> _coupesEquilibrees(
     List<SegmentEntreNuits> segments,
     int journees,
+    double Function(int debutSegment, int finSegment)? effortDuGroupe,
   ) {
+    // LE DECOUPAGE SE FAIT A L'EFFORT DES QUE L'APPELANT SAIT LE DIRE
+    // (tache 860). Christophe, verbatim 19/10 : « Oui a l'effort pas au
+    // temps ». L'ecart n'est pas cosmetique : egaliser les MINUTES fabrique
+    // des journees de meme duree et d'effort tres inegal, parce qu'une heure
+    // de montee raide et une heure de plat ne demandent pas la meme chose.
+    if (effortDuGroupe != null) {
+      return RepartitionEquilibree.coupesSelon(
+        unites: segments.length,
+        groupes: journees,
+        chargeDuGroupe: effortDuGroupe,
+      );
+    }
+    // SANS PROFIL, ON RETOMBE SUR LE TEMPS DE MARCHE, et c'est le bon repli :
+    // un sentier sans trace altimetrisee n'a pas d'indice de terrain, donc
+    // aucun effort a egaliser. Le compte des journees, lui, reste garanti.
     return RepartitionEquilibree.coupes(
       segments.map((s) => s.minutes.toDouble()).toList(growable: false),
       journees,
