@@ -325,11 +325,11 @@ void main() {
       await amener(tester, blocDeDifficulte());
 
       // AUCUNE allure n'est proposee ici, et c'est le comportement voulu : le
-      // GR20 propose 7, 10, 12 et 16 jours, or ce decor n'a que TROIS etapes.
-      // Au-dela de trois jours, les jours de plus sont du repos et ne changent
-      // plus aucune journee de marche — offrir le choix serait offrir un
-      // bouton sans effet.
-      for (final jours in <int>[7, 9, 12, 16]) {
+      // GR20 propose 7, 8, 9, 12 et 16 jours, or ce decor n'a que TROIS
+      // etapes. Au-dela de trois jours, les jours de plus sont du repos et ne
+      // changent plus aucune journee de marche — offrir le choix serait
+      // offrir un bouton sans effet.
+      for (final jours in <int>[7, 8, 9, 12, 16]) {
         expect(
           find.byKey(ValueKey('allure-$jours'), skipOffstage: false),
           findsNothing,
@@ -337,11 +337,12 @@ void main() {
         );
       }
 
-      // LE NOMBRE AFFICHE EST CELUI DU DECOUPAGE : seize jours CONSEILLES,
+      // LE NOMBRE AFFICHE EST CELUI DU DECOUPAGE : huit jours CONSEILLES — le
+      // plan par defaut du GR20 depuis la tache 860, qui valait seize — et
       // trois journees de marche reelles, parce que le decor n'a que trois
       // etapes et qu'aucune n'est jamais coupee. Les deux nombres sont a
       // l'ecran et ils ne se contredisent pas.
-      expect(find.text('Nombre de jours CONSEILLE : 16 jours'), findsOneWidget);
+      expect(find.text('Nombre de jours CONSEILLE : 8 jours'), findsOneWidget);
       expect(find.text('3 journees de marche a cette allure.'), findsOneWidget);
       // ET AUCUNE JOURNEE N'EST DESIGNEE LA PLUS DURE, faute de bornes sur
       // la trace : trois etapes sans nuits relevees ne disent pas OU elles

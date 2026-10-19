@@ -147,8 +147,16 @@ const gr20TrailConfig = TrailConfig(
   // aucun couchage dans la montee. Ce n'est pas le selecteur qu'il faut
   // corriger, c'est le discours. (Chiffre remesure en tache 858 : le
   // kilometre-effort qui disait 26,5 est retire.)
-  availableDurations: [7, 9, 12, 16],
-  defaultDuration: 16,
+  // LE PLAN PAR DEFAUT EST DE HUIT JOURS (tache 860), et il ne l'etait pas.
+  //
+  // Il valait SEIZE, soit une etape par jour : le decoupage du topoguide, pas
+  // un plan. Seize jours est le plan le PLUS FACILE de la serie, donc le
+  // defaut montrait au client la version la plus douce du sentier et lui
+  // laissait decouvrir le reste en deplacant le curseur. Huit jours est le
+  // plan que le marcheur fait REELLEMENT, et c'est sur lui que la notation du
+  // lot 860 est calee : la pire journee y sort a 18,46 sur vingt.
+  availableDurations: [7, 8, 9, 12, 16],
+  defaultDuration: 8,
   offlineFirst: true,
   hasPremium: false,
   // LES DEUX CHAPITRES, ET CETTE SEULE LIGNE RETIRE LE SENTIER DE LA VENTE.
