@@ -98,11 +98,12 @@ class ChoixDesJours extends StatelessWidget {
           // une ALLURE. Elle nomme aussi l'unite une seule fois, plutot que de
           // la repeter sur chaque pastille.
           Text(
-            'Sous chaque allure : la note sur vingt de sa journee la plus '
-            'dure. Vingt, c\'est plus dur que les 106 etapes officielles du '
-            'corpus de calage ; zero, c\'est six kilometres de plat. Serrer '
-            'l\'allure ne change pas le chemin, il concentre la meme montagne '
-            'sur moins de journees.',
+            'Sous chaque allure : la note d\'EFFORT de sa journee la plus '
+            'dure. Seize, c\'est le dernier seuil publie du bareme francais '
+            'de randonnee, 25 km et 1 000 m de montee ; au-dela, aucun bareme '
+            'du monde ne gradue. Serrer l\'allure ne change pas le chemin, il '
+            'concentre la meme montagne sur moins de journees — et ca ne '
+            'touche presque pas la raideur, qui est imposee par le relief.',
             key: const ValueKey('ce-que-l-allure-coute'),
             style: theme.textTheme.bodySmall?.copyWith(
               color: AppTheme.grisTexteSecondaire,
