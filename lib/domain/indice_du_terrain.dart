@@ -74,10 +74,9 @@ class LoiDeLIndice {
   /// QUI Y PERD : l'etape 1 du GR20, celle qui a la plus grosse montee continue
   /// du sentier (1 453 m d'un seul tenant). Son indice tombe de 50,03 a 42,58
   /// et son percentile dans le corpus mondial de 83,0 a 77,4 % — c'est elle qui
-  /// avait le plus a perdre d'une courbe moins raide. Sa note, elle, MONTE,
-  /// parce que c'est la jauge sur les rangs qui a change de question
-  /// ([NoteSurVingt]) : un probleme de RANG ne se corrige pas par un changement
-  /// de MAGNITUDE.
+  /// avait le plus a perdre d'une courbe moins raide. Sa note d'effort, elle,
+  /// MONTE, parce que la jauge a change de question ([NoteDEffort]) : un
+  /// probleme de REPERE ne se corrige pas par un changement de MAGNITUDE.
   final double beta;
 
   /// LA TAILLE DE MONTEE OU LA MAJORATION EST NULLE : 550 m.
@@ -229,6 +228,7 @@ class IndiceDuTerrain {
     required this.deniveleM,
     required this.descenteM,
     required this.kmDeTrajet,
+    required this.kmDeCarte,
   });
 
   /// Un terrain vide : aucun morceau, aucun indice.
@@ -240,6 +240,7 @@ class IndiceDuTerrain {
     deniveleM: 0.0,
     descenteM: 0.0,
     kmDeTrajet: 0.0,
+    kmDeCarte: 0.0,
   );
 
   /// LE SOCLE MESURE, en points : l'integrale du cout de Minetti sur le profil.
@@ -279,7 +280,20 @@ class IndiceDuTerrain {
 
   /// Longueur reellement parcourue, en kilometres (la pente, pas sa
   /// projection).
+  ///
+  /// C'est sur elle que le socle energetique s'integre : on depense l'energie
+  /// du chemin qu'on fait, pas de son ombre sur la carte.
   final double kmDeTrajet;
+
+  /// Longueur PROJETEE SUR LA CARTE, en kilometres.
+  ///
+  /// Elle existe pour la RAIDEUR et pour elle seule : une pente moyenne est
+  /// une denivelee sur une distance HORIZONTALE, et c'est la seule convention
+  /// qui fasse tomber les bandes publiees de l'IMBA sur des notes rondes
+  /// (voir `NoteDeRaideur.metresParKm`). C'est aussi le kilometrage que
+  /// l'application affiche par ailleurs. Sur le GR20 entier elle vaut
+  /// 183,4 km contre 185,8 de trajet, soit 1,3 % de moins.
+  final double kmDeCarte;
 
   /// L'INDICE DE TERRAIN : le socle mesure plus la majoration assumee.
   ///
@@ -336,6 +350,7 @@ class IndiceDuTerrain {
     var denivele = 0.0;
     var descente = 0.0;
     var kmDeTrajet = 0.0;
+    var kmDeCarte = 0.0;
     var montees = 0;
     var plusGrosseMontee = 0.0;
 
@@ -368,6 +383,7 @@ class IndiceDuTerrain {
           FacteurDePenteMinetti.pointsParKmDeTrajet(pente) * kmDuSegment;
       socle += points;
       kmDeTrajet += kmDuSegment;
+      kmDeCarte += segment.longueurM / 1000.0;
 
       if (segment.monte) {
         denivele += segment.deniveleM;
@@ -399,6 +415,7 @@ class IndiceDuTerrain {
       deniveleM: denivele,
       descenteM: descente,
       kmDeTrajet: kmDeTrajet,
+      kmDeCarte: kmDeCarte,
     );
   }
 }

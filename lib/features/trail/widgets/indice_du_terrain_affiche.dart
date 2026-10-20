@@ -10,7 +10,8 @@ import '../../../core/models/stage_row.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/indice_du_terrain.dart';
 import '../../../domain/journees_pesees.dart';
-import '../../../domain/note_sur_vingt.dart';
+import '../../../domain/note_d_effort.dart';
+import '../../../domain/note_de_raideur.dart';
 import '../../../domain/nuit_possible.dart';
 import '../../../domain/profil_du_terrain.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -21,6 +22,7 @@ import '../../../shared/widgets/section_header.dart';
 import '../../planning/planning_facade.dart';
 import 'choix_des_jours.dart';
 import 'lectures_du_plan_affichees.dart';
+import 'les_deux_notes.dart';
 
 /// L'INDICE DE TERRAIN AFFICHE AVEC CE QUI LE PRODUIT (tache 858).
 ///
@@ -218,14 +220,20 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
     journees: _journeesDuSentier(jours),
   );
 
-  /// La NOTE SUR VINGT de la pire journee d'une allure, ou `null` quand elle
+  /// La NOTE D'EFFORT de la pire journee d'une allure, ou `null` quand elle
   /// n'est pas mesurable — jamais zero, qui passerait pour une journee facile.
+  ///
+  /// C'EST L'EFFORT QUI ETIQUETTE L'ALLURE, et pas la raideur : le
+  /// repartiteur equilibre les journees a l'effort, donc c'est l'effort que le
+  /// choix du nombre de jours fait bouger. La raideur d'un sentier est
+  /// largement imposee par son relief et un jour de plus n'y change presque
+  /// rien.
   double? _noteDeLaPireJournee(int jours) {
     final deja = _indiceParAllure[jours];
     if (deja != null) return deja;
     final pire = _peser(jours)?.pireJournee;
     if (pire == null) return null;
-    return _indiceParAllure[jours] = pire.noteSurVingt;
+    return _indiceParAllure[jours] = pire.noteDEffort;
   }
 
   @override
@@ -243,14 +251,16 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
     // interpolation : `aucun_code_mort_645_test` lit les identifiants du code
     // APRES avoir retire les chaines, donc un appel ecrit dans un `${...}` lui
     // est invisible. C'est a l'appel de sortir de la chaine.
-    final note = pire == null ? '' : nombreAUneDecimale(pire.noteSurVingt);
     final indice = pire == null ? '' : nombreAUneDecimale(pire.indiceDuTerrain);
     final km = pire == null ? '' : nombreAUneDecimale(pire.km);
     final montee = pire == null
         ? ''
         : pire.plusGrosseMonteeM.round().toString();
     final temps = pire == null ? '' : formatDurationMinutes(pire.minutes);
-    final corpus = NoteSurVingt.etapesDuCorpus.toString();
+    final seuilDuSeize = nombreAUneDecimale(
+      NoteDEffort.indiceDuDernierSeuilPublie,
+    );
+    final bandeDuDix = NoteDeRaideur.bleuM.round().toString();
 
     return Padding(
       key: const ValueKey('indice-du-terrain'),
@@ -281,15 +291,14 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
                   // rien dire.
                   LecturesDuPlanAffichees(lectures: pese.lectures),
                   const SizedBox(height: AppTheme.spacingSm),
-                  // LA NOTE DE LA PIRE JOURNEE, SUR VINGT. C'est le seul
-                  // nombre NOTE du produit : une journee en a une, un sentier
-                  // n'en a pas.
-                  Text(
-                    'Journee la plus dure : $note sur 20',
-                    key: const ValueKey('note-de-la-pire-journee'),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                  // LES DEUX NOTES DE LA PIRE JOURNEE. Ce sont les seuls
+                  // nombres NOTES du produit : une journee en a deux, un
+                  // troncon et un sentier n'en ont aucune.
+                  LesDeuxNotes(
+                    titre: 'Journee la plus dure de ce plan',
+                    effort: pire.noteDEffort,
+                    raideur: pire.noteDeRaideur,
+                    metresParKm: pire.metresParKmDeMontee,
                   ),
                   if (pire.estEcretee) ...[
                     const SizedBox(height: AppTheme.spacingXs),
@@ -299,10 +308,25 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
                     // plus dure etape officielle connue. Ce sont les deux
                     // faits ci-dessous qui la distinguent alors.
                     Text(
-                      'Vingt est le plafond : cette journee est plus dure que '
-                      'les $corpus etapes officielles du corpus. Ce sont les '
-                      'deux chiffres ci-dessous qui la decrivent vraiment.',
+                      'Vingt est le plafond de l\'effort : cette journee '
+                      'demande plus que la plus dure etape officielle connue. '
+                      'Ce sont les deux chiffres ci-dessous qui la decrivent '
+                      'vraiment.',
                       key: const ValueKey('note-ecretee'),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.grisTexteSecondaire,
+                      ),
+                    ),
+                  ],
+                  if (pire.raideurEcretee) ...[
+                    const SizedBox(height: AppTheme.spacingXs),
+                    // LE PLAFOND DE RAIDEUR EST UN SEUIL PUBLIE, donc on peut
+                    // dire exactement ce qu'il veut dire.
+                    Text(
+                      'Vingt est aussi le plafond de la raideur : au-dela de '
+                      '${NoteDeRaideur.doubleNoirM.round()} m de montee par '
+                      'kilometre, les bandes publiees ne graduent plus.',
+                      key: const ValueKey('raideur-ecretee'),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: AppTheme.grisTexteSecondaire,
                       ),
@@ -370,10 +394,24 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
                 // appliquee et n'est pas reecrite ici : une regle affichee qui
                 // n'est pas la regle appliquee est pire que pas de regle.
                 Text(
-                  'Une note de 20 veut dire : plus dur que les $corpus etapes '
-                  'officielles relevees le ${NoteSurVingt.dateDuCalage}. Zero, '
-                  'c\'est six kilometres de plat.',
+                  'Effort : 16 sur 20, c\'est le dernier seuil publie du '
+                  'bareme francais de randonnee, 25 km et 1 000 m de montee '
+                  '(indice $seuilDuSeize). Au-dela, aucun bareme du monde ne '
+                  'gradue, et 20 est la plus dure etape officielle connue.',
                   key: const ValueKey('ce-que-la-note-veut-dire'),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppTheme.grisTexteSecondaire,
+                  ),
+                ),
+                const SizedBox(height: AppTheme.spacingXs),
+                Text(
+                  'Raideur : c\'est la montee par kilometre divisee par dix. '
+                  '10 sur 20 vaut $bandeDuDix m par kilometre, soit 10 % de '
+                  'pente moyenne. Les paliers viennent des bandes publiees de '
+                  'l\'IMBA, qui classent des sentiers de VTT : la pente '
+                  'moyenne est la meme grandeur a pied, mais ce n\'est pas '
+                  'une source randonnee et nous n\'en avons trouve aucune.',
+                  key: const ValueKey('ce-que-la-raideur-veut-dire'),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: AppTheme.grisTexteSecondaire,
                   ),

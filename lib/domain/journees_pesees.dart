@@ -3,7 +3,8 @@
 library;
 
 import 'indice_du_terrain.dart';
-import 'note_sur_vingt.dart';
+import 'note_d_effort.dart';
+import 'note_de_raideur.dart';
 import 'profil_du_terrain.dart';
 
 /// UNE JOURNEE A PESER : ses bornes SUR LA TRACE et ses mesures.
@@ -108,21 +109,49 @@ class JourneePesee {
   /// L'INDICE DE TERRAIN de la journee, en points (un point = un km de plat).
   double get indiceDuTerrain => terrain.indice;
 
-  /// LA NOTE DE LA JOURNEE, SUR VINGT : sa place parmi les etapes
-  /// officielles du monde ([NoteSurVingt], jauge figee le 19/10/2026).
+  /// PREMIER AXE — LA NOTE D'EFFORT, SUR VINGT : ce que la journee coute, lu
+  /// sur les seuils publies du bareme francais ([NoteDEffort]).
   ///
-  /// C'est le seul nombre NOTE de tout le produit. Un troncon et un sentier
-  /// n'en ont pas, et c'est une regle, pas un oubli ([LecturesDuPlan]).
-  double get noteSurVingt => NoteSurVingt.pourIndice(indiceDuTerrain);
+  /// POURQUOI IL Y A DEUX AXES ET PAS UN. On a cherche une note unique
+  /// pendant deux jours. Le releve des methodes du monde a rendu un resultat
+  /// qui condamnait la recherche : PERSONNE NE RESOUT LA DIFFICULTE D'UNE
+  /// JOURNEE DANS UN CHIFFRE UNIQUE. Le MIDE espagnol en a quatre, la
+  /// FFRandonnee trois, Komoot deux ; le seul chiffre unique qui internalise
+  /// la concentration est l'IBP, et sa formule n'est pas publique. La preuve
+  /// par la mesure est dans nos propres donnees : sur le GR20 entier a sept
+  /// jours, les jours 2 et 7 ont le MEME effort — 17,78 et 17,77 — et des
+  /// raideurs de 14,53 contre 3,85. Une note unique ne pouvait pas dire ca.
+  double get noteDEffort => NoteDEffort.pourIndice(indiceDuTerrain);
 
-  /// VRAI quand la note est ECRETEE a vingt, donc quand la journee est plus
-  /// dure que la plus dure etape officielle connue.
+  /// SECOND AXE — LA NOTE DE RAIDEUR, SUR VINGT : a quel point ca monte pour
+  /// la distance, graduee sur les bandes publiees de l'IMBA
+  /// ([NoteDeRaideur]).
+  double get noteDeRaideur =>
+      NoteDeRaideur.pourMetresParKm(metresParKmDeMontee);
+
+  /// LE CHIFFRE BRUT DE LA RAIDEUR, en metres de montee par kilometre.
+  ///
+  /// IL S'AFFICHE A COTE DE LA NOTE DE RAIDEUR, JAMAIS A SA PLACE, et c'est
+  /// une exigence : une note sur vingt sur la raideur suggere une precision
+  /// au dixieme que la grandeur n'a pas, et le chiffre brut corrige
+  /// exactement ca. Reserve posee par Athena, et elle est juste.
+  double get metresParKmDeMontee => NoteDeRaideur.metresParKm(
+    deniveleM: terrain.deniveleM,
+    km: terrain.kmDeCarte,
+  );
+
+  /// VRAI quand la note d'EFFORT est ECRETEE a vingt, donc quand la journee
+  /// est plus dure que la plus dure etape officielle connue.
   ///
   /// Une journee qui cumule plusieurs etapes y arrive mecaniquement. Les deux
-  /// faits qui accompagnent la note — [plusGrosseMonteeM] et [km] — ne
+  /// faits qui accompagnent les notes — [plusGrosseMonteeM] et [km] — ne
   /// s'ecretent pas, eux, et c'est a ce moment-la qu'ils deviennent
   /// indispensables.
-  bool get estEcretee => NoteSurVingt.estEcretee(indiceDuTerrain);
+  bool get estEcretee => NoteDEffort.estEcretee(indiceDuTerrain);
+
+  /// VRAI quand la note de RAIDEUR est ECRETEE, donc quand la journee monte
+  /// plus raide que la bande la plus raide que l'IMBA publie (200 m/km).
+  bool get raideurEcretee => NoteDeRaideur.estEcretee(metresParKmDeMontee);
 
   /// PREMIER FAIT SANS ECHELLE : la plus grosse montee continue, en metres.
   ///
@@ -166,6 +195,8 @@ class LecturesDuPlan {
     required this.journeeType,
     required this.journeesDures,
     required this.plusLongEnchainementDeJourneesDures,
+    required this.pireJourneeEnRaideur,
+    required this.journeeTypeEnRaideur,
   });
 
   /// Aucune journee : aucune lecture.
@@ -175,6 +206,8 @@ class LecturesDuPlan {
     journeeType: 0.0,
     journeesDures: 0,
     plusLongEnchainementDeJourneesDures: 0,
+    pireJourneeEnRaideur: 0.0,
+    journeeTypeEnRaideur: 0.0,
   );
 
   /// LE NOMBRE DE JOURS, et il s'affiche LE PREMIER.
@@ -184,7 +217,7 @@ class LecturesDuPlan {
   /// elle, « pire journee 18,86 » ne veut rien dire.
   final int nombreDeJours;
 
-  /// LA NOTE DE LA PIRE JOURNEE du plan, sur vingt.
+  /// LA NOTE D'EFFORT DE LA PIRE JOURNEE du plan, sur vingt.
   ///
   /// C'est elle qui decide si le marcheur arrive au bout, et c'est deja la
   /// regle du verdict de faisabilite (GO-61).
@@ -222,22 +255,47 @@ class LecturesDuPlan {
   /// se subissent.
   final int plusLongEnchainementDeJourneesDures;
 
-  /// LES QUATRE LECTURES D'UNE LISTE DE JOURNEES PESEES.
+  /// LA NOTE DE RAIDEUR DE LA JOURNEE LA PLUS RAIDE du plan, sur vingt.
+  ///
+  /// CE N'EST PAS FORCEMENT LA MEME JOURNEE QUE [pireJournee], et c'est tout
+  /// l'interet de l'avoir : sur le GR20 entier a sept jours la pire en effort
+  /// est le jour 1 et la plus raide est le jour 2.
+  final double pireJourneeEnRaideur;
+
+  /// LA NOTE DE RAIDEUR DE LA JOURNEE TYPE du plan : la MOYENNE des raideurs.
+  ///
+  /// Mesure qui justifie les deux axes au niveau du plan : sur une semaine de
+  /// GR20 l'axe effort ne porte que 1,65 point d'etendue quand l'axe raideur
+  /// en porte plus de dix. Lire une semaine sur le seul effort, c'est lire
+  /// une semaine plate.
+  final double journeeTypeEnRaideur;
+
+  /// LES LECTURES D'UNE LISTE DE JOURNEES PESEES.
+  ///
+  /// LES JOURNEES DURES SE COMPTENT SUR L'EFFORT, et c'est volontaire : le
+  /// repartiteur equilibre les journees a l'effort, donc « dure » doit
+  /// designer la meme grandeur que celle qu'il a optimisee. La raideur est
+  /// lue a cote, pas melangee.
   static LecturesDuPlan desJournees(List<JourneePesee> journees) {
     if (journees.isEmpty) return aucune;
     var pire = 0.0;
     var somme = 0.0;
+    var pireRaideur = 0.0;
+    var sommeRaideur = 0.0;
     for (final journee in journees) {
-      final note = journee.noteSurVingt;
+      final note = journee.noteDEffort;
       if (note > pire) pire = note;
       somme += note;
+      final raideur = journee.noteDeRaideur;
+      if (raideur > pireRaideur) pireRaideur = raideur;
+      sommeRaideur += raideur;
     }
     final type = somme / journees.length;
     var dures = 0;
     var plusLong = 0;
     var courant = 0;
     for (final journee in journees) {
-      if (journee.noteSurVingt > type) {
+      if (journee.noteDEffort > type) {
         dures++;
         courant++;
         if (courant > plusLong) plusLong = courant;
@@ -251,6 +309,8 @@ class LecturesDuPlan {
       journeeType: type,
       journeesDures: dures,
       plusLongEnchainementDeJourneesDures: plusLong,
+      pireJourneeEnRaideur: pireRaideur,
+      journeeTypeEnRaideur: sommeRaideur / journees.length,
     );
   }
 }

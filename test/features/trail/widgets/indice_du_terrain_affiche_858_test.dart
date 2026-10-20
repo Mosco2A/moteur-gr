@@ -99,6 +99,14 @@ Widget bloc({
   ),
 );
 
+/// Le nombre ecrit dans « Effort 16,1 sur 20 », rendu lisible par le test.
+double chiffreDe(String affiche, String prefixe) => double.parse(
+  affiche
+      .replaceAll(prefixe, '')
+      .replaceAll(' sur 20', '')
+      .replaceAll(',', '.'),
+);
+
 void main() {
   group('858 — l indice de terrain est a l ecran, en nombre', () {
     testWidgets('LE BLOC PORTE LA NOTE SUR VINGT DE LA PIRE JOURNEE, ET C '
@@ -120,22 +128,30 @@ void main() {
       );
       expect(pire.profil.segments, hasLength(40));
 
-      final ligne = tester.widget<Text>(
-        find.byKey(const ValueKey('note-de-la-pire-journee')),
+      // DEUX NOTES NOMMEES, PAS UNE (tache 861) : personne au monde ne
+      // resout la difficulte d'une journee dans un chiffre unique.
+      final effort = tester.widget<Text>(
+        find.byKey(const ValueKey('note-d-effort')),
       );
-      expect(ligne.data, startsWith('Journee la plus dure : '));
-      expect(ligne.data, endsWith(' sur 20'));
+      final raideur = tester.widget<Text>(
+        find.byKey(const ValueKey('note-de-raideur')),
+      );
+      expect(effort.data, startsWith('Effort '));
+      expect(effort.data, endsWith(' sur 20'));
+      expect(raideur.data, startsWith('Raideur '));
+      expect(raideur.data, endsWith(' sur 20'));
       // Une montee de 800 m a 16 % vaut un indice d'environ 24 points, donc
-      // une note de l'ordre de quatre a cinq sur vingt : c'est une etape
-      // honnete, pas une epreuve mondiale.
-      final chiffre = double.parse(
-        ligne.data!
-            .replaceAll('Journee la plus dure : ', '')
-            .replaceAll(' sur 20', '')
-            .replaceAll(',', '.'),
+      // un effort de l'ordre de dix sur vingt ; et 16 % de pente moyenne,
+      // c'est 160 m par kilometre, donc une raideur ECRETEE a vingt.
+      expect(chiffreDe(effort.data!, 'Effort '), greaterThan(0.0));
+      expect(chiffreDe(effort.data!, 'Effort '), lessThan(20.0));
+      expect(chiffreDe(raideur.data!, 'Raideur '), greaterThan(10.0));
+      // ET LE CHIFFRE BRUT EST A COTE DE LA RAIDEUR, JAMAIS A SA PLACE : une
+      // note sur vingt suggere une precision que la pente moyenne n'a pas.
+      final brut = tester.widget<Text>(
+        find.byKey(const ValueKey('raideur-en-brut')),
       );
-      expect(chiffre, greaterThan(0.0));
-      expect(chiffre, lessThan(20.0));
+      expect(brut.data, endsWith(' m/km'));
     });
 
     testWidgets('LE TEMPS DE MARCHE EST AFFICHE A PART, SOUS SON PROPRE '
@@ -192,13 +208,27 @@ void main() {
       expect(regle.data, contains('un point vaut un kilometre de plat'));
       expect(regle.data, contains('15 minutes de terrain reposant'));
       expect(regle.data, contains('2,1 fois'));
-      // ET CE QUE LA NOTE VEUT DIRE EST DIT, avec la date du corpus.
+      // ET CE QUE CHAQUE NOTE VEUT DIRE EST DIT, AVEC SA SOURCE.
       final sens = tester.widget<Text>(
         find.byKey(const ValueKey('ce-que-la-note-veut-dire')),
       );
-      expect(sens.data, contains('106 etapes officielles'));
-      expect(sens.data, contains('19/10/2026'));
-      expect(sens.data, contains('six kilometres de plat'));
+      expect(sens.data, contains('seuil publie'));
+      expect(sens.data, contains('25 km et 1 000 m'));
+      expect(sens.data, contains('bareme francais'));
+      // LA RESERVE SUR LA RAIDEUR EST A L ECRAN, PAS SEULEMENT DANS LE CODE :
+      // les bandes qui la graduent viennent du VTT, et le client a le droit
+      // de le savoir.
+      final sensRaideur = tester.widget<Text>(
+        find.byKey(const ValueKey('ce-que-la-raideur-veut-dire')),
+      );
+      expect(sensRaideur.data, contains('divisee par dix'));
+      expect(sensRaideur.data, contains('IMBA'));
+      expect(sensRaideur.data, contains('VTT'));
+      expect(
+        sensRaideur.data,
+        contains('pas une source randonnee'),
+        reason: 'la reserve d Athena doit etre dite en toutes lettres',
+      );
     });
 
     testWidgets('CHAQUE ALLURE PORTE SON CHIFFRE, ET SERRER L ALLURE LE FAIT '
@@ -233,12 +263,12 @@ void main() {
       await tester.pumpAndSettle();
 
       final avant = tester
-          .widget<Text>(find.byKey(const ValueKey('note-de-la-pire-journee')))
+          .widget<Text>(find.byKey(const ValueKey('note-d-effort')))
           .data;
       await tester.tap(find.byKey(const ValueKey('allure-1')));
       await tester.pumpAndSettle();
       final apres = tester
-          .widget<Text>(find.byKey(const ValueKey('note-de-la-pire-journee')))
+          .widget<Text>(find.byKey(const ValueKey('note-d-effort')))
           .data;
       expect(apres, isNot(avant));
     });
@@ -273,10 +303,8 @@ void main() {
       await tester.pumpWidget(bloc(profil: ProfilDuTerrain.vide));
       await tester.pumpAndSettle();
 
-      expect(
-        find.byKey(const ValueKey('note-de-la-pire-journee')),
-        findsNothing,
-      );
+      expect(find.byKey(const ValueKey('note-d-effort')), findsNothing);
+      expect(find.byKey(const ValueKey('note-de-raideur')), findsNothing);
       expect(find.text('2 journees de marche a cette allure.'), findsOneWidget);
       final manquantes = tester.widget<Text>(
         find.byKey(const ValueKey('mesures-manquantes')),

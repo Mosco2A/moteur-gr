@@ -303,8 +303,8 @@ void main() {
       for (var jours = 8; jours <= 15; jours++) {
         final pire = pireJourneeDe('gr20-nord', jours);
         expect(
-          pire.noteSurVingt,
-          closeTo(15.55, 0.05),
+          pire.noteDEffort,
+          closeTo(16.06, 0.05),
           reason: 'le nord a $jours jours',
         );
         expect(pire.depart, 'Calenzana');
@@ -313,31 +313,35 @@ void main() {
       // A SEPT JOURS LE PLANCHER N EST PLUS L ETAPE 1, et c'est une
       // consequence de l'exposant mesure : la journee Ortu vers Ascu-Stagnu
       // la depasse de quatre centiemes d'indice.
-      expect(pireJourneeDe('gr20-nord', 7).noteSurVingt, closeTo(15.94, 0.05));
-      // ET SERRER L'ALLURE A CINQ JOURS FAIT MONTER DE TROIS POINTS, ce que la
-      // fiche annonce : 18,5 contre 15,6 sur vingt.
+      expect(pireJourneeDe('gr20-nord', 7).noteDEffort, closeTo(16.12, 0.05));
+      // ET SERRER L'ALLURE A CINQ JOURS FAIT MONTER, ce que la fiche
+      // annonce : 17,5 contre 16,1 sur vingt d'effort. L'ECART S'EST
+      // RESSERRE EN PASSANT AUX SEUILS PUBLIES (1,4 point au lieu de 2,9)
+      // et c'est attendu : le dernier palier de la jauge d'effort est le
+      // plus plat de tous, parce qu'au-dela du seuil publie de 25 km et
+      // 1 000 m aucun bareme du monde ne gradue plus.
       final aCinq = pireJourneeDe('gr20-nord', 5);
-      expect(aCinq.noteSurVingt, closeTo(18.46, 0.05));
+      expect(aCinq.noteDEffort, closeTo(17.48, 0.05));
       final texte = ficheDe('gr20-nord').description.aQuoiSAttendre;
-      expect(texte, contains('une note de 15,6 sur 20'));
-      expect(texte, contains('passe a 18,5 sur 20'));
+      expect(texte, contains('un effort de 16,1 sur 20'));
+      expect(texte, contains('passe a 17,5 sur 20'));
     });
 
     test('LE SUD DESCEND QUAND ON LUI DONNE DU TEMPS, ET LA FICHE LE '
         'CHIFFRE', () {
       // LA VRAIE DIFFERENCE ENTRE LES DEUX MOITIES, MESUREE EN INDICE : le sud
       // repond a l'allure, le nord non. De cinq a seize jours sa pire journee
-      // tombe de 35 a 20, parce que ses montees se coupent toutes sur un
-      // couchage releve.
+      // tombe de 14,1 a 8,3 d'effort, parce que ses montees se coupent
+      // toutes sur un couchage releve.
       expect(lireLesNuits('gr20-sud').journeesMaximales, 16);
-      final aCinq = pireJourneeDe('gr20-sud', 5).noteSurVingt;
-      final aSept = pireJourneeDe('gr20-sud', 7).noteSurVingt;
-      final aHuit = pireJourneeDe('gr20-sud', 8).noteSurVingt;
-      final aSeize = pireJourneeDe('gr20-sud', 16).noteSurVingt;
-      expect(aCinq, closeTo(11.95, 0.05));
-      expect(aSept, closeTo(5.23, 0.05));
-      expect(aHuit, closeTo(3.66, 0.05));
-      expect(aSeize, closeTo(2.58, 0.05));
+      final aCinq = pireJourneeDe('gr20-sud', 5).noteDEffort;
+      final aSept = pireJourneeDe('gr20-sud', 7).noteDEffort;
+      final aHuit = pireJourneeDe('gr20-sud', 8).noteDEffort;
+      final aSeize = pireJourneeDe('gr20-sud', 16).noteDEffort;
+      expect(aCinq, closeTo(14.11, 0.05));
+      expect(aSept, closeTo(10.57, 0.05));
+      expect(aHuit, closeTo(9.21, 0.05));
+      expect(aSeize, closeTo(8.29, 0.05));
       expect(
         aCinq > aSept && aSept > aHuit && aHuit > aSeize,
         isTrue,
@@ -347,13 +351,13 @@ void main() {
       // fiche le dit : le kilometre-effort nommait la DERNIERE journee, celle
       // qui DESCEND 1 090 m vers Conca, parce qu'il facturait la descente a
       // 0,30. L'indice mesure l'energie : c'est la PREMIERE, la montee de
-      // 703 m au-dessus de Vizzavona, qui ne descend jamais sous 20.
+      // 703 m au-dessus de Vizzavona, qui fait le plancher du chapitre.
       final plancher = pireJourneeDe('gr20-sud', 16);
       expect(plancher.depart, contains('Vizzavona'));
       expect(plancher.deniveleM, greaterThan(plancher.descenteM));
       final texte = ficheDe('gr20-sud').description.aQuoiSAttendre;
-      expect(texte, contains('5,2 sur 20'));
-      expect(texte, contains('ne descend jamais sous 2,6 sur 20'));
+      expect(texte, contains('10,6 sur 20'));
+      expect(texte, contains('ne descend jamais sous 8,3 sur 20'));
       expect(texte, contains('Vizzavona'));
     });
 
@@ -364,7 +368,7 @@ void main() {
       expect(gr20SudTrailConfig.availableDurations, contains(8));
       final indices = {
         for (final jours in gr20SudTrailConfig.availableDurations)
-          jours: pireJourneeDe('gr20-sud', jours).noteSurVingt,
+          jours: pireJourneeDe('gr20-sud', jours).noteDEffort,
       };
       expect(
         indices.values.toSet().length,

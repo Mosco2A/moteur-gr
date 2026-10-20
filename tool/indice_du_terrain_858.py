@@ -207,6 +207,7 @@ def inverser(segments, longueur_totale_m: float):
 def indice(terrain, beta: float = BETA, d_ref: float = D_REF_M,
            repit_minutes: float = REPIT_MINUTES) -> dict:
     socle = majoration = denivele = descente = km_de_trajet = 0.0
+    km_de_carte = 0.0
     energie_montante = denivele_de_la_montee = repit = 0.0
     montees = 0
     plus_grosse = 0.0
@@ -228,6 +229,7 @@ def indice(terrain, beta: float = BETA, d_ref: float = D_REF_M,
         points = points_par_km(pente) * km
         socle += points
         km_de_trajet += km
+        km_de_carte += longueur / 1000.0
         if den > 0:
             denivele += den
             repit = 0.0
@@ -252,6 +254,7 @@ def indice(terrain, beta: float = BETA, d_ref: float = D_REF_M,
         "dplus_m": denivele,
         "dmoins_m": descente,
         "km_de_trajet": km_de_trajet,
+        "km_de_carte": km_de_carte,
     }
 
 
@@ -265,6 +268,7 @@ def arrondir(d: dict) -> dict:
         "dplus_m": round(d["dplus_m"]),
         "dmoins_m": round(d["dmoins_m"]),
         "km_de_trajet": round(d["km_de_trajet"], 3),
+        "km_de_carte": round(d["km_de_carte"], 3),
     }
 
 

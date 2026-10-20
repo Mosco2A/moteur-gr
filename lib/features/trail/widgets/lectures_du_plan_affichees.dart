@@ -35,6 +35,8 @@ class LecturesDuPlanAffichees extends StatelessWidget {
     final dures = lectures.journeesDures.toString();
     final enchainement = lectures.plusLongEnchainementDeJourneesDures
         .toString();
+    final pireRaide = nombreAUneDecimale(lectures.pireJourneeEnRaideur);
+    final typeRaide = nombreAUneDecimale(lectures.journeeTypeEnRaideur);
 
     return Column(
       key: const ValueKey('lectures-du-plan'),
@@ -49,8 +51,20 @@ class LecturesDuPlanAffichees extends StatelessWidget {
         ),
         const SizedBox(height: AppTheme.spacingXs),
         Text(
-          'journee la plus dure $pire sur 20, journee type $type sur 20.',
+          'en effort, journee la plus dure $pire sur 20 et journee type '
+          '$type sur 20.',
           key: const ValueKey('lecture-pire-et-type'),
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(height: AppTheme.spacingXs),
+        // LA MEME LECTURE SUR LE SECOND AXE, ET ELLE N'EST PAS DECORATIVE :
+        // sur une semaine de GR20 l'axe effort ne porte que 1,65 point
+        // d'etendue quand la raideur en porte plus de dix. Lire une semaine
+        // sur le seul effort, c'est lire une semaine plate.
+        Text(
+          'en raideur, la plus raide $pireRaide sur 20 et la journee type '
+          '$typeRaide sur 20.',
+          key: const ValueKey('lecture-raideur'),
           style: theme.textTheme.bodyMedium,
         ),
         const SizedBox(height: AppTheme.spacingXs),
@@ -66,7 +80,7 @@ class LecturesDuPlanAffichees extends StatelessWidget {
         // CE QUE CE BLOC N'AFFICHE PAS, ET POURQUOI C'EST DIT AU LECTEUR : il
         // n'y a pas de note du sentier. Le taire laisserait croire a un oubli.
         Text(
-          'Un sentier n\'a pas de note : seules les journees en ont une. '
+          'Un sentier n\'a pas de note : seules les journees en ont. '
           'Additionner des notes ne voudrait rien dire.',
           key: const ValueKey('pas-de-note-de-sentier'),
           style: theme.textTheme.bodySmall?.copyWith(
