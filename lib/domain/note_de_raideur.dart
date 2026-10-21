@@ -2,6 +2,8 @@
 /// bandes publiees de l'IMBA.
 library;
 
+import 'niveau_des_icones.dart';
+
 /// LA JAUGE DE RAIDEUR, FIGEE LE 20/10/2026 (tache 861), ET ELLE TIENT EN UNE
 /// LIGNE : raideur sur vingt = (denivele positif par kilometre) / 10, plafonnee
 /// a vingt.
@@ -134,4 +136,57 @@ abstract final class NoteDeRaideur {
   /// 35 m/km, soit une raideur de 3,5 : LES ETAPES PUBLIEES NE SONT PAS
   /// RAIDES, en moyenne. C'est vrai et c'est informatif.
   static bool estEcretee(double parKm) => parKm > doubleNoirM;
+
+  /// LES QUATRE FRONTIERES DE LA RANGEE D'ICONES — les quatre bandes
+  /// publiees de l'IMBA, dans l'ordre.
+  ///
+  /// CE SONT LES MEMES CONSTANTES QUE LA NOTE, et c'est une exigence : une
+  /// icone ne doit jamais pouvoir contredire la note posee a cote d'elle. Les
+  /// quatre frontieres tombent donc sur les notes 5, 10, 15 et 20 pile, ce
+  /// qu'un test verifie.
+  static const List<double> frontieresDesIcones = <double>[
+    vertM,
+    bleuM,
+    noirM,
+    doubleNoirM,
+  ];
+
+  /// LE NIVEAU DE LA RANGEE DE MONTAGNES, pour une pente moyenne.
+  ///
+  /// RIEN SOUS LA PREMIERE BANDE PUBLIEE (Christophe, 21/10 08:14 : « ou alors
+  /// pas d'icone montagne du tout en dessous de 50 metres »). L'IMBA ne gradue
+  /// rien en dessous, donc on n'affiche rien : la PRESENCE de la montagne veut
+  /// dire quelque chose par elle-meme. Et une etape VRAIMENT PLATE existe —
+  /// sept des seize etapes du GR20 sont sous 50 m/km — donc l'absence porte
+  /// une information vraie, pas un manque.
+  static NiveauDIcone niveauDIcone(double parKm) {
+    var compte = 0;
+    for (final frontiere in frontieresDesIcones) {
+      if (parKm >= frontiere) compte++;
+    }
+    return NiveauDIcone.pourNombre(compte);
+  }
+
+  /// CE QUE LE NIVEAU DIT, EN MOTS ET SANS AUCUN MOT DE NIVEAU.
+  ///
+  /// Destine au lecteur d'ecran, et c'est la seconde moitie de WCAG 1.4.1 : la
+  /// couleur et le comptage parlent a l'oeil, cette phrase parle a la voix.
+  /// Elle decrit la BANDE PUBLIEE, factuellement, parce que les mots de niveau
+  /// ne sont pas tranches (18/10 : « on tranchera les niveaux apres ») et
+  /// qu'un chiffre sourcé vaut mieux qu'un adjectif invente.
+  static String libelleDuNiveau(double parKm) {
+    final niveau = niveauDIcone(parKm);
+    switch (niveau) {
+      case NiveauDIcone.aucun:
+        return 'moins de ${vertM.round()} m de montee par kilometre';
+      case NiveauDIcone.une:
+        return 'de ${vertM.round()} a ${bleuM.round()} m par kilometre';
+      case NiveauDIcone.deux:
+        return 'de ${bleuM.round()} a ${noirM.round()} m par kilometre';
+      case NiveauDIcone.trois:
+        return 'de ${noirM.round()} a ${doubleNoirM.round()} m par kilometre';
+      case NiveauDIcone.quatre:
+        return 'plus de ${doubleNoirM.round()} m de montee par kilometre';
+    }
+  }
 }

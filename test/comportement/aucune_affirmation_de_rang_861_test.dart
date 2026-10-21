@@ -13,12 +13,23 @@
 // LA LECON, ET ELLE DEPASSE ce lot : changer un bareme peut rendre faux un
 // texte COMMERCIAL qui ne parle pas de bareme. Un test vert ne prouve que ce
 // qu'il regarde. Cette garde regarde.
+//
+// ETENDUE A LA TACHE 862, ET C'EST LE MEME PIEGE EN PIRE. Une icone est une
+// affirmation, elle aussi : quatre etats de couleur sont quatre bandes, donc
+// quatre frontieres. Mais UNE COULEUR NE SE CHERCHE PAS PAR MOT-CLE — un
+// seuil invente dans un widget serait invisible a toute relecture par
+// recherche textuelle. La garde verifie donc STRUCTURELLEMENT qu'aucune
+// frontiere d'icone ne vit ailleurs que dans les deux lois qui l'ont
+// publiee, et que la couche d'affichage ne voit JAMAIS une mesure qu'elle
+// pourrait seuiller elle-meme : elle ne recoit qu'un niveau deja decide.
 library;
 
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/domain/note_d_effort.dart';
+import 'package:moteur_gr/domain/note_de_raideur.dart';
 
 /// VRAI quand cette ligne est un commentaire : une garde qui lit les
 /// commentaires s'eteint en PARLANT de ce qu'elle surveille. Les en-tetes de
@@ -127,6 +138,95 @@ void main() {
           texte.contains('effort') || texte.contains('Effort'),
           isTrue,
           reason: '$dossier cite une note sans nommer son axe',
+        );
+      }
+    });
+  });
+
+  group('862 — aucune frontiere d icone n est inventee', () {
+    test('SEULES LES DEUX LOIS CALCULENT UN NIVEAU D ICONE', () {
+      // UNE SEULE SOURCE DE VERITE. Si un troisieme fichier se mettait a
+      // decider un niveau, il pourrait le decider autrement que la note.
+      final definisseurs = <String>[];
+      for (final fichier in sourcesDeLib()) {
+        if (codeDe(fichier).contains('NiveauDIcone niveauDIcone(')) {
+          definisseurs.add(fichier.path);
+        }
+      }
+      expect(
+        definisseurs.map((c) => c.split(RegExp(r'[\\/]')).last).toSet(),
+        <String>{'note_d_effort.dart', 'note_de_raideur.dart'},
+        reason:
+            'le niveau d une icone ne se decide que dans la loi qui a publie '
+            'ses frontieres, or il se decide ici : '
+            '${definisseurs.join(' | ')}',
+      );
+    });
+
+    test('LA COUCHE D AFFICHAGE NE VOIT AUCUNE MESURE A SEUILLER', () {
+      // LA GARANTIE EST DANS LE TYPE : la rangee d icones recoit un
+      // `NiveauDIcone`, jamais des metres par kilometre ni un indice. Elle ne
+      // PEUT donc pas inventer une frontiere, meme par accident.
+      final rangee = File('lib/features/trail/widgets/icones_de_niveau.dart');
+      expect(rangee.existsSync(), isTrue);
+      // LES VALEURS HEXADECIMALES DE COULEUR SORTENT D ABORD : `0xFFEF5350`
+      // contient « 50 » sans etre une frontiere, et une garde qui crie au
+      // loup sur une couleur finit par etre desactivee.
+      final code = codeDe(rangee).replaceAll(RegExp('0x[0-9A-Fa-f]+'), '');
+      for (final chiffre in <String>[
+        '50',
+        '100',
+        '150',
+        '200',
+        '8.69',
+        '18.80',
+        '30.16',
+        '41.86',
+      ]) {
+        expect(
+          RegExp(
+            '(?<![0-9.])${RegExp.escape(chiffre)}(?![0-9])',
+          ).hasMatch(code),
+          isFalse,
+          reason:
+              'la rangee d icones porte le nombre $chiffre : une frontiere '
+              'ne doit jamais vivre dans l affichage',
+        );
+      }
+      // ET ELLE NE LIT NI L UNE NI L AUTRE DES DEUX LOIS : elle n en a pas
+      // besoin, donc elle ne peut pas s en ecarter.
+      expect(code.contains('NoteDEffort'), isFalse);
+      expect(code.contains('NoteDeRaideur'), isFalse);
+    });
+
+    test(
+      'LES QUATRE FRONTIERES DE CHAQUE AXE SONT SES CONSTANTES PUBLIEES',
+      () {
+        expect(NoteDeRaideur.frontieresDesIcones, <double>[
+          NoteDeRaideur.vertM,
+          NoteDeRaideur.bleuM,
+          NoteDeRaideur.noirM,
+          NoteDeRaideur.doubleNoirM,
+        ]);
+        expect(NoteDEffort.frontieresDesIcones, <double>[
+          NoteDEffort.indiceDe6km200m,
+          NoteDEffort.indiceDe12km450m,
+          NoteDEffort.indiceDe18km750m,
+          NoteDEffort.indiceDuDernierSeuilPublie,
+        ]);
+      },
+    );
+
+    test('ET CHAQUE FRONTIERE TOMBE SUR UNE NOTE RONDE, donc l icone et la '
+        'note ne peuvent pas divorcer', () {
+      for (var i = 0; i < 4; i++) {
+        expect(
+          NoteDeRaideur.pourMetresParKm(NoteDeRaideur.frontieresDesIcones[i]),
+          closeTo(5.0 * (i + 1), 1e-9),
+        );
+        expect(
+          NoteDEffort.pourIndice(NoteDEffort.frontieresDesIcones[i]),
+          closeTo(4.0 * (i + 1), 1e-9),
         );
       }
     });

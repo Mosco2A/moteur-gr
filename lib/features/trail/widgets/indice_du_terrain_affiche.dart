@@ -299,6 +299,22 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
                     effort: pire.noteDEffort,
                     raideur: pire.noteDeRaideur,
                     metresParKm: pire.metresParKmDeMontee,
+                    // LES NIVEAUX VIENNENT DES LOIS, PAS DE L ECRAN : chaque
+                    // loi lit les seuils publies qu'elle a deja figes pour sa
+                    // note, donc une icone ne peut pas contredire le nombre
+                    // affiche a cote d'elle.
+                    niveauDEffort: NoteDEffort.niveauDIcone(
+                      pire.indiceDuTerrain,
+                    ),
+                    niveauDeRaideur: NoteDeRaideur.niveauDIcone(
+                      pire.metresParKmDeMontee,
+                    ),
+                    libelleDEffort: NoteDEffort.libelleDuNiveau(
+                      pire.indiceDuTerrain,
+                    ),
+                    libelleDeRaideur: NoteDeRaideur.libelleDuNiveau(
+                      pire.metresParKmDeMontee,
+                    ),
                   ),
                   if (pire.estEcretee) ...[
                     const SizedBox(height: AppTheme.spacingXs),

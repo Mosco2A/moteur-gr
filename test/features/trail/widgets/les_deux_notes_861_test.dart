@@ -9,8 +9,12 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/domain/note_d_effort.dart';
+import 'package:moteur_gr/domain/note_de_raideur.dart';
 import 'package:moteur_gr/features/trail/widgets/les_deux_notes.dart';
 
+/// LE BLOC, AVEC SES NIVEAUX TIRES DES LOIS et non ecrits a la main : le test
+/// exerce ainsi le vrai cablage, pas une valeur de complaisance.
 Widget bloc({
   required double effort,
   required double raideur,
@@ -22,6 +26,14 @@ Widget bloc({
       effort: effort,
       raideur: raideur,
       metresParKm: metresParKm,
+      niveauDEffort: NoteDEffort.niveauDIcone(
+        NoteDEffort.indicePourNote(effort),
+      ),
+      niveauDeRaideur: NoteDeRaideur.niveauDIcone(metresParKm),
+      libelleDEffort: NoteDEffort.libelleDuNiveau(
+        NoteDEffort.indicePourNote(effort),
+      ),
+      libelleDeRaideur: NoteDeRaideur.libelleDuNiveau(metresParKm),
       titre: titre,
     ),
   ),
@@ -96,33 +108,6 @@ void main() {
           findsNothing,
           reason: 'le mot $interdit est a l ecran',
         );
-      }
-    });
-  });
-
-  group('861 — le degrade va du vert au rouge', () {
-    test('IL EST MONOTONE EN TEINTE : le rouge monte, le vert descend', () {
-      // UN DEGRADE CONTINU ET PAS QUATRE BANDES : une bande exigerait un
-      // SEUIL, et les seuils de niveau ne sont pas tranches. Le degrade
-      // colore sans decider.
-      final bas = couleurDeLaNote(0);
-      final milieu = couleurDeLaNote(10);
-      final haut = couleurDeLaNote(20);
-      expect(bas.g, greaterThan(haut.g), reason: 'le vert doit retomber');
-      expect(haut.r, greaterThan(bas.r), reason: 'le rouge doit monter');
-      expect(milieu.r, greaterThan(bas.r));
-      expect(milieu.g, greaterThan(haut.g));
-    });
-
-    test('IL EST BORNE AUX DEUX BOUTS, et hors domaine il ne casse pas', () {
-      expect(couleurDeLaNote(-5), couleurDeLaNote(0));
-      expect(couleurDeLaNote(99), couleurDeLaNote(20));
-    });
-
-    test('IL EST DEFINI PARTOUT ENTRE ZERO ET VINGT', () {
-      for (var note = 0.0; note <= 20.0; note += 0.5) {
-        final couleur = couleurDeLaNote(note);
-        expect(couleur.a, 1.0, reason: 'opaque a $note');
       }
     });
   });
