@@ -99,13 +99,8 @@ Widget bloc({
   ),
 );
 
-/// Le nombre ecrit dans « Effort 16,1 sur 20 », rendu lisible par le test.
-double chiffreDe(String affiche, String prefixe) => double.parse(
-  affiche
-      .replaceAll(prefixe, '')
-      .replaceAll(' sur 20', '')
-      .replaceAll(',', '.'),
-);
+/// Le nombre ecrit sous l'aiguille d'une jauge, rendu lisible par le test.
+double chiffreDe(String affiche) => double.parse(affiche.replaceAll(',', '.'));
 
 void main() {
   group('858 — l indice de terrain est a l ecran, en nombre', () {
@@ -131,27 +126,25 @@ void main() {
       // DEUX NOTES NOMMEES, PAS UNE (tache 861) : personne au monde ne
       // resout la difficulte d'une journee dans un chiffre unique.
       final effort = tester.widget<Text>(
-        find.byKey(const ValueKey('note-d-effort')),
+        find.byKey(const ValueKey('chiffre-sous-l-aiguille-jauge-de-effort')),
       );
       final raideur = tester.widget<Text>(
-        find.byKey(const ValueKey('note-de-raideur')),
+        find.byKey(const ValueKey('chiffre-sous-l-aiguille-jauge-de-pente')),
       );
-      expect(effort.data, startsWith('Effort '));
-      expect(effort.data, endsWith(' sur 20'));
-      expect(raideur.data, startsWith('Raideur '));
-      expect(raideur.data, endsWith(' sur 20'));
+      expect(find.text('Effort'), findsOneWidget);
+      expect(find.text('Pente'), findsOneWidget);
       // Une montee de 800 m a 16 % vaut un indice d'environ 24 points, donc
       // un effort de l'ordre de dix sur vingt ; et 16 % de pente moyenne,
       // c'est 160 m par kilometre, donc une raideur ECRETEE a vingt.
-      expect(chiffreDe(effort.data!, 'Effort '), greaterThan(0.0));
-      expect(chiffreDe(effort.data!, 'Effort '), lessThan(20.0));
-      expect(chiffreDe(raideur.data!, 'Raideur '), greaterThan(10.0));
+      expect(chiffreDe(effort.data!), greaterThan(0.0));
+      expect(chiffreDe(effort.data!), lessThan(20.0));
+      expect(chiffreDe(raideur.data!), greaterThan(10.0));
       // ET LE CHIFFRE BRUT EST A COTE DE LA RAIDEUR, JAMAIS A SA PLACE : une
       // note sur vingt suggere une precision que la pente moyenne n'a pas.
       final brut = tester.widget<Text>(
-        find.byKey(const ValueKey('raideur-en-brut')),
+        find.byKey(const ValueKey('appoint-de-pente')),
       );
-      expect(brut.data, endsWith(' m/km'));
+      expect(brut.data, endsWith(' m de montee par kilometre'));
     });
 
     testWidgets('LE TEMPS DE MARCHE EST AFFICHE A PART, SOUS SON PROPRE '
@@ -263,12 +256,20 @@ void main() {
       await tester.pumpAndSettle();
 
       final avant = tester
-          .widget<Text>(find.byKey(const ValueKey('note-d-effort')))
+          .widget<Text>(
+            find.byKey(
+              const ValueKey('chiffre-sous-l-aiguille-jauge-de-effort'),
+            ),
+          )
           .data;
       await tester.tap(find.byKey(const ValueKey('allure-1')));
       await tester.pumpAndSettle();
       final apres = tester
-          .widget<Text>(find.byKey(const ValueKey('note-d-effort')))
+          .widget<Text>(
+            find.byKey(
+              const ValueKey('chiffre-sous-l-aiguille-jauge-de-effort'),
+            ),
+          )
           .data;
       expect(apres, isNot(avant));
     });
@@ -303,8 +304,8 @@ void main() {
       await tester.pumpWidget(bloc(profil: ProfilDuTerrain.vide));
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('note-d-effort')), findsNothing);
-      expect(find.byKey(const ValueKey('note-de-raideur')), findsNothing);
+      expect(find.byKey(const ValueKey('jauge-de-effort')), findsNothing);
+      expect(find.byKey(const ValueKey('jauge-de-pente')), findsNothing);
       expect(find.text('2 journees de marche a cette allure.'), findsOneWidget);
       final manquantes = tester.widget<Text>(
         find.byKey(const ValueKey('mesures-manquantes')),

@@ -299,22 +299,24 @@ class _IndiceDuTerrainAfficheState extends State<IndiceDuTerrainAffiche> {
                     effort: pire.noteDEffort,
                     raideur: pire.noteDeRaideur,
                     metresParKm: pire.metresParKmDeMontee,
-                    // LES NIVEAUX VIENNENT DES LOIS, PAS DE L ECRAN : chaque
-                    // loi lit les seuils publies qu'elle a deja figes pour sa
-                    // note, donc une icone ne peut pas contredire le nombre
-                    // affiche a cote d'elle.
-                    niveauDEffort: NoteDEffort.niveauDIcone(
-                      pire.indiceDuTerrain,
-                    ),
-                    niveauDeRaideur: NoteDeRaideur.niveauDIcone(
-                      pire.metresParKmDeMontee,
-                    ),
                     libelleDEffort: NoteDEffort.libelleDuNiveau(
                       pire.indiceDuTerrain,
                     ),
                     libelleDeRaideur: NoteDeRaideur.libelleDuNiveau(
                       pire.metresParKmDeMontee,
                     ),
+                    // LES REPERES DE LA BARRE SONT LES SEUILS PUBLIES, LUS
+                    // PAR LA LOI QUI LES A FIGES et convertis en note par la
+                    // meme jauge qui place l'aiguille. Un repere ne peut donc
+                    // pas tomber ailleurs que la ou la note le met.
+                    graduationsDEffort: <double>[
+                      for (final seuil in NoteDEffort.graduationsPubliees)
+                        NoteDEffort.pourIndice(seuil),
+                    ],
+                    graduationsDeRaideur: <double>[
+                      for (final bande in NoteDeRaideur.graduationsPubliees)
+                        NoteDeRaideur.pourMetresParKm(bande),
+                    ],
                   ),
                   if (pire.estEcretee) ...[
                     const SizedBox(height: AppTheme.spacingXs),

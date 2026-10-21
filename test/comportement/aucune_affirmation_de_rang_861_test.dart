@@ -143,45 +143,25 @@ void main() {
     });
   });
 
-  group('862 — aucune frontiere d icone n est inventee', () {
-    test('SEULES LES DEUX LOIS CALCULENT UN NIVEAU D ICONE', () {
-      // UNE SEULE SOURCE DE VERITE. Si un troisieme fichier se mettait a
-      // decider un niveau, il pourrait le decider autrement que la note.
-      final definisseurs = <String>[];
-      for (final fichier in sourcesDeLib()) {
-        if (codeDe(fichier).contains('NiveauDIcone niveauDIcone(')) {
-          definisseurs.add(fichier.path);
-        }
-      }
-      expect(
-        definisseurs.map((c) => c.split(RegExp(r'[\\/]')).last).toSet(),
-        <String>{'note_d_effort.dart', 'note_de_raideur.dart'},
-        reason:
-            'le niveau d une icone ne se decide que dans la loi qui a publie '
-            'ses frontieres, or il se decide ici : '
-            '${definisseurs.join(' | ')}',
-      );
-    });
-
+  group('862 — aucune graduation n est inventee', () {
     test('LA COUCHE D AFFICHAGE NE VOIT AUCUNE MESURE A SEUILLER', () {
-      // LA GARANTIE EST DANS LE TYPE : la rangee d icones recoit un
-      // `NiveauDIcone`, jamais des metres par kilometre ni un indice. Elle ne
-      // PEUT donc pas inventer une frontiere, meme par accident.
-      final rangee = File('lib/features/trail/widgets/icones_de_niveau.dart');
-      expect(rangee.existsSync(), isTrue);
-      // LES VALEURS HEXADECIMALES DE COULEUR SORTENT D ABORD : `0xFFEF5350`
-      // contient « 50 » sans etre une frontiere, et une garde qui crie au
-      // loup sur une couleur finit par etre desactivee.
-      final code = codeDe(rangee).replaceAll(RegExp('0x[0-9A-Fa-f]+'), '');
+      // LA GARANTIE EST DANS LE TYPE : la jauge recoit une NOTE deja calculee
+      // et des REPERES deja convertis. Elle ne connait ni les metres par
+      // kilometre ni l'indice, donc elle ne peut pas inventer un seuil, meme
+      // par accident. Et une couleur ne se cherche pas par mot-cle : cette
+      // garde est structurelle, pas textuelle.
+      final jauge = File('lib/features/trail/widgets/jauge_de_niveau.dart');
+      expect(jauge.existsSync(), isTrue);
+      // Les valeurs hexadecimales de couleur sortent d'abord : `0xFFEF5350`
+      // contient « 50 » sans etre un seuil.
+      final code = codeDe(jauge).replaceAll(RegExp('0x[0-9A-Fa-f]+'), '');
       for (final chiffre in <String>[
-        '50',
-        '100',
-        '150',
-        '200',
         '8.69',
         '18.80',
         '30.16',
         '41.86',
+        '150',
+        '200',
       ]) {
         expect(
           RegExp(
@@ -189,43 +169,39 @@ void main() {
           ).hasMatch(code),
           isFalse,
           reason:
-              'la rangee d icones porte le nombre $chiffre : une frontiere '
-              'ne doit jamais vivre dans l affichage',
+              'la jauge porte le nombre $chiffre : un seuil publie ne doit '
+              'jamais vivre dans l affichage',
         );
       }
-      // ET ELLE NE LIT NI L UNE NI L AUTRE DES DEUX LOIS : elle n en a pas
-      // besoin, donc elle ne peut pas s en ecarter.
       expect(code.contains('NoteDEffort'), isFalse);
       expect(code.contains('NoteDeRaideur'), isFalse);
     });
 
-    test(
-      'LES QUATRE FRONTIERES DE CHAQUE AXE SONT SES CONSTANTES PUBLIEES',
-      () {
-        expect(NoteDeRaideur.frontieresDesIcones, <double>[
-          NoteDeRaideur.vertM,
-          NoteDeRaideur.bleuM,
-          NoteDeRaideur.noirM,
-          NoteDeRaideur.doubleNoirM,
-        ]);
-        expect(NoteDEffort.frontieresDesIcones, <double>[
-          NoteDEffort.indiceDe6km200m,
-          NoteDEffort.indiceDe12km450m,
-          NoteDEffort.indiceDe18km750m,
-          NoteDEffort.indiceDuDernierSeuilPublie,
-        ]);
-      },
-    );
+    test('LES QUATRE GRADUATIONS DE CHAQUE AXE SONT SES CONSTANTES '
+        'PUBLIEES', () {
+      expect(NoteDeRaideur.graduationsPubliees, <double>[
+        NoteDeRaideur.vertM,
+        NoteDeRaideur.bleuM,
+        NoteDeRaideur.noirM,
+        NoteDeRaideur.doubleNoirM,
+      ]);
+      expect(NoteDEffort.graduationsPubliees, <double>[
+        NoteDEffort.indiceDe6km200m,
+        NoteDEffort.indiceDe12km450m,
+        NoteDEffort.indiceDe18km750m,
+        NoteDEffort.indiceDuDernierSeuilPublie,
+      ]);
+    });
 
-    test('ET CHAQUE FRONTIERE TOMBE SUR UNE NOTE RONDE, donc l icone et la '
-        'note ne peuvent pas divorcer', () {
+    test('ET CHAQUE GRADUATION TOMBE SUR UNE NOTE RONDE, donc un repere ne '
+        'peut pas se poser ailleurs que la ou la note le met', () {
       for (var i = 0; i < 4; i++) {
         expect(
-          NoteDeRaideur.pourMetresParKm(NoteDeRaideur.frontieresDesIcones[i]),
+          NoteDeRaideur.pourMetresParKm(NoteDeRaideur.graduationsPubliees[i]),
           closeTo(5.0 * (i + 1), 1e-9),
         );
         expect(
-          NoteDEffort.pourIndice(NoteDEffort.frontieresDesIcones[i]),
+          NoteDEffort.pourIndice(NoteDEffort.graduationsPubliees[i]),
           closeTo(4.0 * (i + 1), 1e-9),
         );
       }

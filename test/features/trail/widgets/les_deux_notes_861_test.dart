@@ -1,7 +1,7 @@
 // TACHE 861 — LES DEUX NOTES A L'ECRAN, NOMMEES ET COLOREES.
 //
 // CE QUE CE FICHIER GARDE. Que les deux axes sont NOMMES a l'ecran (« Effort »
-// et « Raideur » : un nombre sur vingt sans nom d'axe ne veut plus rien dire
+// et « Pente » : un nombre sur vingt sans nom d'axe ne veut plus rien dire
 // des qu'il y en a deux), que le chiffre brut en metres par kilometre
 // accompagne TOUJOURS la raideur, et que le degrade colore va bien du vert au
 // rouge sans jamais porter l'information tout seul.
@@ -26,14 +26,18 @@ Widget bloc({
       effort: effort,
       raideur: raideur,
       metresParKm: metresParKm,
-      niveauDEffort: NoteDEffort.niveauDIcone(
-        NoteDEffort.indicePourNote(effort),
-      ),
-      niveauDeRaideur: NoteDeRaideur.niveauDIcone(metresParKm),
       libelleDEffort: NoteDEffort.libelleDuNiveau(
         NoteDEffort.indicePourNote(effort),
       ),
       libelleDeRaideur: NoteDeRaideur.libelleDuNiveau(metresParKm),
+      graduationsDEffort: <double>[
+        for (final seuil in NoteDEffort.graduationsPubliees)
+          NoteDEffort.pourIndice(seuil),
+      ],
+      graduationsDeRaideur: <double>[
+        for (final bande in NoteDeRaideur.graduationsPubliees)
+          NoteDeRaideur.pourMetresParKm(bande),
+      ],
       titre: titre,
     ),
   ),
@@ -45,14 +49,18 @@ void main() {
       await tester.pumpWidget(
         bloc(effort: 16.06, raideur: 12.81, metresParKm: 128.1),
       );
+      // LE CHIFFRE VIT SOUS L AIGUILLE DE SA JAUGE (tache 862), et chaque
+      // jauge porte le nom de son axe.
       final effort = tester.widget<Text>(
-        find.byKey(const ValueKey('note-d-effort')),
+        find.byKey(const ValueKey('chiffre-sous-l-aiguille-jauge-de-effort')),
       );
-      final raideur = tester.widget<Text>(
-        find.byKey(const ValueKey('note-de-raideur')),
+      final pente = tester.widget<Text>(
+        find.byKey(const ValueKey('chiffre-sous-l-aiguille-jauge-de-pente')),
       );
-      expect(effort.data, 'Effort 16,1 sur 20');
-      expect(raideur.data, 'Raideur 12,8 sur 20');
+      expect(effort.data, '16,1');
+      expect(pente.data, '12,8');
+      expect(find.text('Effort'), findsOneWidget);
+      expect(find.text('Pente'), findsOneWidget);
     });
 
     testWidgets('LE CHIFFRE BRUT EST A COTE DE LA RAIDEUR, ARRONDI A '
@@ -63,9 +71,9 @@ void main() {
         bloc(effort: 16.06, raideur: 12.81, metresParKm: 128.1),
       );
       final brut = tester.widget<Text>(
-        find.byKey(const ValueKey('raideur-en-brut')),
+        find.byKey(const ValueKey('appoint-de-pente')),
       );
-      expect(brut.data, '128 m/km');
+      expect(brut.data, '128 m de montee par kilometre');
     });
 
     testWidgets('L EFFORT N A PAS DE CHIFFRE BRUT : son indice n est pas une '
@@ -73,8 +81,8 @@ void main() {
       await tester.pumpWidget(
         bloc(effort: 16.06, raideur: 12.81, metresParKm: 128.1),
       );
-      expect(find.byKey(const ValueKey('raideur-en-brut')), findsOneWidget);
-      expect(find.textContaining('m/km'), findsOneWidget);
+      expect(find.byKey(const ValueKey('appoint-de-pente')), findsOneWidget);
+      expect(find.byKey(const ValueKey('appoint-de-effort')), findsNothing);
     });
 
     testWidgets('LE TITRE EST FACULTATIF', (tester) async {

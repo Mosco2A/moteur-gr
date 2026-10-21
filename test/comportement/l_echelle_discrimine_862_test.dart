@@ -28,7 +28,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
 import 'package:moteur_gr/domain/indice_du_terrain.dart';
 import 'package:moteur_gr/domain/journees_pesees.dart';
-import 'package:moteur_gr/domain/niveau_des_icones.dart';
 import 'package:moteur_gr/domain/note_d_effort.dart';
 import 'package:moteur_gr/domain/note_de_raideur.dart';
 import 'package:moteur_gr/domain/nuit_possible.dart';
@@ -133,19 +132,28 @@ List<IndiceDuTerrain> seizeEtapes({required bool aLEnvers}) {
   ];
 }
 
-/// Combien de niveaux DIFFERENTS un axe occupe sur une serie de mesures.
-int niveauxOccupes(List<NiveauDIcone> niveaux) => niveaux.toSet().length;
+/// Dans quel PALIER PUBLIE tombe une valeur, de 0 a 4.
+///
+/// La jauge est un degrade CONTINU, donc elle n a aucune frontiere : ces
+/// paliers ne sont pas un rendu, ce sont les REPERES du metier, et ils servent
+/// ici a dire si l axe etale ses mesures ou les tasse au meme endroit.
+int palier(double valeur, List<double> graduations) =>
+    graduations.where((g) => valeur >= g).length;
 
-List<NiveauDIcone> niveauxDEffort(List<IndiceDuTerrain> mesures) =>
-    <NiveauDIcone>[for (final m in mesures) NoteDEffort.niveauDIcone(m.indice)];
+/// Combien de paliers DIFFERENTS un axe occupe sur une serie de mesures.
+int niveauxOccupes(List<int> paliers) => paliers.toSet().length;
 
-List<NiveauDIcone> niveauxDeRaideur(List<IndiceDuTerrain> mesures) =>
-    <NiveauDIcone>[
-      for (final m in mesures)
-        NoteDeRaideur.niveauDIcone(
-          NoteDeRaideur.metresParKm(deniveleM: m.deniveleM, km: m.kmDeCarte),
-        ),
-    ];
+List<int> niveauxDEffort(List<IndiceDuTerrain> mesures) => <int>[
+  for (final m in mesures) palier(m.indice, NoteDEffort.graduationsPubliees),
+];
+
+List<int> niveauxDeRaideur(List<IndiceDuTerrain> mesures) => <int>[
+  for (final m in mesures)
+    palier(
+      NoteDeRaideur.metresParKm(deniveleM: m.deniveleM, km: m.kmDeCarte),
+      NoteDeRaideur.graduationsPubliees,
+    ),
+];
 
 void main() {
   group('862 — LE TEST DE L ECHELLE SUR LES SEIZE ETAPES DU GR20', () {
@@ -167,9 +175,12 @@ void main() {
         reason: 'L AXE RAIDEUR SATURE sur les seize etapes : echec d echelle',
       );
       // ET LE RELEVE EXACT EST FIGE ICI, parce que c'est lui qu'on montre.
-      expect(niveauxOccupes(effort), 4);
+      // CINQ PALIERS OCCUPES SUR L EFFORT, et c est mieux que quatre : la
+      // plus facile des seize (indice 6,60) tombe SOUS le premier seuil
+      // publie, donc elle occupe un palier a elle.
+      expect(niveauxOccupes(effort), 5);
       expect(niveauxOccupes(raideur), 4);
-      expect(_compter(effort), <int>[0, 4, 6, 5, 1]);
+      expect(_compter(effort), <int>[1, 3, 6, 5, 1]);
       expect(_compter(raideur), <int>[7, 5, 3, 1, 0]);
     });
 
@@ -194,24 +205,36 @@ void main() {
       expect(_compter(raideur), <int>[4, 8, 4, 0, 0]);
     });
 
-    test('LA MONTAGNE DISPARAIT SUR LES ETAPES VRAIMENT PLATES, et c est une '
-        'information vraie', () {
-      // Sept des seize etapes sont sous la premiere bande publiee de l'IMBA.
-      // L'absence de montagne y dit « ca ne monte pas pour la distance », et
-      // ce n'est pas un trou : une mesure absente ne produit aucune rangee du
-      // tout, elle est nommee en texte par `SentierPese.mesuresManquantes`.
-      final raideur = niveauxDeRaideur(seizeEtapes(aLEnvers: false));
-      expect(
-        raideur.where((n) => n == NiveauDIcone.aucun).length,
-        7,
-        reason: 'sept etapes sous 50 m de montee par kilometre',
-      );
+    test('SEPT ETAPES SONT SOUS LA PREMIERE BANDE PUBLIEE, et leur jauge '
+        'reste visible', () {
+      // Christophe, 21/10 09:47 : « oui il y a toujours une jauge ». Sa regle
+      // du « rien sous cinquante » ne valait que pour une icone. Avec une
+      // jauge, l'aiguille se pose bas et ca DIT quelque chose de vrai : mesure,
+      // et c'est plat. Une jauge absente, elle, serait lue comme une donnee
+      // manquante — or ce cas-la a son propre rendu en texte.
+      final mesures = seizeEtapes(aLEnvers: false);
+      final plates = niveauxDeRaideur(mesures).where((p) => p == 0).length;
+      expect(plates, 7, reason: 'sept etapes sous 50 m par kilometre');
+      // ET L AIGUILLE N Y EST PAS AU ZERO ABSOLU : la plus plate des seize
+      // sort a 22,9 m/km, soit une note de 2,29, donc 11 % de la barre.
+      final notesPlates = <double>[
+        for (final m in mesures)
+          NoteDeRaideur.pourJournee(deniveleM: m.deniveleM, km: m.kmDeCarte),
+      ]..sort();
+      expect(notesPlates.first, greaterThan(2.0));
+      expect(notesPlates.first, lessThan(3.0));
     });
 
-    test('LA CHAUSSURE NE DISPARAIT JAMAIS, dans aucun sens', () {
+    test('LES DEUX JAUGES SONT TOUJOURS PRESENTES, dans les deux sens', () {
+      // Aucune note n'est nulle, donc aucune aiguille ne colle au plancher
+      // absolu : chaque etape a une position a lire sur les deux axes.
       for (final aLEnvers in <bool>[false, true]) {
-        for (final niveau in niveauxDEffort(seizeEtapes(aLEnvers: aLEnvers))) {
-          expect(niveau, isNot(NiveauDIcone.aucun));
+        for (final m in seizeEtapes(aLEnvers: aLEnvers)) {
+          expect(NoteDEffort.pourIndice(m.indice), greaterThan(0));
+          expect(
+            NoteDeRaideur.pourJournee(deniveleM: m.deniveleM, km: m.kmDeCarte),
+            greaterThan(0),
+          );
         }
       }
     });
@@ -226,12 +249,13 @@ void main() {
       for (final entree in produits.entries) {
         final journees = journeesDe(entree.key, entree.value);
         expect(journees, isNotEmpty, reason: entree.key);
-        final effort = <NiveauDIcone>[
-          for (final j in journees) NoteDEffort.niveauDIcone(j.indiceDuTerrain),
-        ];
-        final raideur = <NiveauDIcone>[
+        final effort = <int>[
           for (final j in journees)
-            NoteDeRaideur.niveauDIcone(j.metresParKmDeMontee),
+            palier(j.indiceDuTerrain, NoteDEffort.graduationsPubliees),
+        ];
+        final raideur = <int>[
+          for (final j in journees)
+            palier(j.metresParKmDeMontee, NoteDeRaideur.graduationsPubliees),
         ];
         expect(
           niveauxOccupes(effort),
@@ -267,12 +291,13 @@ void main() {
           .length;
       expect(auDela, 7, reason: 'sept journees au-dela du dernier seuil');
 
-      final effort = <NiveauDIcone>[
-        for (final j in journees) NoteDEffort.niveauDIcone(j.indiceDuTerrain),
-      ];
-      final raideur = <NiveauDIcone>[
+      final effort = <int>[
         for (final j in journees)
-          NoteDeRaideur.niveauDIcone(j.metresParKmDeMontee),
+          palier(j.indiceDuTerrain, NoteDEffort.graduationsPubliees),
+      ];
+      final raideur = <int>[
+        for (final j in journees)
+          palier(j.metresParKmDeMontee, NoteDeRaideur.graduationsPubliees),
       ];
       expect(niveauxOccupes(effort), 2, reason: 'l effort se tasse');
       expect(
@@ -290,13 +315,13 @@ void main() {
       // La tentation serait de remonter le dernier seuil pour que le GR20
       // retrouve de la place. Ce serait perdre la seule chose sourcee qu'on
       // ait. Ce test fige les quatre frontieres sur leurs valeurs publiees.
-      expect(NoteDEffort.frontieresDesIcones, <double>[
+      expect(NoteDEffort.graduationsPubliees, <double>[
         8.69,
         18.80,
         30.16,
         41.86,
       ]);
-      expect(NoteDeRaideur.frontieresDesIcones, <double>[
+      expect(NoteDeRaideur.graduationsPubliees, <double>[
         50.0,
         100.0,
         150.0,
@@ -306,8 +331,7 @@ void main() {
   });
 }
 
-/// Combien de mesures tombent dans chacun des cinq niveaux, dans l'ordre.
-List<int> _compter(List<NiveauDIcone> niveaux) => <int>[
-  for (final niveau in NiveauDIcone.values)
-    niveaux.where((n) => n == niveau).length,
+/// Combien de mesures tombent dans chacun des cinq paliers, dans l'ordre.
+List<int> _compter(List<int> paliers) => <int>[
+  for (var p = 0; p <= 4; p++) paliers.where((x) => x == p).length,
 ];

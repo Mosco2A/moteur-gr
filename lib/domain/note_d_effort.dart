@@ -2,8 +2,6 @@
 /// du bareme francais de randonnee, et non plus parmi les etapes d'un corpus.
 library;
 
-import 'niveau_des_icones.dart';
-
 /// LA JAUGE D'EFFORT, FIGEE LE 20/10/2026 (tache 861).
 ///
 /// POURQUOI ELLE A CHANGE, ET C'EST LE COEUR DU LOT. La jauge de la 860 etait
@@ -155,59 +153,48 @@ abstract final class NoteDEffort {
     return indiceDuVingt;
   }
 
-  /// LES QUATRE FRONTIERES DE LA RANGEE D'ICONES — les quatre seuils publies
-  /// du bareme francais, dans l'ordre.
+  /// LES QUATRE GRADUATIONS PUBLIEES DE L'AXE — les quatre seuils du bareme
+  /// francais, dans l'ordre.
   ///
-  /// CE SONT LES MEMES CONSTANTES QUE LA NOTE : les quatre frontieres tombent
-  /// donc sur les notes 4, 8, 12 et 16 pile, ce qu'un test verifie. Une icone
-  /// ne peut pas contredire la note posee a cote d'elle.
-  static const List<double> frontieresDesIcones = <double>[
+  /// ELLES NE DECOUPENT PLUS RIEN (tache 862) : la jauge est un DEGRADE
+  /// CONTINU. Ces quatre valeurs y sont des REPERES, et elles tombent sur
+  /// les notes 4, 8, 12 et 16 pile — pas sur 5, 10, 15 et 20. C'est pour
+  /// cela qu'elles ne peuvent pas servir de bandes de couleur sans trahir
+  /// soit le bareme, soit des bornes rondes : le degrade dissout la
+  /// question en n'ayant aucune bande.
+  static const List<double> graduationsPubliees = <double>[
     indiceDe6km200m,
     indiceDe12km450m,
     indiceDe18km750m,
     indiceDuDernierSeuilPublie,
   ];
 
-  /// LE NIVEAU DE LA RANGEE DE CHAUSSURES, pour un indice de terrain.
-  ///
-  /// UNE ICONE AU MINIMUM, ET C'EST LA SEULE ASYMETRIE AVEC L'AXE RAIDEUR.
-  /// Elle est mesuree, pas choisie : sur les 108 etapes officielles relevees,
-  /// AUCUNE ne tombe sous la premiere frontiere (note 4), parce qu'une etape
-  /// publiee EST une journee de marche et que personne ne publie sept
-  /// kilometres. La bande basse de cet axe est donc pratiquement VIDE dans la
-  /// nature — une seule des seize etapes du GR20 y tombe, et aucune a
-  /// l'envers.
-  ///
-  /// CONSEQUENCE : une rangee d'effort VIDE serait lue comme une donnee
-  /// manquante et jamais comme « aucun effort », parce que l'effort nul
-  /// n'existe pas sur un sentier. La montagne, elle, peut legitimement
-  /// disparaitre : une etape vraiment plate existe, et sept des seize en sont.
-  static NiveauDIcone niveauDIcone(double indice) {
-    var compte = 0;
-    for (final frontiere in frontieresDesIcones) {
-      if (indice >= frontiere) compte++;
-    }
-    return NiveauDIcone.pourNombre(compte < 1 ? 1 : compte);
-  }
-
   /// CE QUE LE NIVEAU DIT, EN MOTS ET SANS AUCUN MOT DE NIVEAU.
   ///
   /// Pour le lecteur d'ecran. Elle cite la GEOMETRIE du seuil publie plutot
   /// qu'un adjectif, parce que c'est elle qui est sourcee.
   static String libelleDuNiveau(double indice) {
-    final niveau = niveauDIcone(indice);
-    switch (niveau) {
-      case NiveauDIcone.aucun:
-      case NiveauDIcone.une:
+    switch (_palier(indice)) {
+      case 0:
+      case 1:
         return 'sous le seuil publie de 12 km et 450 m de montee';
-      case NiveauDIcone.deux:
+      case 2:
         return 'entre les seuils publies de 12 km et 450 m, et de 18 km '
             'et 750 m';
-      case NiveauDIcone.trois:
+      case 3:
         return 'entre les seuils publies de 18 km et 750 m, et de 25 km '
             'et 1 000 m';
-      case NiveauDIcone.quatre:
+      default:
         return 'au-dela du dernier seuil publie, 25 km et 1 000 m de montee';
     }
+  }
+
+  /// Dans quel palier publie tombe un indice de terrain, de 0 a 4.
+  static int _palier(double indice) {
+    var compte = 0;
+    for (final graduation in graduationsPubliees) {
+      if (indice >= graduation) compte++;
+    }
+    return compte;
   }
 }
