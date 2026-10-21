@@ -285,8 +285,10 @@ class TrailConfig {
   /// Altitude MAXIMALE de la trace, en metres — MESUREE, jamais annoncee.
   ///
   /// POURQUOI ELLE EST ICI ALORS QUE LA DIFFICULTE SE CALCULE. C'est une
-  /// MESURE, pas un verdict : elle entre dans le calcul de la difficulte
-  /// (`DifficulteDuSentier`) au meme titre que le denivele des journees, et
+  /// MESURE, pas un verdict — et elle n'entre dans AUCUN calcul de difficulte :
+  /// Christophe l'a sortie le 17/10, et l'indice de terrain de la tache 858 ne
+  /// la lit pas davantage (il lit la pente, pas l'altitude). Elle est citee par
+  /// la fiche pour ce qu'elle est, et
   /// elle se lit sur la trace comme [totalDistanceKm] et [totalElevationGain]
   /// s'y lisent deja. Un test de garde relit le GPX et refuse toute divergence
   /// (`test/assets/altitude_max_mesuree_846_test.dart`) : un chiffre change a

@@ -142,11 +142,21 @@ const gr20TrailConfig = TrailConfig(
   // ci-dessous, decoupage sur les trente et une nuits relevees : TRES DIFFICILE
   // aux quatre, et aux vingt-cinq autres allures de 7 a 31 jours, DANS LES DEUX
   // SENS. Son echelle descendante (difficile a 12 et 16 jours) ne sort pas des
-  // chiffres, parce que la premiere journee — 11,3 km, 1 455 m de montee,
-  // 26,5 km-effort — ne se coupe pas : il n'existe aucun couchage dans la
-  // montee. Ce n'est pas le selecteur qu'il faut corriger, c'est le discours.
-  availableDurations: [7, 9, 12, 16],
-  defaultDuration: 16,
+  // chiffres, parce que la premiere journee — 11,3 km, 1 455 m de montee d'un
+  // seul tenant, un indice de terrain de 50 — ne se coupe pas : il n'existe
+  // aucun couchage dans la montee. Ce n'est pas le selecteur qu'il faut
+  // corriger, c'est le discours. (Chiffre remesure en tache 858 : le
+  // kilometre-effort qui disait 26,5 est retire.)
+  // LE PLAN PAR DEFAUT EST DE HUIT JOURS (tache 860), et il ne l'etait pas.
+  //
+  // Il valait SEIZE, soit une etape par jour : le decoupage du topoguide, pas
+  // un plan. Seize jours est le plan le PLUS FACILE de la serie, donc le
+  // defaut montrait au client la version la plus douce du sentier et lui
+  // laissait decouvrir le reste en deplacant le curseur. Huit jours est le
+  // plan que le marcheur fait REELLEMENT, et c'est sur lui que la notation du
+  // lot 860 est calee : la pire journee y sort a 18,46 sur vingt.
+  availableDurations: [7, 8, 9, 12, 16],
+  defaultDuration: 8,
   offlineFirst: true,
   hasPremium: false,
   // LES DEUX CHAPITRES, ET CETTE SEULE LIGNE RETIRE LE SENTIER DE LA VENTE.

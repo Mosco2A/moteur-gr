@@ -33,11 +33,93 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
 import 'package:moteur_gr/core/models/stage_duration.dart';
-import 'package:moteur_gr/domain/difficulte_du_sentier.dart';
-import 'package:moteur_gr/domain/echelle_de_difficulte.dart';
+import 'package:moteur_gr/domain/indice_du_terrain.dart';
+import 'package:moteur_gr/domain/journees_pesees.dart';
 import 'package:moteur_gr/domain/nuit_possible.dart';
+import 'package:moteur_gr/domain/profil_du_terrain.dart';
 import 'package:moteur_gr/features/planning/domain/decoupage_sur_les_nuits.dart';
+
+/// Le profil du GR20, lu sur sa trace embarquee (tache 858).
+ProfilDuTerrain lireLeProfil() {
+  final points = GpxDepuisLesAssets.parseFromString(
+    File('assets/data/gr20/track.gpx').readAsStringSync(),
+  );
+  return ProfilDuTerrain.depuisLaTrace(
+    distancesM: points.map((p) => p.distanceFromStart).toList(growable: false),
+    altitudesM: points.map((p) => p.altitude).toList(growable: false),
+  );
+}
+
+/// LE SENTIER PESE A UNE ALLURE, DANS LE SENS DEMANDE (tache 858).
+///
+/// LE SENS INVERSE DEMANDE DEUX RETOURNEMENTS, ET C'EST LE PIEGE : le
+/// decoupage se retourne ([DecoupageDeNuits.aLEnvers]) ET le profil aussi
+/// ([ProfilDuTerrain.aLEnvers]), sinon les points kilometriques des nuits
+/// designeraient l'autre bout du sentier. Un sentier descendu n'est pas un
+/// sentier monte.
+SentierPese peser({
+  required DecoupageDeNuits nuits,
+  required ProfilDuTerrain profil,
+  required int jours,
+  bool aLEnvers = false,
+}) {
+  final profilUtile = aLEnvers ? profil.aLEnvers : profil;
+  final total = profil.longueurM / 1000.0;
+  // LE DECOUPAGE SE FAIT A L'EFFORT (tache 860), et dans le sens demande : la
+  // charge d'un groupe est l'indice REEL de la journee sur le profil utile.
+  final pkParNom = <String, double>{
+    for (final nuit in nuits.nuits) nuit.nom: nuit.pkKm,
+  };
+  double pkDeFin(int segment) {
+    final pkTrace = pkParNom[nuits.segments[segment].arrivee] ?? 0.0;
+    return aLEnvers ? total - pkTrace : pkTrace;
+  }
+
+  double effort(int debut, int fin) {
+    final pkDebut = debut == 0 ? 0.0 : pkDeFin(debut - 1);
+    final pkFin = pkDeFin(fin - 1);
+    if (pkFin <= pkDebut) return 0.0;
+    return IndiceDuTerrain.calculer(
+      terrain: profilUtile.tranche(
+        pkDebutM: pkDebut * 1000.0,
+        pkFinM: pkFin * 1000.0,
+      ),
+    ).indice;
+  }
+
+  final journees = <JourneeAPeser>[];
+  var pk = 0.0;
+  var depart = nuits.teteDeSentier;
+  for (final j in DecoupageSurLesNuits.repartir(
+    nuits,
+    jours,
+    effortDuGroupe: effort,
+  )) {
+    final pkTrace = j.arrivee?.pkKm;
+    final pkFin = pkTrace == null ? pk : (aLEnvers ? total - pkTrace : pkTrace);
+    journees.add(
+      JourneeAPeser(
+        depart: depart,
+        arrivee: j.arriveeNom,
+        km: j.km,
+        deniveleM: j.deniveleM,
+        descenteM: j.descenteM,
+        minutes: j.minutes,
+        pkDebutKm: pk,
+        pkFinKm: pkFin,
+      ),
+    );
+    pk = pkFin;
+    depart = j.arriveeNom;
+  }
+  return SentierPese.peser(
+    jours: jours,
+    profil: profilUtile,
+    journees: journees,
+  )!;
+}
 
 /// Les trente et une nuits relevees du GR20, telles qu'embarquees.
 DecoupageDeNuits lireGr20() => DecoupageDeNuits.fromJson(
@@ -288,129 +370,101 @@ void main() {
     });
   });
 
-  group('853 — CE QUE LE CORRECTIF CHANGE AUX VERDICTS : RIEN, ET C EST '
-      'MESURE', () {
-    test('LE DETOUR NE FAIT CHANGER DE BANDE AUCUNE ALLURE', () {
-      // LE RESULTAT LE PLUS UTILE DE CE CORRECTIF EST UN RESULTAT NEGATIF, ET
-      // IL DOIT ETRE ECRIT PLUTOT QUE SUPPOSE. Les metres du detour entrent
-      // desormais dans le denivele des journees, et AUCUN verdict ne bouge —
-      // de sept a trente et un jours, dans les deux sens.
-      //
-      // LA RAISON N'EST PAS QUE LE DETOUR SERAIT NEGLIGEABLE : elle est que la
-      // journee la PLUS DURE finit presque toujours sur une FIN D'ETAPE, dont
-      // le detour vaut zero. Les nuits a detour (refuge Laparo et ses 126 m en
-      // tete) tombent sur des journees plus legeres. Le correctif rend donc
-      // les journees moyennes plus justes sans deplacer le plancher — et si un
-      // jour une nuit a detour devient la pire journee d'une allure, ce cas
-      // rougira et il faudra le relire.
+  group('858 — CE QUE L INDICE DE TERRAIN DIT DU DECOUPAGE, ET CE QU IL NE '
+      'VOIT PAS', () {
+    test('LE DETOUR VERS UN COUCHAGE N ENTRE PAS DANS L INDICE, ET IL FAUT LE '
+        'SAVOIR', () {
+      // UNE LIMITE REELLE, ECRITE PLUTOT QUE DECOUVERTE PLUS TARD. Les metres
+      // du detour vers un couchage entrent dans le DENIVELE annonce de la
+      // journee et dans son TEMPS DE MARCHE (tache 853) ; ils n'entrent PAS
+      // dans son indice de terrain, parce que l'indice integre LA TRACE entre
+      // deux points kilometriques et que le detour, par definition, quitte la
+      // trace. Le refuge Laparo coute 126 m de remontee le lendemain matin :
+      // ces metres sont dits, ils ne sont pas cotes.
       final gr20 = lireGr20();
-      for (final jeu in <DecoupageDeNuits>[gr20, gr20.aLEnvers]) {
-        for (final jours in <int>[7, 9, 12, 16, 31]) {
-          final journees = DecoupageSurLesNuits.repartir(jeu, jours);
-          expect(journees.length, jours);
-
-          NiveauDeDifficulte verdict(bool avecLeDetour) =>
-              DifficulteDuSentier.calculer(
-                jours: jours,
-                journees: journees
-                    .map(
-                      (j) => JourneeMesuree(
-                        km: j.km,
-                        deniveleM: avecLeDetour
-                            ? j.deniveleM
-                            : j.deniveleM - j.deniveleDuDetourM,
-                        descenteM: avecLeDetour
-                            ? j.descenteM
-                            : j.descenteM - j.descenteDuDetourM,
-                      ),
-                    )
-                    .toList(growable: false),
-              )!.verdict!;
-
+      final profil = lireLeProfil();
+      for (final jours in <int>[7, 9, 12, 16, 31]) {
+        final pese = peser(nuits: gr20, profil: profil, jours: jours);
+        expect(pese.journeesDeMarche, jours);
+        for (final journee in pese.journees) {
           expect(
-            verdict(true),
-            verdict(false),
-            reason: 'a $jours jours, le detour ne change pas la bande',
+            journee.terrain.deniveleM,
+            lessThanOrEqualTo(journee.deniveleM + 20.0),
+            reason:
+                'a $jours jours, l indice de ${journee.arrivee} compte plus de '
+                'montee que la journee n en annonce',
           );
         }
       }
     });
 
-    test('LE SENS INVERSE EST PLUS DUR A SEIZE JOURS, ET CA SE COMPTE', () {
-      // CE QUE LE CORRECTIF DU COMPTE REND ENFIN MESURABLE. Avant lui, le sens
-      // inverse perdait une journee et toute mesure sur lui etait fausse d'une
-      // unite. Maintenant on peut comparer les deux sens a allure egale, et la
-      // comparaison dit quelque chose de vendable :
-      //
-      //   seize jours dans le sens de la trace : 3 moyennes, 12 difficiles,
-      //                                          1 tres difficile
-      //   seize jours en sens inverse          : 1 moyenne, 12 difficiles,
-      //                                          3 tres difficiles
-      //
-      // Le mot du verdict est le meme — tres difficile — mais le sens inverse
-      // porte TROIS journees de la bande du haut au lieu d'une.
+    test('LE SENS INVERSE EST MOINS DUR SUR SA PIRE JOURNEE, ET PLUS DUR SUR '
+        'LE RESTE — ET C EST UNE INFORMATION DE VENTE', () {
+      // CE QUE LE NOUVEAU COMPTE REND VISIBLE ET QUE L ANCIEN NOYAIT. Le
+      // kilometre-effort cotait presque pareil la journee qui grimpe 1 454 m
+      // depuis Calenzana (26,5) et celle qui les descend (21,4) : le sens de
+      // marche ne se voyait pas. L indice les separe par un facteur QUATRE, et
+      // il dit alors quelque chose de vendable : du sud vers le nord, la pire
+      // journee du GR20 est franchement plus basse, parce que la montee de
+      // Calenzana se DESCEND.
       final gr20 = lireGr20();
+      final profil = lireLeProfil();
+      final endroit = peser(nuits: gr20, profil: profil, jours: 16);
+      final envers = peser(
+        nuits: gr20.aLEnvers,
+        profil: profil,
+        jours: 16,
+        aLEnvers: true,
+      );
 
-      Map<NiveauDeDifficulte, int> repartition(DecoupageDeNuits jeu) =>
-          DifficulteDuSentier.calculer(
-            jours: 16,
-            journees: DecoupageSurLesNuits.repartir(jeu, 16)
-                .map(
-                  (j) => JourneeMesuree(
-                    km: j.km,
-                    deniveleM: j.deniveleM,
-                    descenteM: j.descenteM,
-                  ),
-                )
-                .toList(growable: false),
-          )!.repartition;
+      expect(endroit.journeesDeMarche, 16);
+      expect(envers.journeesDeMarche, 16);
 
-      final endroit = repartition(gr20);
-      final envers = repartition(gr20.aLEnvers);
+      final pireEndroit = endroit.pireJournee!;
+      final pireEnvers = envers.pireJournee!;
+      expect(
+        pireEndroit.indiceDuTerrain,
+        greaterThan(pireEnvers.indiceDuTerrain),
+        reason:
+            'dans le sens de la trace la premiere journee grimpe 1 454 m d un '
+            'seul tenant et aucun couchage ne la coupe',
+      );
+      expect(pireEndroit.depart, 'Calenzana');
 
-      expect(endroit[NiveauDeDifficulte.tresDifficile], 1);
-      expect(endroit[NiveauDeDifficulte.difficile], 12);
-      expect(endroit[NiveauDeDifficulte.moyen], 3);
-
-      expect(envers[NiveauDeDifficulte.tresDifficile], 3);
-      expect(envers[NiveauDeDifficulte.difficile], 12);
-      expect(envers[NiveauDeDifficulte.moyen], 1);
-
-      // Les deux sens comptent seize journees : c'est tout l'objet du lot.
-      expect(endroit.values.reduce((a, b) => a + b), 16);
-      expect(envers.values.reduce((a, b) => a + b), 16);
+      // ET LES DEUX SENS NE COUTENT PAS LE MEME TOTAL : le sentier n est pas
+      // symetrique, parce que monter et descendre ne coutent pas pareil.
+      expect(
+        (endroit.indiceDuTerrainCumule - envers.indiceDuTerrainCumule).abs(),
+        greaterThan(1.0),
+      );
     });
 
-    test('LA FRAGILITE DU SEUIL TIENT TOUJOURS, ET LE DETOUR NE LA SAUVE '
-        'PAS', () {
-      // LA 852 AVAIT NOMME CETTE FRAGILITE : au decoupage le plus fin en sens
-      // inverse, le verdict « tres difficile » tient sur 0,08 km-effort. On
-      // pouvait esperer que les metres du detour l'eloignent du seuil ; ils ne
-      // le font pas, parce que la journee en cause (Conca vers i Paliri) finit
-      // sur une fin d'etape, donc sans detour. La fragilite reste, et elle
-      // reste DITE.
-      final envers = lireGr20().aLEnvers;
-      final journees = DecoupageSurLesNuits.repartir(envers, 31);
-      final difficulte = DifficulteDuSentier.calculer(
+    test('LA FRAGILITE DU SEUIL A DISPARU AVEC LES BANDES, ET IL FAUT LE '
+        'DIRE', () {
+      // CE QUE CE LOT A RETIRE. La tache 852 avait nomme une fragilite : au
+      // decoupage le plus fin en sens inverse, son verdict « tres difficile »
+      // tenait sur 0,08 kilometre-effort — huit metres de montee en moins
+      // auraient fait changer le mot affiche au client. Cette fragilite
+      // n appartenait pas au sentier : elle appartenait au SEUIL. Il n y a
+      // plus de seuil, donc plus de bascule : l indice sort en nombre, et un
+      // nombre qui bouge de 0,1 bouge de 0,1.
+      //
+      // Christophe tranchera les niveaux plus tard (18/10 19:32). Le jour ou
+      // il les posera, cette fragilite reviendra avec eux, et c est a ce
+      // moment-la qu il faudra la mesurer — pas avant.
+      final gr20 = lireGr20();
+      final profil = lireLeProfil();
+      final auPlusFin = peser(
+        nuits: gr20.aLEnvers,
+        profil: profil,
         jours: 31,
-        journees: journees
-            .map(
-              (j) => JourneeMesuree(
-                km: j.km,
-                deniveleM: j.deniveleM,
-                descenteM: j.descenteM,
-              ),
-            )
-            .toList(growable: false),
-      )!;
-      final pire = difficulte.pireJournee!;
-      expect(pire.kmEffort, closeTo(25.079, 0.005));
-      expect(
-        pire.kmEffort - SeuilsDeDifficulte.effortTresDifficileKm,
-        lessThan(0.1),
-        reason: 'huit metres de montee en moins changeraient ce verdict',
+        aLEnvers: true,
       );
-      expect(difficulte.verdict, NiveauDeDifficulte.tresDifficile);
+      expect(auPlusFin.journeesDeMarche, 31);
+      final pire = auPlusFin.pireJournee!;
+      expect(pire.indiceDuTerrain, greaterThan(0.0));
+      // AUCUN SEUIL N EST CITE ICI, et c est le sujet du test.
+      expect(pire.terrain.majorationDeContinuite.isFinite, isTrue);
     });
   });
 }

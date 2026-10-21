@@ -96,8 +96,11 @@ const gr20NordTrailConfig = TrailConfig(
   // Des reperes du selecteur, pas des promesses : les bornes reelles du
   // curseur sont derivees des quinze nuits chargees
   // (`durationBoundsProvider`), comme pour le sentier entier.
+  // SEPT JOURS PAR DEFAUT (tache 860), et non neuf : sur un chapitre, neuf
+  // jours est le plan etale, pas le plan courant. Sept est celui que le
+  // marcheur fait, et la notation du lot 860 est calee sur lui.
   availableDurations: [5, 7, 9],
-  defaultDuration: 9,
+  defaultDuration: 7,
   offlineFirst: true,
   hasPremium: false,
   // CE CHAPITRE EST UN CHAPITRE DU GR20, ET CE CHAMP NE SERT QU'A LE RANGER.

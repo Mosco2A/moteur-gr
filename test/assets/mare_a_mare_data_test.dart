@@ -28,7 +28,9 @@ void main() {
         expect(map.containsKey('distanceKm'), isTrue);
         expect(map.containsKey('elevationGainM'), isTrue);
         expect(map.containsKey('elevationLossM'), isTrue);
-        expect(map.containsKey('difficulty'), isTrue);
+        // PLUS D'ETIQUETTE DE NIVEAU DANS LA DONNEE (tache 860) : elle
+        // etait fixe par etape, donc muette sur la journee marchee.
+        expect(map.containsKey('difficulty'), isFalse);
         expect(map.containsKey('startLat'), isTrue);
         expect(map.containsKey('startLng'), isTrue);
         expect(map.containsKey('endLat'), isTrue);
@@ -69,7 +71,6 @@ void main() {
           'startLng': map['startLng'],
           'endLat': map['endLat'],
           'endLng': map['endLng'],
-          'difficulty': map['difficulty'],
         };
         final model = StageModel.fromJson(stageModelJson);
         expect(model.trailId, 'mare-a-mare-centre');

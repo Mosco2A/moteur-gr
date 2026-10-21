@@ -238,13 +238,6 @@
     "description": "Beschreibung",
     "coordinates": "Koordinaten",
     "pois": "Sehenswürdigkeiten",
-    "difficulty": {
-      "easy": "Leicht",
-      "moderate": "Mittel",
-      "hard": "Schwer",
-      "expert": "Experte",
-      "extreme": "Extrem"
-    },
     "remaining": "{distance} km verbleibend",
     "arrived": "Du bist angekommen!",
     "altitudeProfile": "Höhenprofil",
@@ -254,7 +247,6 @@
     "loadingList": "Etappen werden geladen...",
     "dPlus": "D+",
     "dMinus": "D-",
-    "difficultyLabel": "Schwierigkeit",
     "waterSources": {
       "title": "Wasserstellen",
       "count": "{n} Quelle(n)",

@@ -27,7 +27,7 @@ import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/fiche_de_sentier.dart';
 import 'package:moteur_gr/core/models/stage_row.dart';
-import 'package:moteur_gr/domain/echelle_de_difficulte.dart';
+import 'package:moteur_gr/domain/indice_du_terrain.dart';
 import 'package:moteur_gr/domain/nuit_possible.dart';
 import 'package:moteur_gr/features/planning/planning_facade.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_detail_screen.dart';
@@ -35,7 +35,7 @@ import 'package:moteur_gr/features/trail/providers/fiche_de_sentier_provider.dar
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/features/trail/widgets/bande_de_photos.dart';
 import 'package:moteur_gr/features/trail/widgets/description_du_sentier.dart';
-import 'package:moteur_gr/features/trail/widgets/difficulte_calculee.dart';
+import 'package:moteur_gr/features/trail/widgets/indice_du_terrain_affiche.dart';
 import 'package:moteur_gr/features/trail/widgets/photo_de_couverture.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
@@ -224,7 +224,7 @@ void main() {
 
   /// Le bloc de difficulte, cherche dans TOUT l'arbre pour pouvoir y defiler.
   Finder blocDeDifficulte() =>
-      find.byKey(const ValueKey('difficulte-calculee'), skipOffstage: false);
+      find.byKey(const ValueKey('indice-du-terrain'), skipOffstage: false);
 
   group('846 — un sentier documente montre tout', () {
     Future<void> poser(WidgetTester tester) async {
@@ -282,22 +282,20 @@ void main() {
       expect(find.text('En Corse, de Calenzana a Conca.'), findsOneWidget);
     });
 
-    testWidgets('la difficulte est deduite, et la REGLE est a l ecran', (
-      tester,
-    ) async {
+    testWidgets('l indice de terrain est a l ecran avec SA REGLE, et plus '
+        'aucune bande', (tester) async {
       await poser(tester);
       await amener(tester, blocDeDifficulte());
 
-      expect(find.byType(DifficulteCalculee), findsOneWidget);
-      expect(find.byKey(const ValueKey('difficulte-calculee')), findsOneWidget);
+      expect(find.byType(IndiceDuTerrainAffiche), findsOneWidget);
+      expect(find.byKey(const ValueKey('indice-du-terrain')), findsOneWidget);
       // LA REGLE EST AFFICHEE, mot pour mot celle que le socle applique.
-      expect(find.text(SeuilsDeDifficulte.regleAffichee), findsOneWidget);
-      // LES DEUX JAUGES SONT LA (tache 848) : le verdict et la repartition.
-      expect(find.byKey(const ValueKey('jauge-du-verdict')), findsOneWidget);
-      expect(
-        find.byKey(const ValueKey('jauge-de-repartition')),
-        findsOneWidget,
-      );
+      expect(find.text(LoiDeLIndice.retenue.regleAffichee), findsOneWidget);
+      // LES DEUX JAUGES DE BANDES SONT RETIREES (tache 858) : elles
+      // affichaient des mots adosses au kilometre-effort, qui etait faux.
+      // Christophe tranchera les niveaux apres.
+      expect(find.byKey(const ValueKey('jauge-du-verdict')), findsNothing);
+      expect(find.byKey(const ValueKey('jauge-de-repartition')), findsNothing);
       // LA MESURE EST A COTE DU MOT : la pire journee du decor, 1 453 m.
       // L'ALTITUDE N'Y EST PLUS — Christophe l'a sortie du calcul le 17/10
       // (« non la difficulte c'est surtout base sur l'etape la plus
@@ -305,7 +303,15 @@ void main() {
       // affichait « 2 578 m au point le plus haut » n'existe plus. La fiche
       // cite toujours ce chiffre, mais dans sa DESCRIPTION, pas comme un
       // niveau.
-      expect(find.textContaining('1453 m de montee'), findsOneWidget);
+      // CE DECOR N A PAS DE NUITS RELEVEES, DONC AUCUNE BORNE SUR LA TRACE :
+      // l'indice de terrain s'integre sur le profil entre deux points
+      // kilometriques, et sans eux il n'existe pas. La fiche le DIT au lieu
+      // d'afficher un nombre construit sur rien — et elle dit quand meme
+      // combien de journees l'allure pose.
+      expect(
+        find.textContaining("Pas d'indice de terrain sur ce sentier"),
+        findsOneWidget,
+      );
       expect(
         find.textContaining('au point le plus haut', skipOffstage: false),
         findsNothing,
@@ -319,11 +325,11 @@ void main() {
       await amener(tester, blocDeDifficulte());
 
       // AUCUNE allure n'est proposee ici, et c'est le comportement voulu : le
-      // GR20 propose 7, 10, 12 et 16 jours, or ce decor n'a que TROIS etapes.
-      // Au-dela de trois jours, les jours de plus sont du repos et ne changent
-      // plus aucune journee de marche — offrir le choix serait offrir un
-      // bouton sans effet.
-      for (final jours in <int>[7, 9, 12, 16]) {
+      // GR20 propose 7, 8, 9, 12 et 16 jours, or ce decor n'a que TROIS
+      // etapes. Au-dela de trois jours, les jours de plus sont du repos et ne
+      // changent plus aucune journee de marche — offrir le choix serait
+      // offrir un bouton sans effet.
+      for (final jours in <int>[7, 8, 9, 12, 16]) {
         expect(
           find.byKey(ValueKey('allure-$jours'), skipOffstage: false),
           findsNothing,
@@ -331,16 +337,20 @@ void main() {
         );
       }
 
-      // LE NOMBRE AFFICHE EST CELUI DU DECOUPAGE : seize jours CONSEILLES,
+      // LE NOMBRE AFFICHE EST CELUI DU DECOUPAGE : huit jours CONSEILLES — le
+      // plan par defaut du GR20 depuis la tache 860, qui valait seize — et
       // trois journees de marche reelles, parce que le decor n'a que trois
       // etapes et qu'aucune n'est jamais coupee. Les deux nombres sont a
       // l'ecran et ils ne se contredisent pas.
-      expect(find.text('Nombre de jours CONSEILLE : 16 jours'), findsOneWidget);
-      expect(find.text('Repartition des 3 journees de marche'), findsOneWidget);
+      expect(find.text('Nombre de jours CONSEILLE : 8 jours'), findsOneWidget);
+      expect(find.text('3 journees de marche a cette allure.'), findsOneWidget);
+      // ET AUCUNE JOURNEE N'EST DESIGNEE LA PLUS DURE, faute de bornes sur
+      // la trace : trois etapes sans nuits relevees ne disent pas OU elles
+      // passent, donc l'indice de terrain ne peut pas etre integre. Le compte
+      // des journees, lui, reste juste.
       expect(
-        find.textContaining('journee 1 sur 3'),
-        findsOneWidget,
-        reason: 'la pire journee du decor est la premiere, 1 453 m',
+        find.byKey(const ValueKey('indice-de-la-pire-journee')),
+        findsNothing,
       );
       // LA MOYENNE N'EST PLUS AFFICHEE NULLE PART : elle noyait la journee qui
       // decide. 953 m par jour etait le chiffre de la 846 sur ce decor.
@@ -378,17 +388,25 @@ void main() {
         await tester.pumpAndSettle();
         await amener(tester, blocDeDifficulte());
 
+        // LES NUITS DECIDENT DU COMPTE, PAS LES ETAPES : deux segments
+        // releves, donc deux journees, alors que le decor porte trois etapes.
         expect(
-          find.text('Repartition des 2 journees de marche'),
+          find.text('2 journees de marche a cette allure.'),
           findsOneWidget,
         );
-        expect(find.textContaining('800 m de montee'), findsOneWidget);
-        expect(find.textContaining('journee 2 sur 2'), findsOneWidget);
-        expect(
-          find.text(NiveauDeDifficulte.difficile.libelle),
-          findsOneWidget,
-          reason: '800 m de montee dans la journee : difficile (700 a 1 000)',
-        );
+        // ET AUCUN MOT DE NIVEAU N'EST AFFICHE (tache 858).
+        for (final mot in <String>[
+          'Facile',
+          'Moyen',
+          'Difficile',
+          'Tres difficile',
+        ]) {
+          expect(
+            find.text(mot, skipOffstage: false),
+            findsNothing,
+            reason: 'le mot « $mot » ne doit plus etre affiche',
+          );
+        }
       },
     );
   });
@@ -442,7 +460,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('la difficulte reste affichee : elle vient des ETAPES', (
+    testWidgets('le bloc reste affiche, et il dit ce qui manque', (
       tester,
     ) async {
       // Elle ne depend pas du manifeste. Ce qui manque au sentier de test,
@@ -466,7 +484,7 @@ void main() {
 
       await amener(tester, blocDeDifficulte());
 
-      expect(find.byType(DifficulteCalculee), findsOneWidget);
+      expect(find.byType(IndiceDuTerrainAffiche), findsOneWidget);
       expect(
         find.textContaining('au point le plus haut', skipOffstage: false),
         findsNothing,
@@ -484,17 +502,14 @@ void main() {
         find.textContaining('l\'altitude', skipOffstage: false),
         findsNothing,
       );
+      // ET LE BLOC DIT CE QU'IL SAIT : trois journees de marche, et l'indice
+      // de terrain MANQUANT faute de nuits relevees sur ce sentier de test.
+      // Une mesure absente est NOMMEE, jamais comblee.
       expect(
-        find.textContaining('Non mesure sur ce sentier', skipOffstage: false),
-        findsNothing,
-      );
-      // ET LA DIFFICULTE EST BIEN LA, deduite des seules etapes : la pire
-      // journee du decor pese 1 453 m, donc TRES DIFFICILE.
-      expect(find.byKey(const ValueKey('jauge-du-verdict')), findsOneWidget);
-      expect(
-        find.text(NiveauDeDifficulte.tresDifficile.libelle),
+        find.textContaining("Pas d'indice de terrain sur ce sentier"),
         findsOneWidget,
       );
+      expect(find.byKey(const ValueKey('jauge-du-verdict')), findsNothing);
     });
 
     testWidgets('sans etape, pas de difficulte inventee', (tester) async {

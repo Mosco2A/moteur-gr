@@ -1,5 +1,5 @@
 /// La fiche d'un sentier — ce qu'il est avant d'etre un programme : ses
-/// photos, sa description, sa difficulte deduite et ses etapes.
+/// photos, sa description, son indice de terrain mesure et ses etapes.
 library;
 
 import 'package:flutter/material.dart';
@@ -18,10 +18,11 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../planning/planning_facade.dart';
 import '../providers/fiche_de_sentier_provider.dart';
+import '../providers/profil_du_terrain_provider.dart';
 import '../providers/stages_provider.dart';
 import '../widgets/bande_de_photos.dart';
 import '../widgets/description_du_sentier.dart';
-import '../widgets/difficulte_calculee.dart';
+import '../widgets/indice_du_terrain_affiche.dart';
 import '../widgets/stage_list_tile.dart';
 
 /// Écran détail d'un sentier — LA FICHE, entre le catalogue et la preparation.
@@ -31,9 +32,10 @@ import '../widgets/stage_list_tile.dart';
 /// demarrage de la preparation ce sont les infos sur le trek selectionne »).
 /// Il portait le nom, la region, la distance, le denivele et la liste des
 /// etapes. Il porte desormais, dans cet ordre : les PHOTOS du sentier avec leur
-/// mention, sa DESCRIPTION en trois questions, sa DIFFICULTE en DEUX JAUGES —
-/// la repartition de ses journees et le verdict de la pire — a l'allure
-/// CONSEILLEE que le randonneur peut changer ici meme, puis ses etapes.
+/// mention, sa DESCRIPTION en trois questions, son INDICE DE TERRAIN — celui de
+/// sa journee la plus dure, en nombre et sans aucun mot de niveau (tache 858) —
+/// a l'allure CONSEILLEE que le randonneur peut changer ici meme, puis ses
+/// etapes.
 ///
 /// TROIS BLOCS SUR QUATRE PEUVENT ETRE ABSENTS, ET ALORS ILS N'OCCUPENT RIEN.
 /// Un sentier sans manifeste n'affiche ni photo ni description — pas un cadre
@@ -107,14 +109,18 @@ class TrailDetailScreen extends ConsumerWidget {
               child: DescriptionDuSentier(description: fiche.description),
             ),
           ],
-          // LA DIFFICULTE, DEDUITE DES JOURNEES REELLES. Elle attend de quoi
-          // faire des journees — les nuits relevees du sentier, ou ses etapes
-          // — et elle disparait proprement quand il n'y a ni l'un ni l'autre.
+          // L'INDICE DE TERRAIN, LU SUR LA TRACE ET SUR LES JOURNEES REELLES
+          // (tache 858). Il attend trois choses — le profil de la trace, les
+          // nuits relevees qui donnent les bornes des journees, et les etapes
+          // — et il disparait proprement quand il n'y en a aucune. Le profil
+          // arrive apres l'ecran : la fiche s'affiche, puis s'enrichit de son
+          // indice.
           SliverToBoxAdapter(
-            child: DifficulteCalculee(
+            child: IndiceDuTerrainAffiche(
               stages: stages,
               allures: config.availableDurations,
               allureParDefaut: config.defaultDuration,
+              profil: ref.watch(profilDuSentierProvider(trailId)),
               nuits: ref.watch(decoupageDuSentierProvider(trailId)),
             ),
           ),

@@ -120,9 +120,19 @@ void main() {
       expect(find.text('850 m'), findsOneWidget); // D+ etape A
       expect(find.text('620 m'), findsOneWidget); // D- etape A
 
-      // Chip difficulte (semantique) present.
-      expect(find.text(t.stage.difficulty.hard), findsOneWidget);
-      expect(find.text(t.stage.difficulty.moderate), findsOneWidget);
+      // PLUS AUCUNE PASTILLE DE NIVEAU (tache 860). Elle affichait
+      // l'etiquette STOCKEE de l'etape ; les cles i18n qui la nommaient sont
+      // retirees des cinq langues, et ce test verifie maintenant que les mots
+      // ont bien disparu de l'ecran.
+      for (final mot in <String>[
+        'Facile',
+        'Modere',
+        'Difficile',
+        'Extreme',
+        'Expert',
+      ]) {
+        expect(find.text(mot), findsNothing, reason: 'le mot « $mot »');
+      }
 
       // DUREE par etape (parite GR20, residuel leve). Aucune duree fournie sur
       // ces etapes de test -> repli sur LE modele unique du depot, DESCENTE

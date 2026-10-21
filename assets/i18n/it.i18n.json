@@ -238,13 +238,6 @@
     "description": "Descrizione",
     "coordinates": "Coordinate",
     "pois": "Punti di interesse",
-    "difficulty": {
-      "easy": "Facile",
-      "moderate": "Moderato",
-      "hard": "Difficile",
-      "expert": "Esperto",
-      "extreme": "Estremo"
-    },
     "remaining": "{distance} km rimanenti",
     "arrived": "Sei arrivato!",
     "altitudeProfile": "Profilo altimetrico",
@@ -254,7 +247,6 @@
     "loadingList": "Caricamento delle tappe...",
     "dPlus": "D+",
     "dMinus": "D-",
-    "difficultyLabel": "Difficoltà",
     "waterSources": {
       "title": "Punti d'acqua",
       "count": "{n} sorgente/i",

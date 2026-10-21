@@ -291,7 +291,6 @@ class _Translations$stage$en extends Translations$stage$fr {
 	@override String get description => 'Description';
 	@override String get coordinates => 'Coordinates';
 	@override String get pois => 'Points of interest';
-	@override late final _Translations$stage$difficulty$en difficulty = _Translations$stage$difficulty$en._(_root);
 	@override String get remaining => '{distance} km remaining';
 	@override String get arrived => 'You have arrived!';
 	@override String get altitudeProfile => 'Elevation profile';
@@ -301,7 +300,6 @@ class _Translations$stage$en extends Translations$stage$fr {
 	@override String get loadingList => 'Loading stages...';
 	@override String get dPlus => 'D+';
 	@override String get dMinus => 'D-';
-	@override String get difficultyLabel => 'Difficulty';
 	@override late final _Translations$stage$waterSources$en waterSources = _Translations$stage$waterSources$en._(_root);
 	@override late final _Translations$stage$accommodation$en accommodation = _Translations$stage$accommodation$en._(_root);
 	@override late final _Translations$stage$advice$en advice = _Translations$stage$advice$en._(_root);
@@ -2190,20 +2188,6 @@ class _Translations$map$attribution$en extends Translations$map$attribution$fr {
 	// Translations
 	@override String get licence => 'Map data under ODbL licence — view the licence';
 	@override String get traces => 'Trail tracks surveyed in OpenStreetMap';
-}
-
-// Path: stage.difficulty
-class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
-	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get easy => 'Easy';
-	@override String get moderate => 'Moderate';
-	@override String get hard => 'Hard';
-	@override String get expert => 'Expert';
-	@override String get extreme => 'Extreme';
 }
 
 // Path: stage.waterSources
@@ -4502,11 +4486,6 @@ extension on TranslationsEn {
 			'stage.description' => 'Description',
 			'stage.coordinates' => 'Coordinates',
 			'stage.pois' => 'Points of interest',
-			'stage.difficulty.easy' => 'Easy',
-			'stage.difficulty.moderate' => 'Moderate',
-			'stage.difficulty.hard' => 'Hard',
-			'stage.difficulty.expert' => 'Expert',
-			'stage.difficulty.extreme' => 'Extreme',
 			'stage.remaining' => '{distance} km remaining',
 			'stage.arrived' => 'You have arrived!',
 			'stage.altitudeProfile' => 'Elevation profile',
@@ -4516,7 +4495,6 @@ extension on TranslationsEn {
 			'stage.loadingList' => 'Loading stages...',
 			'stage.dPlus' => 'D+',
 			'stage.dMinus' => 'D-',
-			'stage.difficultyLabel' => 'Difficulty',
 			'stage.waterSources.title' => 'Water points',
 			'stage.waterSources.count' => '{n} source(s)',
 			'stage.waterSources.none' => 'No water point listed for this stage. Carry at least 3 L per person.',
@@ -4806,14 +4784,14 @@ extension on TranslationsEn {
 			'checklist.ui.requiredWarnBody' => 'This gear is required for safety (inspired by UTMB rules). Do you really want to remove it?',
 			'checklist.ui.keep' => 'Keep',
 			'checklist.ui.removeAnyway' => 'Remove anyway',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.reduceQuantity' => 'Decrease quantity',
 			'checklist.ui.increaseQuantity' => 'Increase quantity',
 			'checklist.ui.addToShoppingList' => 'Add to shopping list',
 			'checklist.ui.removeFromShoppingList' => 'Remove from list',
 			'checklist.ui.help' => 'Help',
 			'checklist.ui.shoppingListTitle' => 'Shopping list',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.shoppingListEmpty' => 'Your shopping list is empty. Add items with the cart button.',
 			'checklist.ui.shoppingToBuy' => 'To buy',
 			'checklist.ui.shoppingPurchased' => 'Already bought',
@@ -5320,14 +5298,14 @@ extension on TranslationsEn {
 			'demo.collecteIntro' => 'The information used to work out feasibility.',
 			'demo.collecteProfil' => 'Your profile',
 			'demo.collecteForme' => 'Your fitness',
-			_ => null,
-		} ?? switch (path) {
 			'demo.collecteExperience' => 'Your experience',
 			'demo.collecteSaison' => 'Departure season',
 			'demo.collecteSentier' => 'The trail',
 			'demo.collecteJours' => 'Number of days',
 			'demo.collecteAbsent' => 'Not provided',
 			'demo.sortieFaite' => 'You have left the demo.',
+			_ => null,
+		} ?? switch (path) {
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
@@ -5834,14 +5812,14 @@ extension on TranslationsEn {
 			'moderation.decisions.restrict' => 'Content restricted',
 			'moderation.decisions.remove' => 'Content removed',
 			'moderation.noStatement' => 'No restriction has been applied to your content.',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.complaintAction' => 'Challenge this decision',
 			'moderation.complaintTitle' => 'Challenge a decision',
 			'moderation.complaintIntro' => 'You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).',
 			'moderation.complaintExposeLabel' => 'Your challenge',
 			'moderation.complaintExposeHint' => 'Describe the reasons for your challenge.',
 			'moderation.complaintSubmit' => 'Send challenge',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.complaintSent' => 'Challenge recorded. It will be reviewed.',
 			'moderation.complaintEmpty' => 'Explain your challenge.',
 			'moderation.a11y.reportForm' => 'Content reporting form',
@@ -6348,14 +6326,14 @@ extension on TranslationsEn {
 			'systemBackup.confirm' => 'Got it',
 			'systemBackup.a11yCheckbox' => 'Refuse the backup of all my data by the system of the phone',
 			'lieu.ouvrirDansLesCartes' => 'Open in maps',
-			_ => null,
-		} ?? switch (path) {
 			'lieu.cartesIndisponibles' => 'No maps app could be opened on this device.',
 			'lieu.adresse' => 'Address',
 			'lieu.telephoner' => 'Call',
 			'lieu.siteOfficiel' => 'Official website',
 			'lieu.aCompleter' => 'Information still to be confirmed',
 			'lieu.source' => 'Source',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.a11y.ouvrirDansLesCartes' => ({required Object name}) => 'Open ${name} in the maps app',
 			'lieu.a11y.telephoner' => ({required Object name}) => 'Call ${name}',
 			'lieu.a11y.siteOfficiel' => ({required Object name}) => 'Open the official website of ${name}',

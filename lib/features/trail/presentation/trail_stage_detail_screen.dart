@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/analytics/screen_entry.dart';
 import '../../../core/branding/stepways_icons.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../domain/echelle_de_difficulte.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -18,7 +17,6 @@ import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/stage_number_badge.dart';
 import '../providers/pois_provider.dart';
 import '../providers/stages_provider.dart';
-import '../widgets/difficulty_badge.dart';
 import '../widgets/poi_tile.dart';
 import '../widgets/stage_list_tile.dart';
 import '../widgets/stage_stats_section.dart';
@@ -26,7 +24,7 @@ import '../widgets/stage_stats_section.dart';
 /// Écran détail d'une étape.
 ///
 /// Affiche toutes les infos de l'étape : nom, description,
-/// distance, dénivelé D+/D-, difficulté, durée estimée,
+/// distance, dénivelé D+/D-, durée estimée,
 /// coordonnées départ/arrivée. Liste les POIs associés.
 /// Bouton vers la carte centré sur l'étape.
 class TrailStageDetailScreen extends ConsumerWidget {
@@ -100,7 +98,13 @@ class TrailStageDetailScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Numéro (Hero depuis la liste — E5.5a), nom et difficulté
+                // Numéro (Hero depuis la liste — E5.5a) et nom.
+                //
+                // PLUS DE PASTILLE DE NIVEAU (tache 858) : le mot qu'elle
+                // portait venait du kilometre-effort de la tache 852, retire
+                // le 18/10/2026 parce qu'il etait faux. Les niveaux de
+                // l'indice de terrain seront tranches par Christophe, et d'ici
+                // la aucun mot n'est affiche.
                 Row(
                   children: [
                     StageNumberBadge(number: stage.stageNumber),
@@ -109,16 +113,6 @@ class TrailStageDetailScreen extends ConsumerWidget {
                       child: Text(
                         stage.name,
                         style: theme.textTheme.headlineMedium,
-                      ),
-                    ),
-                    // L'EFFORT MESURE classe l'etape, pas l'etiquette stockee
-                    // (tache 848, recalibree 852 sur les trois mesures : cf.
-                    // `DifficultyBadge` et `SeuilsDeDifficulte`).
-                    DifficultyBadge(
-                      niveau: SeuilsDeDifficulte.pourUneJournee(
-                        km: stage.distanceKm,
-                        deniveleM: stage.elevationGainM,
-                        descenteM: stage.elevationLossM,
                       ),
                     ),
                   ],

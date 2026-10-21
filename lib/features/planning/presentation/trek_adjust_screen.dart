@@ -381,13 +381,6 @@ class _AdjustDayCard extends StatelessWidget {
   final VoidCallback? onAddRestDay;
   final VoidCallback? onRemoveRestDay;
 
-  Color _difficultyColor(int rank) {
-    if (rank <= 1) return AppTheme.vertFacile;
-    if (rank <= 2) return AppTheme.jauneModere;
-    if (rank <= 3) return AppTheme.orangeDifficile;
-    return AppTheme.rougeExtreme;
-  }
-
   String _mergeLabel() {
     switch (mergeBlockedReason) {
       case 'no-next':
@@ -437,7 +430,8 @@ class _AdjustDayCard extends StatelessWidget {
         ? dayNeutralColor(context)
         : isRest
         ? AppTheme.bleuRepos
-        : _difficultyColor(day.maxDifficulty);
+        // COULEUR NEUTRE DEPUIS LA TACHE 860 : voir `planned_day.dart`.
+        : dayNeutralColor(context);
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),

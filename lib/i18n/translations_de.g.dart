@@ -291,7 +291,6 @@ class _Translations$stage$de extends Translations$stage$fr {
 	@override String get description => 'Beschreibung';
 	@override String get coordinates => 'Koordinaten';
 	@override String get pois => 'Sehenswürdigkeiten';
-	@override late final _Translations$stage$difficulty$de difficulty = _Translations$stage$difficulty$de._(_root);
 	@override String get remaining => '{distance} km verbleibend';
 	@override String get arrived => 'Du bist angekommen!';
 	@override String get altitudeProfile => 'Höhenprofil';
@@ -301,7 +300,6 @@ class _Translations$stage$de extends Translations$stage$fr {
 	@override String get loadingList => 'Etappen werden geladen...';
 	@override String get dPlus => 'D+';
 	@override String get dMinus => 'D-';
-	@override String get difficultyLabel => 'Schwierigkeit';
 	@override late final _Translations$stage$waterSources$de waterSources = _Translations$stage$waterSources$de._(_root);
 	@override late final _Translations$stage$accommodation$de accommodation = _Translations$stage$accommodation$de._(_root);
 	@override late final _Translations$stage$advice$de advice = _Translations$stage$advice$de._(_root);
@@ -2190,20 +2188,6 @@ class _Translations$map$attribution$de extends Translations$map$attribution$fr {
 	// Translations
 	@override String get licence => 'Kartendaten unter ODbL-Lizenz — Lizenz ansehen';
 	@override String get traces => 'Wegverlaufe aus OpenStreetMap erfasst';
-}
-
-// Path: stage.difficulty
-class _Translations$stage$difficulty$de extends Translations$stage$difficulty$fr {
-	_Translations$stage$difficulty$de._(TranslationsDe root) : this._root = root, super.internal(root);
-
-	final TranslationsDe _root; // ignore: unused_field
-
-	// Translations
-	@override String get easy => 'Leicht';
-	@override String get moderate => 'Mittel';
-	@override String get hard => 'Schwer';
-	@override String get expert => 'Experte';
-	@override String get extreme => 'Extrem';
 }
 
 // Path: stage.waterSources
@@ -4502,11 +4486,6 @@ extension on TranslationsDe {
 			'stage.description' => 'Beschreibung',
 			'stage.coordinates' => 'Koordinaten',
 			'stage.pois' => 'Sehenswürdigkeiten',
-			'stage.difficulty.easy' => 'Leicht',
-			'stage.difficulty.moderate' => 'Mittel',
-			'stage.difficulty.hard' => 'Schwer',
-			'stage.difficulty.expert' => 'Experte',
-			'stage.difficulty.extreme' => 'Extrem',
 			'stage.remaining' => '{distance} km verbleibend',
 			'stage.arrived' => 'Du bist angekommen!',
 			'stage.altitudeProfile' => 'Höhenprofil',
@@ -4516,7 +4495,6 @@ extension on TranslationsDe {
 			'stage.loadingList' => 'Etappen werden geladen...',
 			'stage.dPlus' => 'D+',
 			'stage.dMinus' => 'D-',
-			'stage.difficultyLabel' => 'Schwierigkeit',
 			'stage.waterSources.title' => 'Wasserstellen',
 			'stage.waterSources.count' => '{n} Quelle(n)',
 			'stage.waterSources.none' => 'Keine Wasserstelle für diese Etappe verzeichnet. Nimm mindestens 3 L pro Person mit.',
@@ -4806,14 +4784,14 @@ extension on TranslationsDe {
 			'checklist.ui.requiredWarnBody' => 'Diese Ausrüstung ist aus Sicherheitsgründen Pflicht (angelehnt an UTMB-Regeln). Wirklich entfernen?',
 			'checklist.ui.keep' => 'Behalten',
 			'checklist.ui.removeAnyway' => 'Trotzdem entfernen',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.reduceQuantity' => 'Menge verringern',
 			'checklist.ui.increaseQuantity' => 'Menge erhohen',
 			'checklist.ui.addToShoppingList' => 'Zur Einkaufsliste hinzufügen',
 			'checklist.ui.removeFromShoppingList' => 'Von der Liste entfernen',
 			'checklist.ui.help' => 'Hilfe',
 			'checklist.ui.shoppingListTitle' => 'Einkaufsliste',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.shoppingListEmpty' => 'Deine Einkaufsliste ist leer. Füge Artikel mit dem Warenkorb-Button hinzu.',
 			'checklist.ui.shoppingToBuy' => 'Zu kaufen',
 			'checklist.ui.shoppingPurchased' => 'Bereits gekauft',
@@ -5320,14 +5298,14 @@ extension on TranslationsDe {
 			'demo.collecteIntro' => 'Diese Angaben dienen der Berechnung der Machbarkeit.',
 			'demo.collecteProfil' => 'Dein Profil',
 			'demo.collecteForme' => 'Deine Form',
-			_ => null,
-		} ?? switch (path) {
 			'demo.collecteExperience' => 'Deine Erfahrung',
 			'demo.collecteSaison' => 'Jahreszeit des Aufbruchs',
 			'demo.collecteSentier' => 'Der Weg',
 			'demo.collecteJours' => 'Anzahl der Tage',
 			'demo.collecteAbsent' => 'Nicht angegeben',
 			'demo.sortieFaite' => 'Du hast die Demo verlassen.',
+			_ => null,
+		} ?? switch (path) {
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
@@ -5834,14 +5812,14 @@ extension on TranslationsDe {
 			'moderation.decisions.restrict' => 'Inhalt eingeschränkt',
 			'moderation.decisions.remove' => 'Inhalt entfernt',
 			'moderation.noStatement' => 'Auf deine Inhalte wurde keine Einschränkung angewendet.',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.complaintAction' => 'Diese Entscheidung anfechten',
 			'moderation.complaintTitle' => 'Eine Entscheidung anfechten',
 			'moderation.complaintIntro' => 'Du kannst eine Moderationsentscheidung anfechten. Erkläre, warum die Entscheidung deiner Meinung nach ungerechtfertigt ist (Artikel 20).',
 			'moderation.complaintExposeLabel' => 'Deine Anfechtung',
 			'moderation.complaintExposeHint' => 'Beschreibe die Gründe für deine Anfechtung.',
 			'moderation.complaintSubmit' => 'Anfechtung senden',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.complaintSent' => 'Anfechtung erfasst. Sie wird geprüft.',
 			'moderation.complaintEmpty' => 'Erkläre deine Anfechtung.',
 			'moderation.a11y.reportForm' => 'Formular zur Inhaltsmeldung',
@@ -6348,14 +6326,14 @@ extension on TranslationsDe {
 			'systemBackup.confirm' => 'Verstanden',
 			'systemBackup.a11yCheckbox' => 'Die Sicherung aller meiner Daten durch das System des Telefons ablehnen',
 			'lieu.ouvrirDansLesCartes' => 'In Karten öffnen',
-			_ => null,
-		} ?? switch (path) {
 			'lieu.cartesIndisponibles' => 'Auf diesem Gerät konnte keine Karten-App geöffnet werden.',
 			'lieu.adresse' => 'Adresse',
 			'lieu.telephoner' => 'Anrufen',
 			'lieu.siteOfficiel' => 'Offizielle Website',
 			'lieu.aCompleter' => 'Angabe noch zu bestätigen',
 			'lieu.source' => 'Quelle',
+			_ => null,
+		} ?? switch (path) {
 			'lieu.rafraichir' => 'Aus der Datenbank aktualisieren',
 			'lieu.rafraichirFait' => ({required Object n}) => '${n} Angabe(n) aus der Datenbank aktualisiert.',
 			'lieu.rafraichirDejaAJour' => 'Bereits aktuell: die Datenbank hat nichts Neueres.',

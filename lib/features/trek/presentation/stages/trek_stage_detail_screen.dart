@@ -107,7 +107,6 @@ final stageByIdProvider =
         startLng: match.startLng,
         endLat: match.endLat,
         endLng: match.endLng,
-        difficulty: match.difficulty,
         descriptionFr: match.description,
         // Noms depart/arrivee (parite GR20 : sous-ligne « Depart -> Arrivee »).
         // Donnee RICHE du sentier quand fournie ; vide sinon -> la fiche retombe
@@ -281,37 +280,11 @@ class _StageDetailContent extends ConsumerWidget {
     return '${minutes}min';
   }
 
-  /// Retourne le libelle de difficulte (i18n via l'enum, jamais de FR en dur).
-  String _difficultyLabel() {
-    switch (stage.difficulty) {
-      case 'easy':
-        return t.stage.difficulty.easy;
-      case 'moderate':
-        return t.stage.difficulty.moderate;
-      case 'hard':
-        return t.stage.difficulty.hard;
-      case 'extreme':
-        return t.stage.difficulty.extreme;
-      default:
-        return stage.difficulty;
-    }
-  }
-
-  /// Retourne la couleur associee a la difficulte.
-  Color _difficultyColor() {
-    switch (stage.difficulty) {
-      case 'easy':
-        return AppTheme.vertFacile;
-      case 'moderate':
-        return AppTheme.jauneModere;
-      case 'hard':
-        return AppTheme.orangeDifficile;
-      case 'extreme':
-        return AppTheme.rougeExtreme;
-      default:
-        return AppTheme.grisGranite;
-    }
-  }
+  // PLUS D'ETIQUETTE DE NIVEAU DANS CET ECRAN (tache 860). Le libelle et la
+  // couleur venaient de l'etiquette STOCKEE de l'etape, retiree de la donnee
+  // parce qu'elle est FIXE PAR ETAPE donc muette sur la JOURNEE reellement
+  // marchee. La difficulte se lit desormais la ou elle se mesure : la note sur
+  // vingt de la journee, sur la fiche du sentier.
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -361,25 +334,11 @@ class _StageDetailContent extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // --- Badge difficulte (chip semantique, couleur denivele) ---
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingSm,
-                    vertical: AppTheme.spacingXs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _difficultyColor().withAlpha(50),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                    border: Border.all(color: _difficultyColor()),
-                  ),
-                  child: Text(
-                    _difficultyLabel(),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: _difficultyColor(),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                // PLUS DE BADGE DE DIFFICULTE ICI (tache 860) : il portait
+                // l'etiquette STOCKEE de l'etape, retiree parce qu'elle est
+                // fixe par etape donc muette sur la journee marchee. Les
+                // mesures de l'etape — distance, denivele, duree — sont juste
+                // en dessous, et elles n'ont jamais menti.
 
                 // --- Sous-ligne « Depart -> Arrivee » (parite GR20) ---
                 // Affichee uniquement si une donnee exploitable existe (noms du
@@ -1147,12 +1106,12 @@ class _AdviceSection extends StatelessWidget {
       tips.add(t.stage.advice.waterAmple);
     }
 
-    // Conseil difficulte.
-    if (stage.difficulty == 'hard' || stage.difficulty == 'extreme') {
-      tips.add(t.stage.advice.hardStage);
-    } else {
-      tips.add(t.stage.advice.earlyStart);
-    }
+    // CONSEIL DE DEPART, SANS CONDITION D'ETIQUETTE (tache 860). Ce conseil
+    // etait choisi sur l'etiquette STOCKEE de l'etape (`hard` ou `extreme`),
+    // retiree parce qu'elle ne dit rien de la journee. Le conseil qui reste ne
+    // depend d'aucun niveau ; l'avertissement de gros denivele, lui, est
+    // declenche par une MESURE, juste en dessous.
+    tips.add(t.stage.advice.earlyStart);
 
     // Conseil D+.
     if (stage.elevationGain > 1000) {

@@ -24,10 +24,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/gr20_nord_trail_config.dart';
 import 'package:moteur_gr/core/config/gr20_sud_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
+import 'package:moteur_gr/core/geo/gpx_depuis_les_assets.dart';
 import 'package:moteur_gr/core/models/fiche_de_sentier.dart';
-import 'package:moteur_gr/domain/difficulte_du_sentier.dart';
-import 'package:moteur_gr/domain/echelle_de_difficulte.dart';
+import 'package:moteur_gr/domain/indice_du_terrain.dart';
+import 'package:moteur_gr/domain/journees_pesees.dart';
 import 'package:moteur_gr/domain/nuit_possible.dart';
+import 'package:moteur_gr/domain/profil_du_terrain.dart';
 import 'package:moteur_gr/features/planning/domain/decoupage_sur_les_nuits.dart';
 
 /// La fiche d'un chapitre, lue par le MEME lecteur que le produit.
@@ -58,20 +60,88 @@ DecoupageDeNuits lireLesNuits(String dossier) => DecoupageDeNuits.fromJson(
       as Map<String, dynamic>,
 );
 
-/// Le verdict d'un chapitre a une allure donnee, par le socle du produit.
-NiveauDeDifficulte verdictDe(DecoupageDeNuits nuits, int jours) =>
-    DifficulteDuSentier.calculer(
-      jours: jours,
-      journees: DecoupageSurLesNuits.repartir(nuits, jours)
-          .map(
-            (j) => JourneeMesuree(
-              km: j.km,
-              deniveleM: j.deniveleM,
-              descenteM: j.descenteM,
-            ),
-          )
-          .toList(growable: false),
-    )!.verdict!;
+/// Le profil d'un chapitre, lu sur SA trace — celle de son propre dossier.
+ProfilDuTerrain profilDe(String dossier) {
+  final points = GpxDepuisLesAssets.parseFromString(
+    File('assets/data/$dossier/track.gpx').readAsStringSync(),
+  );
+  return ProfilDuTerrain.depuisLaTrace(
+    distancesM: points.map((p) => p.distanceFromStart).toList(growable: false),
+    altitudesM: points.map((p) => p.altitude).toList(growable: false),
+  );
+}
+
+/// L'EFFORT D'UN GROUPE DE SEGMENTS — la charge que le repartiteur egalise
+/// depuis la tache 860 (« Oui a l'effort pas au temps »).
+double Function(int, int) effortDuGroupe(
+  DecoupageDeNuits nuits,
+  ProfilDuTerrain profil,
+) {
+  final pkParNom = <String, double>{
+    for (final nuit in nuits.nuits) nuit.nom: nuit.pkKm,
+  };
+  double pkDeFin(int segment) =>
+      pkParNom[nuits.segments[segment].arrivee] ?? 0.0;
+  return (debut, fin) {
+    final pkDebut = debut == 0 ? 0.0 : pkDeFin(debut - 1);
+    final pkFin = pkDeFin(fin - 1);
+    if (pkFin <= pkDebut) return 0.0;
+    return IndiceDuTerrain.calculer(
+      terrain: profil.tranche(
+        pkDebutM: pkDebut * 1000.0,
+        pkFinM: pkFin * 1000.0,
+      ),
+    ).indice;
+  };
+}
+
+/// LES JOURNEES D'UNE ALLURE, AVEC LEURS BORNES SUR LA TRACE — exactement
+/// comme la fiche les pose (tache 858). La borne de depart d'une journee est
+/// l'arrivee de la precedente, et toutes viennent des nuits RELEVEES.
+List<JourneeAPeser> journeesDe(
+  DecoupageDeNuits nuits,
+  ProfilDuTerrain profil,
+  int jours,
+) {
+  final journees = <JourneeAPeser>[];
+  var pk = 0.0;
+  var depart = nuits.teteDeSentier;
+  for (final j in DecoupageSurLesNuits.repartir(
+    nuits,
+    jours,
+    effortDuGroupe: effortDuGroupe(nuits, profil),
+  )) {
+    final pkFin = j.arrivee?.pkKm ?? pk;
+    journees.add(
+      JourneeAPeser(
+        depart: depart,
+        arrivee: j.arriveeNom,
+        km: j.km,
+        deniveleM: j.deniveleM,
+        descenteM: j.descenteM,
+        minutes: j.minutes,
+        pkDebutKm: pk,
+        pkFinKm: pkFin,
+      ),
+    );
+    pk = pkFin;
+    depart = j.arriveeNom;
+  }
+  return journees;
+}
+
+/// L'INDICE DE TERRAIN de la pire journee d'un chapitre a une allure donnee,
+/// par le socle du produit (tache 858). Il a remplace le kilometre-effort de
+/// la tache 852, qui etait faux et que ces fiches CITAIENT a leurs clients.
+JourneePesee pireJourneeDe(String dossier, int jours) {
+  final profil = profilDe(dossier);
+  final nuits = lireLesNuits(dossier);
+  return SentierPese.peser(
+    jours: jours,
+    profil: profil,
+    journees: journeesDe(nuits, profil, jours),
+  )!.pireJournee!;
+}
 
 void main() {
   group('853 — les deux chapitres ont enfin une fiche', () {
@@ -222,80 +292,120 @@ void main() {
   });
 
   group('853 — la difference entre les deux moities est REELLE', () {
-    test('LE NORD EST TRES DIFFICILE A TOUTES SES ALLURES', () {
-      // CE QUE LA FICHE DU NORD PROMET : « de cinq a quinze jours, le verdict
-      // ne bouge pas ». Mesure ici, allure par allure, par le socle du produit.
+    test('LE NORD A UN PLANCHER D INDICE QUE L ALLURE NE FAIT PAS DESCENDRE, '
+        'ET SA FICHE LE CHIFFRE', () {
+      // CE QUE LA FICHE DU NORD PROMET, ET POURQUOI C'EST VRAI : sa premiere
+      // journee monte 1 455 m d'un seul tenant et AUCUN couchage releve ne la
+      // coupe. Elle est donc le PLANCHER de toutes les allures fines : de
+      // huit a quinze jours, la pire journee du nord ne descend plus.
       final nuits = lireLesNuits('gr20-nord');
       expect(nuits.journeesMaximales, 15);
-      for (var jours = 5; jours <= 15; jours++) {
+      for (var jours = 8; jours <= 15; jours++) {
+        final pire = pireJourneeDe('gr20-nord', jours);
         expect(
-          verdictDe(nuits, jours),
-          NiveauDeDifficulte.tresDifficile,
+          pire.noteDEffort,
+          closeTo(16.06, 0.05),
           reason: 'le nord a $jours jours',
         );
+        expect(pire.depart, 'Calenzana');
+        expect(pire.plusGrosseMonteeM, closeTo(1454, 2));
       }
+      // A SEPT JOURS LE PLANCHER N EST PLUS L ETAPE 1, et c'est une
+      // consequence de l'exposant mesure : la journee Ortu vers Ascu-Stagnu
+      // la depasse de quatre centiemes d'indice.
+      expect(pireJourneeDe('gr20-nord', 7).noteDEffort, closeTo(16.12, 0.05));
+      // ET SERRER L'ALLURE A CINQ JOURS FAIT MONTER, ce que la fiche
+      // annonce : 17,5 contre 16,1 sur vingt d'effort. L'ECART S'EST
+      // RESSERRE EN PASSANT AUX SEUILS PUBLIES (1,4 point au lieu de 2,9)
+      // et c'est attendu : le dernier palier de la jauge d'effort est le
+      // plus plat de tous, parce qu'au-dela du seuil publie de 25 km et
+      // 1 000 m aucun bareme du monde ne gradue plus.
+      final aCinq = pireJourneeDe('gr20-nord', 5);
+      expect(aCinq.noteDEffort, closeTo(17.48, 0.05));
+      final texte = ficheDe('gr20-nord').description.aQuoiSAttendre;
+      expect(texte, contains('un effort de 16,1 sur 20'));
+      expect(texte, contains('passe a 17,5 sur 20'));
+    });
+
+    test('LE SUD DESCEND QUAND ON LUI DONNE DU TEMPS, ET LA FICHE LE '
+        'CHIFFRE', () {
+      // LA VRAIE DIFFERENCE ENTRE LES DEUX MOITIES, MESUREE EN INDICE : le sud
+      // repond a l'allure, le nord non. De cinq a seize jours sa pire journee
+      // tombe de 14,1 a 8,3 d'effort, parce que ses montees se coupent
+      // toutes sur un couchage releve.
+      expect(lireLesNuits('gr20-sud').journeesMaximales, 16);
+      final aCinq = pireJourneeDe('gr20-sud', 5).noteDEffort;
+      final aSept = pireJourneeDe('gr20-sud', 7).noteDEffort;
+      final aHuit = pireJourneeDe('gr20-sud', 8).noteDEffort;
+      final aSeize = pireJourneeDe('gr20-sud', 16).noteDEffort;
+      expect(aCinq, closeTo(14.11, 0.05));
+      expect(aSept, closeTo(10.57, 0.05));
+      expect(aHuit, closeTo(9.21, 0.05));
+      expect(aSeize, closeTo(8.29, 0.05));
       expect(
-        ficheDe('gr20-nord').description.aQuoiSAttendre,
-        contains('de cinq a quinze jours, le verdict ne bouge pas'),
+        aCinq > aSept && aSept > aHuit && aHuit > aSeize,
+        isTrue,
+        reason: 'au sud, chaque jour donne allege la pire journee',
       );
-    });
-
-    test('LE SUD BASCULE A HUIT JOURS, ET LA FICHE LE DIT', () {
-      // LA SEULE FRONTIERE MOBILE DU GR20, ET C'EST UNE INFORMATION DE VENTE.
-      // A sept jours le sud est tres difficile — par l'ENCHAINEMENT, pas par
-      // une journee qui casse. Des huit, il est difficile, et il le reste.
-      final nuits = lireLesNuits('gr20-sud');
-      expect(nuits.journeesMaximales, 16);
-
-      expect(verdictDe(nuits, 7), NiveauDeDifficulte.tresDifficile);
-      for (var jours = 8; jours <= 16; jours++) {
-        expect(
-          verdictDe(nuits, jours),
-          NiveauDeDifficulte.difficile,
-          reason: 'le sud a $jours jours',
-        );
-      }
-
-      // ET A SEPT JOURS, C'EST BIEN L'ACCUMULATION QUI LE MONTE : sa pire
-      // journee est « difficile », donc un verdict calcule sur elle seule
-      // n'aurait jamais rendu « tres difficile ».
-      final aSept = DifficulteDuSentier.calculer(
-        jours: 7,
-        journees: DecoupageSurLesNuits.repartir(nuits, 7)
-            .map(
-              (j) => JourneeMesuree(
-                km: j.km,
-                deniveleM: j.deniveleM,
-                descenteM: j.descenteM,
-              ),
-            )
-            .toList(growable: false),
-      )!;
-      expect(aSept.plancher, NiveauDeDifficulte.difficile);
-      expect(aSept.verdictMonteParLAccumulation, isTrue);
-      expect(aSept.plusLongueSuiteEnBandesHautes, 7);
-
+      // LA JOURNEE QUI FAIT LE PLANCHER DU SUD A CHANGE AVEC LE COMPTE, et la
+      // fiche le dit : le kilometre-effort nommait la DERNIERE journee, celle
+      // qui DESCEND 1 090 m vers Conca, parce qu'il facturait la descente a
+      // 0,30. L'indice mesure l'energie : c'est la PREMIERE, la montee de
+      // 703 m au-dessus de Vizzavona, qui fait le plancher du chapitre.
+      final plancher = pireJourneeDe('gr20-sud', 16);
+      expect(plancher.depart, contains('Vizzavona'));
+      expect(plancher.deniveleM, greaterThan(plancher.descenteM));
       final texte = ficheDe('gr20-sud').description.aQuoiSAttendre;
-      expect(texte, contains('huit jours'));
-      expect(texte, contains('difficile'));
+      expect(texte, contains('10,6 sur 20'));
+      expect(texte, contains('ne descend jamais sous 8,3 sur 20'));
+      expect(texte, contains('Vizzavona'));
     });
 
-    test('LE SELECTEUR DU SUD OFFRE L ALLURE QUI CHANGE LE VERDICT', () {
-      // UN TEXTE QUI PROMET UN CRAN QUE LE SELECTEUR N'ATTEINT PAS EST PIRE
-      // QU'UN TEXTE MUET. Le sud n'offrait que 5 et 7 jours — ses deux seules
-      // allures tres difficiles — alors que sa fiche annonce le basculement a
-      // huit.
+    test('LE SELECTEUR DU SUD OFFRE L ALLURE QUI CHANGE LE CHIFFRE', () {
+      // UN TEXTE QUI PROMET UN ALLEGEMENT QUE LE SELECTEUR N'ATTEINT PAS EST
+      // PIRE QU'UN TEXTE MUET. Le sud n'offrait que 5 et 7 jours alors que sa
+      // fiche parle de huit.
       expect(gr20SudTrailConfig.availableDurations, contains(8));
-      final nuits = lireLesNuits('gr20-sud');
-      final verdicts = {
+      final indices = {
         for (final jours in gr20SudTrailConfig.availableDurations)
-          jours: verdictDe(nuits, jours),
+          jours: pireJourneeDe('gr20-sud', jours).noteDEffort,
       };
       expect(
-        verdicts.values.toSet().length,
+        indices.values.toSet().length,
         greaterThan(1),
-        reason: 'les allures offertes ne rendent pas toutes le meme mot',
+        reason: 'les allures offertes ne rendent pas toutes le meme chiffre',
       );
+    });
+
+    test('PLUS AUCUNE FICHE NE CITE LE KILOMETRE-EFFORT A SES CLIENTS '
+        '(tache 858)', () {
+      // LA GARDE DU NETTOYAGE. Le kilometre-effort de la tache 852 etait
+      // AFFICHE AUX CLIENTS, jusque dans le texte de vente des fiches, et il
+      // etait faux. Il est retire du code ; cette garde empeche qu'il revienne
+      // par la donnee.
+      // TOUS LES SENTIERS DU CATALOGUE QUI ONT UNE FICHE, et pas une liste
+      // d'identifiants ecrite a la main : un sentier ajoute demain doit entrer
+      // dans cette garde tout seul.
+      final avecFiche = TrailCatalog.all
+          .where((c) => (c.ficheAssetPath ?? '').isNotEmpty)
+          .map((c) => c.id)
+          .toList(growable: false);
+      expect(avecFiche.length, greaterThanOrEqualTo(3));
+      for (final id in avecFiche) {
+        final fiche = ficheDe(id);
+        for (final texte in <String>[
+          fiche.description.ouCest,
+          fiche.description.ceQuOnYVoit,
+          fiche.description.aQuoiSAttendre,
+        ]) {
+          expect(
+            texte.toLowerCase(),
+            isNot(contains('km-effort')),
+            reason: 'la fiche de $id cite encore le compte retire',
+          );
+          expect(texte.toLowerCase(), isNot(contains('kilometre-effort')));
+        }
+      }
     });
 
     test('LE NORD EST LE PLUS DUR DES DEUX, A DISTANCE EGALE', () {

@@ -17,7 +17,12 @@ import '../../../domain/feasibility_formula.dart';
 import '../../../core/branding/stepways_icons.dart';
 import 'feasibility_labels.dart';
 
-/// Tuile d'une etape avec sa pastille tricolore + son km-effort.
+/// Tuile d'une etape avec sa pastille tricolore + son km-energie.
+///
+/// LE KM-ENERGIE EST CELUI DU MOTEUR DE FAISABILITE, et il ne faut pas le
+/// confondre avec l'INDICE DE TERRAIN de la fiche (tache 858) : celui-ci
+/// mesure ce que le chemin demande, celui-la le compare a ce que la personne
+/// peut tenir. Le kilometre-effort de la tache 852, lui, est retire.
 class FeasibilityStageTile extends StatelessWidget {
   const FeasibilityStageTile({super.key, required this.verdict});
   final StageVerdict verdict;

@@ -50,16 +50,13 @@ class PlannedDay {
   /// [PlanningCalculator] : distance / 4 km/h + D+ / 400 m/h).
   double get estimatedHours => totalStagesDurationMinutes(stages) / 60.0;
 
-  /// Difficulte maximale des etapes du jour (echelle 1..4, teinte de la carte).
-  /// Repli sur 1 (facile) pour un jour sans etape.
-  int get maxDifficulty {
-    var max = 1;
-    for (final s in stages) {
-      final d = difficultyRank(s.difficulty);
-      if (d > max) max = d;
-    }
-    return max;
-  }
+  // PLUS DE `maxDifficulty` (tache 860). Il rendait le rang de l'etiquette
+  // STOCKEE la plus haute du jour, sur une echelle de 1 a 4, et deux ecrans
+  // s'en servaient pour TEINDRE une journee. Le rang d'une etiquette fixe ne
+  // dit rien d'une journee qui groupe ou coupe des etapes : c'est le defaut
+  // structurel que la tache 860 retire. Les deux ecrans peignent desormais en
+  // couleur neutre, et la difficulte se lit la ou elle se mesure — la note sur
+  // vingt de la journee, sur la fiche du sentier.
 
   PlannedDay copyWith({
     int? dayNumber,
@@ -74,20 +71,9 @@ class PlannedDay {
   }
 }
 
-/// Convertit la difficulte textuelle du modele ([StageModel.difficulty]) en rang
-/// numerique 1..4 (parite GR20 : facile/modere/difficile/extreme). Sert au tri
-/// de couleur (pastille jour, profil altimetrique, legende).
-int difficultyRank(String difficulty) {
-  switch (difficulty) {
-    case 'easy':
-      return 1;
-    case 'moderate':
-      return 2;
-    case 'hard':
-      return 3;
-    case 'extreme':
-      return 4;
-    default:
-      return 2;
-  }
-}
+// LE RANG D'ETIQUETTE EST RETIRE AVEC L'ETIQUETTE (tache 860). Il convertissait
+// `easy` / `moderate` / `hard` / `extreme` en 1 a 4 pour teindre une journee.
+// Le rang d'une etiquette FIXE PAR ETAPE ne dit rien d'une journee qui groupe
+// ou coupe des etapes : c'est le defaut structurel que ce lot corrige. La
+// difficulte se lit desormais sur la note sur vingt de la journee, qui suit le
+// decoupage reel.
